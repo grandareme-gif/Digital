@@ -56,7 +56,7 @@ const questions = [
   { id: 5, category: "사이버 자기조절", text: "디지털 미디어(스마트폰, 게임 등) 사용으로 인해 해야 할 일(숙제 등)을 미룬 적이 있나요?", isReverse: true },
   { id: 6, category: "사이버 자기조절", text: "스마트폰을 사용하지 않으면 불안하거나 진동이 울리는 것 같은 착각이 드나요?", isReverse: true },
   { id: 7, category: "사이버 감정조절", text: "온라인 게임이나 채팅 중 화가 나면 참지 못하고 주먹이 쥐어지거나 화면을 거칠게 다루나요?", isReverse: true },
-  { id: 8, category: "사이버 감정조절", text: "기분 나쁜 메시지를 받았을 때, 즉시 대거리하기보다 마음을 가라앉히려고 노력하나요?", isReverse: false },
+  { id: 8, category: "사이버 감정조절", text: "기분 나쁜 메시지를 받았을 때, 즉시 맞대응하기보다 마음을 가라앉히려고 노력하나요?", isReverse: false },
   { id: 9, category: "인터넷 윤리의식 및 활용", text: "딥페이크 영상이나 가짜 뉴스를 보면 그것이 진짜인지 의심하고 신고해야 한다고 생각하나요?", isReverse: false },
   { id: 10, category: "인터넷 윤리의식 및 활용", text: "저작권이 있는 사진이나 글을 허락 없이 내 SNS에 올리는 것이 잘못임을 알고 있나요?", isReverse: false },
   { id: 11, category: "사이버 갈등관리 및 문제해결", text: "단톡방에서 친구와 다툼이 생겼을 때, 화를 내기보다 대화로 오해를 풀려고 노력하나요?", isReverse: false },

@@ -51,6 +51,9 @@ body {
   height: calc(100vw * 9 / 16);
   max-width: 1920px;
   max-height: 1080px;
+
+  /* 컨테이너 쿼리 단위(cqw) 사용을 위한 활성화 */
+  container-type: inline-size;
 }
 
 @media (min-aspect-ratio: 16/9) {
@@ -197,13 +200,13 @@ body {
    ============================================= */
 .temp-skip-btn {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 2cqw;
+  right: 2cqw;
   background: rgba(0, 0, 0, 0.6);
   color: rgba(255, 255, 255, 0.8);
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  padding: 8px 12px;
-  font-size: 0.9rem;
+  border: 0.25cqw solid rgba(255, 255, 255, 0.4);
+  padding: 1cqw 1.5cqw;
+  font-size: 1.5cqw;
   cursor: pointer;
   z-index: 100;
   transition: all 0.2s ease;
@@ -228,19 +231,20 @@ body {
 
 #scene-label {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 2.5cqw;
+  left: 2.5cqw;
   background: rgba(0,0,0,0.5);
-  border: 2px solid #fff;
-  padding: 5px 10px;
+  border: 0.25cqw solid #fff;
+  padding: 0.8cqw 1.5cqw;
+  font-size: 1.6cqw;
   z-index: 10;
 }
 
 /* 픽셀 요정 (이미지 적용) */
 .pixel-fairy {
   display: none;
-  width: 360px;
-  height: 360px;
+  width: 25cqw;
+  height: 25cqw;
   background: url('images/maeumon.png') no-repeat center/contain;
   position: relative;
   animation: hoverFloat 2s ease-in-out infinite;
@@ -251,46 +255,63 @@ body {
 }
 .pixel-fairy.top-left {
   position: absolute;
-  top: 30px;
-  left: -30px;
-  width: 360px;
-  height: 360px;
+  top: 4cqw;
+  left: -4cqw;
+  width: 25cqw;
+  height: 25cqw;
 }
 
 /* 대화창 */
-#dialog-box {
+#dialog-box, #outro-dialog-box {
   position: absolute;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
-  height: 150px;
+  bottom: 2.5cqw !important;
+  left: 2.5cqw !important;
+  right: 2.5cqw !important;
+  height: 14cqw !important;
   background-color: rgba(0, 0, 0, 0.85);
-  border: var(--pixel-thick) solid var(--text-main);
-  padding: 20px;
+  border: var(--pixel-thick) solid var(--text-main) !important;
+  padding: 2.2cqw !important;
   z-index: 10;
   display: flex;
   flex-direction: column;
-  box-shadow: 8px 8px 0 var(--border-color);
+  box-shadow: 1cqw 1cqw 0 var(--border-color) !important;
 }
-#speaker-name {
+#speaker-name, #outro-speaker {
   color: var(--point-yellow);
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-  text-shadow: 2px 2px 0 var(--border-color);
+  font-size: 2.5cqw !important;
+  margin-bottom: 0.8cqw !important;
+  text-shadow: 0.25cqw 0.25cqw 0 var(--border-color) !important;
 }
-#dialog-text {
+#dialog-text, #outro-text {
   color: #fff;
-  font-size: 1.2rem;
+  font-size: 2.0cqw !important;
   line-height: 1.5;
   flex-grow: 1;
-  padding-bottom: 5px;
+  padding-bottom: 0.5cqw;
+  padding-right: 10cqw;
 }
-#next-btn {
+#next-btn, #outro-dialog-next {
   position: absolute;
-  bottom: 4px;
-  right: 12px;
-  font-size: 1rem;
-  padding: 3px 10px;
+  bottom: 1.8cqw !important;
+  right: 2.2cqw !important;
+  font-size: 1.6cqw !important;
+  padding: 0.5cqw 1.2cqw !important;
+}
+
+#outro-scene-label {
+  top: 2.5cqw !important;
+  left: 2.5cqw !important;
+  padding: 0.8cqw 1.5cqw !important;
+  font-size: 1.6cqw !important;
+  border-width: 0.25cqw !important;
+  box-shadow: 0.5cqw 0.5cqw 0 #000 !important;
+}
+
+#outro-promise-btn {
+  font-size: 2.8cqw !important;
+  padding: 2cqw 5cqw !important;
+  box-shadow: 0.8cqw 0.8cqw 0 #000 !important;
+  border-width: 0.4cqw !important;
 }
 
 /* 특수 연출(이펙트) CSS */
