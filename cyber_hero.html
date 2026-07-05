@@ -44,12 +44,8 @@
       overflow: hidden;
     }
 
-    /* 전체 앱 컨테이너 (비율 고정 & 픽셀 테두리) */
+    /* 전체 앱 컨테이너 (비율 고정 & 픽셀 테두리: 16:9 해상도 1920x1080 대응) */
     #app-container {
-      width: 100%;
-      max-width: 800px;
-      height: 100vh;
-      max-height: 600px;
       position: relative;
       background-color: var(--panel-bg);
       border: var(--pixel-thick) solid var(--pure-black);
@@ -57,6 +53,20 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+
+      /* 16:9 비율 유지 및 최대 1920x1080 제한 */
+      aspect-ratio: 16 / 9;
+      width: 100vw;
+      height: calc(100vw * 9 / 16);
+      max-width: 1920px;
+      max-height: 1080px;
+    }
+
+    @media (min-aspect-ratio: 16/9) {
+      #app-container {
+        height: 100vh;
+        width: calc(100vh * 16 / 9);
+      }
     }
 
     

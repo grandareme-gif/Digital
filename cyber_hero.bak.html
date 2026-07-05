@@ -1,0 +1,1973 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마음온의 사이버 평화 수호대</title>
+  
+  <!-- 둥근모꼴 폰트 단독 우선 로드 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff">
+
+  <style>
+    /* =========================================
+       디자인 시스템 (기존 style.css 및 empathy.html 통일)
+       ========================================= */
+    :root {
+      --neon-pink: #ff79c6;
+      --neon-hotpink: #ff007f;
+      --neon-blue: #8be9fd;
+      --neon-sky: #00a8ff;
+      --neon-mint: #50fa7b;
+      --soft-yellow: #fff9db;
+      --point-yellow: #FFD700;
+      --dark-gray: #1a1c23;
+      --panel-bg: rgba(26, 28, 35, 0.95);
+      --pure-black: #000000;
+      --pixel-thick: 4px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'DungGeunMo', monospace;
+      image-rendering: pixelated;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--dark-gray);
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 전체 앱 컨테이너 (비율 고정 & 픽셀 테두리) */
+    #app-container {
+      width: 100%;
+      max-width: 800px;
+      height: 100vh;
+      max-height: 600px;
+      position: relative;
+      background-color: var(--panel-bg);
+      border: var(--pixel-thick) solid var(--pure-black);
+      box-shadow: 0 0 30px rgba(255, 121, 198, 0.3), 8px 8px 0 var(--pure-black);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 뷰 구조 */
+    .view {
+      display: none;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0; left: 0;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      z-index: 1;
+    }
+
+    .view.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+      z-index: 2;
+    }
+
+    /* 상단 진행 바 (기존 스테이지바 통일) */
+    .header-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #2c3e50;
+      border: var(--pixel-thick) solid var(--pure-black);
+      padding: 10px 15px;
+      color: #fff;
+      box-shadow: inset 4px 4px 0 rgba(255,255,255,0.1);
+      margin-bottom: 5px;
+    }
+
+    .header-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--neon-pink);
+      text-shadow: 2px 2px 0 var(--pure-black);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header-progress {
+      background: var(--pure-black);
+      color: var(--point-yellow);
+      border: 2px solid var(--point-yellow);
+      padding: 2px 10px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+
+    /* 레트로 픽셀 버튼 (retro-btn 클래스로 기존 통일) */
+    .retro-btn {
+      background-color: var(--neon-pink);
+      color: var(--pure-black);
+      border: var(--pixel-thick) solid var(--pure-black);
+      padding: 10px 20px;
+      font-size: 1.25rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 var(--pure-black);
+      transition: transform 0.1s, box-shadow 0.1s;
+      outline: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 6px;
+    }
+
+    .retro-btn:active {
+      box-shadow: 0px 0px 0 var(--pure-black);
+      transform: translate(4px, 4px);
+    }
+
+    .retro-btn:hover:not(.disabled) {
+      background-color: var(--neon-blue);
+    }
+
+    .retro-btn.disabled {
+      background-color: #555 !important;
+      color: #888 !important;
+      cursor: not-allowed;
+      box-shadow: 4px 4px 0 #111;
+      transform: none !important;
+    }
+
+    /* =========================================
+       Screen 1: 메인 인트로 화면
+       ========================================= */
+    #view-intro {
+      justify-content: center;
+      gap: 20px;
+    }
+
+    /* 픽셀 요정 (기존 pixel-fairy 계승 및 고도화) */
+    .pixel-fairy-container {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      animation: float 2.5s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .pixel-fairy-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 픽셀 날개 파닥임 */
+    .fairy-wing-l {
+      animation: flapL 0.2s ease-in-out infinite alternate;
+      transform-origin: 32px 56px;
+    }
+    .fairy-wing-r {
+      animation: flapR 0.2s ease-in-out infinite alternate;
+      transform-origin: 64px 56px;
+    }
+
+    @keyframes flapL {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(12deg); }
+    }
+    @keyframes flapR {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(-12deg); }
+    }
+
+    /* 대화창 (기존 dialog-box 및 bubble-story 계승) */
+    .intro-dialog {
+      background-color: rgba(0, 0, 0, 0.85);
+      border: var(--pixel-thick) solid var(--text-main);
+      padding: 15px 20px;
+      width: 90%;
+      max-width: 550px;
+      text-align: center;
+      box-shadow: 6px 6px 0 var(--pure-black);
+      position: relative;
+    }
+
+    .intro-dialog p {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #fff;
+      word-break: keep-all;
+    }
+
+    /* =========================================
+       Screen 2: [활동 1] 시선 교차경
+       ========================================= */
+    .act1-content {
+      display: flex;
+      width: 100%;
+      flex-grow: 1;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+      margin: 10px 0;
+      height: calc(100% - 70px);
+    }
+
+    /* 픽셀 가상 스마트폰 */
+    .phone-container {
+      width: 260px;
+      height: 380px;
+      background: #000;
+      border: var(--pixel-thick) solid var(--pure-black);
+      border-radius: 12px;
+      box-shadow: 6px 6px 0 var(--pure-black);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .phone-screen {
+      flex-grow: 1;
+      width: 100%;
+      position: relative;
+      background-color: #34495e; /* 기본 픽셀 네이비 */
+      display: flex;
+      flex-direction: column;
+      padding: 12px;
+      justify-content: space-between;
+    }
+
+    /* 토글 스위치 (픽셀 스타일) */
+    .toggle-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 5px;
+      z-index: 12;
+    }
+
+    .view-toggle {
+      display: flex;
+      background: #000;
+      border: 3px solid #fff;
+      padding: 2px;
+      border-radius: 4px;
+      width: 220px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      text-align: center;
+      padding: 4px 0;
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #7f8c8d;
+      z-index: 2;
+    }
+
+    .toggle-btn.active {
+      color: #000;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      top: 2px; left: 2px;
+      width: calc(50% - 2px);
+      height: calc(100% - 4px);
+      background: var(--point-yellow);
+      border-radius: 2px;
+      z-index: 1;
+      transition: transform 0.25s cubic-bezier(0.1, 0.8, 0.3, 1);
+    }
+
+    .phone-screen.victim-mode-active .toggle-slider {
+      transform: translateX(100%);
+      background: var(--neon-pink);
+    }
+
+    /* 픽셀 액정 크랙 오버레이 */
+    .crack-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 10;
+      opacity: 0;
+    }
+    
+    .crack-overlay.cracked {
+      opacity: 1;
+    }
+
+    /* 픽셀 형태의 각진 깨진 선들 */
+    .crack-line {
+      stroke: var(--neon-blue);
+      stroke-width: 3;
+      stroke-linecap: square;
+      fill: none;
+      stroke-dasharray: 800;
+      stroke-dashoffset: 800;
+    }
+
+    .crack-overlay.cracked .crack-line {
+      animation: drawCrack 0.5s forwards steps(15, end);
+    }
+
+    @keyframes drawCrack {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* 시점별 컨텐츠 */
+    .phone-body {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .content-card {
+      width: 100%;
+      border: 3px solid var(--pure-black);
+      background: white;
+      padding: 6px;
+      box-shadow: 3px 3px 0 var(--pure-black);
+      color: #000;
+      margin-bottom: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .phone-screen.victim-mode .content-card {
+      background: #1a1c23;
+      color: white;
+      border-color: #fff;
+      box-shadow: 3px 3px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .content-image {
+      width: 100%;
+      max-height: 100px;
+      border: 2px solid var(--pure-black);
+      object-fit: cover;
+    }
+
+    .phone-screen.victim-mode .content-image {
+      border-color: #fff;
+    }
+
+    .bubble-talk {
+      background: var(--soft-yellow);
+      border: 3px solid var(--pure-black);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #000;
+      line-height: 1.3;
+      position: relative;
+      margin-top: 5px;
+      max-width: 95%;
+      word-break: keep-all;
+      box-shadow: 2px 2px 0 var(--pure-black);
+    }
+
+    .bubble-talk::after {
+      content: '';
+      position: absolute;
+      top: -9px; left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-bottom-color: var(--pure-black);
+    }
+
+    .phone-screen.victim-mode .bubble-talk {
+      background: var(--neon-blue);
+      border-color: var(--pure-black);
+    }
+
+    /* 이모티콘 파티클 효과용 컨테이너 */
+    .particle-canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .particle-emoji {
+      position: absolute;
+      font-size: 1.3rem;
+      bottom: -30px;
+      animation: floatUpEmoji 2.2s linear forwards;
+      opacity: 0.8;
+    }
+
+    @keyframes floatUpEmoji {
+      0% { transform: translateY(0) scale(0.9) rotate(0deg); opacity: 0.8; }
+      100% { transform: translateY(-330px) scale(1.1) rotate(180deg); opacity: 0; }
+    }
+
+    /* 드롭존 (픽셀 스타일) */
+    .drop-zone {
+      width: 100%;
+      border: 3px dashed var(--pure-black);
+      background: rgba(255, 255, 255, 0.2);
+      padding: 6px;
+      min-height: 54px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+
+    .phone-screen.victim-mode .drop-zone {
+      border-color: #fff;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .drop-zone.drag-over {
+      background: rgba(255, 215, 0, 0.3);
+    }
+
+    .drop-zone-placeholder {
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: #ccc;
+      pointer-events: none;
+    }
+
+    .drop-label {
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: var(--point-yellow);
+      margin-bottom: 2px;
+      text-shadow: 1px 1px 0 #000;
+    }
+
+    /* 우측 제어 대시보드 */
+    .act1-dashboard {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      height: 100%;
+      justify-content: center;
+    }
+
+    .dashboard-guide {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 10px 14px;
+      border-left: 4px solid var(--point-yellow);
+      border-top: 2px solid var(--pure-black);
+      border-right: 2px solid var(--pure-black);
+      border-bottom: 2px solid var(--pure-black);
+      box-shadow: 3px 3px 0 var(--pure-black);
+      word-break: keep-all;
+    }
+
+    /* 감정 조각 트레이 */
+    .emotion-tray {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 10px;
+      border: 3px solid var(--pure-black);
+      box-shadow: inset 3px 3px 0 rgba(0,0,0,0.5);
+    }
+
+    .emotion-block {
+      background: white;
+      color: #000;
+      border: 3px solid var(--pure-black);
+      padding: 6px 12px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: grab;
+      transition: all 0.1s;
+      box-shadow: 3px 3px 0 var(--pure-black);
+    }
+
+    .emotion-block:active {
+      cursor: grabbing;
+    }
+
+    .emotion-block.selected {
+      background: var(--neon-blue);
+      transform: scale(1.05);
+      box-shadow: 0 0 8px var(--neon-blue);
+    }
+
+    .emotion-block.dragging {
+      opacity: 0.5;
+    }
+
+    .emotion-block.correct-placed {
+      background: var(--neon-mint);
+      color: #000;
+      border-color: var(--pure-black);
+      cursor: default;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* Step 3: 공감 처방전 폼 */
+    .prescription-form {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      animation: fadeInUp 0.3s ease-out forwards;
+    }
+
+    .prescription-form textarea {
+      width: 100%;
+      height: 70px;
+      border: 3px solid var(--pure-black);
+      padding: 8px;
+      font-size: 0.9rem;
+      resize: none;
+      outline: none;
+      background: white;
+      color: #000;
+      box-shadow: inset 2px 2px 0 rgba(0,0,0,0.1);
+    }
+
+    /* 치유 글로우 효과 */
+    .heal-glow {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 10px; height: 10px;
+      background: radial-gradient(circle, rgba(255,255,255,1) 0%, var(--point-yellow) 60%, rgba(0,0,0,0) 100%);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0;
+      z-index: 15;
+    }
+
+    .heal-glow.active {
+      animation: healFlash 1.2s forwards cubic-bezier(0.1, 0.8, 0.3, 1);
+    }
+
+    @keyframes healFlash {
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(80); opacity: 0; }
+    }
+
+    /* 피드백 모달 (기존 overlay-modal / modal-content 디자인 호환) */
+    .feedback-modal {
+      display: none;
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: #2c3e50;
+      border: var(--pixel-thick) solid var(--pure-black);
+      border-radius: 8px;
+      padding: 20px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 6px 6px 0 var(--pure-black);
+      animation: scaleUp 0.25s steps(4, end) forwards;
+      color: #fff;
+    }
+
+    @keyframes scaleUp {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-char {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 10px;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--point-yellow);
+      margin-bottom: 8px;
+      text-shadow: 2px 2px 0 var(--pure-black);
+    }
+
+    .modal-body {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #fff;
+      margin-bottom: 15px;
+      word-break: keep-all;
+    }
+
+    /* =========================================
+       Screen 3: [활동 2] SOS 구조대
+       ========================================= */
+    .act2-content {
+      display: flex;
+      width: 100%;
+      flex-grow: 1;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+      margin: 10px 0;
+      height: calc(100% - 70px);
+    }
+
+    /* 픽셀 SNS 화면 */
+    .sns-container {
+      width: 270px;
+      height: 360px;
+      background: #34495e;
+      border: var(--pixel-thick) solid var(--pure-black);
+      box-shadow: 5px 5px 0 var(--pure-black);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .sns-header {
+      padding: 8px 12px;
+      border-bottom: var(--pixel-thick) solid var(--pure-black);
+      display: flex;
+      align-items: center;
+      background: #2c3e50;
+    }
+
+    .sns-logo {
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--point-yellow);
+      text-shadow: 1px 1px 0 var(--pure-black);
+    }
+
+    .sns-body {
+      flex-grow: 1;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+    }
+
+    .sns-post {
+      border: 3px solid var(--pure-black);
+      border-radius: 4px;
+      padding: 8px;
+      background: #fff;
+      color: #000;
+      box-shadow: 2px 2px 0 var(--pure-black);
+    }
+
+    .post-author-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .author-info {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .author-avatar {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--pure-black);
+      background: #cbd5e1;
+    }
+
+    .author-name {
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: #000;
+    }
+
+    .post-text {
+      font-size: 0.85rem;
+      font-weight: bold;
+      line-height: 1.4;
+      color: #1e293b;
+      word-break: keep-all;
+    }
+
+    .cyber-bulling-post {
+      border-color: var(--neon-hotpink);
+      background: #fff0f3;
+    }
+
+    /* 차단 버튼 */
+    .btn-block-user {
+      background: var(--neon-hotpink);
+      color: #000;
+      border: 2px solid var(--pure-black);
+      padding: 2px 6px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: none;
+      animation: pulse 0.8s infinite alternate steps(4);
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.06); box-shadow: 0 0 6px var(--neon-hotpink); }
+    }
+
+    /* 차단 완료 스탬프 (픽셀풍 도장) */
+    .blocked-stamp {
+      display: none;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) rotate(-12deg);
+      border: var(--pixel-thick) solid var(--neon-hotpink);
+      color: var(--neon-hotpink);
+      font-size: 1.6rem;
+      font-weight: bold;
+      padding: 6px 12px;
+      background: rgba(0, 0, 0, 0.95);
+      box-shadow: 4px 4px 0 var(--pure-black);
+      z-index: 12;
+      pointer-events: none;
+    }
+
+    /* 캡처 이펙트 */
+    .flash-screen {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: white;
+      opacity: 0;
+      z-index: 99;
+      pointer-events: none;
+    }
+
+    .flash-screen.active {
+      animation: cameraFlash 0.25s forwards ease-out;
+    }
+
+    @keyframes cameraFlash {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    /* 날아가는 캡처 썸네일 */
+    .flying-thumbnail {
+      position: absolute;
+      width: 80px;
+      height: 110px;
+      border: 3px solid white;
+      box-shadow: 4px 4px 0 var(--pure-black);
+      z-index: 100;
+      pointer-events: none;
+      display: none;
+      background: #f8fafc;
+    }
+
+    /* 우측 상단 안전 폴더 */
+    .safe-folder-container {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      z-index: 20;
+    }
+
+    .safe-folder {
+      font-size: 2.2rem;
+      position: relative;
+    }
+
+    .safe-folder.bounce {
+      animation: folderBounce 0.4s steps(4);
+    }
+
+    @keyframes folderBounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.25) rotate(6deg); }
+    }
+
+    .safe-badge {
+      position: absolute;
+      top: -2px; right: -6px;
+      background: var(--neon-mint);
+      color: #000;
+      border: 2px solid var(--pure-black);
+      border-radius: 4px;
+      width: 18px;
+      height: 18px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .safe-label {
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: var(--point-yellow);
+      text-shadow: 1px 1px 0 #000;
+    }
+
+    /* 선택지 박스 */
+    .choice-tray {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      animation: fadeInUp 0.3s ease-out forwards;
+    }
+
+    .btn-choice {
+      background: white;
+      color: #000;
+      border: 3px solid var(--pure-black);
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.1s;
+      box-shadow: 3px 3px 0 var(--pure-black);
+    }
+
+    .btn-choice:hover {
+      background: var(--soft-yellow);
+      transform: translateY(-1px);
+    }
+
+    .btn-choice.correct {
+      background: var(--neon-mint);
+      color: #000;
+    }
+
+    .btn-choice.incorrect {
+      background: var(--neon-hotpink);
+      color: #fff;
+    }
+
+    /* 흔들림 애니메이션 */
+    .shake {
+      animation: shakeContainer 0.4s ease-in-out;
+    }
+
+    @keyframes shakeContainer {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    /* 종이비행기 */
+    .paper-plane {
+      position: absolute;
+      font-size: 1.8rem;
+      z-index: 110;
+      pointer-events: none;
+      display: none;
+    }
+
+    @keyframes flyPlane {
+      0% {
+        transform: translate(0, 0) scale(1) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(200px, -200px) scale(0.2) rotate(-45deg);
+        opacity: 0;
+      }
+    }
+
+    /* =========================================
+       Screen 4: 아웃트로
+       ========================================= */
+    #view-outro {
+      justify-content: center;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .outro-card {
+      background: #2c3e50;
+      border: var(--pixel-thick) solid var(--pure-black);
+      padding: 25px 15px;
+      max-width: 480px;
+      box-shadow: 6px 6px 0 var(--pure-black);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      border-radius: 8px;
+    }
+
+    .outro-card h2 {
+      font-size: 1.6rem;
+      color: var(--point-yellow);
+      text-shadow: 2px 2px 0 var(--pure-black);
+    }
+
+    .outro-card p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #fff;
+      word-break: keep-all;
+    }
+
+    .badge-icon {
+      font-size: 3.5rem;
+      animation: scaleBeat 1.5s infinite ease-in-out steps(4);
+    }
+
+    @keyframes scaleBeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.12); }
+    }
+
+    /* =========================================
+       유틸리티
+       ========================================= */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 화면 플래시 레이어 -->
+  <div id="flash-overlay" class="flash-screen"></div>
+
+  <!-- 날아가는 미니 썸네일 -->
+  <div id="flying-thumb" class="flying-thumbnail"></div>
+
+  <!-- 종이비행기 요소 -->
+  <div id="paper-plane" class="paper-plane">✈️</div>
+
+  <div id="app-container">
+
+    <!-- =========================================
+         Screen 1: 메인 화면 (인트로)
+         ========================================= -->
+    <div id="view-intro" class="view active">
+      <div class="header-bar">
+        <span class="header-title">👾 마음온의 사이버 평화 수호대</span>
+        <span class="header-progress">수호 수련</span>
+      </div>
+
+      <div class="pixel-fairy-container">
+        <!-- 픽셀 아트 스타일의 마음온 SVG -->
+        <svg class="pixel-fairy-svg" viewBox="0 0 96 96">
+          <!-- 왼쪽 날개 -->
+          <g class="fairy-wing-l">
+            <rect x="12" y="36" width="12" height="12" fill="#50fa7b" stroke="#000" stroke-width="3"/>
+            <rect x="24" y="24" width="12" height="24" fill="#50fa7b" stroke="#000" stroke-width="3"/>
+          </g>
+          <!-- 오른쪽 날개 -->
+          <g class="fairy-wing-r">
+            <rect x="72" y="36" width="12" height="12" fill="#50fa7b" stroke="#000" stroke-width="3"/>
+            <rect x="60" y="24" width="12" height="24" fill="#50fa7b" stroke="#000" stroke-width="3"/>
+          </g>
+          <!-- 요정 안테나 하트 -->
+          <rect x="44" y="8" width="8" height="8" fill="#ff79c6" stroke="#000" stroke-width="3"/>
+          <rect x="44" y="16" width="8" height="12" fill="#ff79c6"/>
+          <!-- 몸통 -->
+          <rect x="32" y="28" width="32" height="32" fill="#ffb86c" stroke="#000" stroke-width="4"/>
+          <!-- 볼터치 및 눈 -->
+          <rect x="36" y="36" width="4" height="4" fill="#000"/>
+          <rect x="56" y="36" width="4" height="4" fill="#000"/>
+          <rect x="34" y="44" width="6" height="4" fill="#ff5555" opacity="0.8"/>
+          <rect x="56" y="44" width="6" height="4" fill="#ff5555" opacity="0.8"/>
+          <!-- 입 -->
+          <rect x="44" y="44" width="8" height="4" fill="#ff5555" stroke="#000" stroke-width="1"/>
+        </svg>
+      </div>
+
+      <div class="intro-dialog">
+        <p>"안녕? 나는 사이버 세상을 평화롭게 지키는 '마음온'이야!<br>장난으로 포장된 폭력의 진짜 모습을 확인하고, 위험에 처한 친구를 구하는 훈련을 시작해 볼까?"</p>
+      </div>
+
+      <button class="retro-btn" onclick="startTraining()">훈련 시작하기 ▶</button>
+    </div>
+
+    <!-- =========================================
+         Screen 2: [활동 1] 시선 교차경
+         ========================================= -->
+    <div id="view-act1" class="view">
+      <div class="header-bar">
+        <span class="header-title">🔍 활동 1: 마음온의 시선 교차경</span>
+        <span class="header-progress" id="act1-progress">에피소드 1 / 2</span>
+      </div>
+
+      <div class="act1-content">
+        <!-- 가상 스마트폰 (각진 픽셀폰) -->
+        <div class="phone-container" id="act1-phone">
+          <div class="phone-screen" id="phone-screen">
+            
+            <!-- 상단 시점 토글 스위치 -->
+            <div class="toggle-wrapper">
+              <div class="view-toggle" onclick="togglePerspective()">
+                <div class="toggle-slider"></div>
+                <div class="toggle-btn active" id="toggle-btn-perp">가해자 시점</div>
+                <div class="toggle-btn" id="toggle-btn-vic">피해자 시점</div>
+              </div>
+            </div>
+
+            <!-- 이모티콘 파티클 캔버스 -->
+            <div class="particle-canvas" id="particle-canvas"></div>
+
+            <!-- 픽셀 액정 깨짐 오버레이 -->
+            <div class="crack-overlay" id="crack-overlay">
+              <svg viewBox="0 0 260 380" preserveAspectRatio="none" style="width: 100%; height: 100%;">
+                <!-- 계단식 픽셀 깨짐 선 표현 -->
+                <path class="crack-line" d="M 130 0 L 130 80 L 100 80 L 100 150 L 150 150 L 150 220 L 70 220 L 70 290 L 170 290 L 170 380" />
+                <path class="crack-line" d="M 100 80 L 30 80 L 30 120" />
+                <path class="crack-line" d="M 150 150 L 220 150 L 220 120" />
+                <path class="crack-line" d="M 70 220 L 20 220 L 20 250" />
+                <path class="crack-line" d="M 170 290 L 240 290 L 240 320" />
+              </svg>
+            </div>
+
+            <!-- 시점별 컨텐츠 -->
+            <div class="phone-body">
+              <div class="content-card">
+                <img id="episode-media" src="https://via.placeholder.com/200x120?text=EP1+Photo" class="content-image" alt="에피소드 자료">
+                <span id="episode-situation-text" style="font-size: 0.75rem; font-weight: bold; color: #555;">단톡방에 도촬 사진 올리기</span>
+              </div>
+              <div class="bubble-talk" id="episode-bubble">
+                "ㅋㅋㅋ 이거 대박"
+              </div>
+            </div>
+
+            <!-- 드롭 영역 -->
+            <div style="width:100%; z-index:11;">
+              <div class="drop-label" id="drop-label">가해자가 느끼는 감정은?</div>
+              <div class="drop-zone" id="drop-zone">
+                <span class="drop-zone-placeholder" id="drop-placeholder">이름표를 드래그/클릭하세요</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 활동 진행 정보 및 감정 블록 -->
+        <div class="act1-dashboard">
+          <div class="dashboard-guide" id="act1-guide">
+            가해자와 피해자 시점 토글을 넘겨 양쪽의 마음 온도를 확인하고, 각각 알맞은 감정 이름표를 스마트폰 드롭 영역에 넣어주세요.
+          </div>
+
+          <div class="emotion-tray" id="emotion-tray">
+            <div class="emotion-block" draggable="true" data-emotion="재미" id="block-fun">재미</div>
+            <div class="emotion-block" draggable="true" data-emotion="장난" id="block-joke">장난</div>
+            <div class="emotion-block" draggable="true" data-emotion="수치심" id="block-shame">수치심</div>
+            <div class="emotion-block" draggable="true" data-emotion="두려움" id="block-fear">두려움</div>
+          </div>
+
+          <!-- Step 3: 공감 처방전 폼 -->
+          <div class="prescription-form" id="prescription-form">
+            <div class="dashboard-guide" style="border-left-color: var(--neon-pink);">
+              친구의 깨진 액정을 복구하기 위해 따뜻한 치유의 처방전(위로 한마디)을 전송해 주세요. (3글자 이상)
+            </div>
+            <textarea id="prescription-text" placeholder="상처받은 친구에게 힘이 되는 따뜻한 한마디를 적어주세요."></textarea>
+            <button class="retro-btn" style="background: var(--neon-pink);" onclick="submitPrescription()">위로 전송 💌</button>
+          </div>
+
+          <!-- 다음 단계 전환 버튼 -->
+          <button class="retro-btn" id="btn-act1-next" style="display: none;" onclick="goNextEpisode()">다음 에피소드로 ▶</button>
+          <button class="retro-btn" id="btn-goto-act2" style="display: none; background: var(--neon-mint);" onclick="goToActivity2()">활동 2: SOS 구조대로 이동 ▶</button>
+        </div>
+      </div>
+
+      <!-- 치유 애니메이션용 빛 발산 엘리먼트 -->
+      <div class="heal-glow" id="heal-glow"></div>
+    </div>
+
+    <!-- =========================================
+         Screen 3: [활동 2] SOS 구조대
+         ========================================= -->
+    <div id="view-act2" class="view">
+      <div class="header-bar">
+        <span class="header-title">🚨 활동 2: 마음온의 SOS 구조대</span>
+        <span class="header-progress" id="act2-progress">Step 1: 증거 수집</span>
+      </div>
+
+      <!-- 우측 상단 안전 폴더 -->
+      <div class="safe-folder-container">
+        <div class="safe-folder" id="safe-folder">
+          📁
+          <div class="safe-badge" id="safe-badge">0</div>
+        </div>
+        <span class="safe-label">안전 폴더</span>
+      </div>
+
+      <div class="act2-content">
+        <!-- 픽셀풍 SNS 화면 -->
+        <div class="sns-container" id="sns-container">
+          <div class="sns-header">
+            <span class="sns-logo">마음BOOK</span>
+          </div>
+          <div class="sns-body" id="sns-body">
+            <!-- 가해자 악플 피드 -->
+            <div class="sns-post cyber-bulling-post" id="post-target">
+              <div class="post-author-row">
+                <div class="author-info">
+                  <div class="author-avatar" style="background-image: url('https://via.placeholder.com/24x24?text=😈'); background-size: cover;"></div>
+                  <span class="author-name" id="bully-name">익명악플러</span>
+                </div>
+                <button class="btn-block-user" id="btn-block-bully" onclick="blockBully()">🚫 차단</button>
+              </div>
+              <p class="post-text">야 너 진짜 눈치 없다 ㅋㅋㅋ 그냥 학교 오지 마라</p>
+            </div>
+
+            <!-- 일반 정상 피드 -->
+            <div class="sns-post">
+              <div class="post-author-row">
+                <div class="author-info">
+                  <div class="author-avatar" style="background-image: url('https://via.placeholder.com/24x24?text=🐶'); background-size: cover;"></div>
+                  <span class="author-name">행복한초코</span>
+                </div>
+              </div>
+              <p class="post-text">오늘 하늘 정말 맑다! 친구들과 산책하고 싶은 날이야 ☁️</p>
+            </div>
+          </div>
+          <!-- 차단 완료 스탬프 -->
+          <div class="blocked-stamp" id="blocked-stamp">차단 완료</div>
+        </div>
+
+        <!-- 활동 설명 및 인터랙션 요소 -->
+        <div class="act1-dashboard">
+          <div class="dashboard-guide" id="act2-guide">
+            <strong>[Step 1: 증거 수집]</strong><br>친구를 향한 심각한 사이버폭력 악성 게시글을 발견했습니다. 대처를 위해 하단의 버튼을 눌러 화면을 안전하게 캡처해 증거를 보관하세요!
+          </div>
+
+          <!-- Step 1: 캡처 버튼 -->
+          <button class="retro-btn" id="btn-capture" onclick="captureEvidence()">📸 캡처하기</button>
+
+          <!-- Step 3: 위로 선택지 -->
+          <div class="choice-tray" id="choice-tray">
+            <button class="btn-choice" onclick="selectComfortMessage(false)">너가 잘못해서 욕먹는 거 아냐?</button>
+            <button class="btn-choice" onclick="selectComfortMessage(true)">네 잘못이 아니야! 우리가 도와줄게.</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================
+         Screen 4: 아웃트로 & 완료
+         ========================================= -->
+    <div id="view-outro" class="view">
+      <div class="outro-card">
+        <div class="badge-icon">🎖️</div>
+        <h2>수련 완료!</h2>
+        <p>축하합니다!<br><strong>"마음온의 사이버 평화 수호대"</strong>의 모든 대처 훈련 과정을 훌륭히 이수하여 사이버 평화 수호대원으로 정식 임명되었습니다.</p>
+        <p style="font-size: 0.85rem; color: var(--neon-blue);">장난 뒤에 숨겨진 피해자의 아픔을 알고, 올바른 대처 방법(캡처 ➔ 차단 ➔ 위로)을 항상 기억해 주세요!</p>
+      </div>
+
+      <button class="retro-btn" style="background: var(--neon-mint);" onclick="finishStage()">대시보드로 돌아가기</button>
+    </div>
+
+  </div>
+
+  <!-- 마음온 피드백 모달 팝업 -->
+  <div class="feedback-modal" id="feedback-modal">
+    <div class="modal-content">
+      <svg class="modal-char" viewBox="0 0 96 96" style="display:block; margin:0 auto 10px;">
+        <rect x="28" y="28" width="40" height="40" fill="#ffb86c" stroke="#000" stroke-width="4"/>
+        <rect x="36" y="38" width="4" height="4" fill="#000"/>
+        <rect x="56" y="38" width="4" height="4" fill="#000"/>
+        <rect x="44" y="50" width="8" height="4" fill="#ff5555" stroke="#000" stroke-width="1"/>
+      </svg>
+      <div class="modal-title">마음온의 조언</div>
+      <div class="modal-body" id="modal-text">피드백 내용</div>
+      <button class="retro-btn" style="padding: 6px 16px; font-size: 1rem;" onclick="closeModal()">확인</button>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // 에피소드 데이터 정의
+    // ==========================================
+    const episodes = [
+      {
+        id: 1,
+        situation: "친구의 엽기 표정 도촬 사진을 단톡방에 올린 상황 (사이버 영상 유포)",
+        media: "https://via.placeholder.com/200x120?text=Funny+Photo",
+        perpText: "ㅋㅋㅋ 이거 대박",
+        vicText: "다들 나를 비웃고 있어..."
+      },
+      {
+        id: 2,
+        situation: "단톡방에서 한 명만 남겨두고 다 같이 방을 나가는 상황 (사이버 따돌림/방폭)",
+        media: "https://via.placeholder.com/200x120?text=Empty+Room",
+        perpText: "방폭 꿀잼ㅋㅋ",
+        vicText: "나만 두고 다 떠났어..."
+      }
+    ];
+
+    let currentEpIndex = 0;
+    let perspective = 'perp'; // 'perp' 또는 'vic'
+    let perspectiveVisited = { perp: false, vic: false };
+
+    // 정답 배치 상태
+    let answersState = {
+      perp: [], // 재미, 장난
+      vic: []   // 수치심, 두려움
+    };
+
+    // 선택된 감정 블록
+    let selectedBlock = null;
+
+    // 파티클 생성 인터벌
+    let particleInterval = null;
+
+    // ==========================================
+    // 뷰 제어 기능
+    // ==========================================
+    function switchView(viewId) {
+      document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+      const activeView = document.getElementById(viewId);
+      activeView.classList.add('active');
+      
+      if (viewId === 'view-intro') {
+        document.body.style.backgroundColor = "var(--dark-gray)";
+      } else if (viewId === 'view-act1') {
+        initEpisode();
+      } else if (viewId === 'view-act2') {
+        initActivity2();
+      }
+    }
+
+    // ==========================================
+    // Screen 1: 인트로
+    // ==========================================
+    function startTraining() {
+      switchView('view-act1');
+    }
+
+    // ==========================================
+    // Screen 2: 활동 1 - 마음온의 시선 교차경
+    // ==========================================
+    function initEpisode() {
+      const ep = episodes[currentEpIndex];
+      perspective = 'perp';
+      perspectiveVisited = { perp: true, vic: false };
+      answersState = { perp: [], vic: [] };
+      selectedBlock = null;
+
+      // 타이틀 및 프로그레스 갱신
+      document.getElementById('act1-progress').innerText = `에피소드 ${currentEpIndex + 1} / 2`;
+      document.getElementById('episode-situation-text').innerText = ep.situation;
+      
+      // 스마트폰 화면 설정
+      const screen = document.getElementById('phone-screen');
+      screen.className = "phone-screen";
+      screen.style.backgroundColor = "#fed7aa"; // 가해자 시점 밝은 오렌지빛
+      screen.style.color = "#000";
+      
+      // 토글 리셋
+      document.getElementById('toggle-btn-perp').classList.add('active');
+      document.getElementById('toggle-btn-vic').classList.remove('active');
+
+      // 가해자 시점 미디어 및 대사 로드
+      document.getElementById('episode-media').src = ep.media;
+      document.getElementById('episode-media').style.filter = 'none';
+      document.getElementById('episode-bubble').innerText = ep.perpText;
+      document.getElementById('episode-bubble').style.backgroundColor = "var(--soft-yellow)";
+
+      // 크랙 오버레이 리셋
+      document.getElementById('crack-overlay').classList.remove('cracked');
+
+      // 트레이의 감정블록 원상복구
+      resetEmotionTray();
+
+      // 드롭존 라벨 및 플레이스홀더 설정
+      updateDropZoneUI();
+
+      // 안내 문구
+      document.getElementById('act1-guide').innerHTML = `상단 토글 스위치로 '가해자 시점'과 '피해자 시점'을 번갈아 확인하고, 각각 알맞은 감정 블록을 아래 드롭 영역에 매칭해 주세요.`;
+      
+      // 기타 제어 콤포넌트 가리기
+      document.getElementById('prescription-form').style.display = 'none';
+      document.getElementById('btn-act1-next').style.display = 'none';
+      document.getElementById('btn-goto-act2').style.display = 'none';
+
+      // 파티클 생성 시작
+      startParticles('perp');
+    }
+
+    function togglePerspective() {
+      const screen = document.getElementById('phone-screen');
+      const ep = episodes[currentEpIndex];
+
+      if (perspective === 'perp') {
+        // 피해자 시점으로 전환
+        perspective = 'vic';
+        perspectiveVisited.vic = true;
+        
+        screen.classList.add('victim-mode');
+        screen.classList.add('victim-mode-active');
+        screen.style.backgroundColor = "#2c3e50"; // 어두운 다크블루
+        screen.style.color = "#fff";
+
+        document.getElementById('toggle-btn-perp').classList.remove('active');
+        document.getElementById('toggle-btn-vic').classList.add('active');
+
+        document.getElementById('episode-media').style.filter = 'grayscale(80%)';
+        document.getElementById('episode-bubble').innerText = ep.vicText;
+        document.getElementById('episode-bubble').style.backgroundColor = "var(--neon-blue)";
+
+        // 크랙 액정 깨짐 애니메이션 트리거
+        document.getElementById('crack-overlay').classList.add('cracked');
+
+        // 파티클 전환
+        startParticles('vic');
+      } else {
+        // 가해자 시점으로 전환
+        perspective = 'perp';
+        perspectiveVisited.perp = true;
+
+        screen.classList.remove('victim-mode');
+        screen.classList.remove('victim-mode-active');
+        screen.style.backgroundColor = "#fed7aa";
+        screen.style.color = "#000";
+
+        document.getElementById('toggle-btn-perp').classList.add('active');
+        document.getElementById('toggle-btn-vic').classList.remove('active');
+
+        document.getElementById('episode-media').style.filter = 'none';
+        document.getElementById('episode-bubble').innerText = ep.perpText;
+        document.getElementById('episode-bubble').style.backgroundColor = "var(--soft-yellow)";
+
+        // 크랙 애니메이션 끄기
+        document.getElementById('crack-overlay').classList.remove('cracked');
+
+        // 파티클 전환
+        startParticles('perp');
+      }
+
+      // 드롭존 및 가이드 정보 업데이트
+      updateDropZoneUI();
+      checkAllPerspectivesVisited();
+    }
+
+    function checkAllPerspectivesVisited() {
+      if (perspectiveVisited.perp && perspectiveVisited.vic) {
+        document.getElementById('act1-guide').innerHTML = `💡 <strong>두 시점을 모두 확인했습니다!</strong><br>이제 알맞은 감정 블록들을 위 스마트폰 아래 드롭 영역에 매칭시켜 주세요. (드래그 또는 클릭 이동)`;
+      }
+    }
+
+    function resetEmotionTray() {
+      const tray = document.getElementById('emotion-tray');
+      tray.style.display = 'flex';
+      tray.innerHTML = '';
+      
+      const emotions = ['재미', '장난', '수치심', '두려움'];
+      emotions.forEach(emo => {
+        const block = document.createElement('div');
+        block.className = 'emotion-block';
+        block.draggable = true;
+        block.innerText = emo;
+        block.dataset.emotion = emo;
+        block.id = `block-${emo}`;
+        
+        block.addEventListener('dragstart', handleDragStart);
+        block.addEventListener('dragend', handleDragEnd);
+        block.addEventListener('click', handleBlockClick);
+        
+        tray.appendChild(block);
+      });
+    }
+
+    function updateDropZoneUI() {
+      const zone = document.getElementById('drop-zone');
+      const placeholder = document.getElementById('drop-placeholder');
+      const label = document.getElementById('drop-label');
+
+      if (perspective === 'perp') {
+        label.innerText = "가해자가 느끼는 감정은?";
+      } else {
+        label.innerText = "피해자가 겪는 감정은?";
+      }
+
+      zone.querySelectorAll('.emotion-block').forEach(el => el.remove());
+
+      const currentPlaced = answersState[perspective];
+      if (currentPlaced.length > 0) {
+        placeholder.style.display = 'none';
+        currentPlaced.forEach(emo => {
+          const b = document.createElement('div');
+          b.className = 'emotion-block correct-placed';
+          b.innerText = emo;
+          zone.appendChild(b);
+        });
+      } else {
+        placeholder.style.display = 'block';
+      }
+    }
+
+    let draggedItem = null;
+
+    function handleDragStart(e) {
+      draggedItem = this;
+      this.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', this.dataset.emotion);
+    }
+
+    function handleDragEnd() {
+      this.classList.remove('dragging');
+    }
+
+    const dropZone = document.getElementById('drop-zone');
+    dropZone.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      this.classList.add('drag-over');
+    });
+
+    dropZone.addEventListener('dragleave', function() {
+      this.classList.remove('drag-over');
+    });
+
+    dropZone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      this.classList.remove('drag-over');
+      const emotion = e.dataTransfer.getData('text/plain');
+      processEmotionMatching(emotion);
+    });
+
+    function handleBlockClick() {
+      if (this.classList.contains('correct-placed')) return;
+
+      if (!perspectiveVisited.perp || !perspectiveVisited.vic) {
+        showFeedbackModal("상단 토글을 클릭해 '가해자 시점'과 '피해자 시점'을 모두 확인한 후에 감정을 매칭할 수 있습니다!");
+        return;
+      }
+
+      document.querySelectorAll('.emotion-block').forEach(b => b.classList.remove('selected'));
+      selectedBlock = this;
+      this.classList.add('selected');
+
+      showToastNotification("스마트폰 아래의 '이름표 드롭 상자'를 클릭해 감정 카드를 배치하세요!");
+    }
+
+    dropZone.addEventListener('click', function() {
+      if (selectedBlock) {
+        processEmotionMatching(selectedBlock.dataset.emotion);
+        selectedBlock.classList.remove('selected');
+        selectedBlock = null;
+      }
+    });
+
+    function processEmotionMatching(emotion) {
+      if (!perspectiveVisited.perp || !perspectiveVisited.vic) {
+        showFeedbackModal("상단 토글을 클릭해 '가해자 시점'과 '피해자 시점'을 모두 확인한 후에 감정을 매칭할 수 있습니다!");
+        return;
+      }
+
+      const correctSet = {
+        perp: ['재미', '장난'],
+        vic: ['수치심', '두려움']
+      };
+
+      if (correctSet[perspective].includes(emotion)) {
+        if (!answersState[perspective].includes(emotion)) {
+          answersState[perspective].push(emotion);
+          
+          const origBlock = document.getElementById(`block-${emotion}`);
+          if (origBlock) origBlock.style.display = 'none';
+
+          updateDropZoneUI();
+          checkActivity1Step2Complete();
+        }
+      } else {
+        const phone = document.getElementById('act1-phone');
+        phone.classList.remove('shake');
+        void phone.offsetWidth;
+        phone.classList.add('shake');
+        
+        let text = "";
+        if (perspective === 'perp') {
+          text = `[${emotion}]은 가해자에게 해당하지 않아요. 가해자는 단지 '재미'와 '장난'으로 여기며 가볍게 행동하고 있습니다.`;
+        } else {
+          text = `[${emotion}]은 피해자의 아픔이 아닙니다. 상처받은 피해 친구의 마음에 공감하여 '수치심'과 '두려움'을 선택해 보세요.`;
+        }
+        showFeedbackModal(text);
+      }
+    }
+
+    function checkActivity1Step2Complete() {
+      if (answersState.perp.length === 2 && answersState.vic.length === 2) {
+        showFeedbackModal("<strong>\"가해자에겐 단순한 장난이지만, 피해자에겐 무서운 폭력이야!\"</strong><br><br>정답을 모두 매칭했습니다! 이제 피해 친구를 위로하는 따뜻한 메시지 처방전을 전송합시다.", () => {
+          startPrescriptionStep();
+        });
+      }
+    }
+
+    function startPrescriptionStep() {
+      if (perspective !== 'vic') {
+        togglePerspective();
+      }
+
+      document.getElementById('emotion-tray').style.display = 'none';
+      document.getElementById('prescription-form').style.display = 'flex';
+      document.getElementById('prescription-text').value = '';
+      document.getElementById('act1-guide').innerHTML = `<strong>[Step 3: 공감 처방전 작성]</strong><br>피해자 시점의 깨진 화면 위에서, 친구의 아픔을 보듬는 위로의 메시지를 작성하여 전송하세요.`;
+    }
+
+    function submitPrescription() {
+      const text = document.getElementById('prescription-text').value.trim();
+      
+      if (text.length < 3) {
+        showFeedbackModal("상처받은 친구를 진심으로 위로하는 메시지를 3자 이상 정성껏 지어 주세요!");
+        return;
+      }
+
+      const glow = document.getElementById('heal-glow');
+      glow.classList.add('active');
+
+      setTimeout(() => {
+        document.getElementById('crack-overlay').classList.remove('cracked');
+        
+        const screen = document.getElementById('phone-screen');
+        screen.style.backgroundColor = "#ffeaa7"; // 따뜻한 연노랑
+        screen.style.color = "#000";
+        
+        document.getElementById('episode-media').src = "https://via.placeholder.com/200x120/fff9db/000000?text=Healed+Heart";
+        document.getElementById('episode-media').style.filter = 'none';
+
+        document.getElementById('episode-bubble').innerText = "😊 따뜻한 위로 고마워! 나도 이제 다시 힘을 내볼게.";
+        document.getElementById('episode-bubble').style.backgroundColor = "var(--soft-yellow)";
+
+        document.getElementById('prescription-form').style.display = 'none';
+        glow.classList.remove('active');
+
+        if (currentEpIndex === 0) {
+          document.getElementById('btn-act1-next').style.display = 'block';
+        } else {
+          document.getElementById('btn-goto-act2').style.display = 'block';
+        }
+
+        showToastNotification("💖 마음웹에 따뜻한 치유 에너지가 퍼져나갑니다.");
+      }, 1200);
+    }
+
+    function goNextEpisode() {
+      currentEpIndex = 1;
+      initEpisode();
+    }
+
+    function goToActivity2() {
+      stopParticles();
+      switchView('view-act2');
+    }
+
+    // ==========================================
+    // Screen 3: 활동 2 - 마음온의 SOS 구조대
+    // ==========================================
+    let act2Step = 1;
+    let safeCount = 0;
+    
+    function initActivity2() {
+      act2Step = 1;
+      safeCount = 0;
+
+      document.getElementById('act2-progress').innerText = "Step 1: 증거 수집";
+      document.getElementById('safe-badge').innerText = safeCount;
+      document.getElementById('blocked-stamp').style.display = 'none';
+      
+      const post = document.getElementById('post-target');
+      post.style.filter = 'none';
+      post.style.opacity = '1';
+      document.getElementById('btn-block-bully').style.display = 'none';
+      
+      document.getElementById('btn-capture').style.display = 'block';
+      document.getElementById('choice-tray').style.display = 'none';
+
+      document.getElementById('act2-guide').innerHTML = `
+        <strong>[Step 1: 증거 수집]</strong><br>
+        사이버폭력 악성 글을 목격했습니다.<br>
+        하단의 <strong>[📸 캡처하기]</strong>를 클릭해 안전 폴더에 증거 화면을 확보하세요!
+      `;
+    }
+
+    function playCameraShutterSound() {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const bufferSize = ctx.sampleRate * 0.12; 
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'highpass';
+        filter.frequency.value = 1200;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.8, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.09);
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        noise.start();
+      } catch (e) {}
+    }
+
+    function captureEvidence() {
+      if (act2Step !== 1) return;
+
+      playCameraShutterSound();
+
+      const flash = document.getElementById('flash-overlay');
+      flash.classList.add('active');
+      setTimeout(() => flash.classList.remove('active'), 250);
+
+      const targetRect = document.getElementById('sns-container').getBoundingClientRect();
+      const folderRect = document.getElementById('safe-folder').getBoundingClientRect();
+      
+      const thumb = document.getElementById('flying-thumb');
+      thumb.style.display = 'block';
+      thumb.style.left = `${targetRect.left + 40}px`;
+      thumb.style.top = `${targetRect.top + 40}px`;
+      
+      thumb.style.transition = 'none';
+      void thumb.offsetWidth;
+
+      thumb.style.transition = 'all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      thumb.style.left = `${folderRect.left}px`;
+      thumb.style.top = `${folderRect.top}px`;
+      thumb.style.transform = 'scale(0.1) rotate(30deg)';
+      thumb.style.opacity = '0';
+
+      setTimeout(() => {
+        thumb.style.display = 'none';
+        thumb.style.transform = 'none';
+        thumb.style.opacity = '1';
+
+        safeCount = 1;
+        document.getElementById('safe-badge').innerText = safeCount;
+        
+        const folder = document.getElementById('safe-folder');
+        folder.classList.add('bounce');
+        setTimeout(() => folder.classList.remove('bounce'), 400);
+
+        goAct2Step2();
+      }, 700);
+    }
+
+    function goAct2Step2() {
+      act2Step = 2;
+      document.getElementById('act2-progress').innerText = "Step 2: 가해자 차단";
+      document.getElementById('btn-capture').style.display = 'none';
+      document.getElementById('btn-block-bully').style.display = 'block';
+
+      document.getElementById('act2-guide').innerHTML = `
+        <strong>[Step 2: 가해자 차단]</strong><br>
+        증거가 수집되었습니다. 가해자와 무리하게 말다툼을 벌이지 마세요!<br>
+        글쓴이 프로필 옆의 <strong>[🚫 차단]</strong>을 클릭하여 불필요한 감정 소모를 예방하세요.
+      `;
+    }
+
+    function blockBully() {
+      if (act2Step !== 2) return;
+
+      const post = document.getElementById('post-target');
+      post.style.filter = 'blur(6px)';
+      post.style.opacity = '0.4';
+
+      document.getElementById('blocked-stamp').style.display = 'block';
+      document.getElementById('btn-block-bully').style.display = 'none';
+
+      playBlockStampSound();
+
+      setTimeout(() => {
+        goAct2Step3();
+      }, 950);
+    }
+
+    function playBlockStampSound() {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(130, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(35, ctx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.7, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.12);
+      } catch(e) {}
+    }
+
+    function goAct2Step3() {
+      act2Step = 3;
+      document.getElementById('act2-progress').innerText = "Step 3: 피해자 위로";
+      
+      const snsContainer = document.getElementById('sns-container');
+      snsContainer.innerHTML = `
+        <div class="sns-header">
+          <span class="sns-logo">💬 위로 다이렉트 톡</span>
+        </div>
+        <div class="sns-body" style="background:#1a1c23;">
+          <div style="display:flex; justify-content:center; margin-bottom:8px;">
+            <span style="font-size:0.75rem; background:#000; padding:2px 8px; border-radius:4px; color:#fff; border:1px solid #444;">보안 톡방 활성화</span>
+          </div>
+          <div style="display:flex; gap:8px; align-items:flex-start; margin-bottom:10px;">
+            <div class="author-avatar" style="background-image: url('https://via.placeholder.com/24x24?text=😢'); background-size: cover; flex-shrink:0;"></div>
+            <div>
+              <div style="font-size:0.7rem; color:#aaa; margin-bottom:2px;">피해 친구</div>
+              <div class="bubble-talk" style="margin:0; background:#fff; color:#000;">
+                "나 때문에 다들 화난 걸까... 단톡방에서 왜 날 따돌린 걸까..."
+              </div>
+            </div>
+          </div>
+          <div id="comfort-reply-placeholder" style="display:none; flex-direction:column; align-items:flex-end; gap:4px; margin-top:10px;">
+            <div style="font-size:0.7rem; color:#aaa;">나의 전송</div>
+            <div class="bubble-talk" style="margin:0; background:var(--point-yellow); border-radius:8px 0 8px 8px; color:#000;">
+              "네 잘못이 아니야! 우리가 도와줄게."
+            </div>
+            <div style="display:flex; gap:8px; align-items:flex-start; margin-top:10px; width:100%;">
+              <div class="author-avatar" style="background-image: url('https://via.placeholder.com/24x24?text=😊'); background-size: cover; flex-shrink:0;"></div>
+              <div>
+                <div style="font-size:0.7rem; color:#aaa; margin-bottom:2px;">피해 친구</div>
+                <div class="bubble-talk" style="margin:0; background:#fff; color:#000;">
+                  "그 한마디에 숨이 좀 트이는 것 같아... 정말 고마워."
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('choice-tray').style.display = 'flex';
+
+      document.getElementById('act2-guide').innerHTML = `
+        <strong>[Step 3: 피해자 위로]</strong><br>
+        낙심해 있는 친구에게 비방글이 아닌, 따뜻한 마음의 격려 메시지를 직접 톡으로 전송하세요.<br>
+        가장 큰 힘이 되는 올바른 위로의 말을 골라보세요.
+      `;
+    }
+
+    function selectComfortMessage(isCorrect) {
+      if (act2Step !== 3) return;
+
+      const choices = document.querySelectorAll('.btn-choice');
+
+      if (isCorrect) {
+        choices[1].classList.add('correct');
+        choices[0].disabled = true;
+        choices[1].disabled = true;
+
+        triggerPaperPlaneAnimation(() => {
+          document.getElementById('comfort-reply-placeholder').style.display = 'flex';
+          showToastNotification("💡 상처받은 피해 친구를 따뜻하게 안심시켰습니다!");
+          setTimeout(() => {
+            switchView('view-outro');
+          }, 1800);
+        });
+      } else {
+        const sns = document.getElementById('sns-container');
+        sns.classList.remove('shake');
+        void sns.offsetWidth;
+        sns.classList.add('shake');
+
+        choices[0].classList.add('incorrect');
+        showFeedbackModal("상처 입은 친구에게 책임을 돌리는 말은 2차 괴롭힘이 될 수 있어요! 친구에게 '진정한 격려'가 될 수 있는 옳은 말을 골라보세요.");
+        
+        setTimeout(() => {
+          choices[0].classList.remove('incorrect');
+        }, 1200);
+      }
+    }
+
+    function triggerPaperPlaneAnimation(callback) {
+      const plane = document.getElementById('paper-plane');
+      const choiceTray = document.getElementById('choice-tray');
+      const snsContainer = document.getElementById('sns-container');
+      
+      const trayRect = choiceTray.getBoundingClientRect();
+      const snsRect = snsContainer.getBoundingClientRect();
+
+      plane.style.display = 'block';
+      plane.style.left = `${trayRect.left + trayRect.width / 2}px`;
+      plane.style.top = `${trayRect.top}px`;
+
+      plane.style.animation = 'none';
+      void plane.offsetWidth;
+
+      plane.style.animation = 'flyPlane 1.0s forwards ease-in-out';
+
+      setTimeout(() => {
+        plane.style.display = 'none';
+        if (callback) callback();
+      }, 1000);
+    }
+
+    // ==========================================
+    // 에모지 파티클 애니메이션 엔진
+    // ==========================================
+    function startParticles(type) {
+      stopParticles();
+
+      const canvas = document.getElementById('particle-canvas');
+      const emojis = type === 'perp' 
+        ? ['😂', '😆', '😻', '🤣'] 
+        : ['😢', '💧', '🌧️', '💔'];
+
+      particleInterval = setInterval(() => {
+        if (!canvas) return;
+        const p = document.createElement('div');
+        p.className = 'particle-emoji';
+        p.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        
+        const maxX = canvas.clientWidth - 20;
+        p.style.left = `${Math.floor(Math.random() * maxX)}px`;
+        p.style.animationDuration = `${1.6 + Math.random() * 0.8}s`;
+        
+        canvas.appendChild(p);
+        setTimeout(() => p.remove(), 2500);
+      }, 500);
+    }
+
+    function stopParticles() {
+      if (particleInterval) {
+        clearInterval(particleInterval);
+        particleInterval = null;
+      }
+      const canvas = document.getElementById('particle-canvas');
+      if (canvas) canvas.innerHTML = '';
+    }
+
+    // ==========================================
+    // 모달 및 토스트 알림 헬퍼
+    // ==========================================
+    let modalCallback = null;
+
+    function showFeedbackModal(text, callback = null) {
+      document.getElementById('modal-text').innerHTML = text;
+      document.getElementById('feedback-modal').style.display = 'flex';
+      modalCallback = callback;
+    }
+
+    function closeModal() {
+      document.getElementById('feedback-modal').style.display = 'none';
+      if (modalCallback) {
+        modalCallback();
+        modalCallback = null;
+      }
+    }
+
+    function showToastNotification(message) {
+      const toast = document.createElement('div');
+      toast.style.position = 'absolute';
+      toast.style.bottom = '20px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%) translateY(10px)';
+      toast.style.background = 'var(--pure-black)';
+      toast.style.color = 'var(--point-yellow)';
+      toast.style.border = '3px solid var(--point-yellow)';
+      toast.style.padding = '8px 16px';
+      toast.style.fontSize = '0.85rem';
+      toast.style.fontWeight = 'bold';
+      toast.style.zIndex = '999';
+      toast.style.transition = 'all 0.25s ease';
+      toast.style.opacity = '0';
+      toast.style.pointerEvents = 'none';
+      
+      document.body.appendChild(toast);
+      toast.innerText = message;
+      
+      void toast.offsetWidth;
+      toast.style.transform = 'translateX(-50%) translateY(0)';
+      toast.style.opacity = '1';
+
+      setTimeout(() => {
+        toast.style.transform = 'translateX(-50%) translateY(-10px)';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 250);
+      }, 2000);
+    }
+
+    // ==========================================
+    // 최종 대시보드 복귀 (연동)
+    // ==========================================
+    function finishStage() {
+      let inIframe = false;
+      try {
+        inIframe = (window.self !== window.top);
+      } catch (e) {
+        inIframe = true; 
+      }
+
+      if (inIframe) {
+        try {
+          window.parent.postMessage({ type: 'TASK_COMPLETE', category: '사이버폭력 인식' }, '*');
+        } catch (err) {
+          console.error("postMessage failed:", err);
+        }
+      } else {
+        alert("사이버 평화 수호대 수련이 모두 끝났습니다! (대시보드로 정상 연동을 완료합니다.)");
+      }
+    }
+
+    // 초기 실행
+    switchView('view-intro');
+  </script>
+</body>
+</html>
