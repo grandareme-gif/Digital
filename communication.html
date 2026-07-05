@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -126,7 +126,7 @@
     .view {
       display: none;
       width: 100%;
-      height: calc(100% - 96px); /* 상단바(52px) + 하단바(44px) 공제 */
+      height: calc(100% - 114px); /* 상단바(52px) + 하단바(62px) 공제 */
       position: absolute;
       top: 52px;
       left: 0;
@@ -148,13 +148,13 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 44px;
+      height: 62px;
       background-color: #1e293b;
       border-top: var(--pixel-thick) solid var(--pure-black);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 20px;
+      padding: 0 30px;
       z-index: 10;
     }
 
@@ -372,8 +372,8 @@
     }
 
     .answer-card {
-      background-color: #ffffff !important; /* 밝은 카드 배경 */
-      color: #000000 !important; /* 글씨는 선명하게 검은색 */
+      background-color: #334155 !important; /* 어두운 카드 배경 */
+      color: #ffffff !important; /* 글씨는 무조건 흰색 */
       border: 3px solid #000000 !important;
       border-radius: 0 !important;
       padding: 10px;
@@ -381,12 +381,8 @@
       font-size: 0.85rem !important; /* 글씨 크기 축소 */
       text-align: left;
       box-shadow: 3px 3px 0 #000000;
-      transition: transform 0.1s, background-color 0.2s;
+      transition: transform 0.1s;
       font-weight: bold;
-    }
-
-    .answer-card:hover:not(.disabled) {
-      background-color: #e0f2fe !important; /* 마우스 오버 시 연한 하늘색 피드백 */
     }
 
     .answer-card:active:not(.disabled) {
@@ -543,7 +539,7 @@
       line-height: 1.3;
     }
 
-    /* 마음이의 속상한 이야기 스토리박스 */
+    /* 지은이의 속상한 이야기 스토리박스 */
     .story-box {
       background-color: #fff;
       border: var(--pixel-thick) solid var(--pure-black);
@@ -621,12 +617,6 @@
     }
 
     /* 입력 텍스트 영역 */
-    /* 입력창 글자색 강제 검은색 고정 (글씨 가려짐 버그 방지) */
-    textarea, input[type="text"], .cert-input {
-      color: #000000 !important;
-      background-color: #ffffff !important;
-    }
-
     #chat-input-area {
       width: 100%;
       display: flex;
@@ -646,6 +636,7 @@
       box-shadow: 4px 4px 0 var(--pure-black);
       background-color: #fff;
       transition: border-color 0.3s;
+      color: #000000;
     }
 
     #chat-textarea:focus {
@@ -984,10 +975,6 @@
       from { transform: rotate(0deg); }
       to { transform: rotate(-12deg); }
     }
-    @keyframes bounceFairy {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
-    }
     .intro-dialog {
       background-color: rgba(0, 0, 0, 0.85);
       border: var(--pixel-thick) solid var(--text-main);
@@ -1094,8 +1081,8 @@
     }
 
     .std-intro-char-wrapper-small {
-      width: 195px;
-      height: 195px;
+      width: 290px;
+      height: 290px;
       flex-shrink: 0;
       display: flex;
       justify-content: center;
@@ -1104,8 +1091,8 @@
 
     @media (max-width: 768px) {
       .std-intro-char-wrapper-small {
-        width: 135px;
-        height: 135px;
+        width: 200px;
+        height: 200px;
       }
     }
 
@@ -1119,21 +1106,21 @@
     .std-intro-unified-box {
       background-color: #1e293b;
       border: 4px solid #000000;
-      padding: 20px;
+      padding: 30px;
       width: 100%;
-      max-width: 520px;
-      min-height: 220px;
-      box-shadow: 4px 4px 0 #000000;
+      max-width: 780px;
+      min-height: 330px;
+      box-shadow: 6px 6px 0 #000000;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 16px;
+      gap: 24px;
     }
 
     .std-intro-dialog-inner {
       color: #f1f5f9;
-      font-size: 0.975rem;
+      font-size: 1.45rem;
       line-height: 1.6;
       text-align: left;
       word-break: keep-all;
@@ -1148,29 +1135,29 @@
     .std-intro-activities-inner {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 15px;
     }
 
     .std-activity-row {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 15px;
       text-align: left;
     }
 
     .std-activity-badge {
       background-color: #eab308;
       color: #000000;
-      font-size: 0.775rem;
-      padding: 2px 6px;
+      font-size: 1.15rem;
+      padding: 3px 9px;
       font-weight: 800;
       flex-shrink: 0;
-      border: 1px solid #000;
+      border: 2px solid #000;
     }
 
     .std-activity-text {
       color: #ffffff;
-      font-size: 0.875rem;
+      font-size: 1.3rem;
       font-weight: bold;
     }
 
@@ -1234,22 +1221,28 @@
     /* 마음온 가이드 배너 공통 스타일 및 레이아웃 조율 */
     .std-guide-banner {
       background-color: #312e81 !important; /* 약간 더 밝아진 산뜻한 레트로 인디고 블루 */
-      border: 3px solid #000000 !important;
-      box-shadow: 2px 2px 0px #000000 !important;
+      border: 4px solid #000000 !important;
+      box-shadow: 3px 3px 0px #000000 !important;
       border-radius: 0 !important;
       display: flex !important;
       align-items: center !important;
-      gap: 6px !important;
-      padding: 6px 12px !important;
+      gap: 9px !important;
+      padding: 9px 18px !important;
       width: 100% !important;
-      height: 48px !important;
+      height: 72px !important;
       flex-shrink: 0 !important;
       margin-top: -12px !important; /* 상단 헤더바 밀착 */
       position: relative !important;
     }
+    .std-guide-banner span:first-of-type {
+      font-size: 14.25px !important;
+    }
+    .std-guide-banner span:last-of-type {
+      font-size: 16.5px !important;
+    }
     
     #stage1-layout, #simulator-container {
-      height: calc(100% - 56px) !important;
+      height: calc(100% - 80px) !important;
       margin-top: 8px !important;
       display: flex !important;
     }
@@ -1315,7 +1308,7 @@
             </div>
             <div class="std-activity-row">
               <span class="std-activity-badge">활동 2</span>
-              <span class="std-activity-text">상처받은 친구를 지키는 따뜻한 위로 대화 나누기</span>
+              <span class="std-activity-text">오해를 막는 따뜻한 대화 온도 맞추기</span>
             </div>
           </div>
         </div>
@@ -1351,13 +1344,13 @@
       
       <!-- 마음온 AI 가이드 배너 (1단계) -->
       <div class="std-guide-banner mb-2">
-        <!-- 정밀 인라인 크기(38px) 픽스 및 돌출값 최적화 -->
-        <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
-          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+        <!-- 정밀 인라인 크기(57px) 픽스 및 돌출값 최적화 -->
+        <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
+          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px; height: 57px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
         </div>
-        <div class="flex-grow flex flex-col justify-center" style="margin-left: 6px;">
-          <span class="text-[10.5px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
-          <span class="text-[12px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;">
+        <div class="flex-grow flex flex-col justify-center" style="margin-left: 9px;">
+          <span class="text-[14.25px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
+          <span class="text-[16.5px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;">
             "화면 너머 친구의 댓글 속 진짜 속마음은 어떨까요? 친구의 기분을 분석하고 그렇게 판단한 이유를 적어주세요!"
           </span>
         </div>
@@ -1421,13 +1414,13 @@
       
       <!-- 마음온 AI 가이드 배너 (2단계) -->
       <div class="std-guide-banner mb-2">
-        <!-- 정밀 인라인 크기(38px) 픽스 및 돌출값 최적화 -->
-        <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
-          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+        <!-- 정밀 인라인 크기(57px) 픽스 및 돌출값 최적화 -->
+        <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
+          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px; height: 57px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
         </div>
-        <div class="flex-grow flex flex-col justify-center" style="margin-left: 6px;">
-          <span class="text-[10.5px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
-          <span class="text-[12px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;">
+        <div class="flex-grow flex flex-col justify-center" style="margin-left: 9px;">
+          <span class="text-[14.25px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
+          <span class="text-[16.5px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;">
             "온라인 악플로 상처받은 지은이의 마음 온도를 100℃로 올려줄 따뜻한 위로의 대화를 조합해 보세요!"
           </span>
         </div>
@@ -1441,7 +1434,7 @@
             <!-- 지은이의 속상한 이야기 스토리 박스 -->
             <div class="story-box" style="flex: 1; margin: 0; display: flex; flex-direction: column; justify-content: center; gap: 6px;">
               <strong>📢 지은이의 속상한 이야기:</strong>
-              <p style="font-size: 1rem; line-height: 1.45; word-break: keep-all; margin: 0;">어제 학급 과제게시판에 열심히 연습한 리코더 연주 영상을 자랑스럽게 올렸는데, 어떤 친구가 <span class="text-red-600 font-black">"진짜 못 분다, 시끄럽기만 하네ㅋㅋ 안 들은 귀 삽니다~"</span>라는 차가운 악플을 달아서 큰 충격을 받고 속상해하고 있어요. 😭</p>
+              <p style="font-size: 1rem; line-height: 1.45; word-break: keep-all; margin: 0;">어제 학급 과제 게시판에 열심히 연습한 리코더 연주 영상을 자랑스럽게 올렸는데, 어떤 친구가 <span style="font-family: 'DungGeunMo', monospace; color: #ef4444; font-weight: bold;">"진짜 못분다, 시끄럽기만 하네ㅋㅋ 안 들은 귀 삽니다~"</span> 라는 악플을 달아서 큰 충격을 받고 속상해하고 있어요. 😭</p>
             </div>
 
             <!-- 캐릭터 카드 (이야기창 오른쪽 배치) -->
@@ -1456,9 +1449,9 @@
 
           <!-- 입력박스 -->
           <div id="chat-input-area" style="margin-top: 5px;">
-            <label style="font-size: 1.15rem; font-weight: bold; margin-bottom: 5px; color: #facc15 !important;">속상해하는 지은이에게 위로와 격려의 말을 건네보세요!</label>
+            <label style="font-size: 1.15rem; font-weight: bold; margin-bottom: 5px; color: #fde047;">속상해하는 지은이에게 위로와 격려의 말을 건네보세요!</label>
             <textarea id="chat-textarea" placeholder="여기에 따뜻한 말을 적어보세요. (예: 괜찮아, 내가 도와줄게, 힘내!)" oninput="onTyping()"></textarea>
-            <button class="retro-btn disabled" id="btn-submit-message" onclick="submitMessage()" style="align-self: flex-end; margin-top: 5px; min-width: 180px; background-color: #eab308 !important; color: #000000 !important; font-weight: 900 !important; font-size: 0.85rem !important; border-radius: 0 !important; border: 3px solid #000000 !important;">지은이에게 마음 전하기 💌</button>
+            <button class="retro-btn disabled" id="btn-submit-message" onclick="submitMessage()" style="align-self: flex-end; margin-top: 5px; min-width: 180px; background-color: #eab308 !important; color: #000000 !important; font-weight: 900 !important; font-size: 0.85rem !important; border-radius: 0 !important; border: 3px solid #000000 !important;">마음 전달하기 💌</button>
           </div>
         </div>
 
@@ -1491,63 +1484,63 @@
     </div>
 
     <!-- ==========================================================
-         아웃트로: 활동 완료 뷰 (신규 추가)
+         아웃트로: 완료 화면
          ========================================================== -->
     <div id="view-stage3" class="std-intro-container view" style="display: none;">
       <!-- 상단 헤더 영역 (심플 헤더) -->
       <div class="std-intro-header-simple">
-        <h1 class="std-intro-title">사이버 의사소통 활동 완료 🌟</h1>
+        <h1 class="std-intro-title" style="font-size: 2.25rem;">사이버 의사소통 활동 완료 🌟</h1>
       </div>
 
-      <!-- 메인 본문 영역 (좌측 캐릭터 복원, 우측 성찰대사 통합 개편) -->
-      <div class="std-intro-body" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 30px; padding: 20px 40px !important; box-sizing: border-box;">
+      <!-- 메인 본문 영역 -->
+      <div class="std-intro-body" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 48px; padding: 30px 60px !important; box-sizing: border-box;">
         
-        <!-- 좌측 캐릭터 영역 (마음온 캐릭터 원래대로 복원) -->
+        <!-- 좌측 캐릭터 영역 (마음온 캐릭터) -->
         <div class="std-intro-char-wrapper-small">
           <img src="images/maeumon_outro.png" alt="마음온" class="std-intro-char-img">
         </div>
 
-        <!-- 우측 단일 통합 상자 (밝은 배경색 적용, 배지+배지제목+설명 텍스트 수직 구성) -->
-        <div class="std-intro-unified-box" style="flex-grow: 1; height: auto; min-height: 240px; display: flex; flex-direction: column; align-items: stretch; padding: 15px 25px 20px 25px !important; box-shadow: 6px 6px 0 #000000; border: 4px solid #000000; background-color: #f8fafc; color: #000000; margin: 0; max-width: 550px; gap: 10px;">
+        <!-- 우측 단일 통합 상자 -->
+        <div class="std-intro-unified-box" style="flex-grow: 1; height: auto; min-height: 290px; display: flex; flex-direction: column; align-items: stretch; padding: 18px 30px 24px 30px !important; box-shadow: 6px 6px 0 #000000; border: 4px solid #000000; background-color: #f8fafc; color: #000000; margin: 0; max-width: 660px; gap: 12px;">
           
           <!-- 상단: 배지 아이콘 + 배지 타이틀 (경계선 구분) -->
-          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 8px; flex-shrink: 0;">
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 12px; flex-shrink: 0;">
             <!-- 크기 5배 상향된 뱃지 이미지 -->
-            <div style="width: 50px; height: 50px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 30px 0 10px 0; flex-shrink: 0;">
-              <img src="images/icon_comm.png" alt="의사소통 뱃지" style="width: 160px; height: 160px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
+            <div style="width: 75px; height: 75px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 45px 0 15px 0; flex-shrink: 0;">
+              <img src="images/icon_comm.png" alt="의사소통 뱃지" style="width: 240px; height: 240px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
             </div>
-            <span style="font-size: 1.25rem; color: #1e3a8a; font-weight: bold; margin-top: 10px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [사이버 의사소통] 배지 획득!</span>
+            <span style="font-size: 1.85rem; color: #1e3a8a; font-weight: bold; margin-top: 15px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [사이버 의사소통] 배지 획득!</span>
           </div>
 
-          <!-- 하단: 코멘트/설명 텍스트 (줄바꿈/들여쓰기 제거, 검정 폰트색상 적용) -->
-          <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.05rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">온라인 대화는 상대방의 표정이나 목소리가 보이지 않아서 오해하기 쉽다는 것을 배웠지? 상대방의 상황과 감정을 헤아리며 따뜻하게 답장해 주는 너의 소중한 대화 방식을 앞으로도 계속해서 빛내 주렴!</div>
+          <!-- 하단: 코멘트/설명 텍스트 -->
+          <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.25rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">
+            온라인 공간에서 보이지 않는 친구들의 진짜 감정을 헤아리고, 상처받은 마음이 따뜻하게 녹아내릴 수 있도록 예쁜 마음의 온도를 나누어 주었구나! 앞으로도 사이버 세상 속에서 타인의 마음을 늘 먼저 배려하며 따뜻하게 소통하는 어린이가 되기를 바란단다.
+          </div>
         </div>
 
       </div>
 
-      <!-- 하단 버튼 영역 (오른쪽 정렬 및 가로 넓이 확장) -->
+      <!-- 하단 버튼 영역 -->
       <div class="std-intro-footer" style="justify-content: flex-end !important; padding: 16px 40px !important;">
-        <button onclick="finishStage()" class="std-footer-btn-right" style="width: 380px; box-shadow: 4px 4px 0 #000; font-size: 1.1rem; height: 48px;">활동완료 & 대시보드로 돌아가기 ➔</button>
+        <button onclick="finishStage()" class="std-footer-btn-right" style="width: 570px; box-shadow: 4px 4px 0 #000; font-size: 1.65rem; height: 72px;">활동완료 & 대시보드로 돌아가기 ➔</button>
       </div>
     </div>
 
-    <!-- 3, 4단계 삭제됨 -->
-
     <!-- 하단 제어/이동바 -->
     <!-- 공통 표준 하단 푸터바 -->
-    <div id="control-bar" class="w-full bg-[#1e293b] border-t-4 border-black px-6 py-1.5 flex justify-between items-center z-10 shrink-0 select-none" style="height: 44px; font-family: 'DungGeunMo', monospace;">
+    <div id="control-bar" class="w-full bg-[#1e293b] border-t-4 border-black px-8 py-2.5 flex justify-between items-center z-10 shrink-0 select-none" style="height: 62px; font-family: 'DungGeunMo', monospace;">
       <!-- 좌측: 이전 단계 -->
-      <button id="btn-prev" class="px-4 py-1 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="prevStage()">
+      <button id="btn-prev" class="px-6 py-2 bg-slate-700 hover:bg-slate-600 text-white text-base font-bold border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="prevStage()">
         ◀ 이전 단계
       </button>
       
       <!-- 중앙: 홈으로 (맵으로) -->
-      <button id="footer-home-btn" class="px-5 py-1 bg-amber-400 hover:bg-amber-500 text-black text-xs font-black border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="exitToMap()">
+      <button id="footer-home-btn" class="px-8 py-2 bg-amber-400 hover:bg-amber-500 text-black text-base font-black border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="exitToMap()">
         🏠 홈으로 (맵)
       </button>
       
       <!-- 우측: 다음 단계 -->
-      <button id="btn-next" class="px-4 py-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="nextStage()">
+      <button id="btn-next" class="px-6 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-base font-bold border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="nextStage()">
         다음 단계 ▶
       </button>
     </div>
@@ -1562,7 +1555,7 @@
     // =========================================
     const state = {
       currentStage: 0,      // 0: 인트로, 1 ~ 2 단계
-      stageCompleted: [false, false, false], // 인덱스 1~2
+      stageCompleted: [false, false, false, false], // 인덱스 1~3
       
       // 스테이지 1 상태
       stage1: {
@@ -1692,15 +1685,15 @@
     const stageTitles = {
       0: "활동 안내",
       1: "활동 1: 친구의 감정을 파악하고 내 마음 전하기",
-      2: "활동 2: 상처받은 친구를 지키는 따뜻한 위로 대화 나누기",
-      3: "사이버 의사소통 완료! 🌟"
+      2: "활동 2: 오해를 막는 따뜻한 대화 온도 맞추기",
+      3: "활동 완료"
     };
 
     const bgColors = {
       0: "#2c3e50", // 인트로 배경
       1: "#2c3e50", // 차가운 남색
       2: "#34495e", // 중간
-      3: "#1e1b4b"  // 아웃트로 배경 (남색/보라색)
+      3: "#2c3e50"  // 완료 배경
     };
 
     // =========================================
@@ -1751,7 +1744,7 @@
       }
 
       // 다음 버튼 (현재 단계를 클리어해야만 활성화)
-      if (state.currentStage === 3 || state.stageCompleted[state.currentStage]) {
+      if (state.stageCompleted[state.currentStage]) {
         nextBtn.classList.remove('disabled');
       } else {
         nextBtn.classList.add('disabled');
@@ -1759,7 +1752,7 @@
       
       // 2단계 대시보드로 돌아가기 버튼 표시 처리
       if (state.currentStage === 2) {
-        nextBtn.innerText = "활동 완료 ➔";
+        nextBtn.innerText = "완료";
       } else {
         nextBtn.innerText = "다음 단계 ▶";
       }
@@ -1773,9 +1766,10 @@
     function nextStage() {
       const nextBtn = document.getElementById('btn-next');
       
-      // 스테이지 2에서 최종 완료 버튼 클릭 시
+      // 스테이지 2에서 완료 버튼 클릭 시 아웃트로 화면(3단계)으로 이동
       if (state.currentStage === 2) {
         if (state.stageCompleted[2]) {
+          playBeepSound();
           state.currentStage = 3;
           updateStageUI();
         } else {
@@ -2047,8 +2041,9 @@
               // 스테이지 2 포탈 연출
               const portalBubble = document.createElement('div');
               portalBubble.className = "chat-bubble reaction";
+              portalBubble.style.backgroundColor = "var(--pastel-pink)";
               portalBubble.style.alignSelf = "center";
-              portalBubble.innerHTML = "🎉 활동 완료!<br>하단의 <strong>[다음 단계 ▶]</strong>를 눌러 2단계로 이동하세요!";
+              portalBubble.innerHTML = "🎉 마음 온도 100도 달성!<br>하단의 <strong>[다음 단계 ▶]</strong>를 눌러 2단계로 이동하세요!";
               screen.appendChild(portalBubble);
               screen.scrollTop = screen.scrollHeight;
               playRetroChime();
@@ -2121,7 +2116,7 @@
       '괜찮', '괜차', '걱정', '지나갈', '잊어', '털어', '시간이', '토닥', '쓰담', '쓰담쓰담', '토닥토닥',
       // 3. 격려 / 응원
       '힘내', '기운', '화이팅', '파이팅', '응원', '최고', '대단', '훌륭', '천재', '기죽', '잘할', '잘될', '파이팅하자', '힘내자',
-      // 4. 마음이 칭찬 및 연주 인정
+      // 4. 지은이 칭찬 및 연주 인정
       '멋지', '멋져', '예쁘', '예뻐', '잘 불', '잘불', '잘했', '잘한', '리코더', '연주', '소리 좋', '소리좋', '듣기 좋', '듣기좋', '실력', '재능', '최고야', '짱이야',
       // 5. 감정적 지지
       '고마', '고맙', '사랑', '소중', '든든', '귀엽', '이쁘', '이해', '공감',

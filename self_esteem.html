@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -41,13 +41,13 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 44px;
+      height: 62px;
       background-color: #1e293b;
       border-top: var(--pixel-thick) solid var(--border-color);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 20px;
+      padding: 0 30px;
       z-index: 10;
     }
     :root {
@@ -110,7 +110,7 @@
     .view {
       display: none;
       width: 100%;
-      height: calc(100% - 96px); /* 상단바(52px) + 하단바(44px) 공제 */
+      height: calc(100% - 114px); /* 상단바(52px) + 하단바(62px) 공제 */
       position: absolute;
       top: 52px;
       left: 0;
@@ -122,7 +122,7 @@
       height: 52px;
     }
     #control-bar {
-      height: 44px;
+      height: 62px;
     }
     .view.active {
       display: flex;
@@ -1003,8 +1003,8 @@
     }
 
     .std-intro-char-wrapper-small {
-      width: 195px;
-      height: 195px;
+      width: 290px;
+      height: 290px;
       flex-shrink: 0;
       display: flex;
       justify-content: center;
@@ -1013,8 +1013,8 @@
 
     @media (max-width: 768px) {
       .std-intro-char-wrapper-small {
-        width: 135px;
-        height: 135px;
+        width: 200px;
+        height: 200px;
       }
     }
 
@@ -1028,21 +1028,21 @@
     .std-intro-unified-box {
       background-color: #1e293b;
       border: 4px solid #000000;
-      padding: 20px;
+      padding: 30px;
       width: 100%;
-      max-width: 520px;
-      min-height: 220px;
-      box-shadow: 4px 4px 0 #000000;
+      max-width: 780px;
+      min-height: 330px;
+      box-shadow: 6px 6px 0 #000000;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 16px;
+      gap: 24px;
     }
 
     .std-intro-dialog-inner {
       color: #f1f5f9;
-      font-size: 0.975rem;
+      font-size: 1.45rem;
       line-height: 1.6;
       text-align: left;
       word-break: keep-all;
@@ -1057,29 +1057,29 @@
     .std-intro-activities-inner {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 15px;
     }
 
     .std-activity-row {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 15px;
       text-align: left;
     }
 
     .std-activity-badge {
       background-color: #eab308;
       color: #000000;
-      font-size: 0.775rem;
-      padding: 2px 6px;
+      font-size: 1.15rem;
+      padding: 3px 9px;
       font-weight: 800;
       flex-shrink: 0;
-      border: 1px solid #000;
+      border: 2px solid #000;
     }
 
     .std-activity-text {
       color: #ffffff;
-      font-size: 0.875rem;
+      font-size: 1.3rem;
       font-weight: bold;
     }
 
@@ -1144,7 +1144,7 @@
     .view {
       display: none;
       width: 100%;
-      height: calc(100% - 96px); /* 상단바(52px) + 하단바(44px) 공제 */
+      height: calc(100% - 120px); /* 상단바(52px) + 하단바(44px) 공제 */
       position: absolute;
       top: 52px;
       left: 0;
@@ -1156,19 +1156,25 @@
     /* 마음온 공통 표준 가이드 배너 스타일 - 48px 레트로 핏 */
     .std-guide-banner {
       background-color: #312e81 !important;
-      border: 3px solid #000000 !important;
-      box-shadow: 2px 2px 0px #000000 !important;
+      border: 4px solid #000000 !important;
+      box-shadow: 3px 3px 0px #000000 !important;
       border-radius: 0 !important;
       display: flex !important;
       align-items: center !important;
-      gap: 6px !important;
-      padding: 6px 12px !important;
+      gap: 9px !important;
+      padding: 9px 18px !important;
       width: 100% !important;
-      height: 48px !important;
+      height: 72px !important;
       flex-shrink: 0 !important;
       margin-top: 2px !important; /* 헤더 여백 밀착 */
       position: relative !important;
       margin-bottom: 0px !important;
+    }
+    .std-guide-banner span:first-of-type {
+      font-size: 14.25px !important;
+    }
+    .std-guide-banner span:last-of-type {
+      font-size: 16.5px !important;
     }
     
     /* 1단계 폰 컨테이너 높이 및 상단 밀착 정렬 */
@@ -1302,7 +1308,7 @@
       flex-direction: column !important; /* 태블릿이 위, 입력창이 아래로 오도록 세로 정렬 */
       align-items: center !important;
       justify-content: flex-start !important;
-      gap: 6px !important;
+      gap: 9px !important;
       width: 100% !important;
     }
 
@@ -1444,10 +1450,10 @@
       <!-- 마음온 AI 공통 가이드 배너 (1단계) -->
       <div class="std-guide-banner">
         <!-- 정밀 인라인 크기(38px) 픽스 및 돌출값 최적화 -->
-        <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
-          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+        <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
+          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px; height: 57px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
         </div>
-        <div class="flex-grow flex flex-col justify-center" style="margin-left: 6px;">
+        <div class="flex-grow flex flex-col justify-center" style="margin-left: 9px;">
           <span class="text-[10.5px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
           <span class="text-[12px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;" id="act1-guide-bubble">
             친구의 화려한 SNS 사진을 보았을 때, 내 마음을 지키는 올바른 대처 방법은 무엇일까?
@@ -1596,10 +1602,10 @@
       <!-- 마음온 AI 공통 가이드 배너 (2단계) -->
       <div class="std-guide-banner">
         <!-- 정밀 인라인 크기(38px) 픽스 및 돌출값 최적화 -->
-        <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
-          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+        <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
+          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px; height: 57px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
         </div>
-        <div class="flex-grow flex flex-col justify-center" style="margin-left: 6px;">
+        <div class="flex-grow flex flex-col justify-center" style="margin-left: 9px;">
           <span class="text-[10.5px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
           <span class="text-[12px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;" id="act2-guide-bubble">
             내가 힘들 때 듣고 싶었던 따뜻한 위로의 말을 친구에게 댓글로 선물해 보자!
@@ -1675,11 +1681,11 @@
     <div id="view-outro" class="std-intro-container view" style="display: none;">
       <!-- 상단 헤더 영역 (심플 헤더) -->
       <div class="std-intro-header-simple">
-        <h1 class="std-intro-title">사이버 자기존중감 활동 완료 🌟</h1>
+        <h1 class="std-intro-title" style="font-size: 2.25rem;">사이버 자기존중감 활동 완료 🌟</h1>
       </div>
 
       <!-- 메인 본문 영역 (좌측 캐릭터 복원, 우측 성찰대사 통합 개편) -->
-      <div class="std-intro-body" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 30px; padding: 20px 40px !important; box-sizing: border-box;">
+      <div class="std-intro-body" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 48px; padding: 30px 60px !important; box-sizing: border-box;">
         
         <!-- 좌측 캐릭터 영역 (마음온 캐릭터 원래대로 복원) -->
         <div class="std-intro-char-wrapper-small">
@@ -1687,43 +1693,43 @@
         </div>
 
         <!-- 우측 단일 통합 상자 (밝은 배경색 적용, 배지+배지제목+설명 텍스트 수직 구성) -->
-        <div class="std-intro-unified-box" style="flex-grow: 1; height: auto; min-height: 240px; display: flex; flex-direction: column; align-items: stretch; padding: 15px 25px 20px 25px !important; box-shadow: 6px 6px 0 #000000; border: 4px solid #000000; background-color: #f8fafc; color: #000000; margin: 0; max-width: 550px; gap: 10px;">
+        <div class="std-intro-unified-box" style="flex-grow: 1; height: auto; min-height: 290px; display: flex; flex-direction: column; align-items: stretch; padding: 18px 30px 24px 30px !important; box-shadow: 6px 6px 0 #000000; border: 4px solid #000000; background-color: #f8fafc; color: #000000; margin: 0; max-width: 660px; gap: 12px;">
           
           <!-- 상단: 배지 아이콘 + 배지 타이틀 (경계선 구분) -->
-          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 8px; flex-shrink: 0;">
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 12px; flex-shrink: 0;">
             <!-- 크기 5배 상향된 뱃지 이미지 -->
-            <div style="width: 50px; height: 50px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 30px 0 10px 0; flex-shrink: 0;">
-              <img src="images/icon_esteem.png" alt="자기존중감 뱃지" style="width: 160px; height: 160px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
+            <div style="width: 75px; height: 75px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 45px 0 15px 0; flex-shrink: 0;">
+              <img src="images/icon_esteem.png" alt="자기존중감 뱃지" style="width: 240px; height: 240px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
             </div>
-            <span style="font-size: 1.25rem; color: #1e3a8a; font-weight: bold; margin-top: 10px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [사이버 자기존중감] 배지 획득!</span>
+            <span style="font-size: 1.85rem; color: #1e3a8a; font-weight: bold; margin-top: 15px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [사이버 자기존중감] 배지 획득!</span>
           </div>
 
           <!-- 하단: 코멘트/설명 텍스트 (줄바꿈/들여쓰기 제거, 검정 폰트색상 적용) -->
-          <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.05rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">인터넷 공간 속 수많은 글과 말들 사이에서도 흔들리지 않고 스스로를 아끼고 보호하는 너의 모습이 정말 멋지단다. 언제 어디서든 너의 가치는 가장 반짝이고 소중하다는 사실을 늘 마음에 기억하렴!</div>
+          <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.25rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">인터넷 공간 속 수많은 글과 말들 사이에서도 흔들리지 않고 스스로를 아끼고 보호하는 너의 모습이 정말 멋지단다. 언제 어디서든 너의 가치는 가장 반짝이고 소중하다는 사실을 늘 마음에 기억하렴!</div>
         </div>
 
       </div>
 
       <!-- 하단 버튼 영역 (오른쪽 정렬 및 가로 넓이 확장) -->
       <div class="std-intro-footer" style="justify-content: flex-end !important; padding: 16px 40px !important;">
-        <button onclick="finishEsteemStage()" class="std-footer-btn-right" style="width: 380px; box-shadow: 4px 4px 0 #000; font-size: 1.1rem; height: 48px;">활동완료 & 대시보드로 돌아가기 ➔</button>
+        <button onclick="finishEsteemStage()" class="std-footer-btn-right" style="width: 570px; box-shadow: 4px 4px 0 #000; font-size: 1.65rem; height: 72px;">활동완료 & 대시보드로 돌아가기 ➔</button>
       </div>
     </div>
 
     <!-- 공통 표준 하단 푸터바 -->
-    <div id="control-bar" class="w-full bg-[#1e293b] border-t-4 border-black px-6 py-1.5 flex justify-between items-center z-10 shrink-0 select-none hidden" style="height: 44px; font-family: 'DungGeunMo', monospace;">
+    <div id="control-bar" class="w-full bg-[#1e293b] border-t-4 border-black px-8 py-2.5 flex justify-between items-center z-10 shrink-0 select-none hidden" style="height: 62px; font-family: 'DungGeunMo', monospace;">
       <!-- 좌측: 이전 단계 -->
-      <button id="btn-prev" class="px-4 py-1 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="prevStep()">
+      <button id="btn-prev" class="px-6 py-2 bg-slate-700 hover:bg-slate-600 text-white text-base font-bold border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="prevStep()">
         ◀ 이전 단계
       </button>
       
       <!-- 중앙: 홈으로 (맵으로) -->
-      <button id="footer-home-btn" class="px-5 py-1 bg-amber-400 hover:bg-amber-500 text-black text-xs font-black border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="exitToMap()">
+      <button id="footer-home-btn" class="px-8 py-2 bg-amber-400 hover:bg-amber-500 text-black text-base font-black border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="exitToMap()">
         🏠 홈으로 (맵)
       </button>
       
       <!-- 우측: 다음 단계 -->
-      <button id="btn-next" class="px-4 py-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="nextStep()">
+      <button id="btn-next" class="px-6 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-base font-bold border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="nextStep()">
         다음 단계 ▶
       </button>
     </div>

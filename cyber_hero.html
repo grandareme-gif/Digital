@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -8,6 +8,12 @@
   <!-- 둥근모꼴 폰트 (로컬 로드) -->
 
   <style>
+    @font-face {
+      font-family: 'DungGeunMo';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
     /* =========================================
        디자인 시스템 (기존 style.css 및 empathy.html 통일)
        ========================================= */
@@ -1633,8 +1639,8 @@
     }
 
     .std-intro-char-wrapper-small {
-      width: 195px;
-      height: 195px;
+      width: 290px;
+      height: 290px;
       flex-shrink: 0;
       display: flex;
       justify-content: center;
@@ -1643,8 +1649,8 @@
 
     @media (max-width: 768px) {
       .std-intro-char-wrapper-small {
-        width: 135px;
-        height: 135px;
+        width: 200px;
+        height: 200px;
       }
     }
 
@@ -1658,21 +1664,21 @@
     .std-intro-unified-box {
       background-color: #1e293b;
       border: 4px solid #000000;
-      padding: 20px;
+      padding: 30px;
       width: 100%;
-      max-width: 500px;
-      min-height: 220px;
-      box-shadow: 4px 4px 0 #000000;
+      max-width: 780px;
+      min-height: 330px;
+      box-shadow: 6px 6px 0 #000000;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 16px;
+      gap: 24px;
     }
 
     .std-intro-dialog-inner {
       color: #f1f5f9;
-      font-size: 1.0rem;
+      font-size: 1.45rem;
       line-height: 1.6;
       text-align: left;
       word-break: keep-all;
@@ -1687,29 +1693,29 @@
     .std-intro-activities-inner {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 15px;
     }
 
     .std-activity-row {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 15px;
       text-align: left;
     }
 
     .std-activity-badge {
       background-color: #eab308;
       color: #000000;
-      font-size: 0.8rem;
-      padding: 2px 6px;
+      font-size: 1.15rem;
+      padding: 3px 9px;
       font-weight: 800;
       flex-shrink: 0;
-      border: 1px solid #000;
+      border: 2px solid #000;
     }
 
     .std-activity-text {
       color: #ffffff;
-      font-size: 0.9rem;
+      font-size: 1.3rem;
       font-weight: bold;
     }
 
@@ -1800,18 +1806,18 @@
       font-size: 8px;
       color: #fff;
     }
-    #control-bar {
+     #control-bar {
       position: fixed !important;
       bottom: 0 !important;
       left: 0 !important;
       width: 100% !important;
-      height: 44px;
+      height: 62px;
       background-color: #1e293b;
       border-top: 4px solid #000;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 20px;
+      padding: 0 30px;
       z-index: 9999 !important;
       font-family: 'DungGeunMo', monospace;
       box-sizing: border-box;
@@ -1837,6 +1843,12 @@
       overflow: hidden !important;
       position: relative !important;
     }
+    .std-guide-banner span:first-of-type {
+      font-size: 14.25px !important;
+    }
+    .std-guide-banner span:last-of-type {
+      font-size: 16.5px !important;
+    }
     .view {
       display: none;
       width: 100% !important;
@@ -1859,10 +1871,10 @@
       opacity: 1 !important;
       z-index: 2;
     }
-    /* 본활동 전용 높이 영역 공제 (상단 헤더 52px + 하단 푸터 44px 제외) */
+    /* 본활동 전용 높이 영역 공제 (상단 헤더 52px + 하단 푸터 62px 제외) */
     #view-act1, #view-act2 {
       top: 52px !important;
-      height: calc(100% - 92px) !important;
+      height: calc(100% - 114px) !important;
       padding: 8px 16px 0px 16px !important;
       box-sizing: border-box !important;
     }
@@ -1870,15 +1882,15 @@
     /* === 마음온 AI 공통 표준 가이드 배너 스타일 - 48px 레트로 핏 === */
     .std-guide-banner {
       background-color: #312e81 !important;
-      border: 3px solid #000000 !important;
-      box-shadow: 2px 2px 0px #000000 !important;
+      border: 4px solid #000000 !important;
+      box-shadow: 3px 3px 0px #000000 !important;
       border-radius: 0 !important;
       display: flex !important;
       align-items: center !important;
-      gap: 6px !important;
-      padding: 6px 12px !important;
+      gap: 9px !important;
+      padding: 9px 18px !important;
       width: 100% !important;
-      height: 48px !important;
+      height: 72px !important;
       flex-shrink: 0 !important;
       margin-top: -6px !important;
       position: relative !important;
@@ -1930,7 +1942,7 @@
     <div id="view-intro" class="std-intro-container view active">
       <!-- 상단 헤더 영역 (심플 헤더) -->
       <div class="std-intro-header-simple">
-        <h1 class="std-intro-title">사이버폭력 인식</h1>
+        <h1 class="std-intro-title" style="font-size: 2.25rem;">사이버폭력 인식</h1>
       </div>
 
       <!-- 메인 본문 영역 -->
@@ -1983,7 +1995,7 @@
       </script>
     </div>
 
-    <div id="view-act1" class="view" style="display: flex !important; flex-direction: column !important; height: calc(100% - 96px) !important; justify-content: space-between !important; overflow: hidden !important;">
+    <div id="view-act1" class="view" style="display: flex !important; flex-direction: column !important; height: calc(100% - 120px) !important; justify-content: space-between !important; overflow: hidden !important;">
       <div class="header-bar">
         <span class="header-title">🔍 활동 1: 마음온의 시선 교차경</span>
         <div style="display: flex; gap: 8px; align-items: center;">
@@ -1994,19 +2006,19 @@
 
       <!-- 마음온 AI 공통 가이드 배너 (1단계) -->
       <div class="std-guide-banner">
-        <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
-          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+        <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
+          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px !important; height: 57px !important; aspect-ratio: 1 / 1 !important; object-fit: contain !important; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
         </div>
-        <div style="display: flex !important; flex-direction: column !important; justify-content: center !important; flex-grow: 1 !important; margin-left: 6px;">
-          <span style="font-size: 10.5px !important; font-weight: 900 !important; line-height: 1.1 !important; margin-bottom: 3px !important; font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important; display: block !important;">마음온 AI 가이드</span>
-          <span style="font-size: 12px !important; font-weight: bold !important; color: #e2e8f0 !important; line-height: 1.3 !important; font-family: 'DungGeunMo', monospace !important; display: block !important;" id="act1-guide-bubble">
+        <div style="display: flex !important; flex-direction: column !important; justify-content: center !important; flex-grow: 1 !important; margin-left: 9px;">
+          <span style="font-size: 14.25px !important; font-weight: 900 !important; line-height: 1.1 !important; margin-bottom: 3px !important; font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important; display: block !important;">마음온 AI 가이드</span>
+          <span style="font-size: 16.5px !important; font-weight: bold !important; color: #e2e8f0 !important; line-height: 1.3 !important; font-family: 'DungGeunMo', monospace !important; display: block !important;" id="act1-guide-bubble">
             사이버 폭력 방관자가 아닌 방어자가 되어 우리 반을 지키는 영웅이 되어줘! 🛡️
           </span>
         </div>
       </div>
       
       <!-- 1단계 미션 질문 카드 (정밀화된 한줄 지시문) -->
-      <div class="mission-question-card" style="background-color: #451a03 !important; border: 3px solid #000000 !important; box-shadow: 2px 2px 0px #000000 !important; padding: 6px 12px !important; margin-bottom: 6px !important; color: #fde047 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important; max-width: 100% !important; width: 100% !important;">
+      <div class="mission-question-card" style="background-color: #451a03 !important; border: 4px solid #000000 !important; box-shadow: 3px 3px 0px #000000 !important; padding: 9px 18px !important; margin-bottom: 6px !important; color: #fde047 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important; max-width: 100% !important; width: 100% !important;">
         <div style="font-size: 0.86rem !important; font-weight: bold !important; color: #fde047 !important; line-height: 1.4 !important;">
           상황 속 인물들이 느꼈을 진짜 마음(감정) 카드를 알맞게 매칭해봅시다.
         </div>
@@ -2105,19 +2117,19 @@
       </div>
 
       <!-- 활동 1 전용 내장 컨트롤 바 -->
-      <div id="act1-control-bar" style="display: flex !important; position: fixed !important; bottom: 0 !important; left: 0 !important; width: 100% !important; z-index: 1000 !important; height: 44px !important; background-color: #1e293b !important; border-top: 4px solid #000 !important; justify-content: space-between !important; align-items: center !important; padding: 0 20px !important; box-sizing: border-box !important;">
+      <div id="act1-control-bar" style="display: flex !important; position: fixed !important; bottom: 0 !important; left: 0 !important; width: 100% !important; z-index: 1000 !important; height: 62px !important; background-color: #1e293b !important; border-top: 4px solid #000 !important; justify-content: space-between !important; align-items: center !important; padding: 0 30px !important; box-sizing: border-box !important;">
         <!-- 좌측: 이전 단계 (활동 1은 첫 단계이므로 비활성화) -->
-        <button id="act1-btn-prev" style="padding: 4px 16px; background-color: #475569; color: #fff; font-size: 0.75rem; font-weight: bold; border: 2px solid #000; cursor: not-allowed; opacity: 0.5; font-family: 'DungGeunMo', monospace;" onclick="prevStep()">
+        <button id="act1-btn-prev" style="padding: 8px 24px; background-color: #475569; color: #fff; font-size: 1rem; font-weight: bold; border: 2px solid #000; cursor: not-allowed; opacity: 0.5; font-family: 'DungGeunMo', monospace;" onclick="prevStep()">
           ◀ 이전 단계
         </button>
         
         <!-- 중앙: 홈으로 -->
-        <button id="act1-footer-home-btn" style="padding: 4px 20px; background-color: #fbbf24; color: #000; font-size: 0.75rem; font-weight: 900; border: 2px solid #000; cursor: pointer; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="exitToMap()">
+        <button id="act1-footer-home-btn" style="padding: 8px 30px; background-color: #fbbf24; color: #000; font-size: 1rem; font-weight: 900; border: 2px solid #000; cursor: pointer; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="exitToMap()">
           🏠 홈으로 (맵)
         </button>
         
         <!-- 우측: 다음 단계 -->
-        <button id="act1-inner-btn-next" style="padding: 4px 16px; background-color: #10b981; color: #fff; font-size: 0.75rem; font-weight: bold; border: 2px solid #000; cursor: not-allowed; opacity: 0.5; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="nextStep()">
+        <button id="act1-inner-btn-next" style="padding: 8px 24px; background-color: #10b981; color: #fff; font-size: 1rem; font-weight: bold; border: 2px solid #000; cursor: not-allowed; opacity: 0.5; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="nextStep()">
           다음 단계 ▶
         </button>
       </div>
@@ -2127,7 +2139,7 @@
 <!-- =========================================
          Screen 3: [활동 2] SOS 구조대
          ========================================= -->
-    <div id="view-act2" class="view" style="display: flex !important; flex-direction: column !important; height: calc(100% - 96px) !important; justify-content: space-between !important; overflow: hidden !important;">
+    <div id="view-act2" class="view" style="display: flex !important; flex-direction: column !important; height: calc(100% - 120px) !important; justify-content: space-between !important; overflow: hidden !important;">
       <div class="header-bar">
         <span class="header-title">🚨 활동 2: 마음온의 실전 대처 미션</span>
         <div style="display: flex; gap: 8px; align-items: center;">
@@ -2138,19 +2150,19 @@
 
       <!-- 마음온 AI 공통 가이드 배너 (2단계) -->
       <div class="std-guide-banner" style="margin-bottom: 6px !important;">
-        <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
-          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+        <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
+          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px !important; height: 57px !important; aspect-ratio: 1 / 1 !important; object-fit: contain !important; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
         </div>
-        <div style="display: flex !important; flex-direction: column !important; justify-content: center !important; flex-grow: 1 !important; margin-left: 6px;">
-          <span style="font-size: 10.5px !important; font-weight: 900 !important; line-height: 1.1 !important; margin-bottom: 3px !important; font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important; display: block !important;">마음온 AI 가이드</span>
-          <span style="font-size: 12px !important; font-weight: bold !important; color: #e2e8f0 !important; line-height: 1.3 !important; font-family: 'DungGeunMo', monospace !important; display: block !important;" id="act2-guide-bubble">
+        <div style="display: flex !important; flex-direction: column !important; justify-content: center !important; flex-grow: 1 !important; margin-left: 9px;">
+          <span style="font-size: 14.25px !important; font-weight: 900 !important; line-height: 1.1 !important; margin-bottom: 3px !important; font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important; display: block !important;">마음온 AI 가이드</span>
+          <span style="font-size: 16.5px !important; font-weight: bold !important; color: #e2e8f0 !important; line-height: 1.3 !important; font-family: 'DungGeunMo', monospace !important; display: block !important;" id="act2-guide-bubble">
             단체 채팅방에서 친구를 은근히 놀리거나 괴롭히는 것도 집단 따돌림에 해당해! 알맞은 대처 카드를 클릭하여 친구를 보호해줘! 🚨
           </span>
         </div>
       </div>
 
       <!-- 2단계 미션 질문 카드 (헤더 아래 가로 100% 배치로 복원) -->
-      <div class="mission-question-card" style="background-color: #451a03 !important; border: 3px solid #000000 !important; box-shadow: 2px 2px 0px #000000 !important; padding: 6px 12px !important; margin-bottom: 4px !important; color: #fde047 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important; max-width: 100% !important; width: 100% !important; flex-shrink: 0 !important;">
+      <div class="mission-question-card" style="background-color: #451a03 !important; border: 4px solid #000000 !important; box-shadow: 3px 3px 0px #000000 !important; padding: 9px 18px !important; margin-bottom: 4px !important; color: #fde047 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important; max-width: 100% !important; width: 100% !important; flex-shrink: 0 !important;">
         <div style="font-size: 0.86rem !important; font-weight: bold !important; color: #fde047 !important; line-height: 1.4 !important;">
           사이버 폭력에 처한 친구를 대처 카드를 사용해 지혜롭게 도와주세요.
         </div>
@@ -2274,11 +2286,11 @@
     <div id="view-outro" class="std-intro-container view" style="display: none;">
       <!-- 상단 헤더 영역 (심플 헤더) -->
       <div class="std-intro-header-simple">
-        <h1 class="std-intro-title">사이버폭력 인식 활동 완료 🌟</h1>
+        <h1 class="std-intro-title" style="font-size: 2.25rem;">사이버폭력 인식 활동 완료 🌟</h1>
       </div>
 
       <!-- 메인 본문 영역 (좌측 캐릭터 복원, 우측 성찰대사 통합 개편) -->
-      <div class="std-intro-body" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 30px; padding: 20px 40px !important; box-sizing: border-box;">
+      <div class="std-intro-body" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 48px; padding: 30px 60px !important; box-sizing: border-box;">
         
         <!-- 좌측 캐릭터 영역 (마음온 캐릭터 원래대로 복원) -->
         <div class="std-intro-char-wrapper-small">
@@ -2291,14 +2303,14 @@
           <!-- 상단: 배지 아이콘 + 배지 타이틀 (경계선 구분) -->
           <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 8px; flex-shrink: 0;">
             <!-- 크기 5배 상향된 뱃지 이미지 -->
-            <div style="width: 50px; height: 50px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 30px 0 10px 0; flex-shrink: 0;">
-              <img src="images/icon_violence.png" alt="폭력인식 뱃지" style="width: 160px; height: 160px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
+            <div style="width: 75px; height: 75px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 45px 0 15px 0; flex-shrink: 0;">
+              <img src="images/icon_violence.png" alt="폭력인식 뱃지" style="width: 240px; height: 240px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
             </div>
             <span style="font-size: 1.25rem; color: #1e3a8a; font-weight: bold; margin-top: 10px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [사이버폭력 인식] 배지 획득!</span>
           </div>
 
           <!-- 하단: 코멘트/설명 텍스트 (줄바꿈/들여쓰기 제거, 검정 폰트색상 적용) -->
-          <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.05rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">장난 뒤에 숨겨진 친구의 아픔과 상처를 깊이 헤아리고, 사이버폭력 상황에서 용기 있게 올바른 대처 방법(캡처, 대응하지 않기, 차단, 알리기)을 다짐해 주었구나! 너의 정의로운 인식과 관심이 평화롭고 따뜻한 교실을 가꾸는 큰 힘이 될 거야.</div>
+          <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.25rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">장난 뒤에 숨겨진 친구의 아픔과 상처를 깊이 헤아리고, 사이버폭력 상황에서 용기 있게 올바른 대처 방법(캡처, 대응하지 않기, 차단, 알리기)을 다짐해 주었구나! 너의 정의로운 인식과 관심이 평화롭고 따뜻한 교실을 가꾸는 큰 힘이 될 거야.</div>
         </div>
 
       </div>
@@ -2311,17 +2323,17 @@
     <!-- 공통 표준 하단 컨트롤바 -->
     <div id="control-bar" style="display: none;">
       <!-- 좌측: 이전 단계 -->
-      <button id="btn-prev" style="padding: 4px 16px; background-color: #475569; color: #fff; font-size: 0.75rem; font-weight: bold; border: 2px solid #000; cursor: pointer; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="prevStep()">
+      <button id="btn-prev" style="padding: 8px 24px; background-color: #475569; color: #fff; font-size: 1rem; font-weight: bold; border: 2px solid #000; cursor: pointer; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="prevStep()">
         ◀ 이전 단계
       </button>
       
       <!-- 중앙: 홈으로 (맵으로) -->
-      <button id="footer-home-btn" style="padding: 4px 20px; background-color: #fbbf24; color: #000; font-size: 0.75rem; font-weight: 900; border: 2px solid #000; cursor: pointer; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="exitToMap()">
+      <button id="footer-home-btn" style="padding: 8px 30px; background-color: #fbbf24; color: #000; font-size: 1rem; font-weight: 900; border: 2px solid #000; cursor: pointer; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="exitToMap()">
         🏠 홈으로 (맵)
       </button>
       
       <!-- 우측: 다음 단계 -->
-      <button id="btn-next" style="padding: 4px 16px; background-color: #10b981; color: #fff; font-size: 0.75rem; font-weight: bold; border: 2px solid #000; cursor: pointer; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="nextStep()">
+      <button id="btn-next" style="padding: 8px 24px; background-color: #10b981; color: #fff; font-size: 1rem; font-weight: bold; border: 2px solid #000; cursor: pointer; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="nextStep()">
         다음 단계 ▶
       </button>
     </div>

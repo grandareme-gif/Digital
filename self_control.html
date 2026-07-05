@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -46,6 +46,12 @@
   </script>
 
   <style>
+    @font-face {
+      font-family: 'DungGeunMo';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
     #btn-sc-next, #btn-to-step7, #btn-to-step8 {
       display: none !important;
     }
@@ -68,19 +74,19 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 44px;
+      height: 62px;
       background-color: #1e293b;
       border-top: 4px solid #000;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 20px;
+      padding: 0 30px;
       z-index: 50;
     }
     /* 뷰포트 영역 공제 */
     #view-story, #view-scenario, #view-step6, #view-step7 {
       top: 52px !important;
-      height: calc(100% - 96px) !important;
+      height: calc(100% - 114px) !important;
       padding: 12px 16px !important;
     }
     /* DungGeunMo 전역 폰트 강제 */
@@ -220,8 +226,8 @@
     }
 
     .std-intro-char-wrapper-small {
-      width: 195px;
-      height: 195px;
+      width: 290px;
+      height: 290px;
       flex-shrink: 0;
       display: flex;
       justify-content: center;
@@ -230,8 +236,8 @@
 
     @media (max-width: 768px) {
       .std-intro-char-wrapper-small {
-        width: 135px;
-        height: 135px;
+        width: 200px;
+        height: 200px;
       }
     }
 
@@ -245,21 +251,21 @@
     .std-intro-unified-box {
       background-color: #1e293b;
       border: 4px solid #000000;
-      padding: 20px;
+      padding: 30px;
       width: 100%;
-      max-width: 570px;
-      min-height: 220px;
-      box-shadow: 4px 4px 0 #000000;
+      max-width: 780px;
+      min-height: 330px;
+      box-shadow: 6px 6px 0 #000000;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 16px;
+      gap: 24px;
     }
 
     .std-intro-dialog-inner {
       color: #f1f5f9;
-      font-size: 0.975rem;
+      font-size: 1.45rem;
       line-height: 1.6;
       text-align: left;
       word-break: keep-all;
@@ -274,29 +280,29 @@
     .std-intro-activities-inner {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 15px;
     }
 
     .std-activity-row {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 15px;
       text-align: left;
     }
 
     .std-activity-badge {
       background-color: #eab308;
       color: #000000;
-      font-size: 0.775rem;
-      padding: 2px 6px;
+      font-size: 1.15rem;
+      padding: 3px 9px;
       font-weight: 800;
       flex-shrink: 0;
-      border: 1px solid #000;
+      border: 2px solid #000;
     }
 
     .std-activity-text {
       color: #ffffff;
-      font-size: 0.875rem;
+      font-size: 1.3rem;
       font-weight: bold;
     }
 
@@ -360,19 +366,25 @@
     /* === 마음온 AI 공통 표준 가이드 배너 스타일 - 48px 레트로 핏 === */
     .std-guide-banner {
       background-color: #312e81 !important;
-      border: 3px solid #000000 !important;
-      box-shadow: 2px 2px 0px #000000 !important;
+      border: 4px solid #000000 !important;
+      box-shadow: 3px 3px 0px #000000 !important;
       border-radius: 0 !important;
       display: flex !important;
       align-items: center !important;
-      gap: 6px !important;
-      padding: 6px 12px !important;
+      gap: 9px !important;
+      padding: 9px 18px !important;
       width: 100% !important;
-      height: 48px !important;
+      height: 72px !important;
       flex-shrink: 0 !important;
       margin-top: 2px !important;
       position: relative !important;
       margin-bottom: 0px !important;
+    }
+    .std-guide-banner span:first-of-type {
+      font-size: 14.25px !important;
+    }
+    .std-guide-banner span:last-of-type {
+      font-size: 16.5px !important;
     }
     
     @keyframes bounceFairy {
@@ -400,7 +412,7 @@
     <div id="view-intro" class="std-intro-container">
       <!-- 상단 헤더 영역 (심플 헤더) -->
       <div class="std-intro-header-simple">
-        <h1 class="std-intro-title">사이버 자기조절</h1>
+        <h1 class="std-intro-title" style="font-size: 2.25rem;">사이버 자기조절</h1>
       </div>
 
       <!-- 메인 본문 영역 -->
@@ -488,10 +500,10 @@
         
         <!-- 마음온 AI 공통 가이드 배너 (이야기 컷) -->
         <div class="std-guide-banner" style="margin-bottom: 8px !important;">
-          <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
-            <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+          <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
+            <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px; height: 57px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
           </div>
-          <div class="flex-grow flex flex-col justify-center" style="margin-left: 6px;">
+          <div class="flex-grow flex flex-col justify-center" style="margin-left: 9px;">
             <span class="text-[10.5px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
             <span class="text-[12px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;" id="story-guide-bubble">
               컷만화를 넘겨가며 이야기를 차근차근 집중해서 읽어봅시다! 📖
@@ -528,10 +540,10 @@
       <div id="view-scenario" class="absolute inset-0 hidden flex-col p-4 bg-[#1a1c23] text-white">
         <!-- 마음온 AI 공통 가이드 배너 (1단계) -->
         <div class="std-guide-banner" style="margin-bottom: 8px !important;">
-          <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
-            <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+          <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
+            <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px; height: 57px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
           </div>
-          <div class="flex-grow flex flex-col justify-center" style="margin-left: 6px;">
+          <div class="flex-grow flex flex-col justify-center" style="margin-left: 9px;">
             <span class="text-[10.5px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
             <span class="text-[12px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;" id="act1-guide-bubble">
               행동을 분석하여 알맞은 진짜 원인을 딱 3개 골라보세요!
@@ -548,7 +560,7 @@
         </div>
 
         <!-- 메인 컨텐츠 영역 (가로폭 조정: 좌측 32%, 우측 66%) -->
-        <div class="grid grid-cols-[32%_66%] gap-4 flex-grow overflow-hidden" style="height: calc(100% - 56px) !important;">
+        <div class="grid grid-cols-[32%_66%] gap-4 flex-grow overflow-hidden" style="height: calc(100% - 80px) !important;">
           <!-- 좌측 영역: 스토리 요약 카드 -->
           <div class="bg-[#2c3e50] border-4 border-black rounded-none p-4 flex flex-col justify-between items-center shadow-[4px_4px_0px_#000] text-center select-none text-white h-fit max-h-[320px] justify-start gap-2.5">
             <div class="w-full flex flex-col items-center">
@@ -599,10 +611,10 @@
       <div id="view-step6" class="absolute inset-0 hidden flex-col p-4 pb-2.5 bg-[#1a1c23] justify-between overflow-hidden text-white relative">
         <!-- 마음온 AI 공통 가이드 배너 (2단계 매칭) -->
         <div class="std-guide-banner" style="margin-bottom: 2px !important;">
-          <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
-            <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+          <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
+            <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px; height: 57px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
           </div>
-          <div class="flex-grow flex flex-col justify-center" style="margin-left: 6px;">
+          <div class="flex-grow flex flex-col justify-center" style="margin-left: 9px;">
             <span class="text-[10.5px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
             <span class="text-[12px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;" id="step6-guide-bubble">
               내가 찾은 진짜 원인을 완벽하게 극복해줄 알맞은 대응 전략을 서로 짝지어 매칭해 봐! 💡
@@ -636,10 +648,10 @@
       <div id="view-step7" class="absolute inset-0 hidden flex-col p-5 bg-[#1a1c23] text-white justify-between overflow-hidden animate-fade-in">
         <!-- 마음온 AI 공통 가이드 배너 (2단계) -->
         <div class="std-guide-banner" style="margin-bottom: 6px !important;">
-          <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
-            <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+          <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
+            <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px; height: 57px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
           </div>
-          <div class="flex-grow flex flex-col justify-center" style="margin-left: 6px;">
+          <div class="flex-grow flex flex-col justify-center" style="margin-left: 9px;">
             <span class="text-[10.5px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
             <span class="text-[12px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;" id="act2-guide-bubble">
               우측의 극복 전략 카드들을 이야기 흐름에 알맞게 연결 지어보세요!
@@ -649,7 +661,7 @@
         <!-- 중복 타이틀 제거 -->
 
         <!-- 시뮬레이션 메인 레이아웃 (카드 뉴스와 드래그 덱 가로 배치, z-index 추가) -->
-        <div class="my-2 flex-grow grid grid-cols-[58%_40%] gap-3 overflow-hidden" style="height: calc(100% - 56px) !important;">
+        <div class="my-2 flex-grow grid grid-cols-[58%_40%] gap-3 overflow-hidden" style="height: calc(100% - 80px) !important;">
           <!-- 좌측: 카드 & 컨트롤 (relative z-0 지정) -->
           <div class="flex flex-col justify-between items-center h-full select-none relative z-0">
             <!-- 시뮬레이션 카드 (세로 최소높이 축소하여 콤팩트하게 조율) -->
@@ -700,11 +712,11 @@
       <div id="view-step8" class="std-intro-container view" style="display: none;">
         <!-- 상단 헤더 영역 (심플 헤더) -->
         <div class="std-intro-header-simple">
-          <h1 class="std-intro-title">사이버 자기조절 활동 완료 🌟</h1>
+          <h1 class="std-intro-title" style="font-size: 2.25rem;">사이버 자기조절 활동 완료 🌟</h1>
         </div>
 
         <!-- 메인 본문 영역 (좌측 캐릭터 복원, 우측 성찰대사 통합 개편) -->
-        <div class="std-intro-body" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 30px; padding: 20px 40px !important; box-sizing: border-box;">
+        <div class="std-intro-body" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 48px; padding: 30px 60px !important; box-sizing: border-box;">
           
           <!-- 좌측 캐릭터 영역 (마음온 캐릭터 원래대로 복원) -->
           <div class="std-intro-char-wrapper-small">
@@ -717,14 +729,14 @@
             <!-- 상단: 배지 아이콘 + 배지 타이틀 (경계선 구분) -->
             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 8px; flex-shrink: 0;">
               <!-- 크기 5배 상향된 뱃지 이미지 -->
-              <div style="width: 50px; height: 50px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 30px 0 10px 0; flex-shrink: 0;">
-                <img src="images/icon_selfcontrol.png" alt="자기조절 뱃지" style="width: 160px; height: 160px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
+              <div style="width: 75px; height: 75px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 45px 0 15px 0; flex-shrink: 0;">
+                <img src="images/icon_selfcontrol.png" alt="자기조절 뱃지" style="width: 240px; height: 240px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
               </div>
               <span style="font-size: 1.25rem; color: #1e3a8a; font-weight: bold; margin-top: 10px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [사이버 자기조절] 배지 획득!</span>
             </div>
 
             <!-- 하단: 코멘트/설명 텍스트 (줄바꿈/들여쓰기 제거, 검정 폰트색상 적용) -->
-            <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.05rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">디지털 기기나 게임을 스스로 제어하기 어려웠던 숨겨진 원인들을 파악하고, 너에게 꼭 맞는 멋진 극복 전략들을 설계해 냈구나! 앞으로도 건강하게 조절해 나갈 너의 멋진 의지를 응원할게!</div>
+            <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.25rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">디지털 기기나 게임을 스스로 제어하기 어려웠던 숨겨진 원인들을 파악하고, 너에게 꼭 맞는 멋진 극복 전략들을 설계해 냈구나! 앞으로도 건강하게 조절해 나갈 너의 멋진 의지를 응원할게!</div>
           </div>
 
         </div>
@@ -738,19 +750,19 @@
     </div>
 
     <!-- 공통 표준 하단 푸터바 -->
-    <div id="control-bar" class="w-full bg-[#1e293b] border-t-4 border-black px-6 py-1.5 flex justify-between items-center z-50 shrink-0 select-none hidden" style="height: 44px; font-family: 'DungGeunMo', monospace;">
+    <div id="control-bar" class="w-full bg-[#1e293b] border-t-4 border-black px-8 py-2.5 flex justify-between items-center z-50 shrink-0 select-none hidden" style="height: 62px; font-family: 'DungGeunMo', monospace;">
       <!-- 좌측: 이전 단계 -->
-      <button id="btn-prev" class="px-4 py-1 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="prevStep()">
+      <button id="btn-prev" class="px-6 py-2 bg-slate-700 hover:bg-slate-600 text-white text-base font-bold border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="prevStep()">
         ◀ 이전 단계
       </button>
       
       <!-- 중앙: 홈으로 (맵으로) -->
-      <button id="footer-home-btn" class="px-5 py-1 bg-amber-400 hover:bg-amber-500 text-black text-xs font-black border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="exitToMap()">
+      <button id="footer-home-btn" class="px-8 py-2 bg-amber-400 hover:bg-amber-500 text-black text-base font-black border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="exitToMap()">
         🏠 홈으로 (맵)
       </button>
       
       <!-- 우측: 다음 단계 -->
-      <button id="btn-next" class="px-4 py-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="nextStep()">
+      <button id="btn-next" class="px-6 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-base font-bold border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="nextStep()">
         다음 단계 ▶
       </button>
     </div>
