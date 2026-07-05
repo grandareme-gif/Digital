@@ -1346,7 +1346,7 @@ window.renderMap = function() {
     
     const iconFile = categoryIcons[node.category] || '';
     if (iconFile) {
-      div.innerHTML = `<img src="${iconFile}" alt="${node.category}" style="width: 210px; height: 210px; object-fit: contain; filter: ${isComp ? 'none' : 'grayscale(100%) brightness(0.6)'}; transition: filter 0.5s ease; pointer-events: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;">`;
+      div.innerHTML = `<img src="${iconFile}" alt="${node.category}" style="width: 294px; height: 294px; object-fit: contain; filter: ${isComp ? 'none' : 'grayscale(100%) brightness(0.6)'}; transition: filter 0.5s ease; pointer-events: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;">`;
     } else {
       div.innerHTML = `<span style="font-size: 3rem;">${isComp ? '🌟' : '❄️'}</span>`;
     }
@@ -1370,7 +1370,7 @@ window.renderMap = function() {
   heartDiv.style.top = "50%";
   
   if (isHeartCompleted) {
-    heartDiv.innerHTML = `<span style="font-size: 3.5rem; filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.8));">❤️</span>`;
+    heartDiv.innerHTML = `<span style="font-size: 4.9rem; filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.8));">❤️</span>`;
     heartDiv.title = "마음 온(ON) 완료! 아웃트로 보기";
     heartDiv.onclick = () => {
       if (typeof synth !== 'undefined' && synth.playSuccess) {
@@ -1379,7 +1379,7 @@ window.renderMap = function() {
       window.startOutro();
     };
   } else {
-    heartDiv.innerHTML = `<span style="font-size: 3.5rem;">💔</span>`;
+    heartDiv.innerHTML = `<span style="font-size: 4.9rem;">💔</span>`;
     heartDiv.title = "8개의 마음 에너지를 모아주세요";
     heartDiv.onclick = () => {
       if (typeof synth !== 'undefined' && synth.playSelect) {
@@ -1391,7 +1391,7 @@ window.renderMap = function() {
   
   const heartLabel = document.createElement('div');
   heartLabel.className = "map-node-label";
-  heartLabel.style.bottom = "-35px";
+  heartLabel.style.bottom = "-49px";
   heartLabel.innerText = isHeartCompleted ? "마음 온(ON)!" : "";
   heartDiv.appendChild(heartLabel);
   

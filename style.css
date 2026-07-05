@@ -518,8 +518,8 @@ body {
 /* 마인드 웹 노드 */
 .map-node {
   position: absolute;
-  width: 80px;
-  height: 80px;
+  width: 112px;
+  height: 112px;
   background-color: #1a2a3a; /* 기본 얼어붙은 색상 */
   border: var(--pixel-thick) solid #001f3f;
   border-radius: 50%; /* 둥근 픽셀 느낌도 괜춘, 혹은 사각 */
@@ -528,7 +528,7 @@ body {
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  box-shadow: inset 0 0 20px rgba(0, 100, 255, 0.5), 4px 4px 0 #000;
+  box-shadow: inset 0 0 28px rgba(0, 100, 255, 0.5), 5px 5px 0 #000;
   transform: translate(-50%, -50%);
   transition: all 0.3s;
 }
@@ -537,21 +537,21 @@ body {
 }
 .map-node-label {
   position: absolute;
-  bottom: -30px;
-  font-size: 1rem;
+  bottom: -42px;
+  font-size: 1.4rem;
   color: #8bb8ff;
   white-space: nowrap;
-  text-shadow: 2px 2px 0 #000;
+  text-shadow: 3px 3px 0 #000;
 }
 
 /* 완료된 노드 상태 */
 .map-node.completed {
   background-color: var(--point-yellow);
   border-color: #fff;
-  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px var(--point-yellow);
+  box-shadow: inset 0 0 28px rgba(255, 255, 255, 0.8), 0 0 42px var(--point-yellow);
 }
 .map-node.completed span {
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.9), 0 0 15px var(--point-yellow);
+  text-shadow: 0 0 11px rgba(255, 255, 255, 0.9), 0 0 21px var(--point-yellow);
 }
 .map-node.completed .map-node-label {
   color: var(--point-yellow);
@@ -563,14 +563,14 @@ body {
   right: -10px;
   background: #000;
   color: #fff;
-  border: 2px solid #fff;
+  border: 3px solid #fff;
   border-radius: 50%;
-  width: 25px;
-  height: 25px;
+  width: 35px;
+  height: 35px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 14px;
+  font-size: 20px;
 }
 
 /* SVG 라인 스타일 */
@@ -1113,8 +1113,8 @@ body {
    ============================================= */
 .map-heart {
   position: absolute;
-  width: 90px;
-  height: 90px;
+  width: 126px;
+  height: 126px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1128,7 +1128,7 @@ body {
 .map-heart.broken {
   background-color: #1c2833;
   border: var(--pixel-thick) dashed #34495e;
-  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6), 4px 4px 0 #000;
+  box-shadow: inset 0 0 21px rgba(0, 0, 0, 0.6), 5px 5px 0 #000;
   cursor: help;
   opacity: 1;
 }
@@ -1141,7 +1141,7 @@ body {
 .map-heart.completed {
   background-color: #ffe5ec;
   border: var(--pixel-thick) solid #ff007f;
-  box-shadow: inset 0 0 20px rgba(255, 0, 127, 0.8), 0 0 25px rgba(255, 0, 127, 0.5), 4px 4px 0 #000;
+  box-shadow: inset 0 0 28px rgba(255, 0, 127, 0.8), 0 0 35px rgba(255, 0, 127, 0.5), 5px 5px 0 #000;
   cursor: pointer;
   animation: heartBeat 1.2s infinite ease-in-out;
 }
