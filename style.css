@@ -1160,3 +1160,21 @@ body {
   70% { transform: translate(-50%, -50%) scale(1); }
   100% { transform: translate(-50%, -50%) scale(1); }
 }
+
+/* =============================================
+   개인정보처리방침 모달 및 스크롤바 커스텀 
+   ============================================= */
+#privacy-content-view::-webkit-scrollbar {
+  width: 12px;
+}
+#privacy-content-view::-webkit-scrollbar-track {
+  background: #111;
+  border-left: 2px solid #000;
+}
+#privacy-content-view::-webkit-scrollbar-thumb {
+  background: var(--point-yellow);
+  border: 2px solid #000;
+}
+#privacy-content-view::-webkit-scrollbar-thumb:hover {
+  background: var(--point-yellow-dark);
+}
