@@ -1,0 +1,2835 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>인터넷 윤리의식 스테이지</title>
+  
+  <!-- 둥근모꼴 폰트 (로컬 로드) -->
+  
+  <style>
+    /* =========================================
+       전역 & 공통 스타일
+       ========================================= */
+    @font-face {
+      font-family: 'DungGeunMo';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    :root {
+      --bg-dark: #0f111a;
+      --bg-panel: #1a1c28;
+      --point-yellow: #ffd700;
+      --point-green: #2ecc71;
+      --point-red: #ff4757;
+      --point-blue: #3498db;
+      --text-main: #ffffff;
+      --text-muted: #a0a5c0;
+      --border-color: #000000;
+      --pixel-thick: 4px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'DungGeunMo', monospace;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    body {
+      background-color: #1A252F;
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      padding: 0 !important;
+    }
+
+    #app-container {
+      width: 100%;
+      height: 100vh;
+      position: relative;
+      background-color: var(--bg-panel);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #btn-act1-next, #btn-act2-finish {
+      display: none !important;
+    }
+    #standard-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 52px;
+      background-color: #1e293b;
+      border-bottom: 4px solid #000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 50;
+      font-family: 'DungGeunMo', monospace;
+      color: #ffffff;
+      user-select: none;
+      box-sizing: border-box;
+    }
+    #control-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 44px;
+      background-color: #1e293b;
+      border-top: 4px solid #000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 50;
+      font-family: 'DungGeunMo', monospace;
+      box-sizing: border-box;
+    }
+    /* 활동 뷰 상하단바 면적 공제 */
+    #view-act1, #view-act2 {
+      top: 52px !important;
+      height: calc(100% - 96px) !important;
+      padding: 16px 20px !important;
+    }
+    /* 불필요한 중복 진행바 삭제 */
+    .progress-header {
+      display: none !important;
+    }
+    /* 뷰 기본 스타일 */
+    .view {
+      display: none;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      flex-direction: column;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .view.active {
+      display: flex;
+    }
+
+    /* 복고풍/게임 스타일 버튼 */
+    .retro-btn {
+      background-color: var(--point-yellow);
+      color: #000000;
+      border: var(--pixel-thick) solid var(--border-color);
+      padding: 12px 24px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 var(--border-color);
+      border-radius: 8px;
+      transition: all 0.1s ease;
+      outline: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .retro-btn:hover {
+      background-color: #ffe44d;
+      transform: translateY(-2px);
+      box-shadow: 4px 6px 0 var(--border-color);
+    }
+    .retro-btn:active {
+      box-shadow: 0px 0px 0 var(--border-color);
+      transform: translate(4px, 4px);
+    }
+    .retro-btn:disabled {
+      background-color: #555870;
+      color: #888ba3;
+      cursor: not-allowed;
+      box-shadow: 2px 2px 0 var(--border-color);
+      transform: translate(2px, 2px);
+    }
+
+    h2.title {
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      text-shadow: 2px 2px 0 var(--border-color);
+      color: var(--point-yellow);
+      text-align: center;
+    }
+
+
+    
+
+    
+
+    
+
+
+    @keyframes floatAvatar {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* 임시 스킵 버튼 스타일 */
+    .temp-skip-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(0, 0, 0, 0.4);
+      color: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      z-index: 9999;
+      transition: all 0.2s ease;
+    }
+    .temp-skip-btn:hover {
+      background: rgba(255, 71, 87, 0.3);
+      color: #ffffff;
+      border-color: var(--point-red);
+    }
+
+    /* =========================================
+       Screen 1: 인트로
+       ========================================= */
+    #view-intro {
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    
+    .intro-fairy-container {
+      margin-bottom: 25px;
+      position: relative;
+    }
+    
+    .intro-fairy-img {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 6px solid var(--point-yellow);
+      background-color: #2b2e3d;
+      animation: floatFairy 4s ease-in-out infinite;
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
+    }
+    
+    @keyframes floatFairy {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(3deg); }
+    }
+    
+    .intro-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 25px;
+      width: 90%;
+      max-width: 550px;
+      margin-bottom: 30px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .intro-title {
+      font-size: 1.6rem;
+      color: var(--point-yellow);
+      margin-bottom: 15px;
+      letter-spacing: 1px;
+    }
+    
+    .intro-text {
+      font-size: 1.15rem;
+      line-height: 1.6;
+      word-break: keep-all;
+      color: #cbd5e1;
+      min-height: 70px;
+    }
+    
+    .activity-summary-box {
+      margin-top: 20px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.15);
+      padding-top: 15px;
+      text-align: left;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+    
+    .activity-summary-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    
+    .activity-summary-badge {
+      background: var(--point-yellow);
+      color: #000;
+      font-size: 0.8rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    /* =========================================
+       Screen 2: 활동 1 (디지털 발자국 탐정단)
+       ========================================= */
+    .progress-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 0 5px;
+      font-size: 1.1rem;
+    }
+    
+    .stage-bar-container {
+      width: 150px;
+      height: 16px;
+      background-color: #000;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .stage-bar-fill {
+      height: 100%;
+      background-color: var(--point-yellow);
+      width: 33.3%;
+      transition: width 0.3s ease;
+    }
+    
+    /* 돋보기 게임 판 */
+    .detective-playground {
+      width: 100%;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    
+    .image-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 560px;
+      height: auto;
+      border: var(--pixel-thick) solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      background-color: #000;
+    }
+    
+    /* 활동 1 하단 제어 버튼 영역 스타일 */
+    .act1-btn-container {
+      display: flex;
+      gap: 16px;
+      margin-top: 4px;
+      width: 100%;
+      max-width: 560px;
+      justify-content: center;
+      z-index: 10;
+    }
+    .act1-btn-container button {
+      background-color: #1A252F;
+      color: #FFD700;
+      border: 2px solid #000;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-family: inherit;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 #000;
+      transition: all 0.1s ease;
+    }
+    .act1-btn-container button:hover {
+      background-color: #2C3E50;
+    }
+    .act1-btn-container button:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 #000;
+    }
+    
+    .image-wrapper img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      display: block;
+    }
+    
+    /* 투명 핫스팟 */
+    .hotspot {
+      position: absolute;
+      border: 2px solid transparent;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.2s ease;
+    }
+    .hotspot:hover {
+      background-color: rgba(255, 215, 0, 0.15);
+      border-color: rgba(255, 215, 0, 0.5);
+    }
+    .hotspot.found {
+      border: 4px solid var(--point-red);
+      background-color: rgba(255, 71, 87, 0.25);
+      pointer-events: none;
+      animation: pulseBorder 1.5s infinite;
+    }
+    
+    @keyframes pulseBorder {
+      0%, 100% { border-color: var(--point-red); }
+      50% { border-color: #ff6b81; }
+    }
+    
+    .found-badge {
+      position: absolute;
+      background: var(--point-red);
+      color: white;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 4px;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      pointer-events: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      display: none;
+    }
+    .hotspot.found .found-badge {
+      display: block;
+    }
+
+    .feedback-bubble {
+      margin-top: 15px;
+      background: #23273a;
+      border-left: 5px solid var(--point-yellow);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      color: #cbd5e1;
+      width: 100%;
+      max-width: 560px;
+      word-break: keep-all;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .act-controls {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    /* =========================================
+       Screen 3: 활동 2 (안심 크리에이터 도전)
+       ========================================= */
+    #view-act2 {
+      align-items: center;
+    }
+    
+    /* 사전 학습 모달 */
+    .modal-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+    }
+    
+    .modal-content {
+      background: var(--bg-panel);
+      border: var(--pixel-thick) solid var(--point-yellow);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 550px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      animation: modalOpen 0.3s ease-out;
+    }
+    
+    @keyframes modalOpen {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    
+    .modal-title {
+      font-size: 1.5rem;
+      color: var(--point-yellow);
+      margin-bottom: 20px;
+    }
+    
+    .ccl-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 25px;
+      text-align: left;
+    }
+    
+    .ccl-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 10px 15px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .ccl-icon-img {
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+      background: #2b2e3d;
+      border-radius: 6px;
+      padding: 4px;
+      flex-shrink: 0;
+    }
+    
+    .ccl-desc {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    
+    .ccl-name {
+      font-weight: bold;
+      color: #fff;
+      font-size: 1.05rem;
+    }
+    
+    .ccl-meaning {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.4;
+      word-break: keep-all;
+    }
+
+    /* 시뮬레이션 본 활동 작업 영역 */
+    .editor-container {
+      display: flex;
+      gap: 20px;
+      width: 100%;
+      flex-grow: 1;
+      margin-top: 5px;
+    }
+
+    /* 좌측 미리보기 및 타임라인 영역 */
+    .editor-preview-panel {
+      flex: 1;
+      background: #1e2130;
+      border: 3px solid var(--border-color);
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .editor-panel-title {
+      font-size: 1.1rem;
+      color: var(--point-yellow);
+      margin-bottom: 12px;
+      text-align: center;
+      border-bottom: 2px dashed rgba(255,255,255,0.1);
+      padding-bottom: 6px;
+    }
+
+    .timeline-slots {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex-grow: 1;
+      justify-content: center;
+    }
+
+    .timeline-slot {
+      background: rgba(0, 0, 0, 0.35);
+      border: 2px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 60px;
+      transition: all 0.2s ease;
+    }
+    .timeline-slot.filled {
+      background: rgba(52, 152, 219, 0.08);
+      border: 2px solid var(--point-blue);
+    }
+    .timeline-slot.filled.correct-style {
+      background: rgba(46, 204, 113, 0.05);
+      border-color: var(--point-green);
+    }
+
+    .slot-badge {
+      background: #2b2e3d;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      color: var(--point-yellow);
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .slot-content-text {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      word-break: keep-all;
+      flex-grow: 1;
+    }
+    .timeline-slot.filled .slot-content-text {
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .image-preview-slot {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .image-preview-element {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0; left: 0;
+      opacity: 0.5;
+      display: none;
+    }
+    .image-preview-slot.filled .image-preview-element {
+      display: block;
+    }
+
+    .image-preview-slot .slot-content-text {
+      z-index: 2;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+      text-align: center;
+    }
+
+    .image-preview-slot .slot-badge {
+      z-index: 2;
+    }
+
+    /* 저작권 침해 경고 (Copyright Strike) 스탬프 */
+    .copyright-strike-stamp {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255, 71, 87, 0.5);
+      backdrop-filter: blur(2px);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 20;
+      border-radius: 8px;
+      animation: stampAppear 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    @keyframes stampAppear {
+      from { transform: scale(3); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .strike-stamp-box {
+      border: var(--pixel-thick) dashed var(--point-red);
+      background: #000;
+      color: var(--point-red);
+      padding: 15px 25px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      transform: rotate(-10deg);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+      text-align: center;
+      word-break: keep-all;
+    }
+
+    /* 우측 자료 선택 영역 */
+    .editor-resources-panel {
+      flex: 1.2;
+      background: #1a1c28;
+      border: 3px solid var(--border-color);
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 탭 메뉴 */
+    .resource-tabs {
+      display: flex;
+      gap: 5px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 8px 5px;
+      background: #232533;
+      color: var(--text-muted);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-bottom: none;
+      border-radius: 6px 6px 0 0;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: bold;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+    .tab-btn:hover {
+      background: #2d3042;
+      color: #fff;
+    }
+    .tab-btn.active {
+      background: var(--point-yellow);
+      color: #000;
+      border-color: var(--border-color);
+    }
+
+    /* 탭 콘텐츠 */
+    .tab-content {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+    .tab-content.active {
+      display: flex;
+    }
+
+    /* 자료 선택 카드 */
+    .resource-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+    .resource-card:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 215, 0, 0.3);
+    }
+    .resource-card.selected {
+      background: rgba(255, 215, 0, 0.08);
+      border-color: var(--point-yellow);
+    }
+
+    .card-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 6px;
+      background: #2b2e3d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .card-info {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .card-name {
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .card-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .info-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--point-yellow);
+      background: #2b2e3d;
+      color: var(--point-yellow);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: bold;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+    }
+    .info-btn:hover {
+      background: var(--point-yellow);
+      color: #000;
+      transform: scale(1.1);
+    }
+
+    /* CCL 디테일 모달 */
+    .info-modal-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 110;
+      padding: 15px;
+      backdrop-filter: blur(2px);
+    }
+
+    .info-modal-content {
+      background: #222535;
+      border: 3px solid var(--point-yellow);
+      border-radius: 10px;
+      width: 100%;
+      max-width: 380px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+      animation: modalOpen 0.2s ease-out;
+    }
+
+    .info-modal-header {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--point-yellow);
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .info-modal-ccl-badges {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: #151722;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 15px;
+      width: 100%;
+    }
+
+    .info-modal-ccl-badge-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 6px 10px;
+    }
+
+    .info-modal-ccl-badge-img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      background: #2b2e3d;
+      border-radius: 4px;
+      padding: 2px;
+      flex-shrink: 0;
+    }
+
+    .info-modal-ccl-badge-text {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    .info-modal-desc {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #cbd5e1;
+      margin-bottom: 20px;
+      word-break: keep-all;
+      text-align: left;
+      background: rgba(0,0,0,0.25);
+      padding: 10px;
+      border-radius: 6px;
+    }
+
+    /* =========================================
+       모바일 및 태블릿 대응 미디어 쿼리
+       ========================================= */
+    @media (max-width: 600px) {
+      #app-container {
+        height: 100%;
+        max-height: 100vh;
+        border: none;
+        border-radius: 0;
+      }
+      
+      body {
+        padding: 0;
+      }
+      
+      h2.title {
+        font-size: 1.4rem;
+        margin-bottom: 8px;
+      }
+      
+      .guide-panel {
+        padding: 8px 12px;
+        margin-bottom: 8px;
+      }
+      
+      .guide-avatar {
+        width: 48px;
+        height: 48px;
+      }
+      
+      .guide-bubble {
+        font-size: 0.9rem;
+        padding: 8px 10px;
+      }
+
+      .editor-container {
+        flex-direction: column;
+        gap: 10px;
+        overflow-y: auto;
+      }
+
+      .editor-preview-panel, .editor-resources-panel {
+        width: 100%;
+        flex: none;
+        padding: 10px;
+      }
+
+      .timeline-slot {
+        min-height: 50px;
+        padding: 6px;
+      }
+      
+      .image-preview-slot {
+        min-height: 90px;
+      }
+
+      .folder-label {
+        font-size: 0.75rem;
+      }
+      
+      .intro-fairy-img {
+        width: 120px;
+        height: 120px;
+      }
+      
+      .intro-card {
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+      
+      .intro-title {
+        font-size: 1.3rem;
+      }
+      
+      .intro-text {
+        font-size: 1.05rem;
+      }
+    }
+
+    /* 마음온 픽셀 요정 스타일 추가 */
+    .pixel-fairy-container {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      animation: floatFairy 2.5s ease-in-out infinite;
+    }
+    .pixel-fairy-svg {
+      width: 100%;
+      height: 100%;
+    }
+    .fairy-wing-l {
+      animation: flapL 0.2s ease-in-out infinite alternate;
+      transform-origin: 32px 56px;
+    }
+    .fairy-wing-r {
+      animation: flapR 0.2s ease-in-out infinite alternate;
+      transform-origin: 64px 56px;
+    }
+    @keyframes floatFairy {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes flapL {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(12deg); }
+    }
+    @keyframes flapR {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(-12deg); }
+    }
+  
+    /* 힌트 및 돋보기 관련 추가 스타일 */
+    @keyframes pulse-yellow {
+      0% {
+        border-color: transparent;
+        background-color: transparent;
+      }
+      100% {
+        border-color: #f1c40f;
+        background-color: rgba(241, 196, 15, 0.45);
+        box-shadow: 0 0 15px #f1c40f;
+      }
+    }
+    .hotspot.hint-active {
+      animation: pulse-yellow 0.4s infinite alternate;
+      border: 3px solid #f1c40f !important;
+      z-index: 20;
+    }
+
+    /* 크게 보기 모달 및 돋보기 렌즈 Vanilla CSS */
+    #image-zoom-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.85);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    #zoom-modal-content {
+      position: relative;
+      width: 90%;
+      max-width: 900px;
+      height: auto;
+      max-height: 85vh;
+      background-color: #000;
+      padding: 10px;
+      border: 4px solid #FFD700;
+      box-shadow: 8px 8px 0 #000;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .zoom-close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      z-index: 210;
+      color: #fff;
+      background-color: rgba(0, 0, 0, 0.7);
+      border: 2px solid #fff;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .zoom-close-btn:hover {
+      background-color: #ff4757;
+      border-color: #ff4757;
+    }
+    #zoom-img-container {
+      position: relative;
+      width: 100%;
+      height: auto;
+      max-height: 80vh;
+      overflow: hidden;
+      cursor: crosshair;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #zoomed-stage-image {
+      width: 100%;
+      height: auto;
+      max-height: 75vh;
+      object-fit: contain;
+      display: block;
+    }
+    #magnifier-lens {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border: 4px solid #FFD700;
+      border-radius: 50%;
+      pointer-events: none;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      display: none;
+      background-repeat: no-repeat;
+    }
+
+    /* =========================================
+       인트로(도입) 화면 공통 표준 스타일
+       ========================================= */
+    .std-intro-container {
+      position: absolute;
+      inset: 0 !important;
+      height: 100% !important;
+      top: 0 !important;
+      padding: 0 !important;
+      display: none; /* 기본 상태는 숨김 */
+      flex-direction: column;
+      background-color: #1a1c23;
+      color: #ffffff;
+      overflow: hidden;
+      font-family: 'DungGeunMo', monospace;
+      z-index: 100; /* 인트로가 항상 최상위 노출 */
+    }
+
+    .std-intro-container.active {
+      display: flex !important; /* active 상태일 때만 보임 */
+    }
+
+    .std-intro-header-simple {
+      width: 100%;
+      background-color: #2c3e50;
+      border-bottom: 4px solid #000000;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      z-index: 10;
+      box-sizing: border-box;
+    }
+
+    .std-intro-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin: 0;
+      color: #ffffff;
+      text-shadow: 2px 2px 0 #000000;
+    }
+
+    .std-intro-body {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      gap: 32px;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+
+    /* 모바일/태블릿 반응형 대응 */
+    @media (max-width: 768px) {
+      .std-intro-body {
+        flex-direction: column;
+        padding: 16px;
+        gap: 16px;
+        justify-content: flex-start;
+      }
+    }
+
+    .std-intro-char-wrapper-small {
+      width: 195px;
+      height: 195px;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .std-intro-char-wrapper-small {
+        width: 135px;
+        height: 135px;
+      }
+    }
+
+    .std-intro-char-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      animation: miniFloat 2.5s ease-in-out infinite;
+    }
+
+    .std-intro-unified-box {
+      background-color: #1e293b;
+      border: 4px solid #000000;
+      padding: 20px;
+      width: 100%;
+      max-width: 520px;
+      min-height: 220px;
+      box-shadow: 4px 4px 0 #000000;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .std-intro-dialog-inner {
+      color: #f1f5f9;
+      font-size: 0.975rem;
+      line-height: 1.6;
+      text-align: left;
+      word-break: keep-all;
+    }
+
+    .std-intro-divider {
+      height: 2px;
+      background-color: #475569;
+      width: 100%;
+    }
+
+    .std-intro-activities-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .std-activity-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .std-activity-badge {
+      background-color: #eab308;
+      color: #000000;
+      font-size: 0.775rem;
+      padding: 2px 6px;
+      font-weight: 800;
+      flex-shrink: 0;
+      border: 1px solid #000;
+    }
+
+    .std-activity-text {
+      color: #ffffff;
+      font-size: 0.875rem;
+      font-weight: bold;
+    }
+
+    .std-intro-footer {
+      width: 100%;
+      background-color: #2c3e50;
+      border-top: 4px solid #000000;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+      z-index: 10;
+      box-sizing: border-box;
+    }
+
+    .std-footer-btn-left {
+      padding: 10px 24px;
+      background-color: #475569;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 0.8rem;
+      border: 2px solid #000000;
+      box-shadow: 3px 3px 0 #000000;
+      cursor: pointer;
+      transition: all 0.1s;
+      font-family: 'DungGeunMo', monospace;
+    }
+
+    .std-footer-btn-left:hover {
+      background-color: #64748b;
+    }
+
+    .std-footer-btn-left:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 #000000;
+    }
+
+    .std-footer-btn-right {
+      padding: 10px 32px;
+      background-color: #fde047;
+      color: #000000;
+      font-weight: 800;
+      font-size: 0.85rem;
+      border: 2px solid #000000;
+      box-shadow: 3px 3px 0 #000000;
+      cursor: pointer;
+      transition: all 0.1s;
+      font-family: 'DungGeunMo', monospace;
+    }
+
+    .std-footer-btn-right:hover {
+      background-color: #facc15;
+    }
+
+    .std-footer-btn-right:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 #000000;
+    }
+
+    /* === 마음온 AI 공통 표준 가이드 배너 스타일 - 48px 레트로 핏 === */
+    .std-guide-banner {
+      background-color: #312e81 !important;
+      border: 3px solid #000000 !important;
+      box-shadow: 2px 2px 0px #000000 !important;
+      border-radius: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      padding: 6px 12px !important;
+      width: 100% !important;
+      height: 48px !important;
+      flex-shrink: 0 !important;
+      margin-top: -6px !important;
+      position: relative !important;
+      margin-bottom: 4px !important;
+    }
+    
+    @keyframes bounceFairy {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+  </style>
+</head>
+<body style="margin: 0; padding: 0;">
+
+  <div id="app-container">
+    <!-- 공통 표준 상단 헤더바 -->
+    <div id="standard-header" style="display: none;">
+      <!-- 좌측: 고유 역량 이미지 아이콘 & 역량명 -->
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <div style="position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; overflow: visible; margin-left: -5px; margin-right: 5px; flex-shrink: 0;">
+          <!-- 4.5배율 돌출 효과 재현 (icon_ethics.png) -->
+          <img src="images/icon_ethics.png" alt="역량 아이콘" style="position: absolute; width: 96px; height: 96px; object-fit: contain; max-width: none; image-rendering: pixelated; transform: scale(2.4); z-index: 20; pointer-events: none; top: -28px; left: -26px;">
+        </div>
+        <span style="font-weight: bold; font-size: 1.15rem; letter-spacing: -0.025em; margin-left: 5px;">인터넷 윤리의식 및 활용</span>
+      </div>
+      
+      <!-- 가운데: 활동명 및 진행 상태 (도트) -->
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <span id="stage-title-text" style="font-size: 0.75rem; font-weight: bold; color: #cbd5e1; white-space: nowrap;">사이버 윤리의식</span>
+        <div id="header-progress-dots" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+          <span class="stage-dot" id="dot-1" style="width: 14px; height: 14px; border-radius: 9999px; border: 2px solid #000; background-color: #64748b; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 8px; color: #fff;">1</span>
+          <span class="stage-dot" id="dot-2" style="width: 14px; height: 14px; border-radius: 9999px; border: 2px solid #000; background-color: #64748b; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 8px; color: #fff;">2</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 임시 테스트 스킵 버튼 -->
+    <button class="temp-skip-btn" onclick="skipToNextSection()">⏩ 스킵</button>
+
+    <!-- =========================================
+         Screen 1: 인트로 (안내 화면)
+         ========================================= -->
+    <div id="view-intro" class="std-intro-container view active">
+      <!-- 상단 헤더 영역 (심플 헤더) -->
+      <div class="std-intro-header-simple">
+        <h1 class="std-intro-title">인터넷 윤리의식 및 활용</h1>
+      </div>
+
+      <!-- 메인 본문 영역 -->
+      <div class="std-intro-body">
+        <!-- 좌측 캐릭터 영역 (더 작아짐) -->
+        <div class="std-intro-char-wrapper-small">
+          <img src="images/maeumon_intro.png" alt="마음온" class="std-intro-char-img">
+        </div>
+
+        <!-- 우측 단일 통합 상자 (대사 + 활동 요약) -->
+        <div class="std-intro-unified-box">
+          <!-- 대사 (텍스트 직접 노출) -->
+          <div id="intro-typing-text" class="std-intro-dialog-inner">온라인에서는 무심코 올린 사진이나 남의 글을 함부로 쓰면 큰 문제가 생길 수 있어. 그래서 내 정보를 지키고 다른 사람의 권리를 존중하는 태도가 필요해.</div>
+          <!-- 구분선 -->
+          <div class="std-intro-divider"></div>
+          <!-- 활동 요약 목록 -->
+          <div class="std-intro-activities-inner">
+            <div class="std-activity-row">
+              <span class="std-activity-badge">활동 1</span>
+              <span class="std-activity-text">일상 사진 속에 숨겨진 개인정보를 찾고 안전하게 가리기</span>
+            </div>
+            <div class="std-activity-row">
+              <span class="std-activity-badge">활동 2</span>
+              <span class="std-activity-text">저작권(CCL) 규칙에 맞추어 안전한 자료로 영상 완성하기</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 하단 버튼 영역 (좌측: 홈, 우측: 활동 시작) -->
+      <div class="std-intro-footer">
+        <button onclick="exitToMap()" class="std-footer-btn-left">🏠 홈으로</button>
+        <!-- 시작 버튼 상시 노출 -->
+        <div id="intro-btn-container">
+          <button onclick="startEthicsActivities()" class="std-footer-btn-right">활동 시작하기 ▶</button>
+        </div>
+      </div>
+
+      <script>
+        function exitToMap() {
+          try {
+            if (window.parent && window.parent !== window) {
+              window.parent.postMessage({ type: 'RETURN_TO_MAP' }, '*');
+            } else {
+              window.location.href = 'index.html';
+            }
+          } catch (e) {
+            window.location.href = 'index.html';
+          }
+        }
+
+    // 표준 상하단바 프레임워크 업데이트 제어
+    function updateFrameUI(viewId) {
+      const header = document.getElementById("standard-header");
+      const footer = document.getElementById("control-bar");
+      if (!header || !footer) return;
+
+      if (viewId === 'view-intro' || viewId === 'view-outro') {
+        header.style.setProperty('display', 'none', 'important');
+        footer.style.setProperty('display', 'none', 'important');
+      } else {
+        header.style.setProperty('display', 'flex', 'important');
+        footer.style.setProperty('display', 'flex', 'important');
+
+        // 타이틀 및 도트 인디케이터
+        const titleText = document.getElementById("stage-title-text");
+        const dot1 = document.getElementById("dot-1");
+        const dot2 = document.getElementById("dot-2");
+
+        // 기본 도트 스타일 (순수 CSS 복원)
+        const inactiveDotStyle = "width: 14px; height: 14px; border-radius: 9999px; border: 2px solid #000; background-color: #64748b; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 8px; color: #fff;";
+        const activeDotStyle = "width: 14px; height: 14px; border-radius: 9999px; border: 2px solid #000; background-color: #3b82f6; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 8px; color: #fff; box-shadow: 0 0 8px #3b82f6;";
+        const completedDotStyle = "width: 14px; height: 14px; border-radius: 9999px; border: 2px solid #000; background-color: #10b981; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 8px; color: #fff;";
+
+        if (dot1) dot1.style = inactiveDotStyle;
+        if (dot2) dot2.style = inactiveDotStyle;
+
+        const prevBtn = document.getElementById("btn-prev");
+        const nextBtn = document.getElementById("btn-next");
+
+        // 이전 단계 비활성 제어 (첫 번째 스테이지)
+        let isFirstStep = (viewId === 'view-act1' && currentStage === 1);
+        if (isFirstStep) {
+          if (prevBtn) {
+            prevBtn.style.opacity = "0.5";
+            prevBtn.style.cursor = "not-allowed";
+            prevBtn.classList.add('disabled');
+          }
+        } else {
+          if (prevBtn) {
+            prevBtn.style.opacity = "1";
+            prevBtn.style.cursor = "pointer";
+            prevBtn.classList.remove('disabled');
+          }
+        }
+
+        // 다음 단계 미션 완료 여부 파악
+        let isTaskCompleted = false;
+
+        if (viewId === 'view-act1') {
+          // 활동 1 완료 조건: 현재 스테이지의 침해 요소를 다 찾았는지
+          const stageData = act1Stages[currentStage];
+          if (foundHotspots && stageData && foundHotspots.size === stageData.hotspots.length) {
+            isTaskCompleted = true;
+          }
+          if (titleText) titleText.innerText = "활동 1: 일상 사진 속에 숨겨진 개인정보를 찾고 안전하게 가리기";
+          if (dot1) dot1.style = activeDotStyle;
+        } else if (viewId === 'view-act2') {
+          // 활동 2 완료 조건: 최종 제작완료 finish 버튼이 활성화되었는지
+          const act2FinishBtn = document.getElementById("btn-act2-finish");
+          if (act2FinishBtn && act2FinishBtn.style.display !== "none") {
+            isTaskCompleted = true;
+          }
+          if (titleText) titleText.innerText = "활동 2: 저작권(CCL) 규칙에 맞추어 안전한 자료로 영상 완성하기";
+          if (dot1) dot1.style = completedDotStyle;
+          if (dot2) dot2.style = activeDotStyle;
+        }
+
+        if (isTaskCompleted) {
+          if (nextBtn) {
+            nextBtn.style.opacity = "1";
+            nextBtn.style.cursor = "pointer";
+            nextBtn.classList.remove('disabled');
+          }
+        } else {
+          if (nextBtn) {
+            nextBtn.style.opacity = "0.5";
+            nextBtn.style.cursor = "not-allowed";
+            nextBtn.classList.add('disabled');
+          }
+        }
+
+        if (nextBtn) {
+          if (viewId === 'view-act2') {
+            nextBtn.innerText = "활동 완료 ➔";
+          } else {
+            nextBtn.innerText = "다음 단계 ▶";
+          }
+        }
+      }
+    }
+
+    // 이전/다음 단계 클릭 리디렉션
+    function prevStep() {
+      const prevBtn = document.getElementById("btn-prev");
+      if (prevBtn && prevBtn.classList.contains('disabled')) {
+        playBeepSound('click');
+        alert("이전 단계가 존재하지 않습니다. (첫 번째 활동 화면입니다)");
+        return;
+      }
+
+      playBeepSound('click');
+      const activeView = document.querySelector('.view.active');
+      const viewId = activeView ? activeView.id : '';
+
+      if (viewId === 'view-act2') {
+        // 활동 2 -> 활동 1 마지막 스테이지로 복귀
+        currentStage = maxStages;
+        loadStage(currentStage);
+        switchView('view-act1');
+      } else if (viewId === 'view-act1' && currentStage > 1) {
+        // 활동 1 스테이지 2 -> 스테이지 1로 복귀
+        currentStage--;
+        loadStage(currentStage);
+        updateFrameUI('view-act1');
+      }
+    }
+
+    function nextStep() {
+      const nextBtn = document.getElementById("btn-next");
+
+      // 미완료 시 친절한 가이드 알림 출력
+      if (nextBtn && nextBtn.classList.contains('disabled')) {
+        playBeepSound('fail');
+        const activeView = document.querySelector('.view.active');
+        const viewId = activeView ? activeView.id : '';
+
+        if (viewId === 'view-act1') {
+          alert("이 화면에서 다른 사람의 권리를 침해하고 있는 숨겨진 요소들을 마우스로 클릭하여 모두 찾아내야 합니다!");
+        } else {
+          alert("왼쪽의 재료 상자에서 알맞은 배경음악, 이미지, 글꼴을 각각 한 개씩 선택하여 너만의 멋진 카드를 전송(등록)해 주세요!");
+        }
+        return;
+      }
+
+      playBeepSound('success');
+      const activeView = document.querySelector('.view.active');
+      const viewId = activeView ? activeView.id : '';
+
+      if (viewId === 'view-act1') {
+        // 활동 1 완료 ➔ 다음 스테이지 혹은 활동 2로 진행
+        progressAct1Stage();
+      } else if (viewId === 'view-act2') {
+        // 활동 2 완료 ➔ 아웃트로 화면으로 전환
+        switchView('view-outro');
+      }
+    }
+      </script>
+    </div>
+
+    <!-- =========================================
+         Screen 2: 활동 1 (디지털 발자국 탐정단)
+         ========================================= -->
+    <div id="view-act1" class="view">
+      <div class="progress-header hidden">
+        <span style="font-weight: bold; color: var(--point-yellow);">활동 1: 디지털 발자국 탐정단</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span id="stage-text">스테이지 1/3</span>
+          <div class="stage-bar-container">
+            <div id="stage-bar-fill" class="stage-bar-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 마음온 AI 공통 가이드 배너 (1단계) -->
+      <div class="std-guide-banner" style="margin-bottom: 6px !important;">
+        <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
+          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+        </div>
+        <div style="display: flex !important; flex-direction: column !important; justify-content: center !important; flex-grow: 1 !important; margin-left: 6px;">
+          <span style="font-size: 10.5px !important; font-weight: 900 !important; line-height: 1.1 !important; margin-bottom: 3px !important; font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important; display: block !important;">마음온 AI 가이드</span>
+          <span style="font-size: 12px !important; font-weight: bold !important; color: #e2e8f0 !important; line-height: 1.3 !important; font-family: 'DungGeunMo', monospace !important; display: block !important;" id="act1-guide-bubble">
+            인터넷에 올린 무심한 사진 한 장이 소중한 사생활을 유출시키는 단서가 될 수 있어! (남은 흔적: <span id="act1-remaining-count">0</span>개) 👣
+          </span>
+        </div>
+      </div>
+      
+      <!-- 1단계 미션 질문 카드 (세로 스크롤 방지 한줄화 튠업) -->
+      <div class="mission-question-card" style="background-color: #451a03 !important; border: 3px solid #000000 !important; box-shadow: 2px 2px 0px #000000 !important; padding: 6px 12px !important; margin-bottom: 6px !important; color: #fde047 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important; max-width: 100% !important; width: 100% !important;">
+        <div style="font-size: 0.86rem !important; font-weight: bold !important; color: #fde047 !important; line-height: 1.4 !important;" id="act1-mission-prompt">
+          사진 속에 숨겨진 개인정보(디지털 발자국)를 구석구석 클릭하여 모두 찾아내어봅시다.
+        </div>
+      </div>
+
+      <!-- 탐정단 플레이그라운드 -->
+      <div class="detective-playground">
+        <div id="image-wrapper" class="image-wrapper">
+          <!-- 메인 스테이지 사진 (실제 이미지 교체 위치) -->
+          <img id="stage-main-image" src="" alt="스테이지 배경">
+          
+          <!-- 동적 핫스팟 박스들이 여기에 렌더링됩니다 -->
+          <div id="hotspots-container"></div>
+        </div>
+        
+        <!-- 활동 1 제어 버튼 영역 (사진 아래로 배치) -->
+        <div class="act1-btn-container">
+          <button id="btn-hint-image" type="button" onclick="showAct1Hint(event)">
+            💡 힌트 보기
+          </button>
+          <button id="btn-zoom-image" type="button" onclick="openZoomModal(event)">
+            🔍 크게 보기
+          </button>
+        </div>
+      </div>
+
+
+      
+      <div class="act-controls">
+        <button id="btn-act1-next" class="retro-btn" style="display: none;" onclick="progressAct1Stage()">다음으로 ➔</button>
+      </div>
+    </div>
+
+    <!-- =========================================
+         Screen 3: 활동 2 (안심 크리에이터 도전 - 저작권 시뮬레이터)
+         ========================================= -->
+    <div id="view-act2" class="view">
+      
+      <!-- 사전 학습 및 퀴즈 모달창 -->
+      <div id="learn-modal" class="modal-overlay">
+        <div id="modal-content-ccl" class="modal-content" style="max-width: 820px !important; width: 100% !important; padding: 18px 20px !important;">
+          <div class="modal-title mb-4">저작물 정보 학습: CCL 마크란?</div>
+          
+          <div class="ccl-grid" style="display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 10px 15px !important; text-align: left !important; margin-bottom: 12px !important;">
+            <div class="ccl-item" style="padding: 8px 12px !important; gap: 12px !important;">
+              <img class="ccl-icon-img" src="images/ccl_by.png" alt="출처 표시" style="width: 50px !important; height: 50px !important; padding: 3px !important; flex-shrink: 0 !important;">
+              <div class="ccl-desc">
+                <span class="ccl-name" style="font-size: 0.96rem !important; color: #fde047 !important; font-weight: bold !important; font-family: 'DungGeunMo', monospace !important;">1. 저작자 표시 (Attribution)</span>
+                <span class="ccl-meaning" style="font-size: 0.82rem !important; color: #ffffff !important; font-family: 'DungGeunMo', monospace !important; line-height: 1.35 !important;">자료를 학교 숙제 등에 쓸 때 원작자의 출처를 밝혀야 해요.</span>
+              </div>
+            </div>
+            
+            <div class="ccl-item" style="padding: 8px 12px !important; gap: 12px !important;">
+              <img class="ccl-icon-img" src="images/ccl_nc.png" alt="상업적 이용금지" style="width: 50px !important; height: 50px !important; padding: 3px !important; flex-shrink: 0 !important;">
+              <div class="ccl-desc">
+                <span class="ccl-name" style="font-size: 0.96rem !important; color: #fde047 !important; font-weight: bold !important; font-family: 'DungGeunMo', monospace !important;">2. 비영리 (Non-Commercial)</span>
+                <span class="ccl-meaning" style="font-size: 0.82rem !important; color: #ffffff !important; font-family: 'DungGeunMo', monospace !important; line-height: 1.35 !important;">물건을 팔거나 돈을 버는 일(상업적 목적)에는 쓸 수 없어요.</span>
+              </div>
+            </div>
+            
+            <div class="ccl-item" style="padding: 8px 12px !important; gap: 12px !important;">
+              <img class="ccl-icon-img" src="images/ccl_nd.png" alt="변경 금지" style="width: 50px !important; height: 50px !important; padding: 3px !important; flex-shrink: 0 !important;">
+              <div class="ccl-desc">
+                <span class="ccl-name" style="font-size: 0.96rem !important; color: #fde047 !important; font-weight: bold !important; font-family: 'DungGeunMo', monospace !important;">3. 변경 금지 (No Derivatives)</span>
+                <span class="ccl-meaning" style="font-size: 0.82rem !important; color: #ffffff !important; font-family: 'DungGeunMo', monospace !important; line-height: 1.35 !important;">원작물의 내용을 가공하거나 편집해서 쓰면 안 돼요.</span>
+              </div>
+            </div>
+            
+            <div class="ccl-item" style="padding: 8px 12px !important; gap: 12px !important;">
+              <img class="ccl-icon-img" src="images/ccl_copyright.png" alt="저작권 보호" style="width: 50px !important; height: 50px !important; padding: 3px !important; flex-shrink: 0 !important;">
+              <div class="ccl-desc">
+                <span class="ccl-name" style="font-size: 0.96rem !important; color: #fde047 !important; font-weight: bold !important; font-family: 'DungGeunMo', monospace !important;">4. 저작권 보호 (Copyright, ©)</span>
+                <span class="ccl-meaning" style="font-size: 0.82rem !important; color: #ffffff !important; font-family: 'DungGeunMo', monospace !important; line-height: 1.35 !important;">원작자가 권리를 갖고 있어 허락 없이 함부로 쓰면 안 돼요.</span>
+              </div>
+            </div>
+          </div>
+          
+          <button class="retro-btn" style="margin-top: 10px !important; padding: 5px 20px !important; font-size: 0.8rem !important; width: fit-content !important; margin-left: auto !important; margin-right: auto !important; display: block !important; font-family: 'DungGeunMo', monospace !important;" onclick="startAct2Quiz()">OX 퀴즈 풀고 영상 만들기 ➔</button>
+        </div>
+
+        <!-- OX 퀴즈 영역 (세로 비율 확대, 내부 정렬 튠업 및 다시공부하기 링크 우측하단 정렬) -->
+        <div id="modal-content-quiz" class="modal-content" style="display: none; max-width: 440px !important; min-height: 330px !important; padding: 22px 22px 34px 22px !important; display: flex !important; flex-direction: column !important; justify-content: space-between !important; position: relative !important;">
+          <div>
+            <div class="modal-title text-[#3498db] text-md font-bold mb-2" style="font-family: 'DungGeunMo', monospace !important;">저작권 OX 퀴즈</div>
+            <div id="quiz-q-num" class="font-bold text-white text-md mb-3 border-b border-gray-700 pb-2" style="font-family: 'DungGeunMo', monospace !important;">Q1. 저작자 표시</div>
+            
+            <div id="quiz-q-text" class="bg-black/30 p-4 border border-gray-800 min-h-[140px] flex items-center justify-center text-center" style="border-radius: 8px; margin-bottom: 15px;">
+              질문 텍스트
+            </div>
+          </div>
+
+          <div>
+            <div class="flex gap-6 justify-center mb-3">
+              <button class="retro-btn bg-[#2ecc71] hover:bg-[#27ae60] text-black w-14 h-14 text-xl font-bold flex items-center justify-center shadow-[3px_3px_0_#000] border-2 border-black" style="font-family: 'DungGeunMo', monospace !important;" onclick="submitQuizAnswer('O')">O</button>
+              <button class="retro-btn bg-[#ff4757] hover:bg-[#ff2e44] text-black w-14 h-14 text-xl font-bold flex items-center justify-center shadow-[3px_3px_0_#000] border-2 border-black" style="font-family: 'DungGeunMo', monospace !important;" onclick="submitQuizAnswer('X')">X</button>
+            </div>
+
+            <!-- 다시 공부하기 절대위치 지정하여 최하단 우측 구석에 찰싹 밀착 -->
+            <div style="position: absolute !important; right: 16px !important; bottom: 8px !important; text-align: right !important;">
+              <button class="text-[10px] underline" style="color: #ffffff !important; font-family: 'DungGeunMo', monospace !important; background: none !important; border: none !important; cursor: pointer !important;" onclick="showCCLStudyFromQuiz()">[저작물 정보 다시 공부하기]</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 퀴즈 결과 해설 팝업 (정렬 구조 튠업, 타이틀 내림, 가운데 정렬, 하단 버튼 밀착으로 폭 일정화) -->
+        <div id="modal-content-quiz-result" class="modal-content" style="display: none; max-width: 440px !important; min-height: 190px !important; padding: 12px 16px 8px 16px !important; display: flex !important; flex-direction: column !important; justify-content: flex-start !important; border-color: #ff4757; position: relative !important;">
+          <div style="width: 100% !important; display: flex !important; flex-direction: column !important; flex-grow: 1 !important;">
+            <!-- 타이틀을 모달 상단선에서 살짝 내림 -->
+            <div id="quiz-result-title" class="modal-title text-md font-bold" style="margin-top: 2px !important; margin-bottom: 2px !important; font-family: 'DungGeunMo', monospace !important; text-align: center !important;">정답입니다!</div>
+            
+            <!-- 해설 박스 위에 margin-top: 14px을 추가하여 세로폭 기준 정중앙으로 내려오게 함 -->
+            <div id="quiz-result-feedback" class="bg-black/30 border border-gray-800 whitespace-pre-line" style="font-size: 0.88rem !important; color: #ffffff !important; line-height: 1.45 !important; text-align: center !important; border-radius: 8px; padding: 8px 12px !important; margin-top: 8px !important; margin-bottom: 8px !important; font-family: 'DungGeunMo', monospace !important; flex-grow: 1 !important; display: flex !important; align-items: center !important; justify-content: center !important;">
+              해설 내용
+            </div>
+          </div>
+          
+          <!-- 버튼을 모달 맨 하단으로 완전히 밀어붙임 -->
+          <div style="display: flex !important; flex-direction: column !important; gap: 8px !important; width: 100% !important; align-items: center !important; margin-top: auto !important; padding-top: 0px !important; margin-bottom: 0px !important;">
+            <button id="btn-quiz-next" class="retro-btn" style="background-color: #3498db !important; color: #ffffff !important; border: 2px solid #000000 !important; box-shadow: 2px 2px 0px #000000 !important; padding: 5px 20px !important; font-size: 0.78rem !important; font-weight: bold !important; width: fit-content !important; font-family: 'DungGeunMo', monospace !important;" onclick="nextQuizStep()">
+              다음 문제로 ➔
+            </button>
+            <button id="btn-quiz-retry-study" class="retro-btn" style="display: none; background-color: #e74c3c !important; color: #ffffff !important; border: 2px solid #000000 !important; box-shadow: 2px 2px 0px #000000 !important; padding: 5px 20px !important; font-size: 0.78rem !important; font-weight: bold !important; width: fit-content !important; font-family: 'DungGeunMo', monospace !important;" onclick="showCCLStudyFromQuiz()">
+              [저작물 정보 다시 학습하기]
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 세부정보 레이어 팝업 모달 -->
+      <div id="ccl-info-modal" class="info-modal-overlay" onclick="closeInfoModal()">
+        <div class="info-modal-content" onclick="event.stopPropagation()">
+          <div id="info-modal-title" class="info-modal-header">자료 상세 정보</div>
+          
+          <!-- 개선된 CCL/저작권 뱃지 영역 -->
+          <div id="info-modal-ccl-badges" class="info-modal-ccl-badges">
+            <!-- 동적으로 배운 마크 이미지와 조건명이 렌더링됩니다 -->
+          </div>
+          
+          <div id="info-modal-desc" class="info-modal-desc">
+            세부 설명 영역
+          </div>
+          
+          <button class="retro-btn secondary" style="font-size:1.05rem; padding:8px 16px;" onclick="closeInfoModal()">닫기</button>
+        </div>
+      </div>
+
+      <!-- 마음온 AI 공통 가이드 배너 (2단계) -->
+      <div class="std-guide-banner" style="margin-bottom: 6px !important;">
+        <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
+          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+        </div>
+        <div style="display: flex !important; flex-direction: column !important; justify-content: center !important; flex-grow: 1 !important; margin-left: 6px;">
+          <span style="font-size: 10.5px !important; font-weight: 900 !important; line-height: 1.1 !important; margin-bottom: 3px !important; font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important; display: block !important;">마음온 AI 가이드</span>
+          <span style="font-size: 12px !important; font-weight: bold !important; color: #e2e8f0 !important; line-height: 1.3 !important; font-family: 'DungGeunMo', monospace !important; display: block !important;" id="act2-guide-bubble">
+            인터넷 자료를 올릴 때는 저작권자의 허락(CCL 마크)을 받거나 상업용 무료 소스를 써야 해! ⚖️
+          </span>
+        </div>
+      </div>
+      
+      <!-- 2단계 미션 질문 카드 (세로 스크롤 방지 한줄화 튠업) -->
+      <div class="mission-question-card" style="grid-column: span 2 !important; background-color: #451a03 !important; border: 3px solid #000000 !important; box-shadow: 2px 2px 0px #000000 !important; padding: 6px 12px !important; margin-bottom: 6px !important; color: #fde047 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important; max-width: 100% !important; width: 100% !important;">
+        <div style="font-size: 0.86rem !important; font-weight: bold !important; color: #fde047 !important; line-height: 1.4 !important;">
+          저작권에 걸리지 않게 안전한 배경음악(BGM), 이미지, 폰트를 골라 카드뉴스를 완성해봅시다.
+        </div>
+      </div>
+
+      <!-- 시뮬레이션 메인 워크스페이스 -->
+      <div class="editor-container">
+        
+        <!-- 좌측: 타임라인 및 영상 업로드 영역 -->
+        <div class="editor-preview-panel">
+          <div class="editor-panel-title">학교 과제 영상 편집기</div>
+          
+          <!-- 저작권 침해 경고 (Copyright Strike) 오버레이 -->
+          <div id="copyright-strike-stamp" class="copyright-strike-stamp">
+            <div class="strike-stamp-box">
+              ⚠️ 저작권 침해 경고!<br>
+              (Copyright Strike)
+            </div>
+          </div>
+          
+          <div class="timeline-slots">
+            <!-- BGM 슬롯 -->
+            <div id="slot-bgm" class="timeline-slot">
+              <span class="slot-badge">🎵 BGM</span>
+              <span id="slot-bgm-text" class="slot-content-text">배경음악을 선택해주세요</span>
+            </div>
+
+            <!-- 이미지 슬롯 -->
+            <div id="slot-image" class="timeline-slot">
+              <span class="slot-badge">🖼 이미지</span>
+              <span id="slot-image-text" class="slot-content-text">이미지를 선택해주세요</span>
+            </div>
+
+            <!-- 폰트 슬롯 -->
+            <div id="slot-font" class="timeline-slot">
+              <span class="slot-badge">🔤 폰트</span>
+              <span id="slot-font-text" class="slot-content-text">폰트를 선택해주세요</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 15px; display:flex; justify-content:center;">
+            <button id="btn-upload-video" class="retro-btn" style="width:100%;" onclick="uploadVideoSimulation()" disabled>영상 업로드하기 🎬</button>
+          </div>
+        </div>
+
+        <!-- 우측: 탭 리소스 선택 영역 -->
+        <div class="editor-resources-panel">
+          <!-- 리소스 탭 메뉴 -->
+          <div class="resource-tabs">
+            <button id="tab-btn-bgm" class="tab-btn active" onclick="switchResourceTab('bgm')">BGM</button>
+            <button id="tab-btn-image" class="tab-btn" onclick="switchResourceTab('image')">이미지</button>
+            <button id="tab-btn-font" class="tab-btn" onclick="switchResourceTab('font')">폰트</button>
+          </div>
+
+          <!-- BGM 탭 콘텐츠 -->
+          <div id="tab-content-bgm" class="tab-content active">
+            <div class="resource-card" onclick="selectResource('bgm', 1)" data-id="bgm-1">
+              <div class="card-thumb">🎵</div>
+              <div class="card-info">
+                <span class="card-name">최신 유행 아이돌 노래</span>
+                <span class="card-sub">현재 가장 인기 있는 가요 음원</span>
+              </div>
+              <button class="info-btn" onclick="openResourceInfo('bgm', 1, event)">i</button>
+            </div>
+            <div class="resource-card" onclick="selectResource('bgm', 2)" data-id="bgm-2">
+              <div class="card-thumb">🎹</div>
+              <div class="card-info">
+                <span class="card-name">크리에이터의 신나는 피아노</span>
+                <span class="card-sub">크리에이터가 작곡한 창작 BGM</span>
+              </div>
+              <button class="info-btn" onclick="openResourceInfo('bgm', 2, event)">i</button>
+            </div>
+            <div class="resource-card" onclick="selectResource('bgm', 3)" data-id="bgm-3">
+              <div class="card-thumb">🎬</div>
+              <div class="card-info">
+                <span class="card-name">유명 블록버스터 영화 OST</span>
+                <span class="card-sub">영화 메인 테마 곡</span>
+              </div>
+              <button class="info-btn" onclick="openResourceInfo('bgm', 3, event)">i</button>
+            </div>
+          </div>
+
+          <!-- 이미지 탭 콘텐츠 -->
+          <div id="tab-content-image" class="tab-content">
+            <div class="resource-card" onclick="selectResource('image', 1)" data-id="image-1">
+              <div class="card-thumb">📸</div>
+              <div class="card-info">
+                <span class="card-name">워터마크 유료 사진</span>
+                <span class="card-sub">스톡 이미지 사이트 유료 자료</span>
+              </div>
+              <button class="info-btn" onclick="openResourceInfo('image', 1, event)">i</button>
+            </div>
+            <div class="resource-card" onclick="selectResource('image', 2)" data-id="image-2">
+              <!-- 실제 무료 배포 일러스트 썸네일 이미지 교체 가능 -->
+              <div class="card-thumb">🎨</div>
+              <div class="card-info">
+                <span class="card-name">무료 배포 일러스트</span>
+                <span class="card-sub">인터넷 무료 배포 그림</span>
+              </div>
+              <button class="info-btn" onclick="openResourceInfo('image', 2, event)">i</button>
+            </div>
+            <div class="resource-card" onclick="selectResource('image', 3)" data-id="image-3">
+              <div class="card-thumb">🐱</div>
+              <div class="card-info">
+                <span class="card-name">유명 만화 캐릭터 그림</span>
+                <span class="card-sub">TV 방영 인기 애니메이션 컷</span>
+              </div>
+              <button class="info-btn" onclick="openResourceInfo('image', 3, event)">i</button>
+            </div>
+          </div>
+
+          <!-- 폰트 탭 콘텐츠 -->
+          <div id="tab-content-font" class="tab-content">
+            <div class="resource-card" onclick="selectResource('font', 1)" data-id="font-1">
+              <div class="card-thumb">🔤</div>
+              <div class="card-info">
+                <span class="card-name">개인 제작 예쁜 유료 폰트</span>
+                <span class="card-sub">개인 디자이너 판매 글꼴</span>
+              </div>
+              <button class="info-btn" onclick="openResourceInfo('font', 1, event)">i</button>
+            </div>
+            <div class="resource-card" onclick="selectResource('font', 2)" data-id="font-2">
+              <div class="card-thumb">🏛️</div>
+              <div class="card-info">
+                <span class="card-name">공공기관 배포 안심 글꼴</span>
+                <span class="card-sub">누구나 무료로 쓰도록 배포된 글꼴</span>
+              </div>
+              <button class="info-btn" onclick="openResourceInfo('font', 2, event)">i</button>
+            </div>
+            <div class="resource-card" onclick="selectResource('font', 3)" data-id="font-3">
+              <div class="card-thumb">⚠️</div>
+              <div class="card-info">
+                <span class="card-name">출처 불명 변형 폰트</span>
+                <span class="card-sub">블로그 무단 2차 공유 폰트 파일</span>
+              </div>
+              <button class="info-btn" onclick="openResourceInfo('font', 3, event)">i</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="act-controls">
+        <button id="btn-act2-finish" class="retro-btn" style="display: none;" onclick="switchView('view-outro')">활동 완료하기 ➔</button>
+      </div>
+
+    </div>
+
+    <!-- ==========================================================
+         아웃트로: 활동 완료 뷰 (신규 추가)
+         ========================================================== -->
+    <div id="view-outro" class="std-intro-container view" style="display: none;">
+      <!-- 상단 헤더 영역 (심플 헤더) -->
+      <div class="std-intro-header-simple">
+        <h1 class="std-intro-title">인터넷 윤리의식 및 활용 활동 완료 🌟</h1>
+      </div>
+
+      <!-- 메인 본문 영역 (좌측 캐릭터 복원, 우측 성찰대사 통합 개편) -->
+      <div class="std-intro-body" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 30px; padding: 20px 40px !important; box-sizing: border-box;">
+        
+        <!-- 좌측 캐릭터 영역 (마음온 캐릭터 원래대로 복원) -->
+        <div class="std-intro-char-wrapper-small">
+          <img src="images/maeumon_outro.png" alt="마음온" class="std-intro-char-img">
+        </div>
+
+        <!-- 우측 단일 통합 상자 (밝은 배경색 적용, 배지+배지제목+설명 텍스트 수직 구성) -->
+        <div class="std-intro-unified-box" style="flex-grow: 1; height: auto; min-height: 240px; display: flex; flex-direction: column; align-items: stretch; padding: 15px 25px 20px 25px !important; box-shadow: 6px 6px 0 #000000; border: 4px solid #000000; background-color: #f8fafc; color: #000000; margin: 0; max-width: 550px; gap: 10px;">
+          
+          <!-- 상단: 배지 아이콘 + 배지 타이틀 (경계선 구분) -->
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 8px; flex-shrink: 0;">
+            <!-- 크기 5배 상향된 뱃지 이미지 -->
+            <div style="width: 50px; height: 50px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 30px 0 10px 0; flex-shrink: 0;">
+              <img src="images/icon_ethics.png" alt="윤리 뱃지" style="width: 160px; height: 160px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
+            </div>
+            <span style="font-size: 1.25rem; color: #1e3a8a; font-weight: bold; margin-top: 10px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [인터넷 윤리] 배지 획득!</span>
+          </div>
+
+          <!-- 하단: 코멘트/설명 텍스트 (줄바꿈/들여쓰기 제거, 검정 폰트색상 적용) -->
+          <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.05rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">내 사진이나 개인정보가 노출되지 않도록 가려 인터넷 정보를 스스로 보호하고, 다른 사람의 글, 사진, 음악을 사용할 때 저작권 규정(CCL)을 철저히 존중하는 법을 멋지게 터득했구나! 너의 성숙하고 올바른 인터넷 사용 습관이 안전하고 행복한 디지털 교실을 만들 거란다.</div>
+        </div>
+
+      </div>
+
+      <!-- 하단 버튼 영역 (오른쪽 정렬 및 가로 넓이 확장) -->
+      <div class="std-intro-footer" style="justify-content: flex-end !important; padding: 16px 40px !important;">
+        <button onclick="finishInternetEthics()" class="std-footer-btn-right" style="width: 380px; box-shadow: 4px 4px 0 #000; font-size: 1.1rem; height: 48px;">활동완료 & 대시보드로 돌아가기 ➔</button>
+      </div>
+    </div>
+
+
+  <!-- 핫스팟 피드백 및 조치 팝업 모달 (이모지 삭제, 안심 스티커 삭제, 소제목 구분 및 콤팩트 모자이크 적용) -->
+  <div id="hotspot-feedback-modal" class="modal-overlay" style="display: none; z-index: 150;">
+    <div class="modal-content max-w-[340px] border-4 border-[#2ecc71] bg-[#1e2130] p-5 shadow-[6px_6px_0_#000] text-center">
+      <div class="modal-title text-[#2ecc71] text-md font-bold mb-3" style="font-family: 'DungGeunMo', monospace !important;">개인정보(디지털 발자국) 발견!</div>
+      
+      <!-- 소제목 & 내용 분리 카드 박스 -->
+      <div style="background-color: rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: left;">
+        <div id="hotspot-modal-name" style="font-size: 0.95rem; font-weight: bold; color: #fde047; margin-bottom: 6px; font-family: 'DungGeunMo', monospace !important;">항목명</div>
+        <div id="hotspot-modal-desc" style="font-size: 0.76rem; color: #cbd5e1; line-height: 1.45; word-break: keep-all; font-family: 'DungGeunMo', monospace !important;">설명글</div>
+      </div>
+      
+      <!-- 콤팩트 모자이크 단독 조치 버튼 -->
+      <div style="width: 100%; display: flex; justify-content: center;">
+        <button type="button" class="retro-btn" style="background-color: #3498db !important; color: #ffffff !important; border: 2px solid #000000 !important; box-shadow: 2px 2px 0px #000000 !important; padding: 5px 16px !important; font-size: 0.78rem !important; font-weight: bold !important; width: fit-content !important; font-family: 'DungGeunMo', monospace !important;" onclick="applyStickerToHotspot('mosaic')">
+          모자이크 가리기
+        </button>
+      </div>
+    </div>
+  </div>
+
+    <!-- 공통 표준 하단 푸터바 (순수 CSS) -->
+    <div id="control-bar" style="display: none;">
+      <!-- 좌측: 이전 단계 -->
+      <button id="btn-prev" style="padding: 4px 16px; background-color: #475569; color: #fff; font-size: 0.75rem; font-weight: bold; border: 2px solid #000; cursor: pointer; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="prevStep()">
+        ◀ 이전 단계
+      </button>
+      
+      <!-- 중앙: 홈으로 (맵으로) -->
+      <button id="footer-home-btn" style="padding: 4px 20px; background-color: #fbbf24; color: #000; font-size: 0.75rem; font-weight: 900; border: 2px solid #000; cursor: pointer; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="exitToMap()">
+        🏠 홈으로 (맵)
+      </button>
+      
+      <!-- 우측: 다음 단계 -->
+      <button id="btn-next" style="padding: 4px 16px; background-color: #10b981; color: #fff; font-size: 0.75rem; font-weight: bold; border: 2px solid #000; cursor: pointer; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="nextStep()">
+        다음 단계 ▶
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // =========================================
+    // 전역 관리 변수 & 상태 설정
+    // =========================================
+    const INTRO_TEXT = "온라인에서는 무심코 올린 사진이나 남의 글을 함부로 쓰면 큰 문제가 생길 수 있어. 그래서 내 정보를 지키고 다른 사람의 권리를 존중하는 태도가 필요해.";
+    const selectedResources = {
+      bgm: null,
+      image: null,
+      font: null
+    };
+
+    
+    // Switch View
+    function switchView(viewId) {
+      document.querySelectorAll('.view').forEach(el => {
+        el.classList.remove('active');
+        el.style.setProperty('display', 'none', 'important'); // FOUC 방지
+      });
+      const activeView = document.getElementById(viewId);
+      if (activeView) {
+        activeView.classList.add('active');
+        activeView.style.setProperty('display', 'flex', 'important');
+      }
+      
+      // 표준 프레임 상태 연동
+      updateFrameUI(viewId);
+      
+      if (viewId === 'view-act1') {
+        initAct1();
+      } else if (viewId === 'view-act2') {
+        initAct2();
+      }
+    }
+
+    // Beep Sound Helper
+    function playBeepSound(type) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        osc.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        if (type === 'success') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+          osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
+          gainNode.gain.setValueAtTime(0.08, ctx.currentTime);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.25);
+        } else if (type === 'fail') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(180.00, ctx.currentTime); // F3
+          gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.35);
+        } else if (type === 'click') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(440, ctx.currentTime); // A4
+          gainNode.gain.setValueAtTime(0.05, ctx.currentTime);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.08);
+        }
+      } catch (e) {
+        console.log('AudioContext is blocked or not supported');
+      }
+    }
+
+    // =========================================
+    // Screen 1: 인트로 로직 (Typing Effect)
+    // =========================================
+    document.addEventListener("DOMContentLoaded", () => {
+      const target = document.getElementById("intro-typing-text");
+      const btnContainer = document.getElementById("intro-btn-container");
+      if (target) target.innerText = INTRO_TEXT;
+      if (btnContainer) {
+        btnContainer.style.visibility = "visible";
+        btnContainer.style.opacity = "1";
+      }
+    });
+
+    function startEthicsActivities() {
+      playBeepSound('click');
+      switchView('view-act1');
+    }
+
+
+    // =========================================
+    // Screen 2: 활동 1 (디지털 발자국 탐정단)
+    // =========================================
+    let currentStage = 1;
+    const maxStages = 2;
+    
+    // 스테이지 데이터 정의
+    const act1Stages = {
+      1: {
+        title: "스테이지 1: 집 (장난감 언박싱 사진)",
+        imgUrl: "images/ethics_act1_stage1.png",
+        hotspots: [
+          { id: "h1-1", name: "게임 비밀번호", top: "9.3%", left: "23.7%", width: "4.8%", height: "9.2%", feedback: "메모장에 게임 비밀번호를 그대로 적어두면 다른 사람이 내 계정을 빼앗거나 개인정보를 훔칠 위험이 있습니다. 비밀번호는 외우거나 아주 안전한 곳에 보관해야 해요!" },
+          { id: "h1-2", name: "학교와 이름", top: "15.0%", left: "55.1%", width: "8.8%", height: "9.8%", feedback: "사진 속에 학교 이름과 내 본명이 그대로 나오면 온라인상의 낯선 사람이 나를 찾아오거나 신상을 털 수 있어 위험합니다. 올리기 전 꼭 가려야 해요!" },
+          { id: "h1-3", name: "택배송장 주소", top: "69.6%", left: "34.6%", width: "8.8%", height: "9.8%", feedback: "택배 박스의 송장 스티커에는 나의 이름, 전화번호, 상세한 주소가 노출되어 있습니다. 사진을 찍기 전에 지우거나 보이지 않게 조치해야 합니다!" },
+          { id: "h1-4", name: "가족여행 날짜", top: "80.3%", left: "82.6%", width: "9.1%", height: "11.3%", feedback: "가족여행 날짜를 공개하면 집이 완전히 비는 날짜를 범죄자에게 알려주는 셈이 되어 범죄 피해를 입을 수 있어 아주 조심해야 합니다!" }
+        ]
+      },
+      2: {
+        title: "스테이지 2: 일상 (카페에서 찍은 사진)",
+        imgUrl: "images/ethics_act1_stage2.png",
+        hotspots: [
+          { id: "h2-1", name: "아파트 건물", top: "12.3%", left: "0.7%", width: "6.3%", height: "12.8%", feedback: "창밖으로 노출된 아파트 건물이나 주변 전경을 통해 거주하는 위치가 유출될 수 있습니다." },
+          { id: "h2-2", name: "영수증 시간, 위치", top: "89.8%", left: "20.1%", width: "8.9%", height: "9.0%", feedback: "영수증의 가맹점 주소, 이용 시간 등을 통해 개인의 위치 동선이 추적되어 사생활 침해나 범죄의 위험이 발생할 수 있습니다." },
+          { id: "h2-3", name: "카드번호", top: "78.9%", left: "84.0%", width: "12.1%", height: "12.3%", feedback: "카드번호나 유효기간 등이 직접 노출되면 무단 도용 결제 등 중대한 금융 피해를 입을 수 있습니다." },
+          { id: "h2-4", name: "타인의 초상권", top: "29.3%", left: "88.5%", width: "10.9%", height: "18.1%", feedback: "동의 없이 촬영된 제3자의 얼굴을 그대로 노출하면 초상권 및 개인정보 침해에 해당하므로 스티커나 블러로 가려야 합니다." }
+        ]
+      }
+        };
+    
+    let foundHotspots = new Set();
+    
+    function initAct1() {
+      currentStage = 1;
+      loadStage(currentStage);
+    }
+    
+    function loadStage(stageNum) {
+      foundHotspots.clear();
+      document.getElementById("btn-act1-next").style.display = "none";
+      
+      const stageData = act1Stages[stageNum];
+      document.getElementById("stage-text").innerText = `스테이지 ${stageNum}/${maxStages}`;
+      document.getElementById("stage-bar-fill").style.width = `${(stageNum / maxStages) * 100}%`;
+      
+      // 메인 이미지 로딩
+      const mainImg = document.getElementById("stage-main-image");
+      mainImg.src = stageData.imgUrl;
+      
+      // 가이드 버블 초기화
+      updateAct1RemainingText(stageData.hotspots.length);
+      
+      // 피드백 안내 영역 초기화
+      const feedbackEl = document.getElementById("act1-feedback-bubble");
+      if (feedbackEl) {
+        feedbackEl.innerText = "화면의 이미지 중 개인정보 유출을 방지하기 위해 가리거나 감춰야 할 항목을 터치해 보세요.";
+        feedbackEl.style.borderLeftColor = "var(--point-yellow)";
+      }
+      
+      // 핫스팟 렌더링
+      const container = document.getElementById("hotspots-container");
+      container.innerHTML = "";
+      
+      stageData.hotspots.forEach(hs => {
+        const box = document.createElement("div");
+        box.className = "hotspot";
+        box.style.top = hs.top;
+        box.style.left = hs.left;
+        box.style.width = hs.width;
+        box.style.height = hs.height;
+        box.dataset.id = hs.id;
+        
+        // 정답 배지 생성
+        const badge = document.createElement("div");
+        badge.className = "found-badge";
+        badge.innerText = `🔍 ${hs.name}`;
+        box.appendChild(badge);
+        
+        // 클릭/터치 이벤트
+        box.onclick = (e) => {
+          e.stopPropagation();
+          clickHotspot(hs, box);
+        };
+        
+        container.appendChild(box);
+      });
+    }
+    
+    function updateAct1RemainingText(total) {
+      const remaining = total - foundHotspots.size;
+      const bubble = document.getElementById("act1-guide-bubble");
+      if (remaining > 0) {
+        bubble.innerHTML = `인터넷에 올린 무심한 사진 한 장이 소중한 사생활을 유출시키는 단서가 될 수 있어! (남은 흔적: <span id="act1-remaining-count" style="color:var(--point-yellow); font-weight:bold;">${remaining}</span>개) 👣`;
+      } else {
+        bubble.innerHTML = `<span>모두 안전하게 조치 완료! 디지털 세상에 흔적을 남길 때는 늘 신중해야 해! 🕊️</span>`;
+      }
+      updateFrameUI('view-act1');
+    }
+    
+    let tempActiveHs = null;
+    let tempActiveEl = null;
+
+    function clickHotspot(hs, element) {
+      if (foundHotspots.has(hs.id)) return;
+      
+      tempActiveHs = hs;
+      tempActiveEl = element;
+      
+      // 팝업 데이터 설정 및 노출
+      document.getElementById("hotspot-modal-name").innerText = hs.name;
+      document.getElementById("hotspot-modal-desc").innerText = hs.feedback;
+      document.getElementById("hotspot-feedback-modal").style.display = "flex";
+      playBeepSound("click");
+    }
+
+    function applyStickerToHotspot(actionType) {
+      if (!tempActiveHs || !tempActiveEl) return;
+      
+      const hs = tempActiveHs;
+      const element = tempActiveEl;
+      
+      foundHotspots.add(hs.id);
+      element.classList.add("found");
+      playBeepSound("success");
+      
+      // 반투명한 블러 모자이크 가리기 시각 연출 (뒷배경이 뽀얗게 보이도록 처리)
+      if (actionType === 'mosaic') {
+        element.style.backdropFilter = "blur(10px)";
+        element.style.webkitBackdropFilter = "blur(10px)";
+        element.style.backgroundColor = "rgba(255, 255, 255, 0.25)";
+        element.style.border = "2px solid rgba(255, 255, 255, 0.4)";
+        element.style.boxShadow = "inset 0 0 10px rgba(255, 255, 255, 0.1)";
+        element.innerHTML = ""; // 텍스트 없이 깔끔하게 모자이크 블러만 표현
+      } else {
+        // 안심 스티커 연출
+        element.style.backgroundColor = "rgba(46, 204, 113, 0.4)";
+        element.style.border = "3px dashed #2ecc71";
+        element.style.boxShadow = "0 0 8px rgba(46, 204, 113, 0.5)";
+      }
+      
+      // 하단 안내창 피드백 업데이트 (엘리먼트가 존재할 때만 실행)
+      const feedback = document.getElementById("act1-feedback-bubble");
+      if (feedback) {
+        feedback.innerText = `[${hs.name} 조치완료] ${hs.feedback}`;
+        feedback.style.borderLeftColor = '#3498db';
+      }
+      
+      const stageData = act1Stages[currentStage];
+      updateAct1RemainingText(stageData.hotspots.length);
+      
+      // 팝업 닫기 및 초기화
+      document.getElementById("hotspot-feedback-modal").style.display = "none";
+      tempActiveHs = null;
+      tempActiveEl = null;
+      
+      // 모두 찾았는지 확인
+      if (foundHotspots.size === stageData.hotspots.length) {
+        showStageClearButton();
+      }
+    }
+    
+    function showStageClearButton() {
+      const nextBtn = document.getElementById("btn-act1-next");
+      nextBtn.style.display = "inline-flex";
+      if (currentStage === maxStages) {
+        nextBtn.innerText = "활동 2로 가기 ➔";
+      } else {
+        nextBtn.innerText = "다음 스테이지로 ➔";
+      }
+      updateFrameUI('view-act1'); // 다음 단계 활성화 트리거
+    }
+    
+    // 크게보기 창 & 돋보기 렌즈 효과
+    function openZoomModal(event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      const currentImgUrl = act1Stages[currentStage].imgUrl;
+      document.getElementById("zoomed-stage-image").src = currentImgUrl;
+      document.getElementById("image-zoom-modal").style.display = "flex";
+      
+      // 이미지 렌더링 완료 시점에 돋보기 효과 바인딩
+      setTimeout(initMagnifier, 80);
+    }
+    
+    function closeZoomModal() {
+      document.getElementById("image-zoom-modal").style.display = "none";
+      const lens = document.getElementById("magnifier-lens");
+      if (lens) lens.style.display = "none";
+    }
+
+    function initMagnifier() {
+      const container = document.getElementById("zoom-img-container");
+      const img = document.getElementById("zoomed-stage-image");
+      const lens = document.getElementById("magnifier-lens");
+      
+      if (!container || !img || !lens) return;
+
+      function moveLens(e) {
+        const rect = container.getBoundingClientRect();
+        
+        let clientX = e.clientX;
+        let clientY = e.clientY;
+        if (e.touches && e.touches.length > 0) {
+          clientX = e.touches[0].clientX;
+          clientY = e.touches[0].clientY;
+        }
+
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
+        
+        if (x < 0 || x > rect.width || y < 0 || y > rect.height) {
+          hideLens();
+          return;
+        }
+        
+        lens.style.display = "block";
+        
+        const lensW = lens.offsetWidth;
+        const lensH = lens.offsetHeight;
+        
+        lens.style.left = `${x - lensW / 2}px`;
+        lens.style.top = `${y - lensH / 2}px`;
+        
+        const zoom = 2.5;
+        lens.style.backgroundImage = `url('${img.src}')`;
+        lens.style.backgroundSize = `${rect.width * zoom}px ${rect.height * zoom}px`;
+        
+        const bgX = (x * zoom) - (lensW / 2);
+        const bgY = (y * zoom) - (lensH / 2);
+        
+        lens.style.backgroundPosition = `-${bgX}px -${bgY}px`;
+      }
+      
+      function hideLens() {
+        lens.style.display = "none";
+      }
+
+      container.onmousemove = moveLens;
+      container.onmouseleave = hideLens;
+      
+      container.ontouchstart = (e) => {
+        e.preventDefault();
+        moveLens(e);
+      };
+      container.ontouchmove = (e) => {
+        e.preventDefault();
+        moveLens(e);
+      };
+      container.ontouchend = hideLens;
+    }
+
+    // 힌트 보기 제어 함수
+    function showAct1Hint(event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      playBeepSound('click');
+      
+      const remainingHotspots = [];
+      const stageData = act1Stages[currentStage];
+      
+      stageData.hotspots.forEach(hs => {
+        if (!foundHotspots.has(hs.id)) {
+          remainingHotspots.push(hs.id);
+        }
+      });
+      
+      if (remainingHotspots.length === 0) {
+        alert("모든 개인정보를 이미 찾으셨습니다!");
+        return;
+      }
+      
+      const randomId = remainingHotspots[Math.floor(Math.random() * remainingHotspots.length)];
+      const targetEl = document.querySelector(`.hotspot[data-id="${randomId}"]`);
+      
+      if (targetEl) {
+        targetEl.classList.add("hint-active");
+        setTimeout(() => {
+          targetEl.classList.remove("hint-active");
+        }, 3000);
+      }
+    }
+
+    function progressAct1Stage() {
+      playBeepSound("click");
+      if (currentStage < maxStages) {
+        currentStage++;
+        loadStage(currentStage);
+      } else {
+        // 활동 2로 화면 전환
+        switchView('view-act2');
+      }
+    }
+
+    // CCL 마크 마스터 데이터 정의
+    const cclMasterData = {
+      by: {
+        name: "저작자 표시 (Attribution)",
+        img: "images/ccl_by.png"
+      },
+      nc: {
+        name: "비영리 (Non-Commercial)",
+        img: "images/ccl_nc.png"
+      },
+      nd: {
+        name: "변경 금지 (No Derivatives)",
+        img: "images/ccl_nd.png"
+      },
+      copyright: {
+        name: "저작권 보호 (Copyright)",
+        img: "images/ccl_copyright.png"
+      }
+    };
+
+    // 상세 정보 데이터 정의
+    const resourcesDetailData = {
+      bgm: {
+        1: {
+          name: "최신 유행 아이돌 노래",
+          cclTypes: ["copyright"],
+          desc: "저작권법의 보호를 받는 가요 음원입니다. 원작자의 허락 없이 무단으로 학교 홍보 영상 BGM 등으로 사용하는 행위는 저작권 침해에 해당합니다.",
+          isCorrect: false
+        },
+        2: {
+          name: "크리에이터의 신나는 피아노 연주",
+          cclTypes: ["by", "nc"],
+          desc: "출처를 밝히면 비영리 목적으로 자유롭게 사용 가능합니다. 학교 홍보 목적의 영상은 수익을 창출하는 상업적 활동이 아니므로 안심하고 사용 가능합니다.",
+          isCorrect: true
+        },
+        3: {
+          name: "유명 블록버스터 영화 OST",
+          cclTypes: ["copyright"],
+          desc: "영화 배급사 및 원작자에 모든 독점적 권리가 있습니다. 무단 인용 및 변형 시 저작권 경고(Copyright Strike)를 받게 됩니다.",
+          isCorrect: false
+        }
+      },
+      image: {
+        1: {
+          name: "워터마크 유료 사진",
+          cclTypes: ["copyright"],
+          desc: "유료 이미지 플랫폼의 보호를 받는 사진입니다. 워터마크가 노출된 이미지의 무단 사용 및 워터마크 강제 제거 후 업로드는 심각한 저작권 침해입니다.",
+          isCorrect: false
+        },
+        2: {
+          name: "무료 배포 일러스트",
+          cclTypes: ["by"],
+          desc: "원작 창작자가 무료로 공유한 일러스트입니다. 원작자의 출처(이름, 플랫폼 등)만 영상 정보란이나 화면 구석에 표기해주면 자유롭게 사용할 수 있습니다.",
+          isCorrect: true
+        },
+        3: {
+          name: "유명 만화 캐릭터 그림",
+          cclTypes: ["copyright", "nd"],
+          desc: "원저작사의 지식재산권(IP) 보호를 받는 유명 캐릭터 그림입니다. 공식 협약이나 사전 이용 허가를 얻지 않고 게시하면 초상권 및 저작권 위반이 됩니다.",
+          isCorrect: false
+        }
+      },
+      font: {
+        1: {
+          name: "개인 제작 예쁜 유료 폰트",
+          cclTypes: ["copyright"],
+          desc: "폰트 디자이너가 판매하는 유료 서체입니다. 정식 구매한 라이선스가 없는 기기나 환경에서 해당 서체로 자막을 만들어 업로드하는 행위는 제한됩니다.",
+          isCorrect: false
+        },
+        2: {
+          name: "공공기관 배포 안심 글꼴",
+          cclTypes: ["by"],
+          desc: "안심하고 자유롭게 서체를 다운로드하여 문서나 미디어에 사용할 수 있도록 제공된 글꼴입니다. 저작권 문제없이 상업적/비상업적 용도 모두 사용 가능합니다.",
+          isCorrect: true
+        },
+        3: {
+          name: "출처 불명 변형 폰트",
+          cclTypes: ["copyright"],
+          desc: "출처를 증빙하기 어렵고 폰트 파일이 무단 수정되어 배포되는 파일입니다. 폰트 프로그램 무단 사용에 따른 법적 경고를 받을 우려가 큽니다.",
+          isCorrect: false
+        }
+      }
+    };
+
+    function initAct2() {
+      // 모달 초기화
+      document.getElementById("learn-modal").style.display = "flex";
+      document.getElementById("modal-content-ccl").style.display = "block";
+      document.getElementById("modal-content-quiz").style.display = "none";
+      document.getElementById("modal-content-quiz-result").style.display = "none";
+      document.getElementById("copyright-strike-stamp").style.display = "none";
+      document.getElementById("btn-act2-finish").style.display = "none";
+      document.getElementById("btn-upload-video").style.display = "inline-flex";
+      document.getElementById("btn-upload-video").disabled = true;
+      document.getElementById("act2-guide-bubble").innerText = "인터넷 자료를 올릴 때는 저작권자의 허락(CCL 마크)을 받거나 상업용 무료 소스를 써야 해! ⚖️";
+      
+      // 슬롯 텍스트 초기화
+      document.getElementById("slot-bgm-text").innerText = "배경음악을 선택해주세요";
+      document.getElementById("slot-image-text").innerText = "이미지를 선택해주세요";
+      document.getElementById("slot-font-text").innerText = "폰트를 선택해주세요";
+      
+      // 스타일 초기화
+      document.querySelectorAll(".timeline-slot").forEach(slot => {
+        slot.classList.remove("filled", "correct-style");
+      });
+      
+      // 카드 선택 해제
+      document.querySelectorAll(".resource-card").forEach(card => {
+        card.classList.remove("selected");
+      });
+
+      selectedResources.bgm = null;
+      selectedResources.image = null;
+      selectedResources.font = null;
+
+      switchResourceTab('bgm');
+    }
+
+    // 모달창 제어 (추가)
+    function closeLearnModal() {
+      playBeepSound("click");
+      const modal = document.getElementById("learn-modal");
+      modal.style.display = "none";
+    }
+
+    // OX 퀴즈 데이터 및 로직
+    const quizQuestions = [
+      {
+        id: 1,
+        category: "Q1. 저작자 표시",
+        text: "인터넷에서 무료로 다운받은 예쁜 폰트(글씨체)나 음악은 출처를 안 밝히고 내 마음대로 써도 된다?",
+        answer: "X",
+        explanation: "무료라도 만든 사람을 꼭 밝혀야 하는 '저작자 표시(사람 모양)' 마크가 있는지 잘 확인해야 해!"
+      },
+      {
+        id: 2,
+        category: "Q2. 비영리",
+        text: "돈에 'X'가 쳐진 '비영리' 마크가 있는 음악은 학교 숙제 영상의 배경음악으로 쓸 수 있다?",
+        answer: "O",
+        explanation: "맞아! 학교 숙제는 돈을 버는 목적이 아니기 때문에 비영리 마크가 있는 재료도 안전하게 쓸 수 있어."
+      },
+      {
+        id: 3,
+        category: "Q3. 변경 금지",
+        text: "'변경 금지(=)' 마크가 있는 사진은 영상 길이에 맞춰 마음대로 자르거나 그 위에 글씨를 써서 넣어도 된다?",
+        answer: "X",
+        explanation: "절대 안 돼! 영상을 만들며 사진을 자르거나 꾸미는 것도 '변경'에 해당하니까, 변경 금지 마크가 있는 건 그대로 감상만 해야 해."
+      }
+    ];
+
+    let currentQuizIndex = 0;
+    let lastAnswerIsCorrect = false;
+
+    function startAct2Quiz() {
+      playBeepSound("click");
+      currentQuizIndex = 0;
+      document.getElementById("modal-content-ccl").style.display = "none";
+      document.getElementById("modal-content-quiz-result").style.display = "none";
+      document.getElementById("modal-content-quiz").style.display = "block";
+      loadQuizQuestion();
+    }
+
+    function loadQuizQuestion() {
+      const q = quizQuestions[currentQuizIndex];
+      document.getElementById("quiz-q-num").innerText = q.category;
+      
+      let imgPath = "";
+      if (currentQuizIndex === 0) imgPath = "images/ccl_by.png";
+      else if (currentQuizIndex === 1) imgPath = "images/ccl_nc.png";
+      else if (currentQuizIndex === 2) imgPath = "images/ccl_nd.png";
+      
+      const imgHtml = imgPath ? `<img src="${imgPath}" style="width: 50px !important; height: 50px !important; margin-bottom: 10px !important; border-radius: 6px !important; border: 2px solid rgba(255,255,255,0.15) !important; background-color: #2b2e3d !important; padding: 4px !important; display: block !important; margin-left: auto !important; margin-right: auto !important; image-rendering: pixelated !important; flex-shrink: 0 !important;">` : "";
+      
+      document.getElementById("quiz-q-text").innerHTML = `
+        <div style="display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; width: 100% !important; text-align: center !important;">
+          ${imgHtml}
+          <div style="font-size: 0.98rem !important; color: #ffffff !important; line-height: 1.5 !important; font-family: 'DungGeunMo', monospace !important; word-break: keep-all !important; font-weight: bold !important; text-shadow: 1px 1px 0px #000;">${q.text}</div>
+        </div>
+      `;
+    }
+
+    function submitQuizAnswer(userAns) {
+      playBeepSound("click");
+      const q = quizQuestions[currentQuizIndex];
+      const resultPanel = document.getElementById("modal-content-quiz-result");
+      const quizPanel = document.getElementById("modal-content-quiz");
+      const nextBtn = document.getElementById("btn-quiz-next");
+      const retryStudyBtn = document.getElementById("btn-quiz-retry-study");
+      
+      quizPanel.style.display = "none";
+      resultPanel.style.display = "block";
+      
+      if (userAns === q.answer) {
+        lastAnswerIsCorrect = true;
+        playBeepSound("success");
+        document.getElementById("quiz-result-title").innerText = "정답입니다!";
+        document.getElementById("quiz-result-title").style.color = "var(--point-green)";
+        resultPanel.style.borderColor = "var(--point-green)";
+        document.getElementById("quiz-result-feedback").innerText = q.explanation;
+        
+        if (currentQuizIndex === 2) {
+          nextBtn.innerText = "영상 편집 시작하기";
+        } else {
+          nextBtn.innerText = "다음 문제로 ➔";
+        }
+        retryStudyBtn.style.display = "none";
+      } else {
+        lastAnswerIsCorrect = false;
+        playBeepSound("fail");
+        document.getElementById("quiz-result-title").innerText = "아쉽게도 틀렸습니다!";
+        document.getElementById("quiz-result-title").style.color = "var(--point-red)";
+        resultPanel.style.borderColor = "var(--point-red)";
+        document.getElementById("quiz-result-feedback").innerText = q.explanation + "\n\n(오답으로 인해 처음부터 다시 도전해야 합니다.)";
+        
+        nextBtn.innerText = "처음부터 다시 풀기 ➔";
+        retryStudyBtn.style.display = "block";
+      }
+    }
+
+    function nextQuizStep() {
+      playBeepSound("click");
+      if (lastAnswerIsCorrect) {
+        if (currentQuizIndex < 2) {
+          currentQuizIndex++;
+          document.getElementById("modal-content-quiz-result").style.display = "none";
+          document.getElementById("modal-content-quiz").style.display = "block";
+          loadQuizQuestion();
+        } else {
+          closeLearnModal();
+        }
+      } else {
+        startAct2Quiz();
+      }
+    }
+
+    function showCCLStudyFromQuiz() {
+      playBeepSound("click");
+      document.getElementById("modal-content-quiz").style.display = "none";
+      document.getElementById("modal-content-quiz-result").style.display = "none";
+      document.getElementById("modal-content-ccl").style.display = "block";
+    }
+
+    // 탭 전환 로직
+    function switchResourceTab(tabType) {
+      playBeepSound('click');
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
+      
+      document.getElementById(`tab-btn-${tabType}`).classList.add("active");
+      document.getElementById(`tab-content-${tabType}`).classList.add("active");
+    }
+
+    // 리소스 선택 처리
+    function selectResource(type, optionNum) {
+      // 신규 선택 시 저작권 경고 스탬프 숨기기 및 피드백 문구 초기화
+      document.getElementById("copyright-strike-stamp").style.display = "none";
+      document.getElementById("act2-guide-bubble").innerHTML = '자료가 변경되었습니다. 슬롯이 모두 채워지면 아래 <span style="color:var(--point-yellow); font-weight:bold;">[영상 업로드하기]</span>를 눌러 다시 검증해보세요!';
+
+      playBeepSound('click');
+      const data = resourcesDetailData[type][optionNum];
+      
+      // 상태 저장
+      selectedResources[type] = {
+        id: optionNum,
+        name: data.name,
+        isCorrect: data.isCorrect
+      };
+
+      // 탭 내 카드 선택 스타일 연동
+      const cardsInTab = document.querySelectorAll(`#tab-content-${type} .resource-card`);
+      cardsInTab.forEach(card => card.classList.remove("selected"));
+      
+      const targetCard = document.querySelector(`[data-id="${type}-${optionNum}"]`);
+      if (targetCard) {
+        targetCard.classList.add("selected");
+      }
+
+      // 좌측 타임라인 슬롯 연동
+      const slot = document.getElementById(`slot-${type}`);
+      const slotText = document.getElementById(`slot-${type}-text`);
+      
+      slot.classList.add("filled");
+      slotText.innerText = data.name;
+
+      // 모든 슬롯이 다 찼는지 확인하여 업로드 버튼 활성화
+      checkUploadReady();
+    }
+
+    function checkUploadReady() {
+      if (selectedResources.bgm && selectedResources.image && selectedResources.font) {
+        document.getElementById("btn-upload-video").disabled = false;
+      }
+    }
+
+    // 상세 정보 모달 제어
+    function openResourceInfo(type, optionNum, event) {
+      event.stopPropagation(); // 카드 선택 이벤트 방지
+      playBeepSound('click');
+
+      const data = resourcesDetailData[type][optionNum];
+      
+      // 제목에 컨텐츠 명과 라이선스 정보가 줄바꿈되어 나오도록 처리
+      document.getElementById("info-modal-title").innerHTML = `[${data.name}]<br>라이선스 정보`;
+      
+      // CCL 뱃지 영역 초기화 및 동적 렌더링
+      const badgesContainer = document.getElementById("info-modal-ccl-badges");
+      badgesContainer.innerHTML = "";
+      
+      if (data.cclTypes && data.cclTypes.length > 0) {
+        data.cclTypes.forEach(cclKey => {
+          const cclInfo = cclMasterData[cclKey];
+          if (!cclInfo) return;
+          
+          const badgeItem = document.createElement("div");
+          badgeItem.className = "info-modal-ccl-badge-item";
+          
+          const badgeImg = document.createElement("img");
+          badgeImg.className = "info-modal-ccl-badge-img";
+          badgeImg.src = cclInfo.img;
+          badgeImg.alt = cclInfo.name;
+          
+          const badgeText = document.createElement("span");
+          badgeText.className = "info-modal-ccl-badge-text";
+          badgeText.innerText = cclInfo.name;
+          
+          badgeItem.appendChild(badgeImg);
+          badgeItem.appendChild(badgeText);
+          
+          badgesContainer.appendChild(badgeItem);
+        });
+      }
+      
+      // 설명 글씨는 기존 데이터 그대로 유지
+      document.getElementById("info-modal-desc").innerText = data.desc;
+
+      document.getElementById("ccl-info-modal").style.display = "flex";
+    }
+
+    function closeInfoModal() {
+      document.getElementById("ccl-info-modal").style.display = "none";
+    }
+
+    // 영상 업로드 검증 시뮬레이션
+    function uploadVideoSimulation() {
+      const isBgmOk = selectedResources.bgm.isCorrect;
+      const isImgOk = selectedResources.image.isCorrect;
+      const isFontOk = selectedResources.font.isCorrect;
+
+      // 이전 경고 감추기
+      document.getElementById("copyright-strike-stamp").style.display = "none";
+
+      if (isBgmOk && isImgOk && isFontOk) {
+        // 업로드 성공!
+        playBeepSound("success");
+        
+        // 슬롯 초록빛 스타일링
+        document.querySelectorAll(".timeline-slot").forEach(slot => {
+          slot.classList.add("correct-style");
+        });
+
+        document.getElementById("act2-guide-bubble").innerHTML = `<span style="color:var(--point-green); font-weight:bold;">🎉 업로드 성공! 창작자의 권리를 존중하며 안전하고 멋진 과제 영상을 완성했어요!</span>`;
+        document.getElementById("btn-upload-video").style.display = "none";
+        document.getElementById("btn-act2-finish").style.display = "inline-flex";
+        updateFrameUI('view-act2');
+      } else {
+        // 실패 처리
+        playBeepSound("fail");
+        
+        // 저작권 스트라이크 스탬프 활성화
+        document.getElementById("copyright-strike-stamp").style.display = "flex";
+
+        // 틀린 항목 색출
+        let incorrectName = "";
+        if (!isBgmOk) {
+          incorrectName = selectedResources.bgm.name;
+        } else if (!isImgOk) {
+          incorrectName = selectedResources.image.name;
+        } else if (!isFontOk) {
+          incorrectName = selectedResources.font.name;
+        }
+
+        document.getElementById("act2-guide-bubble").innerHTML = `<span style="color:var(--point-red); font-weight:bold;">앗! [${incorrectName}]은 저작권자의 허락 없이 사용하면 안 됩니다. 다시 골라보아요!</span>`;
+      }
+    }
+
+    // 최종 윤리의식 활동 완료 로직
+    function finishInternetEthics() {
+      playBeepSound('click');
+      alert("인터넷 윤리의식 및 활용 활동의 모든 단계를 성공적으로 이수했습니다! 대시보드로 돌아갑니다.");
+      
+      let inIframe = false;
+      try {
+        inIframe = (window.self !== window.top);
+      } catch (e) {
+        inIframe = true; // iframe에 갇혀 접근이 제한됨
+      }
+
+      if (inIframe) {
+        try {
+          window.parent.postMessage({ type: 'TASK_COMPLETE', category: '인터넷 윤리의식 및 활용' }, '*');
+          return;
+        } catch (err) {
+          console.error("postMessage 전송 실패:", err);
+        }
+      }
+      
+      // 로컬 디렉토리 테스트 등 외부 실행 시 폴백
+      location.reload();
+    }
+
+    // 임시 테스트용 순차적 스킵 기능
+    function skipToNextSection() {
+      playBeepSound('click');
+      
+      const introView = document.getElementById('view-intro');
+      const act1View = document.getElementById('view-act1');
+      const act2View = document.getElementById('view-act2');
+      
+      if (introView.classList.contains('active')) {
+        // 인트로 -> 활동 1 스테이지 1
+        switchView('view-act1');
+      } else if (act1View.classList.contains('active')) {
+        if (currentStage < maxStages) {
+          // 활동 1 다음 스테이지로 스킵
+          currentStage++;
+          loadStage(currentStage);
+        } else {
+          // 활동 1 스테이지 3 -> 활동 2
+          switchView('view-act2');
+        }
+      } else if (act2View.classList.contains('active')) {
+        const modal = document.getElementById("learn-modal");
+        if (modal && modal.style.display !== 'none') {
+          // 사전학습 모달 닫기
+          closeLearnModal();
+        } else {
+          // 활동 2 메인 시뮬레이터
+          const isBgmOk = selectedResources.bgm && selectedResources.bgm.isCorrect;
+          const isImgOk = selectedResources.image && selectedResources.image.isCorrect;
+          const isFontOk = selectedResources.font && selectedResources.font.isCorrect;
+          
+          if (isBgmOk && isImgOk && isFontOk) {
+            // 정답이 채워진 상태에서 한 번 더 누르면 완료 -> 아웃트로로 이동
+            switchView('view-outro');
+          } else {
+            // 디버그용 정답 자동 로딩
+            selectResource('bgm', 2);
+            selectResource('image', 2);
+            selectResource('font', 2);
+            document.getElementById("act2-guide-bubble").innerText = "[스킵 가이드] 저작권 준수 정답 조합이 로드되었습니다. 영상 업로드하기 또는 스킵을 한 번 더 누르세요.";
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- 이미지 확대 모달 -->
+  <div id="image-zoom-modal" onclick="closeZoomModal()">
+    <div id="zoom-modal-content" onclick="event.stopPropagation()">
+      <!-- 닫기 버튼 -->
+      <button type="button" class="zoom-close-btn" onclick="closeZoomModal()">닫기 X</button>
+      
+      <!-- 돋보기 렌즈 효과 영역 -->
+      <div id="zoom-img-container">
+        <img id="zoomed-stage-image" src="">
+        <!-- 원형 돋보기 렌즈 -->
+        <div id="magnifier-lens"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>디지털과 교실사이, 사이버 어울림 역량을 기르는 AI 마음 온(ON)</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+<body>
+
+  <div id="app-container">
+    
+    <!-- 1. 로그인 뷰 (리뉴얼) -->
+    <div id="view-login" class="view active" style="padding: 20px; text-align: center;">
+      <h1 style="color: var(--point-yellow); text-shadow: 4px 4px 0 var(--border-color); margin-bottom: 25px; animation: float 3s ease-in-out infinite; line-height: 1.3; word-break: keep-all;">
+        <span style="font-size: 1.4rem; display: block; color: #fff; text-shadow: 2px 2px 0 var(--border-color); margin-bottom: 5px;">디지털과 교실사이,</span>
+        <span style="font-size: 1.9rem; display: block; color: #fff; text-shadow: 2px 2px 0 var(--border-color); margin-bottom: 5px;"><span style="color: var(--point-yellow);">사이버 어울림 역량</span>을 기르는</span>
+        <span style="font-size: 2.3rem; display: block; color: #05f5f6;">AI 마음 온(ON)</span>
+      </h1>
+      
+      <!-- 3개 메인 진입 버튼 -->
+      <div id="login-mode-select" style="display: flex; flex-direction: column; gap: 15px; width: 80%; max-width: 400px; margin-bottom: 20px; align-items: center; justify-content: center;">
+        <button class="retro-btn" onclick="selectLoginMode('class')" style="font-size: 1.3rem; padding: 12px; width: 100%;">🏫 학급코드로 시작하기</button>
+        <button class="retro-btn" onclick="selectLoginMode('member')" style="font-size: 1.3rem; padding: 12px; background-color: #a8ffda; box-shadow: 4px 4px 0 #000; width: 100%;">👤 회원으로 시작하기</button>
+        <button class="retro-btn" onclick="selectLoginMode('nonmember')" style="font-size: 1.3rem; padding: 12px; background-color: #ff9f43; box-shadow: 4px 4px 0 #000; width: 100%;">👥 비회원으로 시작하기</button>
+      </div>
+
+      <!-- A. 학급 코드 폼 (기본 hidden) -->
+      <div id="class-mode-form" style="display: none; flex-direction: column; width: 80%; max-width: 400px; margin-top: 10px; align-items: center; justify-content: center;">
+        <input type="text" id="class-code-input" class="retro-input" style="margin-bottom: 10px; width: 100%;" placeholder="학급 코드를 입력하세요">
+        <input type="text" id="student-name-input" class="retro-input" style="margin-bottom: 15px; width: 100%;" placeholder="이름 또는 번호 입력">
+        <div style="display: flex; gap: 10px; width: 100%; justify-content: center;">
+          <button class="retro-btn" onclick="backToModeSelect()" style="flex: 1; font-size: 1rem; padding: 8px; background: #555; color: #fff; box-shadow: 2px 2px 0 #000;">뒤로가기</button>
+          <button class="retro-btn" onclick="enterClassMode()" style="flex: 2; font-size: 1rem; padding: 8px;">입장 ➔</button>
+        </div>
+      </div>
+
+      <!-- B. 회원 로그인 폼 (기본 hidden) -->
+      <div id="member-login-form" style="display: none; flex-direction: column; width: 80%; max-width: 400px; margin-top: 10px; align-items: center; justify-content: center;">
+        <h3 style="color: var(--point-yellow); font-size: 1.3rem; margin-bottom: 15px; text-shadow: 2px 2px 0 #000;">마음 온(ON) 로그인</h3>
+        
+        <!-- 로그인 유형 선택 -->
+        <div style="display: flex; width: 100%; gap: 15px; margin-bottom: 12px; align-items: center; justify-content: center; color: #fff;">
+          <span style="font-size: 0.95rem; font-weight: bold;">로그인 유형:</span>
+          <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+            <input type="radio" name="login-role" value="student" checked>
+            학생
+          </label>
+          <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+            <input type="radio" name="login-role" value="teacher">
+            교사
+          </label>
+        </div>
+
+        <input type="text" id="member-id-input" class="retro-input" style="margin-bottom: 10px; width: 100%;" placeholder="아이디">
+        <input type="password" id="member-pw-input" class="retro-input" style="margin-bottom: 10px; width: 100%;" placeholder="비밀번호">
+        
+        <div style="display: flex; justify-content: flex-end; width: 100%; margin-bottom: 15px; font-size: 0.85rem; padding: 0 5px;">
+          <span onclick="showFindAccountModal()" style="text-decoration: underline; cursor: pointer; color: var(--point-yellow);">아이디/비밀번호 찾기</span>
+        </div>
+
+        <div style="display: flex; gap: 10px; width: 100%; justify-content: center; margin-bottom: 10px;">
+          <button class="retro-btn" onclick="backToModeSelect()" style="flex: 1; font-size: 1.1rem; padding: 8px; background: #555; color: #fff; box-shadow: 2px 2px 0 #000;">뒤로</button>
+          <button class="retro-btn" onclick="submitMemberLogin()" style="flex: 2; font-size: 1.1rem; padding: 8px;">로그인</button>
+        </div>
+        <button class="retro-btn" onclick="loginWithGoogle()" style="font-size: 1.1rem; padding: 8px; background-color: #4285F4; color: #fff; width: 100%; margin-bottom: 10px; box-shadow: 2px 2px 0 #000; border: 2px solid #000; display: flex; align-items: center; justify-content: center; gap: 10px;">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.47h4.84c-.21 1.12-.84 2.07-1.79 2.7v2.24h2.9c1.69-1.55 2.69-3.85 2.69-6.57z" fill="#4285F4"/><path d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.24c-.8.54-1.83.86-3.06.86-2.35 0-4.34-1.58-5.05-3.71H.95v2.3C2.43 15.89 5.5 18 9 18z" fill="#34A853"/><path d="M3.95 10.73A5.4 5.4 0 0 1 3.6 9c0-.6.1-1.19.35-1.73V4.97H.95A8.99 8.99 0 0 0 0 9c0 1.51.37 2.96 1.02 4.25l2.93-2.52z" fill="#FBBC05"/><path d="M9 3.58c1.32 0 2.5.45 3.44 1.35L15 2.4A8.99 8.99 0 0 0 9 0C5.5 0 2.43 2.11.95 5.09l3 2.3c.71-2.11 2.7-3.69 5.05-3.69z" fill="#EA4335"/></svg>
+          Google 계정으로 시작
+        </button>
+        <button class="retro-btn" onclick="showSignupForm()" style="font-size: 0.9rem; padding: 6px 12px; background: #ffa502; width: 100%; margin-top: 5px; box-shadow: 2px 2px 0 #000;">신규 회원가입 📝</button>
+      </div>
+
+      <!-- C. 회원가입 폼 (기본 hidden, 세로 스크롤 허용) -->
+      <div id="member-signup-form" style="display: none; flex-direction: column; width: 90%; max-width: 420px; margin-top: 5px; max-height: 380px; overflow-y: auto; padding: 15px 10px; background: #252525; border: 2px solid #000; box-shadow: 4px 4px 0 #000; align-items: center; justify-content: start;">
+        <h3 style="color: var(--point-yellow); font-size: 1.3rem; margin-bottom: 15px; text-decoration: underline; width: 100%;">마음 온(ON) 회원가입</h3>
+        
+        <!-- 가입 유형 선택 -->
+        <div style="display: flex; width: 100%; gap: 15px; margin-bottom: 12px; align-items: center; justify-content: center; color: #fff;">
+          <span style="font-size: 0.95rem; font-weight: bold;">가입 유형:</span>
+          <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+            <input type="radio" name="signup-role" value="student" checked onchange="toggleSignupRoleFields('student')">
+            학생
+          </label>
+          <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+            <input type="radio" name="signup-role" value="teacher" onchange="toggleSignupRoleFields('teacher')">
+            교사
+          </label>
+        </div>
+
+        <input type="text" id="signup-id" class="retro-input" style="margin-bottom: 10px; font-size: 1rem; padding: 8px; width: 100%;" placeholder="아이디 입력">
+        <input type="password" id="signup-pw" class="retro-input" style="margin-bottom: 10px; font-size: 1rem; padding: 8px; width: 100%;" placeholder="비밀번호 입력">
+        <input type="text" id="signup-school" class="retro-input" style="margin-bottom: 10px; font-size: 1rem; padding: 8px; width: 100%;" placeholder="학교명">
+        <input type="text" id="signup-name" class="retro-input" style="margin-bottom: 10px; font-size: 1rem; padding: 8px; width: 100%;" placeholder="이름">
+        
+        <div id="student-specific-fields" style="display: flex; gap: 8px; margin-bottom: 10px; width: 100%;">
+          <input type="number" id="signup-grade" class="retro-input" style="flex: 1; margin-bottom: 0; font-size: 1rem; padding: 8px;" placeholder="학년">
+          <input type="number" id="signup-class" class="retro-input" style="flex: 1; margin-bottom: 0; font-size: 1rem; padding: 8px;" placeholder="반">
+          <input type="number" id="signup-number" class="retro-input" style="flex: 1; margin-bottom: 0; font-size: 1rem; padding: 8px;" placeholder="번호">
+        </div>
+        
+        <!-- 이메일 입력 -->
+        <input type="email" id="signup-email" class="retro-input" style="margin-bottom: 20px; font-size: 1rem; padding: 8px; width: 100%; text-align: left;" placeholder="이메일 주소">
+
+        <div style="display: flex; gap: 10px; width: 100%; justify-content: center; margin-top: 10px;">
+          <button class="retro-btn" onclick="cancelSignup()" style="flex: 1; font-size: 1rem; padding: 8px; background: #555; color: #fff; box-shadow: 2px 2px 0 #000;">취소</button>
+          <button id="btn-submit-signup" class="retro-btn" onclick="submitSignup()" style="flex: 2; font-size: 1rem; padding: 8px;">가입 완료</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 관리자 대시보드 뷰 -->
+    <div id="view-admin" class="view" style="padding: 20px; max-width: 900px; width: 95%;">
+      <h2 style="color: var(--point-yellow); font-size: 1.8rem; margin-bottom: 20px; text-shadow: 2px 2px 0 #000; text-align: center;">🏫 사이버 어울림 교사 대시보드</h2>
+      
+      <!-- 교사용 컨트롤바 -->
+      <div style="display: flex; flex-wrap: wrap; gap: 15px; width: 100%; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #222; border: 2px solid #000; padding: 15px; box-shadow: 4px 4px 0 #000;">
+        <!-- 학급 생성 -->
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <input type="text" id="new-class-name" class="retro-input" style="width: 160px; margin-bottom: 0; font-size: 0.95rem; padding: 6px;" placeholder="학급명 (예: 6학년1반)">
+          <button class="retro-btn" onclick="createClassByTeacher()" style="padding: 6px 12px; font-size: 0.9rem; box-shadow: 2px 2px 0 #000; background: #a8ffda;">학급 생성 🎲</button>
+        </div>
+        
+        <!-- 학급 선택 -->
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <span style="color: #fff; font-size: 0.95rem; font-weight: bold;">학급 선택:</span>
+          <select id="teacher-class-select" class="retro-input" style="width: 180px; margin-bottom: 0; font-size: 0.95rem; padding: 6px;" onchange="selectMonitorClass(this.value)">
+            <option value="">학급을 선택하세요...</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- 학생 현황 모니터링 테이블 -->
+      <div style="width: 100%; overflow-x: auto; border: 2px solid #000; box-shadow: 4px 4px 0 #000; background: #252525; margin-bottom: 20px;">
+        <table class="retro-table" style="width: 100%; border-collapse: collapse; min-width: 600px;">
+          <thead>
+            <tr>
+              <th style="padding: 10px; border-bottom: 2px solid #000;">학생 (이름/번호)</th>
+              <th style="padding: 10px; border-bottom: 2px solid #000;">진행 상태</th>
+              <th style="padding: 10px; border-bottom: 2px solid #000;">스캐닝 결과</th>
+              <th style="padding: 10px; border-bottom: 2px solid #000;">완료 과제 현황</th>
+              <th style="padding: 10px; border-bottom: 2px solid #000;">최근 업데이트</th>
+            </tr>
+          </thead>
+          <tbody id="student-list" style="text-align: center; color: #fff;">
+            <tr>
+              <td colspan="5" style="color:#aaa; padding: 20px;">학급을 선택하면 실시간으로 학생 현황이 표시됩니다.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+        <span id="monitored-class-info" style="color: var(--point-yellow); font-weight: bold; font-size: 1rem;"></span>
+        <button class="retro-btn" onclick="logout()" style="padding: 8px 16px; background: #ff5252; color: #fff; box-shadow: 2px 2px 0 #000;">로그아웃</button>
+      </div>
+    </div>
+
+    <!-- 3. 프롤로그 뷰 -->
+    <div id="view-prologue" class="view">
+      <button class="temp-skip-btn" onclick="skipPrologue()">이야기 스킵 ⏩</button>
+      <div id="scene-label">장소</div>
+      <div id="scene-container">
+        <div id="fairy-char" class="pixel-fairy"></div>
+      </div>
+      
+      <div id="dialog-box">
+        <div id="speaker-name">화자</div>
+        <div id="dialog-text">대사 내용</div>
+        <button id="next-btn" class="retro-btn" onclick="nextScene()">다음 ▼</button>
+      </div>
+    </div>
+
+    <!-- 4. 마음 스캐닝 (설문조사) 뷰 -->
+    <div id="view-survey" class="view">
+      <div id="survey-header">
+        <div id="survey-fairy" class="pixel-fairy" style="display:block; animation: hoverFloat 2s ease-in-out infinite; width: 80px; height: 80px;"></div>
+        <div id="survey-progress-text">마음 스캐닝 진행률: <span id="survey-current">1</span> / 16</div>
+        <button class="retro-btn" onclick="skipSurvey()" style="background-color: #f39c12; font-size: 0.9rem; padding: 5px 10px; border-color: #e67e22; box-shadow: 2px 2px 0 #000; margin-left: auto; border-radius: 0;">스킵 ⏭️</button>
+      </div>
+      <div id="survey-bar-container">
+        <div id="survey-bar-fill"></div>
+      </div>
+      <div id="survey-question">질문 내용이 여기에 표시됩니다.</div>
+      <div id="survey-answers">
+        <button class="retro-btn btn-answer" onclick="answerSurvey(1)">1.<br>전혀 아니다</button>
+        <button class="retro-btn btn-answer" onclick="answerSurvey(2)">2.<br>아니다</button>
+        <button class="retro-btn btn-answer" onclick="answerSurvey(3)">3.<br>보통이다</button>
+        <button class="retro-btn btn-answer" onclick="answerSurvey(4)">4.<br>그렇다</button>
+        <button class="retro-btn btn-answer" onclick="answerSurvey(5)">5.<br>매우 그렇다</button>
+      </div>
+    </div>
+
+    <!-- 5. 로딩 뷰 -->
+    <div id="view-loading" class="view">
+      <div class="pixel-fairy" style="display:block; margin-bottom: 20px;"></div>
+      <h1 style="color:var(--point-yellow); animation: glitch 0.8s infinite; font-size: 2rem;">스캐닝 완료!<br>마음웹 데이터를 분석 중...</h1>
+    </div>
+
+    <!-- 6. 과제 선택 맵 (Mind-Web) 뷰 -->
+    <div id="view-map" class="view" style="background-color: var(--bg-dark); justify-content: flex-start;">
+      <!-- 추천 바 -->
+      <div id="recommender-bar" style="position: relative; width: 100%; display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 8px 15px;">
+        <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem;">
+          <span id="recommender-title" style="font-weight: bold;">🎯 추천 순서:</span>
+          <div id="recommender-list"></div>
+        </div>
+      </div>
+      
+      <!-- [Case B: solo] 맵 영역 래퍼 -->
+      <div id="solo-map-area" style="position: relative; width: 100%; flex-grow: 1; overflow: hidden; display: block;">
+        <!-- 아웃트로 스킵 버튼 (절대 위치 배치) -->
+        <button class="retro-btn" onclick="startOutro()" style="position: absolute; top: 10px; right: 10px; z-index: 100; font-size: 0.75rem; padding: 5px 10px; box-shadow: 2px 2px 0 #000; background: #ff4757; color: #fff; line-height: 1;">아웃트로 스킵 ⏩</button>
+        <!-- 테스트용 전체 완료 치트 버튼 -->
+        <button class="retro-btn" onclick="cheatCompleteAll()" style="position: absolute; top: 40px; right: 10px; z-index: 100; font-size: 0.75rem; padding: 5px 10px; box-shadow: 2px 2px 0 #000; background: #2ed573; color: #fff; line-height: 1;">전체 완료(테스트) 🛠️</button>
+        <!-- SVG 선 (배경) -->
+        <svg id="mind-web-svg" width="100%" height="100%" style="position:absolute; top:0; left:0; pointer-events:none; z-index:1;">
+        </svg>
+        
+        <!-- 맵 노드 (앞면) -->
+        <div id="map-nodes-container" style="width:100%; height:100%; position:relative; z-index:2;">
+        </div>
+      </div>
+
+
+    </div>
+
+    <!-- 7. 임시 과제 화면 -->
+    <div id="view-task" class="view">
+      <h2 id="task-title" style="color:var(--point-yellow); font-size: 3rem; margin-bottom:20px; text-shadow: 4px 4px 0 #000;">과제 진입</h2>
+      <p style="margin-bottom:30px; font-size: 1.5rem;">(해당 컨텐츠는 차후 개발 예정입니다)</p>
+      <button class="retro-btn" onclick="completeTask()">[과제 완료하기]</button>
+      <button class="retro-btn" onclick="returnToMap()" style="background:#555; color:#fff; border-color:#000; margin-top:20px; box-shadow: 4px 4px 0 #000;">[돌아가기]</button>
+    </div>
+
+    <!-- 8. iframe 기반 개별 활동 수행 뷰 -->
+    <div id="view-task-iframe" class="view" style="padding: 0; width: 100%; height: 100%;">
+      <iframe id="task-iframe" src="" style="width: 100%; height: 100%; border: none;"></iframe>
+    </div>
+
+    <!-- 9. 아웃트로 뷰 (전면 개편) -->
+    <div id="view-outro" class="view" style="transition: background-image 1s ease, background-color 1.5s ease; background-position: center; background-size: cover; position: relative;">
+      <!-- 아웃트로 위치 라벨 -->
+      <div id="outro-scene-label" style="position: absolute; top: 20px; left: 20px; background: rgba(0, 0, 0, 0.8); color: #fff; border: 2px solid var(--point-yellow); padding: 5px 15px; font-size: 1rem; font-weight: bold; z-index: 12; box-shadow: 4px 4px 0 #000;">마음웹</div>
+
+      <!-- 요정 캐릭터 (마음온 요정 이미지) -->
+      <div id="outro-fairy-char" class="pixel-fairy"></div>
+
+      <!-- 대화 상자 -->
+      <div id="outro-dialog-box" style="position: absolute; bottom: 20px; left: 20px; right: 20px; height: 150px; background-color: rgba(0, 0, 0, 0.85); border: var(--pixel-thick) solid var(--text-main); padding: 20px; z-index: 10; display: flex; flex-direction: column; box-shadow: 8px 8px 0 var(--border-color);">
+        <div id="outro-speaker" style="color: var(--point-yellow); font-size: 1.5rem; margin-bottom: 10px; text-shadow: 2px 2px 0 var(--border-color);">마음 온(ON)</div>
+        <div id="outro-text" style="color: #fff; font-size: 1.2rem; line-height: 1.5; flex-grow: 1; padding-bottom: 5px; word-break: keep-all;"></div>
+        
+        <!-- 일반 다음 버튼 -->
+        <button id="outro-dialog-next" class="retro-btn" onclick="nextOutroScene()" style="position: absolute; bottom: 4px; right: 12px; font-size: 1rem; padding: 3px 10px;">다음 ▼</button>
+      </div>
+
+      <!-- 약속하기 버튼 (화면 가운데 배치, 크게, 노란색, z-index 20) -->
+      <button id="outro-promise-btn" class="retro-btn" onclick="promiseAndContinue()" style="display: none; position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 1.6rem; padding: 15px 40px; background-color: var(--point-yellow); color: #000; border: 3px solid #000; box-shadow: 6px 6px 0 #000; z-index: 20; font-weight: bold; cursor: pointer; text-shadow: none;">응 약속할게!</button>
+
+    </div>
+
+    <!-- 엔딩 White-out 오버레이 -->
+    <div id="ending-white-overlay" style="display: none; position: fixed; inset: 0; background: #fff; z-index: 1000; opacity: 0; transition: opacity 2s ease-in-out; align-items: center; justify-content: center; flex-direction: column;">
+      <div id="ending-title-credit" style="opacity: 0; transition: opacity 2s ease-in-out; text-align: center; color: #000; word-break: keep-all; max-width: 80%;">
+        <span style="font-size: 1.5rem; display: block; margin-bottom: 10px; color: #666; font-weight: bold;">디지털과 교실사이,</span>
+        <span style="font-size: 2.2rem; display: block; font-weight: 900; color: #222;">사이버 어울림 역량을 기르는 AI 마음 온(ON)</span>
+      </div>
+    </div>
+
+    <!-- 선생님용 학급 코드 생성 팝업 모달 -->
+    <div id="admin-code-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; padding: 20px;">
+      <div style="background: #2a2a2a; border: var(--pixel-thick) solid #000; padding: 30px; width: 90%; max-width: 450px; box-shadow: 8px 8px 0 #000; display: flex; flex-direction: column; align-items: center; position: relative;">
+        <h2 style="color: var(--point-yellow); font-size: 1.8rem; margin-bottom: 20px; text-shadow: 2px 2px 0 #000; text-align: center;">학급 코드 생성기 (Teacher Panel)</h2>
+        
+        <button class="retro-btn" onclick="generateClassCode()" style="font-size: 1.2rem; padding: 10px 20px; background-color: #a8ffda; margin-bottom: 20px; box-shadow: 4px 4px 0 #000; width: 100%;">새 학급 코드 생성 🎲</button>
+        
+        <div style="width: 100%; max-height: 180px; overflow-y-auto; border: 2px solid #000; background: #000; padding: 10px; margin-bottom: 20px;">
+          <span style="font-size: 0.9rem; color: #aaa; display: block; margin-bottom: 8px; border-bottom: 1px solid #333; padding-bottom: 5px;">발급된 학급 코드 목록:</span>
+          <div id="created-codes-list" style="display: flex; flex-wrap: wrap; gap: 8px; font-family: monospace; font-size: 1.1rem; color: var(--point-yellow);">
+            <!-- 동적 코드 리스트 삽입 -->
+            <span style="font-size: 0.9rem; color: #666;">발급된 코드가 없습니다.</span>
+          </div>
+        </div>
+
+        <button class="retro-btn" onclick="closeAdminModal()" style="font-size: 1.1rem; padding: 8px 16px; background-color: #555; color: #fff; box-shadow: 2px 2px 0 #000; align-self: flex-end;">닫기</button>
+      </div>
+    </div>
+
+    <!-- 구글 로그인 추가 정보 입력 모달 -->
+    <div id="google-extra-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1001; align-items: center; justify-content: center; padding: 20px;">
+      <div style="background: #2a2a2a; border: var(--pixel-thick) solid #000; padding: 30px; width: 90%; max-width: 450px; box-shadow: 8px 8px 0 #000; display: flex; flex-direction: column; align-items: center; position: relative;">
+        <h2 style="color: var(--point-yellow); font-size: 1.6rem; margin-bottom: 20px; text-shadow: 2px 2px 0 #000; text-align: center;">추가 정보 입력 (Google)</h2>
+        <p style="color: #fff; font-size: 0.95rem; margin-bottom: 20px; text-align: center; word-break: keep-all;">구글 로그인이 처음이시군요! 학생 구분을 위한 추가 정보를 입력해 주세요.</p>
+        
+        <input type="text" id="google-signup-school" class="retro-input" style="margin-bottom: 12px; font-size: 1rem; padding: 8px; width: 100%;" placeholder="학교명">
+        <input type="text" id="google-signup-name" class="retro-input" style="margin-bottom: 12px; font-size: 1rem; padding: 8px; width: 100%;" placeholder="이름">
+        
+        <div style="display: flex; gap: 8px; margin-bottom: 20px; width: 100%;">
+          <input type="number" id="google-signup-grade" class="retro-input" style="flex: 1; margin-bottom: 0; font-size: 1rem; padding: 8px;" placeholder="학년">
+          <input type="number" id="google-signup-class" class="retro-input" style="flex: 1; margin-bottom: 0; font-size: 1rem; padding: 8px;" placeholder="반">
+          <input type="number" id="google-signup-number" class="retro-input" style="flex: 1; margin-bottom: 0; font-size: 1rem; padding: 8px;" placeholder="번호">
+        </div>
+        
+        <div style="display: flex; gap: 10px; width: 100%; justify-content: center;">
+          <button class="retro-btn" onclick="cancelGoogleSignup()" style="flex: 1; font-size: 1.1rem; padding: 8px; background: #555; color: #fff; box-shadow: 2px 2px 0 #000;">취소</button>
+          <button class="retro-btn" onclick="submitGoogleExtraInfo()" style="flex: 2; font-size: 1.1rem; padding: 8px; background-color: #2ed573;">등록 완료 ➔</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 교사용 학생 답변 상세조회 팝업 모달 -->
+    <div id="teacher-detail-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1002; align-items: center; justify-content: center; padding: 20px;">
+      <div style="background: #2a2a2a; border: var(--pixel-thick) solid #000; padding: 25px; width: 95%; max-width: 650px; box-shadow: 8px 8px 0 #000; display: flex; flex-direction: column; max-height: 85%; overflow: hidden; position: relative;">
+        <h2 style="color: var(--point-yellow); font-size: 1.6rem; margin-bottom: 5px; text-shadow: 2px 2px 0 #000; text-align: center;" id="detail-modal-title">학생 답변 상세조회</h2>
+        <span style="color: #aaa; font-size: 0.9rem; display: block; text-align: center; margin-bottom: 15px;" id="detail-modal-subtitle"></span>
+        
+        <!-- 답변 내용 카드형 영역 (스크롤 가능) -->
+        <div id="detail-modal-content" style="flex-grow: 1; overflow-y: auto; border: 2px solid #000; background: #151515; padding: 15px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 15px; color: #fff;">
+          <!-- 동적으로 데이터가 생성되어 삽입됩니다. -->
+        </div>
+        
+        <button class="retro-btn" onclick="closeTeacherDetailModal()" style="font-size: 1.1rem; padding: 8px 20px; background-color: #555; color: #fff; box-shadow: 2px 2px 0 #000; align-self: flex-end;">닫기</button>
+      </div>
+    </div>
+
+    <!-- 아이디/비밀번호 찾기 모달 -->
+    <div id="find-account-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1003; align-items: center; justify-content: center; padding: 20px;">
+      <div style="background: #2a2a2a; border: var(--pixel-thick) solid #000; padding: 25px; width: 90%; max-width: 480px; box-shadow: 8px 8px 0 #000; display: flex; flex-direction: column; position: relative;">
+        <h2 style="color: var(--point-yellow); font-size: 1.6rem; margin-bottom: 20px; text-shadow: 2px 2px 0 #000; text-align: center;">아이디 / 비밀번호 찾기</h2>
+        
+        <!-- 탭 메뉴 -->
+        <div style="display: flex; gap: 10px; width: 100%; margin-bottom: 20px; border-bottom: 2px solid #555; padding-bottom: 8px;">
+          <button id="tab-find-id" class="retro-btn" onclick="switchFindTab('id')" style="flex: 1; font-size: 0.95rem; padding: 6px; background-color: var(--point-yellow); color: #000; box-shadow: 2px 2px 0 #000;">🔍 아이디 찾기</button>
+          <button id="tab-find-pw" class="retro-btn" onclick="switchFindTab('pw')" style="flex: 1; font-size: 0.95rem; padding: 6px; background-color: #555; color: #fff; box-shadow: 2px 2px 0 #000;">🔑 비밀번호 재설정</button>
+        </div>
+
+        <!-- A. 아이디 찾기 패널 -->
+        <div id="panel-find-id" style="display: flex; flex-direction: column; width: 100%;">
+          <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 12px; line-height: 1.4; word-break: keep-all;">가입할 때 입력하셨던 이메일 주소를 입력하시면 매핑된 아이디를 조회해 드립니다.</p>
+          <input type="email" id="find-id-email" class="retro-input" style="margin-bottom: 15px; width: 100%;" placeholder="이메일 주소 입력">
+          <button class="retro-btn" onclick="submitFindId()" style="background-color: #a8ffda; margin-bottom: 15px; width: 100%; box-shadow: 2px 2px 0 #000;">아이디 조회하기 ➔</button>
+          <div id="find-id-result" style="display: none; padding: 12px; background: #111; border: 2px solid #000; color: var(--point-yellow); font-family: monospace; font-size: 1.1rem; text-align: center; margin-bottom: 15px;"></div>
+        </div>
+
+        <!-- B. 비밀번호 재설정 패널 -->
+        <div id="panel-find-pw" style="display: none; flex-direction: column; width: 100%;">
+          <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 12px; line-height: 1.4; word-break: keep-all;">아이디와 가입 메일 주소를 입력하시면 비밀번호를 재설정할 수 있는 링크 메일을 발송해 드립니다.</p>
+          <input type="text" id="find-pw-id" class="retro-input" style="margin-bottom: 10px; width: 100%;" placeholder="아이디 입력">
+          <input type="email" id="find-pw-email" class="retro-input" style="margin-bottom: 15px; width: 100%;" placeholder="이메일 주소 입력">
+          <button class="retro-btn" onclick="submitResetPassword()" style="background-color: #ff9f43; margin-bottom: 15px; width: 100%; box-shadow: 2px 2px 0 #000;">재설정 이메일 전송 ➔</button>
+        </div>
+
+        <button class="retro-btn" onclick="closeFindAccountModal()" style="font-size: 1.1rem; padding: 8px 16px; background-color: #555; color: #fff; box-shadow: 2px 2px 0 #000; align-self: flex-end;">닫기</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 파이어베이스 SDK (Compat 버전) -->
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+  
+  <!-- 비즈니스 로직 스크립트 연결 -->
+  <script src="app.js"></script>
+</body>
+</html>

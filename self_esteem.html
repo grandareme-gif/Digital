@@ -1,0 +1,2479 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사이버 자기존중감 - 튼튼 마음 훈련소</title>
+  
+  <!-- 둥근모꼴 폰트 -->
+  <!-- 둥근모꼴 폰트는 CSS @font-face로 정상 임포트됨 -->
+  
+  <!-- Tailwind CSS CDN 로드 (유틸리티 클래스 지원) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* =========================================
+       전역 & 공통 스타일
+       ========================================= */
+    @font-face {
+      font-family: 'DungGeunMo';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    #standard-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 52px;
+      background-color: #1e293b;
+      border-bottom: var(--pixel-thick) solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 10;
+    }
+    #control-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 44px;
+      background-color: #1e293b;
+      border-top: var(--pixel-thick) solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 10;
+    }
+    :root {
+      --bg-dark: #0e1017;
+      --bg-panel: #161824;
+      --point-yellow: #ffd700;
+      --point-green: #2ecc71;
+      --point-red: #ff4757;
+      --point-blue: #3498db;
+      --text-main: #ffffff;
+      --text-muted: #8e94a6;
+      --border-color: #000000;
+      --pixel-thick: 4px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'DungGeunMo', monospace;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    body {
+      background-color: #1A252F; /* 대시보드와 배경색 통일 */
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      padding: 0; /* 패딩을 완전히 없애서 풀스크린 가동 */
+    }
+
+    #app-container {
+      width: 100%;
+      max-width: 100%;
+      height: 100vh;
+      max-height: 100vh;
+      position: relative;
+      background-color: var(--bg-panel);
+      border: none;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 뷰 기본 스타일 (자연스러운 화면 전환용 애니메이션 적용) */
+    .view {
+      display: none;
+      width: 100%;
+      height: calc(100% - 96px); /* 상단바(52px) + 하단바(44px) 공제 */
+      position: absolute;
+      top: 52px;
+      left: 0;
+      padding: 6px 12px 10px 12px !important; /* 내부 상단 여백을 극도로 조여서 위로 밀착 */
+      flex-direction: column;
+      overflow-y: auto !important; /* 내용 초과 시 부드러운 스크롤 허용 */
+    }
+    #standard-header {
+      height: 52px;
+    }
+    #control-bar {
+      height: 44px;
+    }
+    .view.active {
+      display: flex;
+      animation: viewFadeIn 0.5s ease-out forwards;
+    }
+
+    @keyframes viewFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* 복고풍/게임 스타일 버튼 */
+    .retro-btn {
+      background-color: var(--point-yellow);
+      color: #000000;
+      border: var(--pixel-thick) solid var(--border-color);
+      padding: 12px 24px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 var(--border-color);
+      border-radius: 8px;
+      transition: all 0.1s ease;
+      outline: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .retro-btn:hover {
+      background-color: #ffe44d;
+      transform: translateY(-2px);
+      box-shadow: 4px 6px 0 var(--border-color);
+    }
+    .retro-btn:active {
+      box-shadow: 0px 0px 0 var(--border-color);
+      transform: translate(4px, 4px);
+    }
+    .retro-btn:disabled {
+      background-color: #555870;
+      color: #8e94a6;
+      box-shadow: 2px 2px 0 var(--border-color);
+      transform: translate(2px, 2px);
+      cursor: not-allowed;
+    }
+    .retro-btn.secondary {
+      background-color: #555870;
+      color: #fff;
+      box-shadow: 4px 4px 0 var(--border-color);
+    }
+    .retro-btn.secondary:hover {
+      background-color: #696d88;
+    }
+
+    /* 상단 마음온 가이드 영역 */
+    .guide-panel {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 10px 16px;
+      margin-bottom: 8px;
+      width: 100%;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 5;
+    }
+    
+    .guide-avatar-wrap {
+      flex-shrink: 0;
+      position: relative;
+    }
+    
+    .guide-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 3px solid var(--point-yellow);
+      background-color: #242735;
+      display: block;
+      animation: floatAvatar 3s ease-in-out infinite;
+    }
+    
+    .guide-bubble {
+      flex-grow: 1;
+      position: relative;
+      background: rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: #e2e8f0;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      word-break: keep-all;
+    }
+
+    @keyframes floatAvatar {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* 가로형 배치를 명확히 하기 위한 컨테이너 스타일 */
+    .phones-horizontal-container {
+      display: flex !important;
+      flex-direction: row !important;
+      justify-content: center !important;
+      align-items: center !important;
+      gap: 16px !important;
+      margin: 4px 0 !important;
+      width: 100% !important;
+      flex-shrink: 0 !important;
+    }
+
+    /* 임시 스킵 버튼 스타일 */
+    .temp-skip-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(0, 0, 0, 0.4);
+      color: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      z-index: 9999;
+      transition: all 0.2s ease;
+    }
+    .temp-skip-btn:hover {
+      background: rgba(255, 71, 87, 0.3);
+      color: #ffffff;
+      border-color: var(--point-red);
+    }
+
+    /* =========================================
+       Screen 1: 인트로
+       ========================================= */
+    #view-intro {
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .intro-fairy-container {
+      margin-bottom: 20px;
+    }
+
+    .intro-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 25px;
+      width: 90%;
+      max-width: 580px;
+      margin-bottom: 25px;
+    }
+
+    .intro-title {
+      font-size: 1.6rem;
+      color: var(--point-yellow);
+      margin-bottom: 12px;
+    }
+
+    .intro-text {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      word-break: keep-all;
+      color: #cbd5e1;
+      min-height: 80px;
+    }
+
+    /* =========================================
+       Screen 2: 활동 1 (가상 SNS 실전 대처)
+       ========================================= */
+    .progress-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      padding: 0 5px;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    
+    .stage-bar-container {
+      width: 140px;
+      height: 14px;
+      background-color: #000;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .stage-bar-fill {
+      height: 100%;
+      background-color: var(--point-yellow);
+      width: 50%;
+      transition: width 0.3s ease;
+    }
+
+    /* 가상 스마트폰 레이아웃 및 초점 상태 효과 */
+    .phone-mockup {
+      width: 250px;
+      height: 330px;
+      border: 8px solid #2d3436;
+      border-radius: 28px;
+      background: #000000;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      flex-shrink: 0;
+      transition: filter 0.5s ease, opacity 0.5s ease !important;
+    }
+    
+    .phone-focused {
+      filter: grayscale(0%) contrast(1) !important;
+      opacity: 1 !important;
+    }
+    
+    .phone-unfocused {
+      filter: grayscale(90%) contrast(0.85) !important;
+      opacity: 0.55 !important;
+    }
+
+    .phone-mockup.vibrate {
+      animation: phoneVibrate 0.4s ease-in-out;
+    }
+    @keyframes phoneVibrate {
+      0%, 100% { transform: translateX(0); }
+      15% { transform: translateX(-8px); }
+      30% { transform: translateX(7px); }
+      45% { transform: translateX(-6px); }
+      60% { transform: translateX(5px); }
+      75% { transform: translateX(-3px); }
+      90% { transform: translateX(1px); }
+    }
+
+    .phone-notch {
+      width: 100px;
+      height: 14px;
+      background: #2d3436;
+      border-radius: 0 0 10px 10px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+    }
+
+    .phone-screen {
+      flex-grow: 1;
+      background: #f1f2f6;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-top: 15px;
+      transition: filter 0.5s ease;
+    }
+    
+    .phone-screen.glow-bright {
+      animation: screenGlow 1s ease-out;
+    }
+    @keyframes screenGlow {
+      0% { filter: brightness(1) saturate(1); }
+      30% { filter: brightness(1.2) saturate(1.5) contrast(1.1); }
+      100% { filter: brightness(1) saturate(1); }
+    }
+
+    .phone-appbar {
+      background: #ffffff;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.8rem;
+      border-bottom: 1px solid #e1e2e6;
+      color: #2f3542;
+      flex-shrink: 0;
+    }
+
+    .phone-content {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 6px;
+      position: relative;
+      overflow-y: auto;
+      color: #000000;
+      gap: 6px;
+    }
+
+    /* SNS 관련 스타일 */
+    .sns-post {
+      background: #ffffff;
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 8px;
+      color: #000000;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: 1px 1px 0 rgba(0,0,0,0.15);
+      flex-shrink: 0;
+    }
+    
+    .sns-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .sns-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      background: #dfe4ea;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    
+    .sns-username {
+      font-weight: bold;
+      font-size: 0.75rem;
+    }
+    
+    .sns-image-container {
+      position: relative;
+      width: 100%;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .sns-image {
+      width: 100%;
+      display: block;
+      transition: filter 1s ease;
+    }
+
+    .sns-caption {
+      font-size: 0.7rem;
+      line-height: 1.3;
+      word-break: keep-all;
+    }
+    
+    .sns-likes {
+      font-size: 0.7rem;
+      font-weight: bold;
+      color: var(--point-red);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .sns-overlay-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.85);
+      color: var(--point-yellow);
+      border: 2px solid var(--point-yellow);
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 0.65rem;
+      font-weight: bold;
+      text-align: center;
+      max-width: 90%;
+      word-break: keep-all;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes popIn {
+      from { transform: translate(-50%, -50%) scale(0.7); opacity: 0; }
+      to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    /* Particle animation */
+    @keyframes floatUpParticle {
+      0% { transform: translateY(0) scale(0.8); opacity: 0; }
+      15% { transform: translateY(-5px) scale(1); opacity: 1; }
+      85% { transform: translateY(-35px) scale(1); opacity: 1; }
+      100% { transform: translateY(-50px) scale(0.8); opacity: 0; }
+    }
+
+    /* 글쓰기 입력 영역 */
+    .writing-container {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      margin-top: 4px;
+      background: rgba(0,0,0,0.03);
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px dashed rgba(0,0,0,0.15);
+      animation: slideDown 0.3s ease-out forwards;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .writing-prompt {
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: #333;
+      line-height: 1.3;
+    }
+
+    .writing-textarea {
+      width: 100%;
+      height: 48px;
+      background: #ffffff;
+      color: #000000;
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      padding: 6px;
+      font-size: 0.8rem;
+      resize: none;
+      outline: none;
+    }
+
+    .writing-textarea:focus {
+      border-color: var(--point-blue);
+    }
+
+    .writing-prompt {
+      font-size: 0.75rem; /* 글자가 상자 밖으로 삐져나가지 않도록 컴팩트하게 조율 */
+      font-weight: 900;
+      color: #000000 !important; /* 가독성을 위한 검은색 */
+      background-color: #fef08a; /* 따뜻한 파스텔 노란색 */
+      border: 3px solid #000000; /* 레트로 검은 테두리 */
+      border-radius: 8px;
+      padding: 6px 6px; /* 좌우 패딩을 줄여 내부 글자 공간 확보 */
+      margin-top: -8px; /* 위로 약간 밀어 올려 배치 균형 조율 */
+      margin-bottom: 8px;
+      word-break: keep-all;
+      white-space: nowrap; /* 단일 행 1줄 표시 */
+      text-align: center;
+      width: 100%;
+      box-sizing: border-box; /* 패딩이 너비를 초과하지 않게 함 */
+      display: block;
+      box-shadow: 3px 3px 0px #000000; /* 레트로 그림자 */
+      letter-spacing: -0.5px; /* 자간을 조여 한 줄 안착 보장 */
+    }
+
+    .writing-submit-btn {
+      align-self: flex-end;
+      background: var(--point-blue);
+      color: white;
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 var(--border-color);
+    }
+    .writing-submit-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0 0 0 var(--border-color);
+    }
+
+    .act-controls {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+
+    /* =========================================
+       Screen 3: 활동 2 (선플 실천과 칭찬 샤워)
+       ========================================= */
+    /* 다짐 입력 모달 */
+    .input-modal-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+      padding: 20px;
+      backdrop-filter: blur(3px);
+    }
+  
+    .input-modal {
+      background: var(--bg-panel);
+      border: var(--pixel-thick) solid var(--point-yellow);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 480px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+      animation: modalScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+  
+    @keyframes modalScale {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  
+    .modal-prompt {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #fff;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* 파티클 캔버스 */
+    .shower-canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 40;
+      pointer-events: none;
+      display: none;
+    }
+  
+    /* 칭찬 팝업 말풍선 */
+    .praise-popup {
+      position: absolute;
+      background: var(--point-yellow);
+      color: #000000;
+      border: 3px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-weight: bold;
+      font-size: 1.05rem;
+      box-shadow: 4px 4px 0 var(--border-color);
+      pointer-events: none;
+      animation: floatUpPraise 2.5s ease-out forwards;
+      z-index: 50;
+      word-break: keep-all;
+      text-align: center;
+    }
+  
+    @keyframes floatUpPraise {
+      0% { transform: translateY(40px) scale(0.7); opacity: 0; }
+      15% { transform: translateY(0) scale(1); opacity: 1; }
+      85% { transform: translateY(-40px) scale(1); opacity: 1; }
+      100% { transform: translateY(-80px) scale(0.8); opacity: 0; }
+    }
+
+    .act2-screen-wrapper {
+      display: flex;
+      flex-direction: row !important; /* Side-by-side horizontal alignment */
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      gap: 20px;
+      flex-grow: 1;
+    }
+
+    .comment-writing-panel {
+      width: 320px; /* Fixed width next to Jisu's phone */
+      background: rgba(255,255,255,0.03);
+      border: 3px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .comment-textarea {
+      width: 100%;
+      height: 65px;
+      background: #000;
+      color: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 0.95rem;
+      resize: none;
+      outline: none;
+    }
+    .comment-textarea:focus {
+      border-color: var(--point-yellow);
+    }
+
+    /* =========================================
+       Screen 4: 아웃트로
+       ========================================= */
+    #view-outro {
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .outro-fairy-img {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 5px solid var(--point-green);
+      background-color: #242735;
+      animation: floatIntroFairy 3.5s ease-in-out infinite;
+      box-shadow: 0 0 25px rgba(46, 204, 113, 0.15);
+      margin-bottom: 20px;
+    }
+
+    .outro-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 25px;
+      width: 90%;
+      max-width: 550px;
+      margin-bottom: 25px;
+      font-size: 1.15rem;
+      line-height: 1.6;
+      color: #cbd5e1;
+      word-break: keep-all;
+    }
+
+    @keyframes floatIntroFairy {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(3deg); }
+    }
+
+    /* =========================================
+       모바일 반응형 대응 미디어 쿼리
+       ========================================= */
+    @media (max-width: 600px) {
+      .act2-screen-wrapper {
+        flex-direction: column !important;
+        gap: 10px !important;
+      }
+      .comment-writing-panel {
+        width: 100% !important;
+      }
+      .writing-prompt {
+        white-space: normal !important;
+        font-size: 0.85rem !important;
+      }
+      #app-container {
+        height: 100%;
+        max-height: 100vh;
+        border: none;
+        border-radius: 0;
+      }
+
+      body {
+        padding: 0;
+      }
+
+      .guide-panel {
+        padding: 8px 12px;
+        margin-bottom: 8px;
+      }
+
+      .guide-avatar {
+        width: 48px;
+        height: 48px;
+      }
+
+      .guide-bubble {
+        font-size: 0.9rem;
+        padding: 8px 10px;
+      }
+
+      .phones-horizontal-container {
+        gap: 8px !important;
+      }
+
+      .phone-mockup {
+        width: 110px !important;
+        height: 190px !important;
+        border-width: 4px;
+        border-radius: 14px;
+      }
+
+      .phone-notch {
+        width: 40px;
+        height: 6px;
+      }
+
+      .phone-appbar {
+        height: 20px;
+        font-size: 0.5rem;
+      }
+      
+      .sns-post {
+        padding: 4px;
+        gap: 3px;
+        border-width: 1px;
+      }
+      
+      .sns-header {
+        gap: 3px;
+      }
+      
+      .sns-avatar {
+        width: 14px;
+        height: 14px;
+        font-size: 0.6rem;
+      }
+      
+      .sns-username {
+        font-size: 0.5rem;
+      }
+      
+      .sns-likes {
+        font-size: 0.5rem;
+      }
+      
+      .sns-caption {
+        font-size: 0.5rem;
+      }
+      
+      .sns-overlay-text {
+        font-size: 0.45rem;
+        padding: 2px 4px;
+      }
+      
+      #post2-empty-image {
+        height: 50px !important;
+        font-size: 6px !important;
+      }
+
+      .intro-text {
+        font-size: 1rem;
+      }
+    }
+
+    /* 마음온 픽셀 요정 스타일 추가 */
+    .pixel-fairy-container {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      animation: floatFairy 2.5s ease-in-out infinite;
+    }
+    .pixel-fairy-svg {
+      width: 100%;
+      height: 100%;
+    }
+    .fairy-wing-l {
+      animation: flapL 0.2s ease-in-out infinite alternate;
+      transform-origin: 32px 56px;
+    }
+    .fairy-wing-r {
+      animation: flapR 0.2s ease-in-out infinite alternate;
+      transform-origin: 64px 56px;
+    }
+    @keyframes floatFairy {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes flapL {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(12deg); }
+    }
+    @keyframes flapR {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(-12deg); }
+    }
+    
+    .intro-dialog {
+      background-color: rgba(0, 0, 0, 0.85);
+      border: var(--pixel-thick) solid #000;
+      padding: 15px 20px;
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      box-shadow: 6px 6px 0 #000;
+      position: relative;
+    }
+    .intro-dialog p {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #fff;
+      word-break: keep-all;
+    }
+    .activity-summary-box {
+      margin-top: 15px;
+      border-top: 2px dashed rgba(255, 255, 255, 0.2);
+      padding-top: 12px;
+      text-align: left;
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+    .activity-summary-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .activity-summary-badge {
+      background: var(--point-yellow);
+      color: #000;
+      font-size: 0.75rem;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    /* =========================================
+       인트로(도입) 화면 공통 표준 스타일
+       ========================================= */
+    .std-intro-container {
+      position: absolute;
+      inset: 0 !important;
+      height: 100% !important;
+      top: 0 !important;
+      padding: 0 !important;
+      display: none; /* 기본 상태는 숨김 */
+      flex-direction: column;
+      background-color: #1a1c23;
+      color: #ffffff;
+      overflow: hidden;
+      font-family: 'DungGeunMo', monospace;
+      z-index: 100; /* 인트로가 항상 최상위 노출 */
+    }
+
+    .std-intro-container.active {
+      display: flex !important; /* active 상태일 때만 보임 */
+    }
+
+    .std-intro-header-simple {
+      width: 100%;
+      background-color: #2c3e50;
+      border-bottom: 4px solid #000000;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      z-index: 10;
+      box-sizing: border-box;
+    }
+
+    .std-intro-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin: 0;
+      color: #ffffff;
+      text-shadow: 2px 2px 0 #000000;
+    }
+
+    .std-intro-body {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      gap: 32px;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+
+    /* 모바일/태블릿 반응형 대응 */
+    @media (max-width: 768px) {
+      .std-intro-body {
+        flex-direction: column;
+        padding: 16px;
+        gap: 16px;
+        justify-content: flex-start;
+      }
+    }
+
+    .std-intro-char-wrapper-small {
+      width: 195px;
+      height: 195px;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .std-intro-char-wrapper-small {
+        width: 135px;
+        height: 135px;
+      }
+    }
+
+    .std-intro-char-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      animation: miniFloat 2.5s ease-in-out infinite;
+    }
+
+    .std-intro-unified-box {
+      background-color: #1e293b;
+      border: 4px solid #000000;
+      padding: 20px;
+      width: 100%;
+      max-width: 520px;
+      min-height: 220px;
+      box-shadow: 4px 4px 0 #000000;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .std-intro-dialog-inner {
+      color: #f1f5f9;
+      font-size: 0.975rem;
+      line-height: 1.6;
+      text-align: left;
+      word-break: keep-all;
+    }
+
+    .std-intro-divider {
+      height: 2px;
+      background-color: #475569;
+      width: 100%;
+    }
+
+    .std-intro-activities-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .std-activity-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .std-activity-badge {
+      background-color: #eab308;
+      color: #000000;
+      font-size: 0.775rem;
+      padding: 2px 6px;
+      font-weight: 800;
+      flex-shrink: 0;
+      border: 1px solid #000;
+    }
+
+    .std-activity-text {
+      color: #ffffff;
+      font-size: 0.875rem;
+      font-weight: bold;
+    }
+
+    .std-intro-footer {
+      width: 100%;
+      background-color: #2c3e50;
+      border-top: 4px solid #000000;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+      z-index: 10;
+      box-sizing: border-box;
+    }
+
+    .std-footer-btn-left {
+      padding: 10px 24px;
+      background-color: #475569;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 0.8rem;
+      border: 2px solid #000000;
+      box-shadow: 3px 3px 0 #000000;
+      cursor: pointer;
+      transition: all 0.1s;
+      font-family: 'DungGeunMo', monospace;
+    }
+
+    .std-footer-btn-left:hover {
+      background-color: #64748b;
+    }
+
+    .std-footer-btn-left:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 #000000;
+    }
+
+    .std-footer-btn-right {
+      padding: 10px 32px;
+      background-color: #fde047;
+      color: #000000;
+      font-weight: 800;
+      font-size: 0.85rem;
+      border: 2px solid #000000;
+      box-shadow: 3px 3px 0 #000000;
+      cursor: pointer;
+      transition: all 0.1s;
+      font-family: 'DungGeunMo', monospace;
+    }
+
+    .std-footer-btn-right:hover {
+      background-color: #facc15;
+    }
+
+    .std-footer-btn-right:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 #000000;
+    }
+
+    /* === 100% 한 화면 맞춤 & 가로 배치(No Scroll) 통합 스타일 === */
+    .view {
+      display: none;
+      width: 100%;
+      height: calc(100% - 96px); /* 상단바(52px) + 하단바(44px) 공제 */
+      position: absolute;
+      top: 52px;
+      left: 0;
+      padding: 6px 12px 10px 12px !important; /* 상단 여백 최소화 */
+      flex-direction: column;
+      overflow-y: auto !important; /* 내용 초과 시 스크롤 허용 */
+    }
+
+    /* 마음온 공통 표준 가이드 배너 스타일 - 48px 레트로 핏 */
+    .std-guide-banner {
+      background-color: #312e81 !important;
+      border: 3px solid #000000 !important;
+      box-shadow: 2px 2px 0px #000000 !important;
+      border-radius: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      padding: 6px 12px !important;
+      width: 100% !important;
+      height: 48px !important;
+      flex-shrink: 0 !important;
+      margin-top: 2px !important; /* 헤더 여백 밀착 */
+      position: relative !important;
+      margin-bottom: 0px !important;
+    }
+    
+    /* 1단계 폰 컨테이너 높이 및 상단 밀착 정렬 */
+    .phones-horizontal-container {
+      height: 334px !important; /* 원래 폰 높이 수용 */
+      margin-top: 4px !important;
+      gap: 12px !important;
+      align-items: flex-start !important; /* 스마트폰 목업을 위로 밀착 정렬 */
+      width: 100% !important;
+    }
+
+    /* 1단계 질문 조작창 */
+    #control-panel {
+      margin-top: 2px !important;
+      margin-bottom: 10px !important; /* 하단바와 기분 좋은 이격 */
+      width: 100% !important;
+      max-width: 580px !important;
+    }
+
+    /* 2단계 가로(row) 배치 복구 및 스마트폰 목업과 대칭되도록 수직 가운데 정렬 */
+    .act2-screen-wrapper {
+      height: 354px !important;
+      margin-top: 4px !important;
+      display: flex !important;
+      flex-direction: column !important; /* 위 태블릿, 아래 입력창 */
+      align-items: center !important;
+      justify-content: flex-start !important;
+      gap: 8px !important; /* 태블릿과 입력창 사이 적절한 간격 */
+      width: 100% !important;
+    }
+
+    /* 2단계 댓글 입력창 좌우 배치 핏 */
+    .comment-writing-panel {
+      width: 320px !important;
+      background: rgba(255,255,255,0.03) !important;
+      border: 2px solid rgba(255,255,255,0.1) !important;
+      border-radius: 8px !important;
+      padding: 12px 16px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 8px !important;
+      flex-shrink: 0 !important;
+    }
+
+    #comment-panel {
+      margin-top: 0px !important;
+      margin-bottom: 12px !important;
+      height: auto !important;
+      padding: 12px 16px !important; /* 넉넉한 패딩 복구 */
+      gap: 8px !important;
+      width: 320px !important; /* 원래 큼직하고 시원한 320px 복원 */
+    }
+
+    /* 질문 카드 패널 여백 조율 */
+    .question-panel {
+      margin-top: 2px !important;
+      padding: 4px 8px !important;
+    }
+
+    /* 구식 가이드 요소 숨김 */
+    .guide-panel {
+      display: none !important;
+    }
+    
+    @keyframes bounceFairy {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    /* === 미려하고 얇은 레트로 커스텀 스크롤바 스타일 === */
+    .view::-webkit-scrollbar {
+      width: 6px !important;
+    }
+    .view::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05) !important;
+      border-radius: 3px !important;
+    }
+    .view::-webkit-scrollbar-thumb {
+      background: #475569 !important; /* 슬레이트 그레이 톤 스크롤바 */
+      border: 1.5px solid #000000 !important;
+      border-radius: 3px !important;
+      box-shadow: 1px 1px 0px #000000 !important;
+    }
+    .view::-webkit-scrollbar-thumb:hover {
+      background: #05F5F6 !important; /* 호버 시 네온 사이안 빛으로 변경 */
+    }
+
+    /* === 2단계 가로 태블릿(Tablet Mockup) 전용 레트로 스타일 - 시원하고 큼직하게 확장 === */
+    .tablet-mockup {
+      width: 530px !important;
+      height: 325px !important; /* 285px -> 325px 세로 창 시원하게 대폭 확장 */
+      background: #ffffff !important;
+      border: 4px solid #000000 !important;
+      box-shadow: 3px 3px 0px #000000 !important;
+      border-radius: 8px !important;
+      display: flex !important;
+      flex-direction: row !important;
+      overflow: hidden !important;
+      z-index: 45;
+      margin: 0 auto !important;
+    }
+    
+    /* 태블릿 왼쪽 지수 글 피드 영역 */
+    .tablet-left {
+      width: 50% !important;
+      height: 100% !important;
+      border-right: 3px solid #000000 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      padding: 8px !important;
+      background: #f8fafc !important;
+      color: #000000 !important;
+    }
+    
+    /* 태블릿 오른쪽 댓글 목록 영역 */
+    .tablet-right {
+      width: 50% !important;
+      height: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      padding: 8px !important;
+      background: #ffffff !important;
+      overflow-y: auto !important; /* 댓글 많아질 시 개별 스크롤 */
+    }
+
+    /* 2단계 가로(row) 배치 복구 및 스마트폰 목업과 대칭되도록 수직 가운데 정렬 */
+    .act2-screen-wrapper {
+      height: 334px !important; /* 세로 높이를 한화면에 완전히 맞춤 */
+      margin-top: 4px !important;
+      display: flex !important;
+      flex-direction: column !important; /* 태블릿이 위, 입력창이 아래로 오도록 세로 정렬 */
+      align-items: center !important;
+      justify-content: flex-start !important;
+      gap: 6px !important;
+      width: 100% !important;
+    }
+
+    /* 2단계 하단 와이드 댓글 입력창 */
+    #comment-panel {
+      margin-top: 2px !important;
+      margin-bottom: 8px !important; /* 하단바와 완벽한 숨통 여백 */
+      height: auto !important;
+      padding: 8px 12px !important;
+      gap: 4px !important;
+      width: 530px !important; /* 태블릿 가로폭과 100% 일치 */
+    }
+
+    .comment-writing-panel {
+      width: 530px !important;
+      background: rgba(255,255,255,0.03) !important;
+      border: 2px solid rgba(255,255,255,0.1) !important;
+      border-radius: 8px !important;
+      padding: 8px 12px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 4px !important;
+      flex-shrink: 0 !important;
+    }
+    
+    /* 태블릿용 내부 스크롤바 최적화 */
+    .tablet-right::-webkit-scrollbar {
+      width: 4px !important;
+    }
+    .tablet-right::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05) !important;
+    }
+    .tablet-right::-webkit-scrollbar-thumb {
+      background: #475569 !important;
+      border-radius: 2px !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app-container">
+    <!-- 공통 표준 상단 헤더바 -->
+    <div id="standard-header" class="w-full bg-[#1e293b] border-b-4 border-black px-6 py-2.5 flex justify-between items-center z-10 shrink-0 text-white select-none hidden" style="height: 52px; font-family: 'DungGeunMo', monospace;">
+      <!-- 좌측: 고유 역량 이미지 아이콘 & 역량명 -->
+      <div class="flex items-center gap-2">
+        <div class="relative w-10 h-10 flex items-center justify-center overflow-visible" style="margin-left: -5px; margin-right: 5px;">
+          <img src="images/icon_esteem.png" alt="역량 아이콘" class="absolute w-24 h-24 object-contain max-w-none" id="header-logo-icon" style="image-rendering: pixelated; transform: scale(2.4); z-index: 20; pointer-events: none; top: -28px; left: -26px;">
+        </div>
+        <span class="font-bold text-[1.15rem] tracking-tight" id="header-competency-name" style="margin-left: 5px;">사이버 자기존중감</span>
+      </div>
+      
+      <!-- 가운데: 활동명 및 진행 상태 (도트) -->
+      <div class="flex items-center gap-4">
+        <span class="text-xs font-bold text-slate-300" id="stage-title-text">사이버 자기존중감</span>
+        <div class="flex items-center gap-1.5" id="header-progress-dots">
+          <span class="w-3 h-3 rounded-full border-2 border-black bg-slate-500 stage-dot" id="dot-1">1</span>
+          <span class="w-3 h-3 rounded-full border-2 border-black bg-slate-500 stage-dot" id="dot-2">2</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 임시 테스트 스킵 버튼 -->
+    <button class="temp-skip-btn" onclick="skipToNextSection()">⏩ 스킵</button>
+
+    <!-- =========================================
+         Screen 1: 인트로 (안내 화면)
+         ========================================= -->
+    <div id="view-intro" class="std-intro-container view active" style="height: 100%; top: 0;">
+      <!-- 상단 헤더 영역 (심플 헤더) -->
+      <div class="std-intro-header-simple">
+        <h1 class="std-intro-title">사이버 자기존중감</h1>
+      </div>
+
+      <!-- 메인 본문 영역 -->
+      <div class="std-intro-body">
+        <!-- 좌측 캐릭터 영역 (더 작아짐) -->
+        <div class="std-intro-char-wrapper-small">
+          <img src="images/maeumon_intro.png" alt="마음온" class="std-intro-char-img">
+        </div>
+
+        <!-- 우측 단일 통합 상자 (대사 + 활동 요약) -->
+        <div class="std-intro-unified-box">
+          <!-- 대사 (텍스트 직접 노출) -->
+          <div id="intro-typing-text" class="std-intro-dialog-inner">SNS 속 화려한 친구들의 모습을 보며 어쩐지 내 모습이 초라하게 느껴진 적 있어? 네모난 화면 속 모습이 전부는 아니니 나를 아끼고 존중하는 마음이 필요해.</div>
+          <!-- 구분선 -->
+          <div class="std-intro-divider"></div>
+          <!-- 활동 요약 목록 -->
+          <div class="std-intro-activities-inner">
+            <div class="std-activity-row">
+              <span class="std-activity-badge">활동 1</span>
+              <span class="std-activity-text">SNS 사진 의미를 분석하고 나만의 소확행 해시태그 완성하기</span>
+            </div>
+            <div class="std-activity-row">
+              <span class="std-activity-badge">활동 2</span>
+              <span class="std-activity-text">힘들어하는 친구에게 위로의 댓글을 선물하고 반 친구들과 함께 응원하기</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 하단 버튼 영역 (좌측: 홈, 우측: 활동 시작) -->
+      <div class="std-intro-footer">
+        <button onclick="exitToMap()" class="std-footer-btn-left">🏠 홈으로</button>
+        <!-- 시작 버튼 상시 노출 -->
+        <div id="intro-btn-container">
+          <button onclick="startBootcamp()" class="std-footer-btn-right">활동 시작하기 ▶</button>
+        </div>
+      </div>
+
+      <script>
+        function exitToMap() {
+          try {
+            if (window.parent && window.parent !== window) {
+              window.parent.postMessage({ type: 'RETURN_TO_MAP' }, '*');
+            } else {
+              window.location.href = 'index.html';
+            }
+          } catch (e) {
+            window.location.href = 'index.html';
+          }
+        }
+      </script>
+    </div>
+
+    <!-- =========================================
+         Screen 2: 활동 1 (가상 SNS 실전 대처)
+         ========================================= -->
+    <div id="view-act1" class="view" style="display: none;">
+      <div class="flex justify-between items-center px-4 py-1.5 bg-slate-800 border-2 border-black text-white font-bold text-xs hidden" style="margin-bottom: 8px;">
+        <span style="color:var(--point-yellow);">질문 해결을 통해 마음을 성찰해 보세요.</span>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span id="stage-text">질문 1/2</span>
+          <div class="stage-bar-container" style="width:50px;">
+            <div id="stage-bar-fill" class="stage-bar-fill" style="width: 50%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 마음온 AI 공통 가이드 배너 (1단계) -->
+      <div class="std-guide-banner">
+        <!-- 정밀 인라인 크기(38px) 픽스 및 돌출값 최적화 -->
+        <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
+          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+        </div>
+        <div class="flex-grow flex flex-col justify-center" style="margin-left: 6px;">
+          <span class="text-[10.5px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
+          <span class="text-[12px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;" id="act1-guide-bubble">
+            친구의 화려한 SNS 사진을 보았을 때, 내 마음을 지키는 올바른 대처 방법은 무엇일까?
+          </span>
+        </div>
+      </div>
+
+      <!-- 양방향 가상 스마트폰 레이아웃 (좌: 지은 / 우: 나) - 명확하게 flex-row 가로 정렬 고정 -->
+      <div class="phones-horizontal-container">
+        
+        <!-- text-slate-300 및 대칭 구조 맞춤 -->
+        <!-- 왼쪽 스마트폰: 지은의 SNS -->
+        <div id="phone-mockup-left" class="phone-mockup" style="width: 250px; height: 330px; margin: 0;">
+          <div class="phone-notch"></div>
+          <div class="phone-screen" style="padding-top: 15px;">
+            <div class="phone-appbar">마음그램</div>
+            <div class="phone-content" style="padding: 6px; gap: 6px;">
+              <div id="post-1" class="sns-post" style="box-shadow: 1px 1px 0 rgba(0,0,0,0.15); padding: 8px; gap: 6px;">
+                <div class="sns-header">
+                  <!-- 기본 실루엣 프로필 이미지 적용 (이모지 완전 대체) -->
+                  <div class="sns-avatar">
+                    <svg viewBox="0 0 24 24" fill="#a4b0be" style="width: 100%; height: 100%;">
+                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                  </div>
+                  <div class="sns-username">지은</div>
+                </div>
+                <!-- 지은이 사진 컨테이너 높이 125px로 확대 및 그림 헬퍼 가이드 추가 -->
+                <div class="sns-image-container" style="height: 125px; display: flex; align-items: center; justify-content: center; background: #cbd5e1; border: 2px solid #000; border-radius: 8px; overflow: hidden; position: relative;">
+                  <img id="post1-sns-img" src="images/theme_park_jieun.jpg" class="sns-image" alt="테마파크" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; document.getElementById('post1-fallback').style.display='flex';">
+                  <div id="post1-fallback" style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; text-align: center; font-size: 9px; font-weight: bold; color: #64748b; padding: 4px;" class="flex flex-col">
+                    <span>그림을 넣어주세요!</span>
+                    <span style="color: #ef4444; font-size: 8px;">theme_park_jieun.jpg</span>
+                  </div>
+                </div>
+                <div class="sns-likes" style="font-size: 0.7rem;">❤️ 좋아요 42개</div>
+                <div class="sns-caption" style="font-size: 0.7rem; line-height: 1.3;">
+                  <b>지은</b> 주말 테마파크 완전 꿀잼! 대기 줄 길었지만 머리띠 사고 신났음 🎡 Rollercoaster! #행복 #꿀잼
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 오른쪽 스마트폰: 나의 SNS (지은이와 내부 상자 규격 125px로 완벽 1:1 일치) -->
+        <div id="phone-mockup-right" class="phone-mockup" style="width: 250px; height: 330px; margin: 0;">
+          <div class="phone-notch"></div>
+          <div class="phone-screen" style="padding-top: 15px;">
+            <div class="phone-appbar">마음그램</div>
+            <div class="phone-content" style="padding: 6px; gap: 6px; position: relative;">
+              <div id="post-2" class="sns-post" style="box-shadow: 1px 1px 0 rgba(0,0,0,0.15); padding: 8px; gap: 6px;">
+                <div class="sns-header">
+                  <!-- 기본 실루엣 프로필 이미지 적용 (이모지 완전 대체) -->
+                  <div class="sns-avatar">
+                    <svg viewBox="0 0 24 24" fill="#a4b0be" style="width: 100%; height: 100%;">
+                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                  </div>
+                  <div class="sns-username">나</div>
+                </div>
+                <!-- 지은이와 외곽 보더 두께(2px), 둥글기(8px), 높이(125px) 완벽하게 똑같이 설계 -->
+                <div class="sns-image-container" style="height: 125px; display: flex; align-items: center; justify-content: center; background: #cbd5e1; border: 2px solid #000; border-radius: 8px; overflow: hidden; position: relative;">
+                  <!-- 등록 전: 빈 이미지 프레임 -->
+                  <div id="post2-empty-image" style="display: flex; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-size: 9px; font-weight: bold; color: #64748b; padding: 4px;" class="bg-slate-200">
+                    <span>비어 있음</span>
+                    <span style="font-size: 8px; color: #94a3b8; margin-top: 2px;">나만의 행복을 등록해 주세요!</span>
+                  </div>
+                  <!-- 등록 후: 따뜻한 캐릭터 사진 노출 -->
+                  <img id="post2-sns-img" src="" class="sns-image hidden" alt="나의 사진" style="width: 100%; height: 100%; object-fit: cover;">
+                  <!-- 이미지 위에 글자가 새겨지는 가치 캡션 영역 -->
+                  <div id="post2-image-overlay" class="sns-overlay-text" style="display:none; font-size: 0.65rem; padding: 4px 8px;">이유</div>
+                </div>
+                <div id="post2-likes-display" class="sns-likes" style="font-size: 0.7rem;">❤️ 좋아요 0개</div>
+                <div id="post2-caption-text" class="sns-caption" style="font-size: 0.7rem; line-height: 1.3;">
+                  <b>나</b> <i>(아직 등록된 이야기가 없습니다)</i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 글쓰기 조작 영역 -->
+      <div id="control-panel" style="width:100%; max-width:580px; margin:0 auto; flex-shrink:0;">
+        
+        <!-- 질문 1 입력 영역 -->
+        <div id="writing-area" class="writing-container" style="display: flex;">
+          <div id="writing-prompt-text" class="writing-prompt">질문 텍스트</div>
+          <div style="display:flex; gap:8px; width:100%;">
+            <textarea id="writing-textarea-input" class="writing-textarea" placeholder="생각을 적어보세요. (최소 3글자)"></textarea>
+            <button class="writing-submit-btn" onclick="submitWriting()">확인</button>
+          </div>
+        </div>
+
+        <!-- 질문 2 다중 입력 영역 (소확행, 해시태그, 스티커 이름) -->
+        <div id="writing-area-stage2" class="writing-container" style="display: none; flex-direction: column; gap: 6px;">
+          <div id="writing-prompt-text-stage2" class="writing-prompt">질문 텍스트</div>
+          
+          <div class="flex flex-col gap-1 w-full mt-1">
+            <span class="text-xs font-bold text-slate-300">1. 나의 소확행 내용:</span>
+            <input type="text" id="input-happiness" class="w-full bg-white text-black border-2 border-black rounded-none px-2 py-1.5 text-xs font-bold" placeholder="예: 더운 여름 집에서 아이스크림 먹기">
+          </div>
+          
+          <div class="flex flex-col gap-1 w-full">
+            <span class="text-xs font-bold text-slate-300">2. 해시태그 (스페이스바 누를 시 자동으로 # 생성):</span>
+            <input type="text" id="input-hashtag" class="w-full bg-white text-black border-2 border-black rounded-none px-2 py-1.5 text-xs font-bold" placeholder="예: 꿀잠, 나만의시간">
+          </div>
+
+          <div class="flex flex-col gap-1 w-full">
+            <span class="text-xs font-bold text-slate-300">3. 나만의 특별한 '좋아요' 또는 '스티커'의 이름은?</span>
+            <input type="text" id="input-sticker-name" class="w-full bg-white text-black border-2 border-black rounded-none px-2 py-1.5 text-xs font-bold" placeholder="예: 마음온도, 칭찬방울, 나를사랑해">
+          </div>
+          
+          <button class="writing-submit-btn mt-1" onclick="submitStage2()">나의 SNS에 등록 ▶</button>
+        </div>
+
+
+
+      </div>
+      
+      <div class="act-controls">
+        <button id="btn-act1-next" class="retro-btn" style="display: none;" onclick="progressToPost2()">나의 SNS 채우기 ▶</button>
+        <div id="btn-act1-to-act2-wrapper" class="w-full flex justify-center" style="display: none;">
+          <button id="btn-act1-to-act2" class="retro-btn" onclick="progressToAct2()">활동 2로 이동 ➔</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================
+         Screen 3: 활동 2 (선플 실천과 칭찬 샤워)
+         ========================================= -->
+    <div id="view-act2" class="view" style="display: none;">
+      
+      <!-- miracle-modal 팝업 비활성화 (피드 가림 방지) -->
+
+      <!-- 파티클 애니메이션 캔버스 -->
+      <canvas id="shower-canvas" class="shower-canvas"></canvas>
+
+      <!-- 상단 제목 -->
+      <div class="flex justify-between items-center px-4 py-1.5 bg-slate-800 border-2 border-black text-white font-bold text-xs hidden" style="margin-bottom: 8px;">
+        <span style="color:var(--point-green);">지수의 우울한 피드에 위로의 댓글을 선물하세요.</span>
+        <span style="font-size: 0.75rem; color: #94a3b8;">긍정 에너지 나누기</span>
+      </div>
+
+      <!-- 마음온 AI 공통 가이드 배너 (2단계) -->
+      <div class="std-guide-banner">
+        <!-- 정밀 인라인 크기(38px) 픽스 및 돌출값 최적화 -->
+        <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
+          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+        </div>
+        <div class="flex-grow flex flex-col justify-center" style="margin-left: 6px;">
+          <span class="text-[10.5px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
+          <span class="text-[12px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;" id="act2-guide-bubble">
+            내가 힘들 때 듣고 싶었던 따뜻한 위로의 말을 친구에게 댓글로 선물해 보자!
+          </span>
+        </div>
+      </div>
+
+      <!-- SNS 화면 및 선플 작성 영역 (가로 태블릿 개편) -->
+      <div class="act2-screen-wrapper">
+        
+        <!-- 가로형 태블릿 목업 -->
+        <div class="tablet-mockup">
+          <!-- 좌측 분할: 지수의 글 피드 -->
+          <div class="tablet-left">
+            <div class="sns-header" style="margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
+              <div class="sns-avatar" style="width: 18px; height: 18px; border-radius: 50%; overflow: hidden; background: #cbd5e1;">
+                <svg viewBox="0 0 24 24" fill="#a4b0be" style="width: 100%; height: 100%;">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+              </div>
+              <span class="sns-username" style="font-size: 0.75rem; font-weight: bold; color: #000;">지수</span>
+            </div>
+            
+            <!-- 지수 Lonely 사진 (세로 165px로 시원하게 대폭 확장 배치) -->
+            <div class="sns-image-container" style="height: 165px; display: flex; align-items: center; justify-content: center; background: #cbd5e1; border: 2px solid #000; border-radius: 6px; overflow: hidden; position: relative;">
+              <img id="act2-friend-img" src="images/lonely_jisu.jpg" class="sns-image grayscale" alt="우울한 지수" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; document.getElementById('act2-fallback').style.display='flex';">
+              <div id="act2-fallback" style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; text-align: center; font-size: 9px; font-weight: bold; color: #64748b; padding: 4px;" class="flex flex-col">
+                <span>그림을 넣어주세요!</span>
+                <span style="color: #ef4444; font-size: 8px;">lonely_jisu.jpg</span>
+              </div>
+            </div>
+            
+            <div class="sns-caption" id="act2-sns-caption" style="margin-top: 6px; font-size: 0.8rem; line-height: 1.3; color: #000; font-family: 'DungGeunMo', monospace !important;">
+              <b>지수:</b> 요즘 내 맘을 아는 사람이 아무도 없는 것 같아... 😔
+            </div>
+          </div>
+          
+          <!-- 우측 분할: 실시간 댓글 리스트 -->
+          <div class="tablet-right" id="act2-comments-list-container">
+            <span style="font-size: 0.8rem; font-weight: bold; color: #475569; border-bottom: 1.5px dashed #cbd5e1; padding-bottom: 3px; margin-bottom: 6px; font-family: 'DungGeunMo', monospace !important;">💬 댓글 피드</span>
+            <div id="act2-comments-list" style="display: flex; flex-direction: column; gap: 4px; width: 100%;">
+              <!-- 사용자의 댓글이 여기에 쌓임 -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 댓글(선플) 입력 영역 (태블릿 하단으로 배치) -->
+        <div id="comment-panel" class="comment-writing-panel" style="z-index: 45; display: flex; flex-direction: column; gap: 4px; justify-content: center; height: auto;">
+          <!-- 우측 질문창 추가 (마음온 디자인 정돈) -->
+          <div class="writing-prompt" style="font-size: 0.9rem; text-align: center; width: 100%; white-space: normal; line-height: 1.4; margin-top: -2px !important; margin-bottom: 2px !important;">
+            내가 힘들 때 듣고 싶었던 따뜻한 위로의 말을 친구에게 선물해 볼까?
+          </div>
+          
+          <!-- 입력창과 전송 버튼 가로 배치 -->
+          <div style="display: flex; gap: 8px; width: 100%; align-items: center;">
+            <input type="text" id="act2-comment-input" class="flex-grow bg-white text-black border-2 border-black px-2 py-1.5 text-xs font-bold" placeholder="위로의 말을 입력하세요. (최소 3글자)" style="height: 38px; border-radius: 6px; outline: none;">
+            <button id="btn-submit-comment" class="retro-btn" style="font-size: 0.85rem; padding: 0 16px; height: 38px; box-shadow: 2px 2px 0 #000; border-radius: 6px; flex-shrink: 0;" onclick="triggerPraiseShower()">전송</button>
+          </div>
+        </div>
+
+      </div>
+
+      </div>
+
+      <!-- 활동 완료 버튼 삭제 (우하단 버튼으로 활성화 대체) -->
+      <div id="act2-controls" style="display: none !important;"></div>
+
+    </div>
+
+    <!-- =========================================
+         Screen 4: 아웃트로
+         ========================================= -->
+    <div id="view-outro" class="std-intro-container view" style="display: none;">
+      <!-- 상단 헤더 영역 (심플 헤더) -->
+      <div class="std-intro-header-simple">
+        <h1 class="std-intro-title">사이버 자기존중감 활동 완료 🌟</h1>
+      </div>
+
+      <!-- 메인 본문 영역 (좌측 캐릭터 복원, 우측 성찰대사 통합 개편) -->
+      <div class="std-intro-body" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 30px; padding: 20px 40px !important; box-sizing: border-box;">
+        
+        <!-- 좌측 캐릭터 영역 (마음온 캐릭터 원래대로 복원) -->
+        <div class="std-intro-char-wrapper-small">
+          <img src="images/maeumon_outro.png" alt="마음온" class="std-intro-char-img">
+        </div>
+
+        <!-- 우측 단일 통합 상자 (밝은 배경색 적용, 배지+배지제목+설명 텍스트 수직 구성) -->
+        <div class="std-intro-unified-box" style="flex-grow: 1; height: auto; min-height: 240px; display: flex; flex-direction: column; align-items: stretch; padding: 15px 25px 20px 25px !important; box-shadow: 6px 6px 0 #000000; border: 4px solid #000000; background-color: #f8fafc; color: #000000; margin: 0; max-width: 550px; gap: 10px;">
+          
+          <!-- 상단: 배지 아이콘 + 배지 타이틀 (경계선 구분) -->
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 8px; flex-shrink: 0;">
+            <!-- 크기 5배 상향된 뱃지 이미지 -->
+            <div style="width: 50px; height: 50px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 30px 0 10px 0; flex-shrink: 0;">
+              <img src="images/icon_esteem.png" alt="자기존중감 뱃지" style="width: 160px; height: 160px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
+            </div>
+            <span style="font-size: 1.25rem; color: #1e3a8a; font-weight: bold; margin-top: 10px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [사이버 자기존중감] 배지 획득!</span>
+          </div>
+
+          <!-- 하단: 코멘트/설명 텍스트 (줄바꿈/들여쓰기 제거, 검정 폰트색상 적용) -->
+          <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.05rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">인터넷 공간 속 수많은 글과 말들 사이에서도 흔들리지 않고 스스로를 아끼고 보호하는 너의 모습이 정말 멋지단다. 언제 어디서든 너의 가치는 가장 반짝이고 소중하다는 사실을 늘 마음에 기억하렴!</div>
+        </div>
+
+      </div>
+
+      <!-- 하단 버튼 영역 (오른쪽 정렬 및 가로 넓이 확장) -->
+      <div class="std-intro-footer" style="justify-content: flex-end !important; padding: 16px 40px !important;">
+        <button onclick="finishEsteemStage()" class="std-footer-btn-right" style="width: 380px; box-shadow: 4px 4px 0 #000; font-size: 1.1rem; height: 48px;">활동완료 & 대시보드로 돌아가기 ➔</button>
+      </div>
+    </div>
+
+    <!-- 공통 표준 하단 푸터바 -->
+    <div id="control-bar" class="w-full bg-[#1e293b] border-t-4 border-black px-6 py-1.5 flex justify-between items-center z-10 shrink-0 select-none hidden" style="height: 44px; font-family: 'DungGeunMo', monospace;">
+      <!-- 좌측: 이전 단계 -->
+      <button id="btn-prev" class="px-4 py-1 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="prevStep()">
+        ◀ 이전 단계
+      </button>
+      
+      <!-- 중앙: 홈으로 (맵으로) -->
+      <button id="footer-home-btn" class="px-5 py-1 bg-amber-400 hover:bg-amber-500 text-black text-xs font-black border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="exitToMap()">
+        🏠 홈으로 (맵)
+      </button>
+      
+      <!-- 우측: 다음 단계 -->
+      <button id="btn-next" class="px-4 py-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="nextStep()">
+        다음 단계 ▶
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // =========================================
+    // 전역 상태 변수 & 세팅
+    // =========================================
+    const INTRO_TEXT = "SNS 속 화려한 친구들의 모습을 보며 어쩐지 내 모습이 초라하게 느껴진 적 있어? 네모난 화면 속 모습이 전부는 아니니 나를 아끼고 존중하는 마음이 필요해.";
+    
+    // stage: 1 (Question 1), 2 (Question 2), 3 (Likes Customizer)
+    state = {
+      currentStage: 1,
+      stageCompleted: {}
+    };
+    
+    // Switch View
+    function switchView(viewId) {
+      // 모든 .view의 active 클래스 제거 및 인라인 display style을 none으로 덮어씀 (FOUC 해결 및 명시성 보정)
+      document.querySelectorAll('.view').forEach(el => {
+        el.classList.remove('active');
+        // 인쇄/인라인 디스플레이 제어
+        if (el.id === viewId) {
+          el.classList.add('active'); // active 클래스 추가 복구 (TypeError 해결)
+          el.style.setProperty('display', 'flex', 'important');
+        } else {
+          el.style.setProperty('display', 'none', 'important');
+        }
+      });
+      
+      if (viewId === 'view-act1') {
+        initAct1();
+      } else if (viewId === 'view-act2') {
+        initAct2();
+      }
+      
+      // 상하단 고정 바 상태 업데이트
+      updateFrameUI(viewId);
+    }
+
+    // 상하단 프레임 워크 제어
+    function updateFrameUI(viewId) {
+      const header = document.getElementById("standard-header");
+      const footer = document.getElementById("control-bar");
+      if (!header || !footer) return;
+
+      if (viewId === 'view-intro' || viewId === 'view-outro') {
+        header.classList.add('hidden');
+        footer.classList.add('hidden');
+      } else {
+        header.classList.remove('hidden');
+        footer.classList.remove('hidden');
+        
+        // 타이틀 및 도트 갱신
+        const titleText = document.getElementById("stage-title-text");
+        const dot1 = document.getElementById("dot-1");
+        const dot2 = document.getElementById("dot-2");
+        
+        if (dot1) dot1.className = "w-3 h-3 rounded-full border-2 border-black bg-slate-500 stage-dot flex items-center justify-center font-bold text-[8px]";
+        if (dot2) dot2.className = "w-3 h-3 rounded-full border-2 border-black bg-slate-500 stage-dot flex items-center justify-center font-bold text-[8px]";
+
+        const prevBtn = document.getElementById("btn-prev");
+        const nextBtn = document.getElementById("btn-next");
+        
+        if (viewId === 'view-act1') {
+          if (titleText) {
+            titleText.innerText = "활동 1: SNS 사진 의미를 분석하고 나만의 소확행 해시태그 완성하기";
+          }
+          if (dot1) dot1.classList.add('active');
+          
+          // 이전 버튼 제어 (질문 2면 질문 1로 가고, 질문 1이면 비활성)
+          if (state.currentStage === 2) {
+            if (prevBtn) prevBtn.classList.remove('disabled');
+          } else {
+            if (prevBtn) prevBtn.classList.add('disabled');
+          }
+          
+          // 다음 버튼 제어 (스폰된 진행버튼 가시성 상속)
+          const writingSubmitBtn = document.getElementById("btn-act1-next");
+          const act1ToAct2Btn = document.getElementById("btn-act1-to-act2-wrapper");
+          
+          if (state.currentStage === 1) {
+            if (writingSubmitBtn && writingSubmitBtn.style.display !== "none") {
+              if (nextBtn) nextBtn.classList.remove('disabled');
+            } else {
+              if (nextBtn) nextBtn.classList.add('disabled');
+            }
+          } else {
+            if (act1ToAct2Btn && act1ToAct2Btn.style.display !== "none") {
+              if (nextBtn) nextBtn.classList.remove('disabled');
+            } else {
+              if (nextBtn) nextBtn.classList.add('disabled');
+            }
+          }
+        } else if (viewId === 'view-act2') {
+          if (titleText) titleText.innerText = "활동 2: 힘들어하는 친구에게 위로의 댓글을 선물하고 반 친구들과 함께 응원하기";
+          if (dot1) dot1.classList.add('completed');
+          if (dot2) dot2.classList.add('active');
+          
+          // 이전 버튼 활성
+          if (prevBtn) prevBtn.classList.remove('disabled');
+          
+          // 다음 버튼 제어
+          if (state.stageCompleted[2]) {
+            if (nextBtn) nextBtn.classList.remove('disabled');
+          } else {
+            if (nextBtn) nextBtn.classList.add('disabled');
+          }
+        }
+
+        // 버튼 잠금 속성을 풀고(항상 클릭 가능), 은은한 비주얼 흐림 효과(opacity-60)만 제어하여 팝업 피드백을 유도함
+        if (prevBtn) {
+          prevBtn.disabled = false; // 물리 잠금 완전 해제
+          if (prevBtn.classList.contains('disabled')) {
+            prevBtn.style.opacity = "0.5";
+            prevBtn.style.cursor = "not-allowed";
+          } else {
+            prevBtn.style.opacity = "1";
+            prevBtn.style.cursor = "pointer";
+          }
+        }
+        if (nextBtn) {
+          nextBtn.disabled = false; // 물리 잠금 완전 해제
+          if (nextBtn.classList.contains('disabled')) {
+            nextBtn.style.opacity = "0.5";
+            nextBtn.style.cursor = "not-allowed";
+          } else {
+            nextBtn.style.opacity = "1";
+            nextBtn.style.cursor = "pointer";
+          }
+
+          if (viewId === 'view-act2') {
+            nextBtn.innerText = "활동 완료 ➔";
+          } else {
+            nextBtn.innerText = "다음 단계 ▶";
+          }
+        }
+      }
+    }
+
+    // 이전/다음 단계 푸터 이벤트 리디렉션
+    function prevStep() {
+      const prevBtn = document.getElementById("btn-prev");
+      const activeView = document.querySelector('.view.active').id;
+
+      // 이전 단계가 없는 상태에서 클릭 시 피드백 안내
+      if (prevBtn && prevBtn.classList.contains('disabled')) {
+        playBeepSound("fail");
+        alert("이전 단계가 존재하지 않습니다. (첫 번째 화면입니다)");
+        return;
+      }
+
+      if (activeView === 'view-act1') {
+        if (state.currentStage === 2) {
+          playBeepSound("click");
+          loadPostStage(1);
+          updateFrameUI('view-act1');
+        }
+      } else if (activeView === 'view-act2') {
+        playBeepSound("click");
+        switchView('view-act1');
+        loadPostStage(2);
+        // 복원 시 버튼 가시성 복원
+        document.getElementById("post2-empty-image").style.display = "none";
+        document.getElementById("post2-sns-img").classList.remove("hidden");
+        document.getElementById("writing-area-stage2").style.display = "none";
+        document.getElementById("btn-act1-to-act2-wrapper").style.display = "flex";
+        updateFrameUI('view-act1');
+      }
+    }
+
+    function nextStep() {
+      const nextBtn = document.getElementById("btn-next");
+      const activeView = document.querySelector('.view.active').id;
+
+      // 미완료 상태에서 다음 단계 클릭 시 친절한 미션 수행 안내 피드백 팝업 출력
+      if (nextBtn && nextBtn.classList.contains('disabled')) {
+        playBeepSound("fail");
+        if (activeView === 'view-act1') {
+          if (state.currentStage === 1) {
+            alert("친구의 가상 SNS 사진에 대한 분석 소감을 적고 [확인]을 눌러 활동 1의 첫 단계를 완료해 주세요!");
+          } else {
+            alert("나의 소확행 행복, 해시태그, 스티커 이름을 모두 입력하고 [나의 SNS에 등록]을 눌러 활동 1을 마무리해 주세요!");
+          }
+        } else if (activeView === 'view-act2') {
+          alert("친구에게 위로의 선플 댓글을 작성하고, 6초 동안의 따뜻한 [칭찬 샤워] 연출을 끝까지 마친 후 완료할 수 있습니다!");
+        }
+        return;
+      }
+
+      if (activeView === 'view-act1') {
+        if (state.currentStage === 1) {
+          progressToPost2();
+        } else if (state.currentStage === 2) {
+          progressToAct2();
+        }
+      } else if (activeView === 'view-act2') {
+        progressToOutro();
+      }
+    }
+
+    // Beep Audio Helper
+    function playBeepSound(type) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        osc.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        if (type === 'success') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+          osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
+          gainNode.gain.setValueAtTime(0.08, ctx.currentTime);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.25);
+        } else if (type === 'fail') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(180.00, ctx.currentTime); // F3
+          gainNode.gain.setValueAtTime(0.08, ctx.currentTime);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.3);
+        } else if (type === 'click') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(440, ctx.currentTime); // A4
+          gainNode.gain.setValueAtTime(0.05, ctx.currentTime);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.08);
+        } else if (type === 'send') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(330, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(660, ctx.currentTime + 0.15);
+          gainNode.gain.setValueAtTime(0.08, ctx.currentTime);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.15);
+        }
+      } catch (e) {
+        console.log('AudioContext is blocked or not supported');
+      }
+    }
+
+    // Screen 1: Typewriter Effect 제거 및 해시태그 스페이스바 이벤트 바인딩
+    document.addEventListener("DOMContentLoaded", () => {
+      const target = document.getElementById("intro-typing-text");
+      const btnContainer = document.getElementById("intro-btn-container");
+      if (target) target.innerText = INTRO_TEXT;
+      if (btnContainer) {
+        btnContainer.style.visibility = "visible";
+        btnContainer.style.opacity = "1";
+      }
+
+      // 해시태그 스페이스바 자동 '#' 입력 및 접두사 검증 핸들러
+      const hashtagInput = document.getElementById("input-hashtag");
+      if (hashtagInput) {
+        hashtagInput.addEventListener("keydown", (e) => {
+          if (e.key === ' ') {
+            e.preventDefault();
+            let val = hashtagInput.value;
+            // 빈칸 연속 방지 및 '#' 뒤 문자 있을 때만 스페이스와 함께 다음 # 자동 추가
+            if (val.length > 0 && !val.endsWith(' ') && !val.endsWith('#')) {
+              hashtagInput.value = val + ' #';
+            }
+          }
+        });
+        hashtagInput.addEventListener("input", () => {
+          let val = hashtagInput.value;
+          if (val.length === 0) {
+            hashtagInput.value = '#';
+          } else if (!val.startsWith('#')) {
+            hashtagInput.value = '#' + val;
+          }
+        });
+      }
+    });
+
+    function startBootcamp() {
+      playBeepSound('click');
+      switchView('view-act1');
+    }
+
+    // ==========================================
+    // Screen 2: 활동 1 (가상 SNS 실전 대처)
+    // ==========================================
+    function initAct1() {
+      state.currentStage = 1;
+      loadPostStage(1);
+    }
+
+    function loadPostStage(stageNum) {
+      state.currentStage = stageNum;
+      
+      // 스마트폰 포커스 상태 연출 (질문 1: 지은 집중 / 질문 2~3: 나 집중)
+      const leftPhone = document.getElementById("phone-mockup-left");
+      const rightPhone = document.getElementById("phone-mockup-right");
+      if (leftPhone && rightPhone) {
+        if (stageNum === 1) {
+          leftPhone.classList.remove("phone-unfocused");
+          leftPhone.classList.add("phone-focused");
+          
+          rightPhone.classList.remove("phone-focused");
+          rightPhone.classList.add("phone-unfocused");
+        } else {
+          leftPhone.classList.remove("phone-focused");
+          leftPhone.classList.add("phone-unfocused");
+          
+          rightPhone.classList.remove("phone-unfocused");
+          rightPhone.classList.add("phone-focused");
+        }
+      }
+      
+      // UI 리셋
+      document.getElementById("stage-text").innerText = "질문 " + (stageNum === 3 ? 2 : stageNum) + " / 2";
+      document.getElementById("stage-bar-fill").style.width = stageNum * 50 + "%";
+      
+      // 폼 가시성 리셋
+      document.getElementById("writing-area").style.display = "none";
+      document.getElementById("writing-area-stage2").style.display = "none";
+
+      
+      document.getElementById("btn-act1-next").style.display = "none";
+      document.getElementById("btn-act1-to-act2-wrapper").style.display = "none";
+
+      if (stageNum === 1) {
+        document.getElementById("writing-area").style.display = "flex";
+        document.getElementById("writing-textarea-input").value = "";
+        
+        document.getElementById("act1-guide-bubble").innerText = "친구의 화려한 SNS 사진을 보았을 때, 내 마음을 지키는 올바른 대처 방법은 무엇일까?";
+        document.getElementById("writing-prompt-text").innerText = "이 사진 한 장이 이 친구의 모든 것을 나타낼 수 있을까? 아니라면 그 이유를 말해보자";
+        document.getElementById("writing-textarea-input").focus();
+      } else if (stageNum === 2) {
+        document.getElementById("writing-area-stage2").style.display = "flex";
+        
+        document.getElementById("act1-guide-bubble").innerText = "비교와 박탈감은 훌훌 털어내고, 이제 나만의 가치가 가득 담긴 행복 피드를 꾸며보자!";
+        document.getElementById("writing-prompt-text-stage2").innerText = "내 일상 속에서 찾을 수 있는 작지만 확실한 나의 행복은 어떤 모양일까?";
+        
+        document.getElementById("input-happiness").value = "";
+        document.getElementById("input-hashtag").value = "#"; // 기본적으로 '#' 기호 사전 세팅
+        document.getElementById("input-sticker-name").value = "";
+      }
+      
+      // 질문 단계 갱신 시 하단 푸터 바 상태 실시간 동기화
+      updateFrameUI('view-act1');
+    }
+
+    function triggerPhoneShake() {
+      const phoneId = (state.currentStage === 1) ? "phone-mockup-left" : "phone-mockup-right";
+      const phone = document.getElementById(phoneId);
+      if (phone) {
+        phone.classList.remove("vibrate");
+        void phone.offsetWidth; // trigger reflow
+        phone.classList.add("vibrate");
+        setTimeout(() => phone.classList.remove("vibrate"), 400);
+      }
+    }
+
+    // 질문 1 제출 (지은이의 SNS 분석)
+    function submitWriting() {
+      const inputVal = document.getElementById("writing-textarea-input").value.trim();
+      if (inputVal.length < 3) {
+        playBeepSound("fail");
+        triggerPhoneShake();
+        alert("3글자 이상 정성스럽게 의견을 적어주세요!");
+        return;
+      }
+
+      playBeepSound("send");
+      
+      // 입력 영역 숨기기
+      document.getElementById("writing-area").style.display = "none";
+      
+      // 첫 번째 생각 기록은 마음그램 화면에 억지로 띄우지 않고 로직을 단순화 (요청사항 반영)
+      document.getElementById("act1-guide-bubble").innerHTML = `<span style="color:var(--point-green); font-weight:bold;">맞아! SNS 사진 한 장은 그 사람 삶의 아주 짧은 단편일 뿐, 모든 진실을 보여주는 것은 아니야! 🌟</span>`;
+      document.getElementById("btn-act1-next").style.display = "inline-flex";
+      updateFrameUI('view-act1');
+    }
+
+    function progressToPost2() {
+      playBeepSound("click");
+      loadPostStage(2);
+    }
+
+    // 질문 2 제출 (나의 소확행 & 커스텀 스티커 이름 등록)
+    function submitStage2() {
+      const happiness = document.getElementById("input-happiness").value.trim();
+      const hashtag = document.getElementById("input-hashtag").value.trim();
+      const stickerName = document.getElementById("input-sticker-name").value.trim();
+
+      if (happiness.length < 2 || hashtag.length < 2 || stickerName.length < 1) {
+        playBeepSound("fail");
+        triggerPhoneShake();
+        alert("빈칸 없이 모든 항목을 알맞게 입력해 주세요!");
+        return;
+      }
+
+      playBeepSound("success");
+
+      // 1. 나의 피드 갱신
+      document.getElementById("post2-empty-image").style.display = "none";
+      
+      const post2Img = document.getElementById("post2-sns-img");
+      post2Img.src = "images/cyber_healed.png";
+      post2Img.classList.remove("hidden");
+
+      document.getElementById("post2-caption-text").innerHTML = `<b>나</b> ${happiness}<br>${hashtag}`;
+      // 자존감은 비교 불가한 무한한 가치라는 교육용 디스플레이 바로 적용
+      document.getElementById("post2-likes-display").innerHTML = `💖 ${stickerName}`;
+
+      // 2. 조작패널 숨기고 즉시 활동 2 이동 버튼 활성화
+      document.getElementById("writing-area-stage2").style.display = "none";
+      document.getElementById("btn-act1-to-act2-wrapper").style.display = "flex";
+      
+      // 요정 안내 말풍선 완료형 멘트로 업데이트
+      document.getElementById("act1-guide-bubble").innerHTML = `<span style="color:var(--point-green); font-weight:bold;">멋져! 나만의 소중한 행복과 가치로 피드가 가득 찼어. 이제 다음 활동으로 이동해 보자! ➔</span>`;
+      updateFrameUI('view-act1');
+    }
+
+
+
+    function progressToAct2() {
+      playBeepSound("click");
+      switchView("view-act2");
+    }
+
+    // =========================================
+    // Screen 3: 활동 2 (선플 실천과 칭찬 샤워)
+    // =========================================
+    function initAct2() {
+      // 모든 DOM 요소 접근 시 null 체크 방어 코드를 적용하여 스크립트 크래시를 근본적으로 박멸
+      const finishBtn = document.getElementById("btn-act2-finish");
+      if (finishBtn) finishBtn.style.display = "none";
+      
+      const miracleModal = document.getElementById("miracle-modal");
+      if (miracleModal) miracleModal.style.display = "none";
+      
+      const commentInput = document.getElementById("act2-comment-input");
+      if (commentInput) {
+        commentInput.value = "";
+        commentInput.disabled = false;
+      }
+      
+      const submitCommentBtn = document.getElementById("btn-submit-comment");
+      if (submitCommentBtn) submitCommentBtn.disabled = false;
+      
+      // 댓글 리스트 가시성 및 내용 초기화
+      const commentsList = document.getElementById("act2-comments-list");
+      if (commentsList) {
+        commentsList.innerHTML = "";
+        commentsList.style.display = "none";
+      }
+      
+      // 활동 완료 컨트롤 패널 비활성화
+      const act2Controls = document.getElementById("act2-controls");
+      if (act2Controls) {
+        act2Controls.style.display = "none";
+      }
+      
+      // 친구 이미지 흑백으로 초기화
+      const friendImg = document.getElementById("act2-friend-img");
+      friendImg.className = "sns-image grayscale";
+
+      document.getElementById("act2-guide-bubble").innerText = "내가 힘들 때 듣고 싶었던 따뜻한 위로의 말을 친구에게 댓글로 선물해 보자!";
+      
+      const snsCaption = document.getElementById("act2-sns-caption");
+      if (snsCaption) {
+        snsCaption.innerHTML = `<b>지수:</b> 요즘 내 맘을 아는 사람이 아무도 없는 것 같아... 😔`;
+      }
+      
+      const canvas = document.getElementById("shower-canvas");
+      canvas.style.display = "none";
+    }
+
+    function triggerPraiseShower() {
+      const commentText = document.getElementById("act2-comment-input").value.trim();
+      if (commentText.length < 3) {
+        alert("친구에게 보낼 위로의 말을 최소 3글자 이상 정성껏 입력해 주세요! 😉");
+        return;
+      }
+
+      // 버튼 및 입력 비활성화
+      document.getElementById("act2-comment-input").disabled = true;
+      document.getElementById("btn-submit-comment").disabled = true;
+
+      const commentsList = document.getElementById("act2-comments-list");
+      if (!commentsList) return;
+
+      // display: none 이었던 댓글 리스트 노출
+      commentsList.style.display = "flex";
+
+      // 1) 내가 쓴 댓글 먼저 추가
+      commentsList.innerHTML = `
+        <div style="display: flex; align-items: flex-start; gap: 4px; background: #eff6ff; border: 1.5px solid #2563eb; padding: 4px 6px; border-radius: 4px; font-size: 0.76rem; line-height: 1.25; animation: slideDown 0.25s forwards; width: 100%;">
+          <div style="width: 15px; height: 15px; border-radius: 50%; background: #2563eb; color: #fff; font-size: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; margin-top: 1px;">나</div>
+          <div style="color: #1e3a8a; word-break: break-all; font-family: 'DungGeunMo', monospace !important;">
+            <b style="font-weight: bold; color: #000; margin-right: 4px;">나:</b> ${commentText}
+          </div>
+        </div>
+      `;
+
+      // 가상 친구들의 응원 댓글 목록 (서연, 민우, 하준)
+      const classmateComments = [
+        {
+          name: "서연",
+          color: "#ec4899",
+          bgColor: "#fdf2f8",
+          textColor: "#9d174d",
+          text: "지수야 힘내! 언제든지 우리에게 고민을 말해줘. 넌 혼자가 아니야! 💕"
+        },
+        {
+          name: "민우",
+          color: "#10b981",
+          bgColor: "#ecfdf5",
+          textColor: "#065f46",
+          text: "누구나 힘들 때가 있어. 항상 널 응원하고 아끼는 친구들이 곁에 있다는 걸 기억해! 🤗"
+        },
+        {
+          name: "하준",
+          color: "#f97316", // 테두리 선명한 오렌지
+          bgColor: "#ffedd5", // 연하고 눈이 편안한 파스텔 오렌지 배경 (Orange 100)
+          textColor: "#c2410c", // 어두운 주황색 글씨
+          text: "지수야, 내일 등교길에 같이 가자! 기운 내고 힘내자, 아자아자! 👊"
+        }
+      ];
+
+      // 2) 0.4초, 0.8초, 1.2초 간격으로 가상 친구들의 칭찬/응원 댓글들이 태블릿 우측 피드에 쏟아짐!
+      classmateComments.forEach((c, index) => {
+        setTimeout(() => {
+          commentsList.innerHTML += `
+            <div style="display: flex; align-items: flex-start; gap: 6px; background: ${c.bgColor}; border: 1.5px solid ${c.color}; padding: 5px 8px; border-radius: 5px; font-size: 0.8rem; line-height: 1.3; animation: slideDown 0.25s forwards; width: 100%; margin-top: 3px;">
+              <div style="width: 16px; height: 16px; border-radius: 50%; background: ${c.color}; color: #fff; font-size: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; margin-top: 1px;">${c.name[0]}</div>
+              <div style="color: ${c.textColor}; word-break: break-all; font-family: 'DungGeunMo', monospace !important;">
+                <b style="font-weight: bold; color: #000; margin-right: 4px;">${c.name}:</b> ${c.text}
+              </div>
+            </div>
+          `;
+          
+          const container = document.getElementById("act2-comments-list-container");
+          if (container) {
+            container.scrollTop = container.scrollHeight;
+          }
+        }, (index + 1) * 400);
+      });
+
+      // 2.5) 1.6초 시점에 지수 본인이 친구들의 응원에 큰 감동을 받아 본인의 SNS 캡션 본문 바로 하단에 화답 글을 덧붙임!
+      setTimeout(() => {
+        const snsCaption = document.getElementById("act2-sns-caption");
+        if (snsCaption) {
+          snsCaption.innerHTML += `
+            <div style="margin-top: 8px; padding-top: 6px; border-top: 1.5px dashed #cbd5e1; color: #b91c1c; font-weight: bold; animation: slideDown 0.3s ease-out forwards;">
+              <b>지수:</b> 와... 너희들 응원 댓글 보니까 정말 눈물 나게 고마워. 너희 덕분에 진짜 큰 힘이 난다! 내일 학교에서 밝은 모습으로 만나자! 😭❤️
+            </div>
+          `;
+        }
+      }, 1600);
+
+      // 3) 모든 대화 피드백이 종료된 후(2.1초 뒤), 지수 흑백 이미지 필터 해제 및 하단 완료 버튼 활성화!
+      setTimeout(() => {
+        state.isPraiseActive = false;
+
+        const jisuImg = document.getElementById("act2-friend-img");
+        if (jisuImg) {
+          jisuImg.classList.remove("grayscale");
+          jisuImg.style.transition = "filter 1.5s ease-in-out";
+        }
+        
+        // 상태 완료로 플래그 설정 및 하단 바 UI 업데이트
+        state.stageCompleted[2] = true;
+        updateFrameUI('view-act2');
+      }, 2100);
+    }
+
+    function closeMiracleModalAndStartShower() {
+      // 팝업 제거 및 지수 실시간 화답 대화 흐름 도입으로 인해 무해한 은퇴 함수로 안전 전환
+    }
+
+    // 파티클 샤워 애니메이션 로직
+    let animationFrameId = null;
+    let particles = [];
+    let praiseInterval = null;
+
+    const praisesList = [
+      "네 덕분에 위로받았어! 💖", 
+      "우리 반의 선플 천사! 👼", 
+      "너처럼 예쁜 마음을 가진 친구가 있어서 든든해! 🥰", 
+      "정말 고마워, 힘이 솟아나! 🌟", 
+      "최고의 프렌드! 너는 짱이야 👍",
+      "감동 한 바가지 받았어! ✨",
+      "너는 사랑받기 충분해! 💛"
+    ];
+
+    class FountainParticle {
+      constructor(canvas) {
+        this.canvas = canvas;
+        // 폰 Mockup 부근 화면 하단/중앙에서 솟구침
+        this.x = canvas.width / 2 + (Math.random() - 0.5) * 80;
+        this.y = canvas.height * 0.7; 
+        this.size = Math.random() * 20 + 20; // 이모티콘 폰트 크기
+        
+        // 하늘로 분수처럼 솟구쳐 오르는 속도 벡터
+        this.speedY = -(Math.random() * 8 + 8);
+        this.speedX = (Math.random() - 0.5) * 10;
+        
+        this.char = ["❤️", "👍", "⭐", "✨", "💛", "💖", "🤩"][Math.floor(Math.random() * 7)];
+        this.alpha = 1;
+        this.gravity = 0.35; // 중력 낙하
+        this.rotation = Math.random() * 360;
+        this.rotationSpeed = (Math.random() - 0.5) * 8;
+      }
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        this.speedY += this.gravity;
+        this.rotation += this.rotationSpeed;
+        
+        // 떨어질 때 알파 블렌딩 페이드 아웃
+        if (this.speedY > 0) {
+          this.alpha -= 0.02;
+        }
+      }
+      draw(ctx) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, this.alpha);
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation * Math.PI / 180);
+        ctx.font = `${this.size}px Arial`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(this.char, 0, 0);
+        ctx.restore();
+      }
+    }
+
+    function animatePraiseParticles() {
+      const canvas = document.getElementById("shower-canvas");
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (Math.random() < 0.45) {
+        particles.push(new FountainParticle(canvas));
+      }
+
+      particles.forEach((p, idx) => {
+        p.update();
+        p.draw(ctx);
+        if (p.alpha <= 0 || p.y > canvas.height + 30) {
+          particles.splice(idx, 1);
+        }
+      });
+
+      animationFrameId = requestAnimationFrame(animatePraiseParticles);
+    }
+
+    function spawnFloatingPraise() {
+      const container = document.getElementById("view-act2");
+      const el = document.createElement("div");
+      el.className = "praise-popup";
+      el.innerText = praisesList[Math.floor(Math.random() * praisesList.length)];
+      
+      // 스마트폰 영역을 피해 컨테이너 골고루 분산
+      const x = Math.random() * (container.clientWidth - 230) + 15;
+      const y = Math.random() * (container.clientHeight - 200) + 100;
+      
+      el.style.left = x + "px";
+      el.style.top = y + "px";
+      
+      container.appendChild(el);
+      setTimeout(() => el.remove(), 2500);
+    }
+
+    function progressToOutro() {
+      playBeepSound("click");
+      switchView("view-outro");
+    }
+
+    // 복구 기능
+    function restartBootcamp() {
+      playBeepSound("click");
+      switchView("view-intro");
+    }
+
+    // 최종 사이버 자기존중감 완료 통지 및 맵 복귀
+    function finishEsteemStage() {
+      playBeepSound('click');
+      alert("사이버 자기존중감 과제를 성공적으로 완료하여 마음 온도가 상승했습니다! 대시보드로 돌아갑니다.");
+      
+      let inIframe = false;
+      try {
+        inIframe = (window.self !== window.top);
+      } catch (e) {
+        inIframe = true; // iframe에 갇혀 접근이 제한됨
+      }
+
+      if (inIframe) {
+        try {
+          const answer1 = document.getElementById('writing-textarea-input') ? document.getElementById('writing-textarea-input').value.trim() : "";
+          const happinessVal = document.getElementById('input-happiness') ? document.getElementById('input-happiness').value.trim() : "";
+          const hashtagVal = document.getElementById('input-hashtag') ? document.getElementById('input-hashtag').value.trim() : "";
+          const stickerVal = document.getElementById('input-sticker-name') ? document.getElementById('input-sticker-name').value.trim() : "";
+          const commentVal = document.getElementById('act2-comment-input') ? document.getElementById('act2-comment-input').value.trim() : "";
+          
+          window.parent.postMessage({ 
+            type: 'TASK_COMPLETE', 
+            category: '사이버 자기존중감',
+            answers: {
+              "질문 1 (지은 분석)": answer1,
+              "질문 2 (행복 내용)": happinessVal,
+              "질문 2 (해시태그)": hashtagVal,
+              "질문 2 (스티커 이름)": stickerVal,
+              "친구 칭찬 댓글": commentVal
+            }
+          }, '*');
+          return;
+        } catch (err) {
+          console.error("postMessage 전송 실패:", err);
+        }
+      }
+      
+      // 로컬 디렉토리 테스트 폴백
+      location.reload();
+    }
+
+    // 임시 테스트용 순차적 스킵 기능
+    function skipToNextSection() {
+      playBeepSound('click');
+      
+      const introView = document.getElementById('view-intro');
+      const act1View = document.getElementById('view-act1');
+      const act2View = document.getElementById('view-act2');
+      const outroView = document.getElementById('view-outro');
+      
+      if (introView.classList.contains('active')) {
+        switchView('view-act1');
+      } else if (act1View.classList.contains('active')) {
+        if (state.currentStage === 1) {
+          document.getElementById("writing-textarea-input").value = "사진 한 장은 이 친구의 모든 것을 나타낼 수 없어. 겉으로만 행복해 보이는 짧은 순간일 뿐이야.";
+          submitWriting();
+        } else if (state.currentStage === 2) {
+          document.getElementById("input-happiness").value = "주말에 고양이와 누워 낮잠 자기";
+          document.getElementById("input-hashtag").value = "#소소한힐링";
+          document.getElementById("input-sticker-name").value = "야옹에너지";
+          submitStage2();
+        } else {
+          progressToAct2();
+        }
+      } else if (act2View.classList.contains('active')) {
+        const modal = document.getElementById("miracle-modal");
+        
+        if (modal.style.display === "flex") {
+          closeMiracleModalAndStartShower();
+        } else if (!state.stageCompleted[2]) {
+          document.getElementById("act2-comment-input").value = "지수야, 넌 결코 혼자가 아니야! 언제든지 나한테 이야기해 줘. 항상 응원할게!";
+          triggerPraiseShower();
+        } else {
+          progressToOutro();
+        }
+      } else if (outroView.classList.contains('active')) {
+        finishEsteemStage();
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,2706 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사이버 감정조절 - 감정 컨트롤 센터</title>
+  
+  <!-- 둥근모꼴 폰트 (로컬 로드) -->
+  
+  <style>
+    /* =========================================
+       전역 & 공통 스타일
+       ========================================= */
+    @font-face {
+      font-family: 'DungGeunMo';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    :root {
+      --bg-dark: #090a0f;
+      --bg-panel: rgba(20, 22, 34, 0.95);
+      --point-yellow: #ffd700;
+      --point-green: #2ecc71;
+      --point-red: #ff4757;
+      --point-blue: #3498db;
+      --text-main: #ffffff;
+      --text-muted: #8e94a6;
+      --border-color: #000000;
+      --pixel-thick: 4px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'DungGeunMo', monospace;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    body {
+      background-color: #1A252F;
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      padding: 0 !important;
+      transition: background-color 0.5s ease;
+    }
+
+    #app-container {
+      width: 100%;
+      height: 100vh;
+      position: relative;
+      background-color: var(--bg-panel);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    /* 분노 심장 박동 테두리 효과 */
+    #app-container.anger-heartbeat {
+      animation: heartbeatBorder 0.8s infinite;
+    }
+
+    @keyframes heartbeatBorder {
+      0%, 100% { border-color: var(--point-red); box-shadow: 0 0 20px rgba(255, 71, 87, 0.6); }
+      50% { border-color: #ff6b81; box-shadow: 0 0 30px rgba(255, 107, 129, 0.9); }
+    }
+
+    #btn-act1-next, #btn-act2-next {
+      display: none !important;
+    }
+    #standard-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 52px;
+      background-color: #1e293b;
+      border-bottom: 4px solid #000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 50;
+      font-family: 'DungGeunMo', monospace;
+      color: #ffffff;
+      user-select: none;
+      box-sizing: border-box;
+    }
+    #control-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 44px;
+      background-color: #1e293b;
+      border-top: 4px solid #000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 50;
+      font-family: 'DungGeunMo', monospace;
+      box-sizing: border-box;
+    }
+    /* 활동 뷰 상하단바 면적 공제 */
+    #view-act1, #view-act2 {
+      top: 52px !important;
+      height: calc(100% - 96px) !important;
+      padding: 16px 20px !important; /* 조금 더 넓고 넉넉한 패딩 */
+    }
+    /* 불필요한 중복 진행바 삭제 */
+    .progress-header {
+      display: none !important;
+    }
+    /* 뷰 기본 스타일 */
+    .view {
+      display: none;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      flex-direction: column;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .view.active {
+      display: flex;
+      animation: viewFadeIn 0.4s ease-out forwards;
+    }
+
+    @keyframes viewFadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 복고풍 버튼 스타일 */
+    .retro-btn {
+      background-color: var(--point-yellow);
+      color: #000000;
+      border: var(--pixel-thick) solid var(--border-color);
+      padding: 12px 24px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 var(--border-color);
+      border-radius: 8px;
+      transition: all 0.1s ease;
+      outline: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .retro-btn:hover {
+      background-color: #ffe44d;
+      transform: translateY(-2px);
+      box-shadow: 4px 6px 0 var(--border-color);
+    }
+    .retro-btn:active {
+      box-shadow: 0px 0px 0 var(--border-color);
+      transform: translate(4px, 4px);
+    }
+    .retro-btn:disabled {
+      background-color: #555870;
+      color: #8e94a6;
+      box-shadow: 2px 2px 0 var(--border-color);
+      transform: translate(2px, 2px);
+      cursor: not-allowed;
+    }
+    .retro-btn.secondary {
+      background-color: #555870;
+      color: #fff;
+      box-shadow: 4px 4px 0 var(--border-color);
+    }
+    .retro-btn.secondary:hover {
+      background-color: #696d88;
+    }
+
+
+
+
+
+
+
+    .guide-bubble {
+      flex-grow: 1;
+      background: rgba(0, 0, 0, 0.4);
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #e2e8f0;
+      font-size: 1rem;
+      line-height: 1.5;
+      word-break: keep-all;
+    }
+
+    @keyframes floatAvatar {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .temp-skip-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(0, 0, 0, 0.4);
+      color: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      z-index: 9999;
+      transition: all 0.2s ease;
+    }
+    .temp-skip-btn:hover {
+      background: rgba(255, 71, 87, 0.3);
+      color: #ffffff;
+      border-color: var(--point-red);
+    }
+
+    .shake {
+      animation: shakeContainer 0.4s ease-in-out;
+    }
+    @keyframes shakeContainer {
+      0%, 100% { transform: translateX(0); }
+      15% { transform: translateX(-8px); }
+      30% { transform: translateX(7px); }
+      45% { transform: translateX(-6px); }
+      60% { transform: translateX(5px); }
+      75% { transform: translateX(-3px); }
+      90% { transform: translateX(1px); }
+    }
+
+    /* =========================================
+       Screen 1: 메인 화면 (활동 선택)
+       ========================================= */
+    #view-main-menu {
+      justify-content: flex-start;
+      align-items: center;
+      padding: 30px 20px;
+    }
+
+    .main-title {
+      font-size: 2.2rem;
+      color: var(--point-yellow);
+      text-shadow: 3px 3px 0 #000;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .main-fairy {
+      font-size: 4rem;
+      width: 100px;
+      height: 100px;
+      background: var(--point-yellow);
+      border: var(--pixel-thick) solid #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+      animation: floatFairy 3s ease-in-out infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes floatFairy {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(3deg); }
+    }
+
+    .main-dialog {
+      background: rgba(0, 0, 0, 0.5);
+      border: 3px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 15px 20px;
+      max-width: 580px;
+      width: 100%;
+      color: #cbd5e1;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      word-break: keep-all;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .activities-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      width: 100%;
+      max-width: 650px;
+    }
+
+    .activity-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: var(--pixel-thick) solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+    }
+
+    .activity-card:hover {
+      border-color: var(--point-yellow);
+      background: rgba(255, 215, 0, 0.04);
+      transform: translateY(-4px);
+      box-shadow: 4px 8px 0 rgba(0,0,0,0.4);
+    }
+
+    .activity-card-icon {
+      font-size: 3rem;
+    }
+
+    .activity-card-title {
+      font-size: 1.25rem;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .activity-card-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      word-break: keep-all;
+      flex-grow: 1;
+    }
+
+    .activity-card-status {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: var(--point-yellow);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .activity-card-status.cleared {
+      color: var(--point-green);
+      border-color: rgba(46, 204, 113, 0.2);
+    }
+
+    /* =========================================
+       Screen 1.5: 상황 선택 화면
+       ========================================= */
+    #view-situation-select {
+      justify-content: flex-start;
+      align-items: center;
+      padding: 30px 20px;
+    }
+
+    .situation-title {
+      font-size: 1.8rem;
+      color: var(--point-yellow);
+      text-shadow: 2px 2px 0 #000;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .situation-subtitle {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 25px;
+    }
+
+    .situations-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 30px;
+    }
+
+    .situation-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+    }
+
+    .situation-item:hover {
+      border-color: var(--point-yellow);
+      background: rgba(255, 215, 0, 0.03);
+      transform: scale(1.02);
+    }
+
+    .situation-item.cleared {
+      border-color: var(--point-green);
+      background: rgba(46, 204, 113, 0.04);
+    }
+
+    .situation-icon {
+      font-size: 2.2rem;
+      background: #1e2130;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .situation-details {
+      flex-grow: 1;
+    }
+
+    .situation-name {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .situation-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .situation-badge {
+      font-size: 0.85rem;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(0,0,0,0.3);
+      color: #aaa;
+    }
+
+    .situation-item.cleared .situation-badge {
+      color: var(--point-green);
+      border-color: rgba(46, 204, 113, 0.3);
+      background: rgba(46, 204, 113, 0.1);
+    }
+
+    /* =========================================
+       Screen 2: [활동 1] 마음온의 10초 소화기
+       ========================================= */
+    #view-act1 {
+      transition: background-color 0.4s ease;
+    }
+
+    .act1-container {
+      width: 100%;
+      max-width: 580px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      justify-content: center;
+    }
+
+    /* 가상 톡방 */
+    .chat-bubble-panel {
+      background: #f1f2f6;
+      border: 3px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: #000;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+      margin-bottom: 20px;
+    }
+
+    .chat-header {
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: var(--point-red);
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+    }
+
+    .chat-body {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .chat-avatar {
+      width: 40px;
+      height: 40px;
+      background: #ccc;
+      border: 2px solid #555;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .chat-message {
+      background: #fff;
+      border: 2px solid var(--border-color);
+      border-radius: 0 10px 10px 10px;
+      padding: 8px 14px;
+      font-size: 1rem;
+      line-height: 1.4;
+      font-weight: bold;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+      word-break: keep-all;
+    }
+
+    /* 드래그 앤 드롭 영역 */
+    .drag-drop-section {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 10px;
+    }
+
+    .drop-zone {
+      border: 3px dashed var(--text-muted);
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      height: 85px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .drop-zone.dragover {
+      border-color: var(--point-yellow);
+      background: rgba(255, 215, 0, 0.05);
+      color: var(--point-yellow);
+    }
+
+    .drop-zone.filled {
+      border-style: solid;
+      border-color: var(--point-green);
+      background: rgba(46, 204, 113, 0.1);
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .placed-badge {
+      background: var(--point-green);
+      color: #000;
+      font-size: 1.15rem;
+      font-weight: bold;
+      border: 2px solid #000;
+      padding: 6px 16px;
+      border-radius: 20px;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+    }
+
+    .emotions-badges-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .emotion-badge-item {
+      background: #252839;
+      color: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+    }
+
+    .emotion-badge-item:hover {
+      border-color: var(--point-yellow);
+      color: var(--point-yellow);
+      transform: translateY(-2px);
+      box-shadow: 3px 5px 0 rgba(0,0,0,0.4);
+    }
+
+    .emotion-badge-item:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+    }
+
+    /* 심장 박동 쿵쾅거리는 심장 */
+    .heart-pulse-box {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      animation: heartbeatPulseGraphic 0.8s infinite;
+    }
+
+    @keyframes heartbeatPulseGraphic {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    .heart-graphic {
+      font-size: 3rem;
+      filter: drop-shadow(0 0 10px rgba(255, 71, 87, 0.8));
+    }
+
+    /* 온도계 */
+    /* 진행 상황 상단 바 제거 */
+    .progress-header {
+      display: none;
+    }
+
+    /* 온도계 */
+    .act1-thermometer {
+      display: flex;
+      flex-direction: column;
+      background: rgba(0,0,0,0.5);
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 12px 18px;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .act1-temp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .act1-temp-value {
+      font-size: 1.35rem;
+      color: var(--point-red);
+      font-weight: bold;
+      text-shadow: 1px 1px 0 #000;
+    }
+
+    .act1-tube {
+      width: 100%;
+      height: 24px;
+      background: #111;
+      border: 3px solid #000;
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .act1-mercury {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(to right, #ff4757, #ff6b81);
+      border-radius: 8px 0 0 8px;
+      transition: width 0.1s linear;
+    }
+
+    /* 소화기 누르기 버튼 */
+    .extinguisher-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .breath-ext-btn {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ff6b81, #ff4757);
+      border: 6px solid #fff;
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #c0392b, 0 10px 20px rgba(0,0,0,0.5);
+      transition: transform 0.05s ease, box-shadow 0.05s ease;
+      outline: none;
+      
+      /* 터치 조작감 개선 및 씹힘 방지 */
+      user-select: none;
+      -webkit-user-drag: none;
+      touch-action: none;
+    }
+
+    .breath-ext-btn:active, .breath-ext-btn.holding {
+      transform: translateY(6px);
+      box-shadow: 0 1px 0 #c0392b, 0 3px 8px rgba(0,0,0,0.5);
+      background: radial-gradient(circle, #54a0ff, #2e86de);
+    }
+
+    .breath-btn-subtext {
+      font-size: 0.7rem;
+      font-weight: normal;
+      margin-top: 4px;
+      color: rgba(255,255,255,0.85);
+    }
+
+    /* 결과 성공 화면 */
+    .act1-success-panel {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      text-align: center;
+    }
+
+    /* =========================================
+       Screen 3: [활동 2] 마음온의 감정 번역 타자기
+       ========================================= */
+    .act2-container {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 28% 72%;
+      gap: 20px;
+      flex-grow: 1;
+      align-items: stretch;
+      margin-bottom: 10px;
+    }
+
+    /* 왼쪽 상황 정보 */
+    .act2-situation-info {
+      background: rgba(255, 255, 255, 0.02);
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .act2-info-title {
+      font-size: 1rem;
+      color: var(--point-yellow);
+      font-weight: bold;
+    }
+
+    .act2-info-desc {
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      line-height: 1.45;
+      word-break: keep-all;
+    }
+
+    /* 카카오톡 스타일 노란색 말풍선 */
+    .kakao-chat-bubble {
+      background-color: #fee500;
+      color: #1e1e1f;
+      border: 2px solid #000000;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      position: relative;
+      align-self: flex-end;
+      max-width: 90%;
+      word-break: keep-all;
+      box-shadow: 3px 3px 0 #000000;
+      display: none;
+    }
+
+    .kakao-chat-bubble::after {
+      content: '';
+      position: absolute;
+      right: -8px;
+      top: 10px;
+      border-width: 6px 0 6px 8px;
+      border-style: solid;
+      border-color: transparent transparent transparent #fee500;
+      display: block;
+      width: 0;
+      z-index: 10;
+    }
+
+    .kakao-chat-bubble::before {
+      content: '';
+      position: absolute;
+      right: -10px;
+      top: 9px;
+      border-width: 7px 0 7px 9px;
+      border-style: solid;
+      border-color: transparent transparent transparent #000000;
+      display: block;
+      width: 0;
+      z-index: 9;
+    }
+
+    @keyframes chatPopIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8) translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .chat-pop-in {
+      display: inline-block;
+      animation: chatPopIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    /* 오른쪽 글쓰기 자판기 */
+    .act2-typewriter-form {
+      background: rgba(0,0,0,0.25);
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px; /* gap 축소 */
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      position: relative;
+    }
+
+    .input-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .input-header-row label {
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .hint-toggle-btn {
+      background: none;
+      border: none;
+      color: var(--point-yellow);
+      cursor: pointer;
+      font-size: 0.8rem;
+      text-decoration: underline;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      outline: none;
+    }
+
+    .hint-toggle-btn:hover {
+      color: #ffe44d;
+    }
+
+    .retro-textarea {
+      background: #000;
+      color: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 0.9rem;
+      height: 42px; /* 60px에서 42px로 축소 */
+      resize: none;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .retro-textarea:focus {
+      border-color: var(--point-yellow);
+    }
+
+    .hint-tooltip-box {
+      display: none;
+      background: #252839;
+      color: var(--point-yellow);
+      border: 2px solid var(--point-yellow);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      margin-top: 4px;
+      word-break: keep-all;
+      animation: slideDown 0.2s ease-out forwards;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-5px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* 결과 말풍선 모달 */
+    .act2-result-overlay {
+      display: none;
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 500;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+    }
+
+    .act2-result-modal {
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg-panel);
+      border: var(--pixel-thick) solid var(--point-yellow);
+      border-radius: 12px;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      animation: modalPopIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes modalPopIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* 크고 둥글고 예쁜 노란색 말풍선 */
+    .yellow-speech-bubble {
+      background: #ffe500;
+      border: 3px solid #000;
+      border-radius: 24px;
+      padding: 16px 22px;
+      color: #000;
+      font-size: 1rem;
+      line-height: 1.5;
+      font-weight: bold;
+      width: 100%;
+      text-align: center;
+      word-break: keep-all;
+      box-shadow: 5px 5px 0 #000;
+      position: relative;
+      animation: bubbleFloat 2s ease-in-out infinite;
+    }
+
+    .yellow-speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 15px 15px 0;
+      border-style: solid;
+      border-color: #ffe500 transparent;
+      display: block;
+      width: 0;
+      z-index: 10;
+    }
+
+    .yellow-speech-bubble::before {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 17px 17px 0;
+      border-style: solid;
+      border-color: #000 transparent;
+      display: block;
+      width: 0;
+      z-index: 9;
+    }
+
+    @keyframes bubbleFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* 모바일 미디어 쿼리 */
+    @media (max-width: 600px) {
+      #app-container {
+        height: 100%;
+        max-height: 100vh;
+        border: none;
+        border-radius: 0;
+      }
+      .activities-grid {
+        grid-template-columns: 1fr;
+      }
+      .act2-container {
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+      }
+      .act2-toxic-box {
+        margin-top: 10px;
+      }
+    }
+
+    /* 마음온 픽셀 요정 스타일 추가 */
+    .pixel-fairy-container {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      animation: floatFairy 2.5s ease-in-out infinite;
+    }
+    .pixel-fairy-svg {
+      width: 100%;
+      height: 100%;
+    }
+    .fairy-wing-l {
+      animation: flapL 0.2s ease-in-out infinite alternate;
+      transform-origin: 32px 56px;
+    }
+    .fairy-wing-r {
+      animation: flapR 0.2s ease-in-out infinite alternate;
+      transform-origin: 64px 56px;
+    }
+    @keyframes floatFairy {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes flapL {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(12deg); }
+    }
+    @keyframes flapR {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(-12deg); }
+    }
+    .intro-dialog {
+      background-color: rgba(0, 0, 0, 0.85);
+      border: var(--pixel-thick) solid var(--text-main);
+      padding: 15px 20px;
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      box-shadow: 6px 6px 0 var(--border-color);
+      position: relative;
+    }
+    .intro-dialog p {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #fff;
+      word-break: keep-all;
+    }
+    .activity-summary-box {
+      margin-top: 15px;
+      border-top: 2px dashed rgba(255, 255, 255, 0.2);
+      padding-top: 12px;
+      text-align: left;
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+    .activity-summary-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .activity-summary-badge {
+      background: var(--point-yellow);
+      color: #000;
+      font-size: 0.75rem;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    /* =========================================
+       인트로(도입) 화면 공통 표준 스타일
+       ========================================= */
+    .std-intro-container {
+      position: absolute;
+      inset: 0 !important;
+      height: 100% !important;
+      top: 0 !important;
+      padding: 0 !important;
+      display: none; /* 기본 상태는 숨김 */
+      flex-direction: column;
+      background-color: #1a1c23;
+      color: #ffffff;
+      overflow: hidden;
+      font-family: 'DungGeunMo', monospace;
+      z-index: 100; /* 인트로가 항상 최상위 노출 */
+    }
+
+    .std-intro-container.active {
+      display: flex !important; /* active 상태일 때만 보임 */
+    }
+
+    .std-intro-header-simple {
+      width: 100%;
+      background-color: #2c3e50;
+      border-bottom: 4px solid #000000;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      z-index: 10;
+      box-sizing: border-box;
+    }
+
+    .std-intro-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin: 0;
+      color: #ffffff;
+      text-shadow: 2px 2px 0 #000000;
+    }
+
+    .std-intro-body {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      gap: 32px;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+
+    /* 모바일/태블릿 반응형 대응 */
+    @media (max-width: 768px) {
+      .std-intro-body {
+        flex-direction: column;
+        padding: 16px;
+        gap: 16px;
+        justify-content: flex-start;
+      }
+    }
+
+    .std-intro-char-wrapper-small {
+      width: 195px;
+      height: 195px;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .std-intro-char-wrapper-small {
+        width: 135px;
+        height: 135px;
+      }
+    }
+
+    .std-intro-char-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      animation: miniFloat 2.5s ease-in-out infinite;
+    }
+
+    .std-intro-unified-box {
+      background-color: #1e293b;
+      border: 4px solid #000000;
+      padding: 20px;
+      width: 100%;
+      max-width: 520px;
+      min-height: 220px;
+      box-shadow: 4px 4px 0 #000000;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .std-intro-dialog-inner {
+      color: #f1f5f9;
+      font-size: 0.975rem;
+      line-height: 1.6;
+      text-align: left;
+      word-break: keep-all;
+    }
+
+    .std-intro-divider {
+      height: 2px;
+      background-color: #475569;
+      width: 100%;
+    }
+
+    .std-intro-activities-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .std-activity-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .std-activity-badge {
+      background-color: #eab308;
+      color: #000000;
+      font-size: 0.775rem;
+      padding: 2px 6px;
+      font-weight: 800;
+      flex-shrink: 0;
+      border: 1px solid #000;
+    }
+
+    .std-activity-text {
+      color: #ffffff;
+      font-size: 0.875rem;
+      font-weight: bold;
+    }
+
+    .std-intro-footer {
+      width: 100%;
+      background-color: #2c3e50;
+      border-top: 4px solid #000000;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+      z-index: 10;
+      box-sizing: border-box;
+    }
+
+    .std-footer-btn-left {
+      padding: 10px 24px;
+      background-color: #475569;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 0.8rem;
+      border: 2px solid #000000;
+      box-shadow: 3px 3px 0 #000000;
+      cursor: pointer;
+      transition: all 0.1s;
+      font-family: 'DungGeunMo', monospace;
+    }
+
+    .std-footer-btn-left:hover {
+      background-color: #64748b;
+    }
+
+    .std-footer-btn-left:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 #000000;
+    }
+
+    .std-footer-btn-right {
+      padding: 10px 32px;
+      background-color: #fde047;
+      color: #000000;
+      font-weight: 800;
+      font-size: 0.85rem;
+      border: 2px solid #000000;
+      box-shadow: 3px 3px 0 #000000;
+      cursor: pointer;
+      transition: all 0.1s;
+      font-family: 'DungGeunMo', monospace;
+    }
+
+    .std-footer-btn-right:hover {
+      background-color: #facc15;
+    }
+
+    .std-footer-btn-right:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 #000000;
+    }
+
+
+
+    /* === 마음온 AI 공통 표준 가이드 배너 스타일 - 48px 레트로 핏 === */
+    .std-guide-banner {
+      background-color: #312e81 !important;
+      border: 3px solid #000000 !important;
+      box-shadow: 2px 2px 0px #000000 !important;
+      border-radius: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      padding: 6px 12px !important;
+      width: 100% !important;
+      height: 48px !important;
+      flex-shrink: 0 !important;
+      margin-top: 2px !important;
+      position: relative !important;
+      margin-bottom: 8px !important;
+    }
+    
+    @keyframes bounceFairy {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+  </style>
+</head>
+<body style="margin: 0; padding: 0;">
+
+  <div id="app-container">
+    <!-- 공통 표준 상단 헤더바 -->
+    <div id="standard-header" style="display: none;">
+      <!-- 좌측: 고유 역량 이미지 아이콘 & 역량명 (둥근 노란색 테두리 원을 제거하고 순수 이미지 돌출 스케일링) -->
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <div style="position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; overflow: visible; margin-left: -5px; margin-right: 5px; flex-shrink: 0;">
+          <!-- 4.5배율 급의 돌출 효과 재현: w-24 h-24(96px) 크기에 transform: scale(2.4) 및 정밀 오프셋 지정 -->
+          <img src="images/icon_emotion.png" alt="역량 아이콘" style="position: absolute; width: 96px; height: 96px; object-fit: contain; max-width: none; image-rendering: pixelated; transform: scale(2.4); z-index: 20; pointer-events: none; top: -28px; left: -26px;">
+        </div>
+        <span style="font-weight: bold; font-size: 1.15rem; letter-spacing: -0.025em; margin-left: 5px;">사이버 감정조절</span>
+      </div>
+      
+      <!-- 가운데: 활동명 및 진행 상태 (도트) -->
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <!-- white-space: nowrap; 추가로 타이틀 줄바꿈 찌그러짐 원천 봉쇄 -->
+        <span id="stage-title-text" style="font-size: 0.75rem; font-weight: bold; color: #cbd5e1; white-space: nowrap;">사이버 감정조절</span>
+        <div id="header-progress-dots" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+          <span class="stage-dot" id="dot-1" style="width: 14px; height: 14px; border-radius: 9999px; border: 2px solid #000; background-color: #64748b; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 8px; color: #fff;">1</span>
+          <span class="stage-dot" id="dot-2" style="width: 14px; height: 14px; border-radius: 9999px; border: 2px solid #000; background-color: #64748b; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 8px; color: #fff;">2</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 임시 테스트용 스킵 버튼 -->
+    <button class="temp-skip-btn" onclick="skipToNextStep()">⏩ 스킵</button>
+
+    <!-- =========================================
+         Screen 0: 인트로 마음온 브리핑 화면
+         ========================================= -->
+    <div id="view-intro" class="std-intro-container view active">
+      <!-- 상단 헤더 영역 (심플 헤더) -->
+      <div class="std-intro-header-simple">
+        <h1 class="std-intro-title">사이버 감정조절</h1>
+      </div>
+
+      <!-- 메인 본문 영역 -->
+      <div class="std-intro-body">
+        <!-- 좌측 캐릭터 영역 (더 작아짐) -->
+        <div class="std-intro-char-wrapper-small">
+          <img src="images/maeumon_intro.png" alt="마음온" class="std-intro-char-img">
+        </div>
+
+        <!-- 우측 단일 통합 상자 (대사 + 활동 요약) -->
+        <div class="std-intro-unified-box">
+          <!-- 대사 -->
+          <div class="std-intro-dialog-inner">
+            "온라인에서는 기분 나쁜 말을 듣거나 무시당했을 때 충동적으로 반응하기 쉬워. 그래서 욱하는 감정을 잘 조절하고 내 생각을 침착하게 표현하는 게 중요해."
+          </div>
+          <!-- 구분선 -->
+          <div class="std-intro-divider"></div>
+          <!-- 활동 요약 목록 -->
+          <div class="std-intro-activities-inner">
+            <div class="std-activity-row">
+              <span class="std-activity-badge">활동 1</span>
+              <span class="std-activity-text">불쾌한 상황에서 느껴지는 감정을 알아채고 마음 진정하기</span>
+            </div>
+            <div class="std-activity-row">
+              <span class="std-activity-badge">활동 2</span>
+              <span class="std-activity-text">사실, 감정, 부탁에 맞추어 내 마음을 오해 없이 전달하기</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 하단 버튼 영역 (좌측: 홈, 우측: 활동 시작) -->
+      <div class="std-intro-footer">
+        <button onclick="exitToMap()" class="std-footer-btn-left">🏠 홈으로</button>
+        <button onclick="startTraining()" class="std-footer-btn-right">활동 시작하기 ▶</button>
+      </div>
+
+      <script>
+        function exitToMap() {
+          try {
+            if (window.parent && window.parent !== window) {
+              window.parent.postMessage({ type: 'RETURN_TO_MAP' }, '*');
+            } else {
+              window.location.href = 'index.html';
+            }
+          } catch (e) {
+            window.location.href = 'index.html';
+          }
+        }
+      </script>
+    </div>
+
+    <!-- =========================================
+         Screen 1: 메인 화면 (활동 선택)
+         ========================================= -->
+    <!-- view-main-menu는 바이패스되므로 비워둡니다 -->
+    <div id="view-main-menu" class="view"></div>
+
+    <!-- =========================================
+         Screen 1.5: 상황 선택 화면
+         ========================================= -->
+    <div id="view-situation-select" class="view">
+      <h1 class="situation-title">상황 선택</h1>
+      <div id="active-activity-label" class="situation-subtitle">훈련을 진행할 상황을 선택해 주세요.</div>
+      
+      <!-- 상황 리스트 -->
+      <div class="situations-list">
+        <div id="sit-item-1" class="situation-item" onclick="enterSituation(1)">
+          <div class="situation-icon">👦</div>
+          <div class="situation-details">
+            <div class="situation-name">상황 1: 직접적 비난</div>
+            <div class="situation-desc">게임에서 졌다고 단톡방에 비난 메시지가 왔을 때</div>
+          </div>
+          <div id="sit-badge-1" class="situation-badge">대기 중 ❄️</div>
+        </div>
+
+        <div id="sit-item-2" class="situation-item" onclick="enterSituation(2)">
+          <div class="situation-icon">💬</div>
+          <div class="situation-details">
+            <div class="situation-name">상황 2: 소통의 단절</div>
+            <div class="situation-desc">내 메시지는 무시하고 SNS에 쇼츠 영상을 공유했을 때</div>
+          </div>
+          <div id="sit-badge-2" class="situation-badge">대기 중 ❄️</div>
+        </div>
+      </div>
+
+      <!-- 최종 완료 버튼 -->
+      <button id="btn-center-complete" class="retro-btn" style="display: none; margin-top: 15px; margin-bottom: 15px; animation: heartbeatBorder 1.5s infinite; width: 100%;" onclick="finishCenterMission()">🎉 활동 완료 ➔ 대시보드로 돌아가기</button>
+
+      <button class="retro-btn secondary" onclick="exitToMap()">활동 중단하고 지도(대시보드)로 돌아가기</button>
+    </div>
+
+    <!-- =========================================
+         Screen 2: [활동 1] 마음온의 5초 소화기
+         ========================================= -->
+    <div id="view-act1" class="view">
+      <!-- 마음온 AI 공통 가이드 배너 (1단계) -->
+      <div class="std-guide-banner">
+        <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
+          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+        </div>
+        <div style="display: flex !important; flex-direction: column !important; justify-content: center !important; flex-grow: 1 !important; margin-left: 6px;">
+          <span style="font-size: 10.5px !important; font-weight: 900 !important; line-height: 1.1 !important; margin-bottom: 3px !important; font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important; display: block !important;">마음온 AI 가이드</span>
+          <span style="font-size: 12px !important; font-weight: bold !important; color: #e2e8f0 !important; line-height: 1.3 !important; font-family: 'DungGeunMo', monospace !important; display: block !important;" id="act1-guide-bubble">
+            지금 상황에 맞는 진짜 감정을 파악해보자!
+          </span>
+        </div>
+      </div>
+      <div class="progress-header hidden">
+        <span id="act1-header-title" style="font-weight: bold; color: var(--point-red);">[활동 1] 마음온의 5초 소화기</span>
+        <span style="font-size: 0.95rem; color: var(--text-muted);">감정 지연 훈련</span>
+      </div>
+
+
+
+      <div class="act1-container">
+        <!-- 1단계 미션 질문 카드 (다른 파일들과 완벽 매치 포맷) -->
+        <div class="mission-question-card" style="background-color: #451a03 !important; border: 3px solid #000000 !important; box-shadow: 2px 2px 0px #000000 !important; padding: 12px 10px !important; margin-bottom: 14px !important; color: #fde047 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important;">
+          <div style="font-size: 0.86rem !important; font-weight: bold !important; color: #fef08a !important; line-height: 1.4 !important;" id="act1-mission-prompt">
+            상황 속 '나'가 느꼈을 마음(감정) 배지를 찾아 선택해봅시다.
+          </div>
+        </div>
+        <!-- 1. 상황 발생 SNS 피드 (카카오톡 말풍선에서 레트로 SNS 피드로 변환) -->
+        <div id="act1-chat-bubble-panel" style="width: 100% !important; margin-bottom: 12px !important;">
+          <!-- JS 동적 주입 -->
+        </div>
+
+        <!-- 2. 감정 인식 클릭(탭) 영역 -->
+        <div id="drag-drop-area" class="drag-drop-section">
+          <div id="emotions-badges-list" class="emotions-badges-row">
+            <!-- 감정 배지들이 렌더링됩니다 -->
+          </div>
+        </div>
+
+        <!-- 3 & 4. 온도계 및 소화기 버튼 좌우 배치 영역 -->
+        <div id="thermometer-extinguisher-row" style="display: none; align-items: center; justify-content: center; gap: 20px; margin-bottom: 20px; width: 100%;">
+          <!-- 온도계 UI -->
+          <div id="act1-thermometer-box" class="act1-thermometer">
+            <div class="act1-temp-header">
+              <span>🔥 마음 온도</span>
+              <span id="act1-temp-value" class="act1-temp-value">100.0°C</span>
+            </div>
+            <div class="act1-tube">
+              <div id="act1-mercury-fill" class="act1-mercury"></div>
+            </div>
+          </div>
+
+          <!-- 소화기 버튼 -->
+          <div id="extinguisher-btn-box" class="extinguisher-section">
+            <button id="btn-breath-hold" class="breath-ext-btn">
+              <span>🧯 소화기</span>
+              <span class="breath-btn-subtext">(꾹 누르고 있기)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 5. 성공 결과 뷰 -->
+        <div id="act1-success-view" class="act1-success-panel">
+          <h2 style="font-size:1.8rem; color:var(--point-green);">🧯 마음 진정 완료!</h2>
+          <p style="font-size:1.1rem; line-height:1.5; word-break:keep-all;">느꼈던 <span id="act1-success-emotion" style="color: var(--point-yellow); font-weight: bold;">[감정]</span> 감정을 차분하게 가라앉혔습니다.</p>
+          <button id="btn-act1-next" class="retro-btn" onclick="exitAct1Situation()">상황 선택으로 돌아가기 ➔</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================
+         Screen 3: [활동 2] 마음온의 감정 번역 타자기
+         ========================================= -->
+    <div id="view-act2" class="view">
+      <!-- 마음온 AI 공통 가이드 배너 (2단계) -->
+      <div class="std-guide-banner">
+        <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
+          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+        </div>
+        <div style="display: flex !important; flex-direction: column !important; justify-content: center !important; flex-grow: 1 !important; margin-left: 6px;">
+          <span style="font-size: 10.5px !important; font-weight: 900 !important; line-height: 1.1 !important; margin-bottom: 3px !important; font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important; display: block !important;">마음온 AI 가이드</span>
+          <span style="font-size: 12px !important; font-weight: bold !important; color: #e2e8f0 !important; line-height: 1.3 !important; font-family: 'DungGeunMo', monospace !important; display: block !important;" id="act2-guide-bubble">
+            상대의 화에 화로 받아치기보다, '나-전달법' 3단계로 우리의 진짜 진심을 부드럽게 번역해 보자!
+          </span>
+        </div>
+      </div>
+      <div class="progress-header hidden">
+        <span id="act2-header-title" style="font-weight: bold; color: var(--point-green);">[활동 2] 마음온의 감정 번역 타자기</span>
+        <span style="font-size: 0.95rem; color: var(--text-muted);">나-전달법 쓰기</span>
+      </div>
+
+
+
+      <div class="act2-container">
+        <!-- 2단계 미션 질문 카드 (갈색 배경, 노란색 글씨, 가로폭 최적화 및 간결 지시문 1줄) -->
+        <div class="mission-question-card" style="grid-column: span 2 !important; background-color: #451a03 !important; border: 3px solid #000000 !important; box-shadow: 2px 2px 0px #000000 !important; padding: 12px 10px !important; margin-bottom: 14px !important; color: #fde047 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important; max-width: 580px !important; margin-left: auto !important; margin-right: auto !important; width: 100% !important;">
+          <div style="font-size: 0.86rem !important; font-weight: bold !important; color: #fde047 !important; line-height: 1.4 !important;">
+            사실-감정-부탁의 3단계에 맞추어 내 마음을 오해없이 전달해보세요.
+          </div>
+        </div>
+        <!-- 1. 상황 제시 및 전송한 톡 말풍선 -->
+        <div class="act2-situation-info">
+          <span class="act2-info-title">💡 갈등 상황</span>
+          <div id="act2-situation-desc" class="act2-info-desc">상황 설명 대기 중...</div>
+          
+          <!-- 노란색 카톡 말풍선 컨테이너 -->
+          <div id="act2-chat-sent-container" style="display: none; justify-content: flex-end; width: 100%; margin-top: auto;">
+            <div id="act2-chat-sent-bubble" class="kakao-chat-bubble"></div>
+          </div>
+        </div>
+
+        <!-- 2. 직접 쓰기 타자기 영역 -->
+        <div class="act2-typewriter-form">
+          <!-- 입력 1: 사실 -->
+          <div class="input-group">
+            <div class="input-header-row">
+              <label>1단계: 사실 (객관적 사실 적기)</label>
+              <button class="hint-toggle-btn" onclick="toggleTooltip(1)">💡 힌트 보기</button>
+            </div>
+            <textarea id="act2-input-fact" class="retro-textarea" placeholder="네가 (무슨 일이 있었냐면) ..."></textarea>
+            <div id="act2-tooltip-fact" class="hint-tooltip-box">예시 로딩 중...</div>
+          </div>
+
+          <!-- 입력 2: 감정 -->
+          <div class="input-group">
+            <div class="input-header-row">
+              <label>2단계: 감정 (솔직한 마음 상태 표현)</label>
+              <button class="hint-toggle-btn" onclick="toggleTooltip(2)">💡 힌트 보기</button>
+            </div>
+            <textarea id="act2-input-emotion" class="retro-textarea" placeholder="나는 (내 기분은) ..."></textarea>
+            <div id="act2-tooltip-emotion" class="hint-tooltip-box">예시 로딩 중...</div>
+          </div>
+
+          <!-- 입력 3: 부탁 -->
+          <div class="input-group">
+            <div class="input-header-row">
+              <label>3단계: 부탁 (바라는 구체적 행동 정중히 요구)</label>
+              <button class="hint-toggle-btn" onclick="toggleTooltip(3)">💡 힌트 보기</button>
+            </div>
+            <textarea id="act2-input-request" class="retro-textarea" placeholder="앞으로 (이렇게 해줬으면 해)."></textarea>
+            <div id="act2-tooltip-request" class="hint-tooltip-box">예시 로딩 중...</div>
+          </div>
+
+          <button class="retro-btn" style="margin-top: 12px; width: fit-content !important; padding: 6px 20px !important; font-size: 0.8rem !important; margin-left: auto !important; margin-right: auto !important; display: block !important;" onclick="validateAndTranslate()">전송하기 ➔</button>
+        </div>
+      </div>
+
+      <!-- 결과 번역 변환 오버레이 -->
+      <div id="act2-overlay-result" class="act2-result-overlay">
+        <div class="act2-result-modal">
+          <h2 style="color:var(--point-yellow); font-size:1.6rem; text-shadow:2px 2px 0 #000;">✨ 내 마음 전달 완료!</h2>
+          
+          <div class="yellow-speech-bubble" id="act2-merged-bubble-text">
+            번역 문구 조립 출력 영역...
+          </div>
+          
+          <!-- 마음온 AI 공통 가이드 배너 (2단계 결과 피드백) -->
+          <div class="std-guide-banner" style="margin-bottom: 0px !important;">
+            <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
+              <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+            </div>
+            <div style="display: flex !important; flex-direction: column !important; justify-content: center !important; flex-grow: 1 !important; margin-left: 6px;">
+              <span style="font-size: 10.5px !important; font-weight: 900 !important; line-height: 1.1 !important; margin-bottom: 3px !important; font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important; display: block !important;">마음온 AI 가이드</span>
+              <span style="font-size: 12px !important; font-weight: bold !important; color: #e2e8f0 !important; line-height: 1.3 !important; font-family: 'DungGeunMo', monospace !important; display: block !important;">
+                멋져! 네가 직접 쓴 이 말이라면 친구도 오해 없이 네 마음을 잘 알아줄 거야!
+              </span>
+            </div>
+          </div>
+
+          <button id="btn-act2-next" class="retro-btn" onclick="exitAct2Situation()">상황 선택으로 돌아가기 ➔</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================================
+         아웃트로: 활동 완료 뷰 (신규 추가)
+         ========================================================== -->
+    <div id="view-outro" class="std-intro-container view" style="display: none;">
+      <!-- 상단 헤더 영역 (심플 헤더) -->
+      <div class="std-intro-header-simple">
+        <h1 class="std-intro-title">사이버 감정조절 활동 완료 🌟</h1>
+      </div>
+
+      <!-- 메인 본문 영역 (좌측 캐릭터 복원, 우측 성찰대사 통합 개편) -->
+      <div class="std-intro-body" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 30px; padding: 20px 40px !important; box-sizing: border-box;">
+        
+        <!-- 좌측 캐릭터 영역 (마음온 캐릭터 원래대로 복원) -->
+        <div class="std-intro-char-wrapper-small">
+          <img src="images/maeumon_outro.png" alt="마음온" class="std-intro-char-img">
+        </div>
+
+        <!-- 우측 단일 통합 상자 (밝은 배경색 적용, 배지+배지제목+설명 텍스트 수직 구성) -->
+        <div class="std-intro-unified-box" style="flex-grow: 1; height: auto; min-height: 240px; display: flex; flex-direction: column; align-items: stretch; padding: 15px 25px 20px 25px !important; box-shadow: 6px 6px 0 #000000; border: 4px solid #000000; background-color: #f8fafc; color: #000000; margin: 0; max-width: 550px; gap: 10px;">
+          
+          <!-- 상단: 배지 아이콘 + 배지 타이틀 (경계선 구분) -->
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 8px; flex-shrink: 0;">
+            <!-- 크기 5배 상향된 뱃지 이미지 -->
+            <div style="width: 50px; height: 50px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 30px 0 10px 0; flex-shrink: 0;">
+              <img src="images/icon_emotion.png" alt="감정조절 뱃지" style="width: 160px; height: 160px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
+            </div>
+            <span style="font-size: 1.25rem; color: #1e3a8a; font-weight: bold; margin-top: 10px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [사이버 감정조절] 배지 획득!</span>
+          </div>
+
+          <!-- 하단: 코멘트/설명 텍스트 (줄바꿈/들여쓰기 제거, 검정 폰트색상 적용) -->
+          <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.05rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">갑작스러운 비난이나 화가 나는 상황 속에서도 즉각적으로 화를 내기보다, 객관적인 사실과 너의 감정을 헤아려 '나-전달법'으로 지혜롭게 표현하는 방법을 익혔구나! 너의 차분하고 따뜻한 소통 방식이 스스로의 소중한 감정을 안전하게 지켜줄 거란다.</div>
+        </div>
+
+      </div>
+
+      <!-- 하단 버튼 영역 (오른쪽 정렬 및 가로 넓이 확장) -->
+      <div class="std-intro-footer" style="justify-content: flex-end !important; padding: 16px 40px !important;">
+        <button onclick="finishCenterMission()" class="std-footer-btn-right" style="width: 380px; box-shadow: 4px 4px 0 #000; font-size: 1.1rem; height: 48px;">활동완료 & 대시보드로 돌아가기 ➔</button>
+      </div>
+    </div>
+
+    <!-- 공통 표준 하단 푸터바 (순수 CSS) -->
+    <div id="control-bar" style="display: none;">
+      <!-- 좌측: 이전 단계 -->
+      <button id="btn-prev" style="padding: 4px 16px; background-color: #475569; color: #fff; font-size: 0.75rem; font-weight: bold; border: 2px solid #000; cursor: pointer; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="prevStep()">
+        ◀ 이전 단계
+      </button>
+      
+      <!-- 중앙: 홈으로 (맵으로) -->
+      <button id="footer-home-btn" style="padding: 4px 20px; background-color: #fbbf24; color: #000; font-size: 0.75rem; font-weight: 900; border: 2px solid #000; cursor: pointer; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="exitToMap()">
+        🏠 홈으로 (맵)
+      </button>
+      
+      <!-- 우측: 다음 단계 -->
+      <button id="btn-next" style="padding: 4px 16px; background-color: #10b981; color: #fff; font-size: 0.75rem; font-weight: bold; border: 2px solid #000; cursor: pointer; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="nextStep()">
+        다음 단계 ▶
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // =========================================
+    // 상황 데이터 정의
+    // =========================================
+    const SCENARIOS = {
+      1: {
+        id: 1,
+        title: "상황 1: 직접적 비난",
+        avatar: "👦",
+        senderName: "민호",
+        angryMsg: "아 진짜 너 때문에 졌잖아 ㅡㅡ 너 다신 안 끼워줌",
+        emotions: ["억울함", "당황스러움", "미안함"],
+        desc: "게임에서 졌다고 단톡방에 \"아 진짜 너 때문에 졌잖아 ㅡㅡ 너 다신 안 끼워줌\" 메시지가 옴.",
+        hints: {
+          fact: "예시: 네가 나한테 화를 내고 안 끼워준다고 해서",
+          emotion: "예시: 나는 당황스럽고 억울했어.",
+          request: "예시: 화내기 전에 내 실수에 대해 같이 이야기해 줬으면 좋겠어."
+        }
+      },
+      2: {
+        id: 2,
+        title: "상황 2: 소통의 단절",
+        avatar: "💬",
+        senderName: "지수",
+        angryMsg: "내일 준비물 뭐야? (읽씹)",
+        emotions: ["답답함", "무안함", "존중받지 못함"],
+        desc: "\"내일 준비물 뭐야?\" 물어봤는데 내 톡은 '읽씹'하고, 단톡방에서 내 질문은 무시한 채 친구들끼리 대화가 이어짐.",
+        hints: {
+          fact: "예시: 내 톡은 읽고 답장이 없는데 SNS에 영상을 올린 걸 봤을 때",
+          emotion: "예시: 내가 무시당하는 기분이 들어서 답답하고 무안했어.",
+          request: "예시: 톡을 확인하면 짧게라도 답장을 남겨줬으면 좋겠어."
+        }
+      }
+    };
+
+    // =========================================
+    // 전역 상태 변수
+    // =========================================
+    let activeActivityId = null; // 1 or 2
+    let activeSituationId = null; // 1 or 2
+    let chatAnimationTimers = [];
+
+    // 4개 상태 기록 객체 (activity_situationKey)
+    let clearedMissions = {
+      "act1_sit1": false,
+      "act1_sit2": false,
+      "act2_sit1": false,
+      "act2_sit2": false
+    };
+
+    // =========================================
+    // View 스위치 공통 함수
+    // =========================================
+    function switchView(viewId) {
+      document.querySelectorAll('.view').forEach(el => {
+        el.classList.remove('active');
+        el.style.setProperty('display', 'none', 'important'); // FOUC 방지 인라인 감춤
+      });
+      const activeEl = document.getElementById(viewId);
+      if (activeEl) {
+        activeEl.classList.add('active');
+        activeEl.style.setProperty('display', 'flex', 'important'); // 인라인 노출
+      }
+      
+      // 프레임 UI 상태 연동
+      updateFrameUI(viewId);
+      
+      const appContainer = document.getElementById("app-container");
+      appContainer.classList.remove("anger-heartbeat");
+      document.body.style.backgroundColor = "var(--bg-dark)";
+
+      if (viewId === 'view-main-menu') {
+        renderMainMenu();
+      } else if (viewId === 'view-situation-select') {
+        renderSituationSelect();
+      }
+    }
+
+    // =========================================
+    // Chiptune 음향 합성 (Web Audio API)
+    // =========================================
+    function playAudioTone(type) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        const now = ctx.currentTime;
+
+        if (type === 'success') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now); // C5
+          osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+          osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+          osc.frequency.setValueAtTime(1046.50, now + 0.24); // C6
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.005, now + 0.45);
+          osc.start(now);
+          osc.stop(now + 0.45);
+        } else if (type === 'fail') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(170, now);
+          osc.frequency.setValueAtTime(120, now + 0.1);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'click') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(400, now);
+          gain.gain.setValueAtTime(0.05, now);
+          osc.start(now);
+          osc.stop(now + 0.06);
+        } else if (type === 'unlock') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(587.33, now); // D5
+          osc.frequency.setValueAtTime(880.00, now + 0.1); // A5
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.005, now + 0.3);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        }
+      } catch(e) {}
+    }
+
+    let heartbeatInterval = null;
+    function startHeartbeatSound() {
+      if (heartbeatInterval) clearInterval(heartbeatInterval);
+      playHeartbeatThump();
+      heartbeatInterval = setInterval(() => {
+        playHeartbeatThump();
+      }, 1000);
+    }
+
+    function stopHeartbeatSound() {
+      if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+        heartbeatInterval = null;
+      }
+    }
+
+    function playHeartbeatThump() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const now = ctx.currentTime;
+        
+        // 첫 번째 쿵 (60Hz)
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(60, now);
+        osc1.frequency.exponentialRampToValueAtTime(10, now + 0.15);
+        gain1.gain.setValueAtTime(0.25, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        osc1.start(now);
+        osc1.stop(now + 0.15);
+        
+        // 두 번째 쾅 (0.25초 뒤 50Hz)
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(50, now + 0.25);
+        osc2.frequency.exponentialRampToValueAtTime(10, now + 0.4);
+        gain2.gain.setValueAtTime(0.2, now + 0.25);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+        osc2.start(now + 0.25);
+        osc2.stop(now + 0.4);
+      } catch (e) {}
+    }
+
+    function triggerContainerShake() {
+      const container = document.getElementById('app-container');
+      container.classList.remove('shake');
+      void container.offsetWidth; // Trigger reflow
+      container.classList.add('shake');
+      setTimeout(() => container.classList.remove('shake'), 400);
+    }
+
+    // =========================================
+    // Screen 1: 메인 화면 로직 (바이패스되나 상태 초기화용 유지)
+    // =========================================
+    function renderMainMenu() {
+      // 활동 1 완료 상태 계산
+      let act1Clears = 0;
+      if (clearedMissions.act1_sit1) act1Clears++;
+      if (clearedMissions.act1_sit2) act1Clears++;
+
+      // 활동 2 완료 상태 계산
+      let act2Clears = 0;
+      if (clearedMissions.act2_sit1) act2Clears++;
+      if (clearedMissions.act2_sit2) act2Clears++;
+
+      // 모든 미션 클리어 여부
+      const allCleared = Object.values(clearedMissions).every(v => v === true);
+      const completeBtn = document.getElementById("btn-center-complete");
+      if (completeBtn) {
+        if (allCleared) {
+          completeBtn.style.display = "inline-flex";
+        } else {
+          completeBtn.style.display = "none";
+        }
+      }
+    }
+
+    function selectActivity(actId) {
+      playAudioTone('click');
+      activeActivityId = actId;
+      switchView('view-situation-select');
+    }
+
+    // =========================================
+    // Screen 1.5: 상황 선택 로직
+    // =========================================
+    function renderSituationSelect() {
+      const activityLabel = document.getElementById("active-activity-label");
+      activityLabel.innerText = "훈련을 진행할 상황을 선택해 주세요.";
+
+      // 상황 배지 렌더링
+      for (let sId = 1; sId <= 2; sId++) {
+        const item = document.getElementById(`sit-item-${sId}`);
+        const badge = document.getElementById(`sit-badge-${sId}`);
+        
+        const key1 = `act1_sit${sId}`;
+        const key2 = `act2_sit${sId}`;
+
+        if (clearedMissions[key1] && clearedMissions[key2]) {
+          item.classList.add("cleared");
+          badge.innerText = "완료 🌟";
+        } else {
+          item.classList.remove("cleared");
+          badge.innerText = "대기 중 ❄️";
+        }
+      }
+
+      // 모든 에피소드가 완료되었는지 확인
+      const allCleared = [1, 2].every(sId => clearedMissions[`act1_sit${sId}`] && clearedMissions[`act2_sit${sId}`]);
+      const completeBtn = document.getElementById("btn-center-complete");
+      if (allCleared) {
+        completeBtn.style.display = "inline-flex";
+      } else {
+        completeBtn.style.display = "none";
+      }
+    }
+
+    function enterSituation(situationId) {
+      playAudioTone('click');
+      activeSituationId = situationId;
+      activeActivityId = 1; // 항상 활동 1부터 강제 시작
+      switchViewAct1();
+    }
+
+    function exitToMap() {
+      playAudioTone('click');
+      clearChatAnimationTimers();
+      let inIframe = false;
+      try {
+        inIframe = (window.self !== window.top);
+      } catch (e) {
+        inIframe = true;
+      }
+
+      if (inIframe) {
+        window.parent.postMessage({ type: 'RETURN_TO_MAP' }, '*');
+      } else {
+        location.reload();
+      }
+    }
+
+    // 표준 상하단바 프레임워크 업데이트 제어
+    function updateFrameUI(viewId) {
+      const header = document.getElementById("standard-header");
+      const footer = document.getElementById("control-bar");
+      if (!header || !footer) return;
+
+      if (viewId === 'view-intro' || viewId === 'view-situation-select' || viewId === 'view-outro') {
+        header.style.setProperty('display', 'none', 'important');
+        footer.style.setProperty('display', 'none', 'important');
+      } else {
+        header.style.setProperty('display', 'flex', 'important');
+        footer.style.setProperty('display', 'flex', 'important');
+
+        // 타이틀 및 도트 인디케이터
+        const titleText = document.getElementById("stage-title-text");
+        const dot1 = document.getElementById("dot-1");
+        const dot2 = document.getElementById("dot-2");
+
+        // 기본 도트 스타일 (순수 CSS 복원)
+        const inactiveDotStyle = "width: 14px; height: 14px; border-radius: 9999px; border: 2px solid #000; background-color: #64748b; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 8px; color: #fff;";
+        const activeDotStyle = "width: 14px; height: 14px; border-radius: 9999px; border: 2px solid #000; background-color: #3b82f6; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 8px; color: #fff; box-shadow: 0 0 8px #3b82f6;";
+        const completedDotStyle = "width: 14px; height: 14px; border-radius: 9999px; border: 2px solid #000; background-color: #10b981; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 8px; color: #fff;";
+
+        if (dot1) dot1.style = inactiveDotStyle;
+        if (dot2) dot2.style = inactiveDotStyle;
+
+        const prevBtn = document.getElementById("btn-prev");
+        const nextBtn = document.getElementById("btn-next");
+
+        // 이전 단계 비활성 제어
+        let isFirstStep = (activeSituationId === 1 && activeActivityId === 1);
+        if (isFirstStep) {
+          if (prevBtn) {
+            prevBtn.style.opacity = "0.5";
+            prevBtn.style.cursor = "not-allowed";
+            prevBtn.classList.add('disabled');
+          }
+        } else {
+          if (prevBtn) {
+            prevBtn.style.opacity = "1";
+            prevBtn.style.cursor = "pointer";
+            prevBtn.classList.remove('disabled');
+          }
+        }
+
+        // 다음 단계 미션 완료 여부 파악
+        let isTaskCompleted = false;
+
+        if (activeActivityId === 1) {
+          if (act1HoldTime >= 5000) {
+            isTaskCompleted = true;
+          }
+          if (titleText) titleText.innerText = "활동 1: 불쾌한 상황에서 느껴지는 감정을 알아채고 마음 진정하기";
+          if (dot1) dot1.style = activeDotStyle;
+        } else if (activeActivityId === 2) {
+          if (clearedMissions[`act2_sit${activeSituationId}`]) {
+            isTaskCompleted = true;
+          }
+          if (titleText) titleText.innerText = "활동 2: 사실, 감정, 부탁에 맞추어 내 마음을 오해 없이 전달하기";
+          if (dot1) dot1.style = completedDotStyle;
+          if (dot2) dot2.style = activeDotStyle;
+        }
+
+        if (isTaskCompleted) {
+          if (nextBtn) {
+            nextBtn.style.opacity = "1";
+            nextBtn.style.cursor = "pointer";
+            nextBtn.classList.remove('disabled');
+          }
+        } else {
+          if (nextBtn) {
+            nextBtn.style.opacity = "0.5";
+            nextBtn.style.cursor = "not-allowed";
+            nextBtn.classList.add('disabled');
+          }
+        }
+
+        if (nextBtn) {
+          if (activeSituationId === 2 && activeActivityId === 2) {
+            nextBtn.innerText = "활동 완료 ➔";
+          } else {
+            nextBtn.innerText = "다음 단계 ▶";
+          }
+        }
+      }
+    }
+
+    // 이전/다음 단계 클릭 리디렉션
+    function prevStep() {
+      const prevBtn = document.getElementById("btn-prev");
+      if (prevBtn && prevBtn.classList.contains('disabled')) {
+        playAudioTone('click');
+        alert("이전 단계가 존재하지 않습니다. (첫 번째 활동 화면입니다)");
+        return;
+      }
+
+      playAudioTone('click');
+      if (activeActivityId === 2) {
+        // 활동 2 -> 활동 1로 복귀
+        activeActivityId = 1;
+        switchViewAct1();
+      } else if (activeActivityId === 1 && activeSituationId === 2) {
+        // 상황 2 활동 1 -> 상황 1 활동 2로 복귀
+        activeSituationId = 1;
+        activeActivityId = 2;
+        switchViewAct2();
+        // 이전의 완료 모달창 대신 전송 말풍선 표시
+        const data = SCENARIOS[1];
+        const fullMsg = `${data.hints.fact} ${data.hints.emotion} ${data.hints.request}`;
+        const sentContainer = document.getElementById("act2-chat-sent-container");
+        const sentBubble = document.getElementById("act2-chat-sent-bubble");
+        if (sentBubble) sentBubble.innerText = fullMsg;
+        if (sentContainer) sentContainer.style.display = "flex";
+        if (sentBubble) sentBubble.classList.add("chat-pop-in");
+        
+        // 텍스트 필드에도 입력했던 텍스트 채우기 (복구)
+        document.getElementById("act2-input-fact").value = data.hints.fact;
+        document.getElementById("act2-input-emotion").value = data.hints.emotion;
+        document.getElementById("act2-input-request").value = data.hints.request;
+      }
+    }
+
+    function nextStep() {
+      const nextBtn = document.getElementById("btn-next");
+
+      // 미완료 시 친절한 가이드 알림 출력
+      if (nextBtn && nextBtn.classList.contains('disabled')) {
+        playAudioTone('click');
+        if (activeActivityId === 1) {
+          alert("가장 알맞은 감정 배지를 선택하고, 우측의 [소화기] 버튼을 5초 동안 꾹 누르고 있어 주세요!");
+        } else {
+          alert("사실-감정-부탁 3단계에 맞게 3개의 입력창을 모두 채우고 [올바른 표현 전송]을 눌러 완료해 주세요!");
+        }
+        return;
+      }
+
+      playAudioTone('success');
+      if (activeActivityId === 1) {
+        // 활동 1 완료 ➔ 활동 2 뷰로 이동!
+        exitAct1Situation();
+      } else if (activeActivityId === 2) {
+        // 활동 2 완료 ➔ 상황 교체 혹은 아웃트로
+        exitAct2Situation();
+      }
+    }
+
+    // =========================================
+    // 타이머 소멸 및 안전 초기화 기능
+    // =========================================
+    function clearChatAnimationTimers() {
+      chatAnimationTimers.forEach(timer => clearTimeout(timer));
+      chatAnimationTimers = [];
+    }
+
+    // 상황 2 단톡방 단계별 대화 연출
+    function startGroupChatAnimation() {
+      clearChatAnimationTimers();
+      
+      // 1초 후: 지수가 읽어 안읽음이 1이 되고 지수의 딴소리 메시지 출현
+      chatAnimationTimers.push(setTimeout(() => {
+        const unreadEl = document.getElementById("my-unread-count");
+        if (unreadEl) {
+          unreadEl.innerText = "1";
+          unreadEl.style.display = "inline-block";
+        }
+        
+        const jisooMsg = document.getElementById("chat-animation-jisoo");
+        if (jisooMsg) {
+          jisooMsg.style.setProperty('display', 'flex', 'important');
+          jisooMsg.classList.add("chat-pop-in");
+        }
+        playAudioTone('click');
+      }, 1000));
+
+      // 2초 후: 민우까지 읽어서 안읽음 숫자가 완전히 지워지고 민우의 딴소리 맞장구 메시지 출현
+      chatAnimationTimers.push(setTimeout(() => {
+        const unreadEl = document.getElementById("my-unread-count");
+        if (unreadEl) {
+          unreadEl.innerText = "";
+          unreadEl.style.display = "none";
+        }
+        
+        const minhoMsg = document.getElementById("chat-animation-minho");
+        if (minhoMsg) {
+          minhoMsg.style.setProperty('display', 'flex', 'important');
+          minhoMsg.classList.add("chat-pop-in");
+        }
+        playAudioTone('click');
+      }, 2000));
+    }
+
+    // =========================================
+    // Screen 2: 활동 1 - 5초 소화기 실행 로직
+    // =========================================
+    let selectedEmotion = "";
+    let isAct1HoldActive = false;
+    let act1HoldTimer = null;
+    let act1HoldTime = 0; // ms
+
+    function switchViewAct1() {
+      // 변수 초기화
+      act1HoldTime = 0;
+      isAct1HoldActive = false;
+      selectedEmotion = "";
+      if (act1HoldTimer) clearInterval(act1HoldTimer);
+      clearChatAnimationTimers();
+
+      // 뷰 활성화
+      document.querySelectorAll('.view').forEach(el => {
+        el.classList.remove('active');
+        el.style.setProperty('display', 'none', 'important');
+      });
+      const activeEl = document.getElementById('view-act1');
+      if (activeEl) {
+        activeEl.classList.add('active');
+        activeEl.style.setProperty('display', 'flex', 'important');
+      }
+      
+      // 프레임 UI 상태 연동
+      updateFrameUI('view-act1');
+
+      const data = SCENARIOS[activeSituationId];
+      
+      // 상황 정보 반영
+      document.getElementById("act1-header-title").innerText = `[활동 1] ${data.title}`;
+
+      // 상대 말에 따른 직접적인 질문 가이드라인
+      document.getElementById("act1-guide-bubble").innerText = `${data.senderName}가 이렇게 말했을 때 듣는 입장에서 기분이 어떨 것 같아? 가장 알맞은 감정 배지를 선택해 봐!`;
+
+      // 클릭(탭) 영역 활성화
+      document.getElementById("drag-drop-area").style.display = "flex";
+
+      // 스마트폰 화면 렌더링 (상황별 맞춤 UI)
+      const chatPanel = document.getElementById("act1-chat-bubble-panel");
+      if (activeSituationId === 1) {
+        // 상황 1: 민호의 비난 SNS 피드
+        chatPanel.innerHTML = `
+          <div style="background-color: #ffffff !important; border: 3px solid #000000 !important; border-radius: 8px !important; box-shadow: 3px 3px 0px #000000 !important; width: 100%; color: #000000 !important; overflow: hidden !important; display: flex; flex-direction: column;">
+            <!-- SNS 피드 헤더 (이모지 대신 텍스트 이니셜 프로필 적용) -->
+            <div style="display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #000000; padding: 8px 12px; background-color: #f1f5f9;">
+              <div style="width: 32px; height: 32px; border-radius: 9999px; border: 2.5px solid #000; background-color: #f87171; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 900; color: #fff; flex-shrink: 0; user-select: none; font-family: 'DungGeunMo', monospace !important;">민</div>
+              <div style="display: flex; flex-direction: column; text-align: left;">
+                <span style="font-size: 0.85rem; font-weight: 900; color: #0f172a; font-family: 'DungGeunMo', monospace !important;">민호</span>
+                <span style="font-size: 0.65rem; color: #64748b; font-weight: bold; font-family: 'DungGeunMo', monospace !important;">방금 전</span>
+              </div>
+              <span style="margin-left: auto; font-size: 1rem; color: #64748b; font-weight: bold;">⋮</span>
+            </div>
+            <!-- SNS 본문 저격 글 (초등학생용 정화 버전) -->
+            <div style="padding: 12px; border-bottom: 2px solid #000000; background-color: #ffffff; font-size: 0.88rem; font-weight: 800; line-height: 1.4; color: #1e293b; text-align: left; font-family: 'DungGeunMo', monospace !important;">
+              아 진짜 너 때문에 게임 졌잖아 ㅡㅡ 너 다신 안 끼워줌
+            </div>
+            <!-- SNS 동조 댓글 리스트 -->
+            <div style="background-color: #f8fafc; padding: 8px 12px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #e2e8f0;">
+              <!-- 동조댓글 1 (하준) -->
+              <div style="display: flex; align-items: flex-start; gap: 8px; text-align: left;">
+                <div style="width: 20px; height: 20px; border-radius: 9999px; border: 1.5px solid #000; background-color: #fb923c; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold; color: #fff; flex-shrink: 0; user-select: none; font-family: 'DungGeunMo', monospace !important;">하</div>
+                <div style="background-color: #f1f5f9; border: 1.5px solid #000; border-radius: 6px; padding: 4px 8px; max-width: 85%;">
+                  <span style="font-size: 0.72rem; font-weight: 900; color: #1e293b; font-family: 'DungGeunMo', monospace !important;">하준</span>
+                  <p style="font-size: 0.76rem; font-weight: bold; color: #334155; margin-top: 1px; font-family: 'DungGeunMo', monospace !important;">맞아 너 때문에 졌잖아! ㅡㅡ</p>
+                </div>
+              </div>
+              <!-- 동조댓글 2 (서연) -->
+              <div style="display: flex; align-items: flex-start; gap: 8px; text-align: left;">
+                <div style="width: 20px; height: 20px; border-radius: 9999px; border: 1.5px solid #000; background-color: #f43f5e; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold; color: #fff; flex-shrink: 0; user-select: none; font-family: 'DungGeunMo', monospace !important;">서</div>
+                <div style="background-color: #f1f5f9; border: 1.5px solid #000; border-radius: 6px; padding: 4px 8px; max-width: 85%;">
+                  <span style="font-size: 0.72rem; font-weight: 900; color: #1e293b; font-family: 'DungGeunMo', monospace !important;">서연</span>
+                  <p style="font-size: 0.76rem; font-weight: bold; color: #334155; margin-top: 1px; font-family: 'DungGeunMo', monospace !important;">진짜 완전 실망임;; 다음엔 같이 하지 말자</p>
+                </div>
+              </div>
+            </div>
+            <!-- '나'의 댓글 입력 대기창 UI (초등학생용 초심플 '...' 버전) -->
+            <div style="border-top: 2px solid #000000; padding: 8px 12px; background-color: #f1f5f9; display: flex; align-items: center; gap: 8px;">
+              <div style="width: 22px; height: 22px; border-radius: 9999px; border: 1.5px solid #000; background-color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 0.68rem; flex-shrink: 0; color: #fff; font-weight: 900; user-select: none; font-family: 'DungGeunMo', monospace !important;">나</div>
+              <div style="flex-grow: 1; background-color: #ffffff; border: 2px solid #000000; padding: 4px 10px; font-size: 0.76rem; font-weight: bold; color: #94a3b8; font-family: 'DungGeunMo', monospace !important; text-align: left; user-select: none; letter-spacing: 2px;">
+                ...
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (activeSituationId === 2) {
+        // 상황 2: 지윤/지수의 소통 단절 메신저 타임라인 피드
+        chatPanel.innerHTML = `
+          <div style="background-color: #ffffff !important; border: 3px solid #000000 !important; border-radius: 8px !important; box-shadow: 3px 3px 0px #000000 !important; width: 100%; color: #000000 !important; overflow: hidden !important; display: flex; flex-direction: column;">
+            <!-- SNS 피드 헤더 -->
+            <div style="display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #000000; padding: 8px 12px; background-color: #f1f5f9;">
+              <div style="width: 32px; height: 32px; border-radius: 9999px; border: 2.5px solid #000; background-color: #eab308; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 900; color: #fff; flex-shrink: 0; user-select: none; font-family: 'DungGeunMo', monospace !important;">반</div>
+              <div style="display: flex; flex-direction: column; text-align: left;">
+                <span style="font-size: 0.85rem; font-weight: 900; color: #0f172a; font-family: 'DungGeunMo', monospace !important;">우리반 단톡방</span>
+                <span style="font-size: 0.65rem; color: #64748b; font-weight: bold; font-family: 'DungGeunMo', monospace !important;">실시간 대화</span>
+              </div>
+              <span style="margin-left: auto; font-size: 1rem; color: #64748b; font-weight: bold;">⋮</span>
+            </div>
+            
+            <!-- 메신저 타임라인 대화방 본문 -->
+            <div style="padding: 12px; background-color: #f1f5f9; display: flex; flex-direction: column; gap: 10px; overflow: hidden;">
+              <!-- 1. 우측 '나'의 메시지 (안 읽음 숫자 2 최초 적용) -->
+              <div style="display: flex; justify-content: flex-end; width: 100%;">
+                <div style="display: flex; flex-direction: column; align-items: flex-end; max-width: 80%;">
+                  <div style="background-color: #fef08a; color: #000; border: 2px solid #000; border-radius: 8px 8px 0px 8px; padding: 6px 12px; font-size: 0.82rem; font-weight: bold; font-family: 'DungGeunMo', monospace !important; box-shadow: 2px 2px 0px #000; text-align: right;">
+                    오늘 숙제 뭐야?
+                  </div>
+                  <span id="my-unread-count" style="font-size: 0.65rem; color: #ef4444; font-weight: 900; margin-top: 2px; font-family: 'DungGeunMo', monospace !important;">2</span>
+                </div>
+              </div>
+              
+              <!-- 2. 좌측 '지수'의 메시지 (최초 숨김, 1초 후 1 안읽음과 함께 노출) -->
+              <div id="chat-animation-jisoo" style="display: none; justify-content: flex-start; width: 100%; gap: 6px; align-items: flex-start; text-align: left;">
+                <div style="width: 22px; height: 22px; border-radius: 9999px; border: 1.5px solid #000; background-color: #eab308; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold; color: #fff; flex-shrink: 0; user-select: none; font-family: 'DungGeunMo', monospace !important;">지</div>
+                <div style="display: flex; flex-direction: column; max-width: 80%;">
+                  <span style="font-size: 0.65rem; font-weight: 900; color: #64748b; margin-bottom: 1px; font-family: 'DungGeunMo', monospace !important; text-align: left;">지수</span>
+                  <div style="background-color: #ffffff; color: #000; border: 2px solid #000; border-radius: 0px 8px 8px 8px; padding: 6px 12px; font-size: 0.82rem; font-weight: bold; font-family: 'DungGeunMo', monospace !important; box-shadow: 2px 2px 0px #000; line-height: 1.3;">
+                    얘들아 이 영상 봐봐 ㅋㅋㅋ 진짜 웃김<br>
+                    <span style="color: #2563eb; text-decoration: underline; font-size: 0.72rem; word-break: break-all;">https://shorts.com/v104</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- 3. 좌측 '민우'의 메시지 (최초 숨김, 2초 후 다 읽음 처리와 함께 노출) -->
+              <div id="chat-animation-minho" style="display: none; justify-content: flex-start; width: 100%; gap: 6px; align-items: flex-start; text-align: left;">
+                <div style="width: 22px; height: 22px; border-radius: 9999px; border: 1.5px solid #000; background-color: #64748b; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: bold; color: #fff; flex-shrink: 0; user-select: none; font-family: 'DungGeunMo', monospace !important;">민</div>
+                <div style="display: flex; flex-direction: column; max-width: 80%;">
+                  <span style="font-size: 0.65rem; font-weight: 900; color: #64748b; margin-bottom: 1px; font-family: 'DungGeunMo', monospace !important; text-align: left;">민우</span>
+                  <div style="background-color: #ffffff; color: #000; border: 2px solid #000; border-radius: 0px 8px 8px 8px; padding: 6px 12px; font-size: 0.82rem; font-weight: bold; font-family: 'DungGeunMo', monospace !important; box-shadow: 2px 2px 0px #000;">
+                    ㅋㅋㅋㅋㅋㅋㅋ 진짜 꿀잼이네
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- '나'의 댓글 입력 대기창 UI (초등학생용 초심플 '...' 버전) -->
+            <div style="border-top: 2px solid #000000; padding: 8px 12px; background-color: #f1f5f9; display: flex; align-items: center; gap: 8px;">
+              <div style="width: 22px; height: 22px; border-radius: 9999px; border: 1.5px solid #000; background-color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 0.68rem; flex-shrink: 0; color: #fff; font-weight: 900; user-select: none; font-family: 'DungGeunMo', monospace !important;">나</div>
+              <div style="flex-grow: 1; background-color: #ffffff; border: 2px solid #000000; padding: 4px 10px; font-size: 0.76rem; font-weight: bold; color: #94a3b8; font-family: 'DungGeunMo', monospace !important; text-align: left; user-select: none; letter-spacing: 2px;">
+                ...
+              </div>
+            </div>
+          </div>
+        `;
+        startGroupChatAnimation();
+      }
+
+      // 배지 렌더링 (드래그 불가, 탭 전용)
+      const badgesContainer = document.getElementById("emotions-badges-list");
+      badgesContainer.innerHTML = "";
+      data.emotions.forEach(emotion => {
+        const badge = document.createElement("div");
+        badge.className = "emotion-badge-item";
+        badge.innerText = emotion;
+        badge.draggable = false;
+        badge.onclick = () => {
+          selectEmotion(emotion);
+        };
+        badgesContainer.appendChild(badge);
+      });
+
+      // 기타 UI 숨김 처리
+      document.getElementById("thermometer-extinguisher-row").style.display = "none";
+      document.getElementById("act1-success-view").style.display = "none";
+
+      document.body.style.backgroundColor = "var(--bg-dark)";
+      document.getElementById("app-container").className = "";
+
+      // 꾹 누르기 바인딩
+      const breathBtn = document.getElementById("btn-breath-hold");
+      
+      // 마우스 이벤트
+      breathBtn.onmousedown = (e) => { e.preventDefault(); startAct1Breathing(); };
+      breathBtn.onmouseup = (e) => { e.preventDefault(); stopAct1Breathing(); };
+      breathBtn.onmouseleave = (e) => { e.preventDefault(); stopAct1Breathing(); };
+      
+      // 터치 이벤트
+      breathBtn.ontouchstart = (e) => { e.preventDefault(); startAct1Breathing(); };
+      breathBtn.ontouchend = (e) => { e.preventDefault(); stopAct1Breathing(); };
+      breathBtn.ontouchcancel = (e) => { e.preventDefault(); stopAct1Breathing(); };
+    }
+
+    // 감정 선택 완료 처리 (소화기 작동 유도)
+    function selectEmotion(emotion) {
+      selectedEmotion = emotion;
+      playAudioTone('success');
+
+      document.getElementById("act1-guide-bubble").innerHTML = `너의 감정을 5초를 세며 진정시켜보자. 소화기를 눌러봐.`;
+
+      // 0.8초 후 소화기 꾹 누르기 단계 진입
+      setTimeout(() => {
+        enterAct1HoldPhase();
+      }, 800);
+    }
+
+    // 소화기 꾹 누르기 단계 진입
+    function enterAct1HoldPhase() {
+      // 감정 선택창 숨기기
+      document.getElementById("drag-drop-area").style.display = "none";
+
+      // 붉게 물들기
+      document.body.style.backgroundColor = "#240004";
+      document.getElementById("app-container").className = "anger-heartbeat";
+
+      // 온도계 및 소화기 활성화
+      document.getElementById("thermometer-extinguisher-row").style.display = "flex";
+
+      // 온도계 초기화
+      document.getElementById("act1-temp-value").innerText = "100.0°C";
+      document.getElementById("act1-mercury-fill").style.width = "100%";
+      document.getElementById("act1-mercury-fill").style.background = "linear-gradient(to right, #ff4757, #ff6b81)";
+
+      // 심장 박동음 시작
+      startHeartbeatSound();
+    }
+
+    // 호흡 누르기 작동 (5초로 가중치 단축)
+    function startAct1Breathing() {
+      if (clearedMissions[`act1_sit${activeSituationId}`]) return; // 이미 완료됨
+
+      isAct1HoldActive = true;
+      document.getElementById("btn-breath-hold").classList.add("holding");
+      playAudioTone('click');
+
+      if (act1HoldTimer) clearInterval(act1HoldTimer);
+
+      act1HoldTimer = setInterval(() => {
+        if (!isAct1HoldActive) return;
+
+        act1HoldTime += 100;
+        const progress = Math.min(1.0, act1HoldTime / 5000); // 5000ms (5초)
+        
+        // 100 -> 36.5도
+        const temp = (100 - (100 - 36.5) * progress).toFixed(1);
+        document.getElementById("act1-temp-value").innerText = `${temp}°C`;
+        document.getElementById("act1-mercury-fill").style.width = `${100 - (100 - 36.5) * progress}%`;
+
+        // 배경색 변화 (Red -> Cool Blue)
+        const r = Math.floor(255 - (255 - 52) * progress);
+        const g = Math.floor(71 + (152 - 71) * progress);
+        const b = Math.floor(87 + (219 - 87) * progress);
+        document.body.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+
+        // 가이드 메시지 분기
+        const guide = document.getElementById("act1-guide-bubble");
+        if (progress < 0.3) {
+          guide.innerText = "스읍- 들이마시고... 멈추지 마, 감정을 천천히 가라앉히는 중이야.";
+        } else if (progress < 0.6) {
+          guide.innerText = "후우- 내쉬고... 아주 잘하고 있어. 몸의 긴장을 싹 풀어봐.";
+        } else if (progress < 0.9) {
+          guide.innerText = "마음 온도가 점점 내려가고 있어! 끝까지 다스려보자.";
+        }
+
+        // 50%가 넘으면 붉은 박동 테두리 해제
+        if (progress > 0.5) {
+          document.getElementById("app-container").className = "";
+          document.getElementById("act1-mercury-fill").style.background = "linear-gradient(to right, #3498db, #54a0ff)";
+        }
+
+        // 5초 달성 시 완료
+        if (act1HoldTime >= 5000) {
+          clearInterval(act1HoldTimer);
+          isAct1HoldActive = false;
+          updateFrameUI('view-act1'); // 활성화 트리거
+          completeAct1Breathing();
+        }
+      }, 100);
+    }
+
+    // 호흡 누르기 중단
+    function stopAct1Breathing() {
+      if (clearedMissions[`act1_sit${activeSituationId}`] || !isAct1HoldActive) return;
+
+      isAct1HoldActive = false;
+      if (act1HoldTimer) clearInterval(act1HoldTimer);
+
+      playAudioTone('fail');
+      triggerContainerShake();
+
+      // 시간 및 뷰 리셋
+      act1HoldTime = 0;
+      document.getElementById("act1-temp-value").innerText = "100.0°C";
+      document.getElementById("act1-mercury-fill").style.width = "100%";
+      document.getElementById("act1-mercury-fill").style.background = "linear-gradient(to right, #ff4757, #ff6b81)";
+      document.getElementById("btn-breath-hold").classList.remove("holding");
+      document.getElementById("app-container").className = "anger-heartbeat";
+      updateFrameUI('view-act1');
+      document.body.style.backgroundColor = "#240004";
+
+      document.getElementById("act1-guide-bubble").innerHTML = `<span style="color:var(--point-red); font-weight:bold;">소화기 버튼에서 마우스를 떼어 감정이 다시 뜨거워졌습니다. 5초 동안 꾹 누르고 계세요!</span>`;
+    }
+
+    // 소화기 완료 피드백 및 동적 연동
+    function completeAct1Breathing() {
+      clearedMissions[`act1_sit${activeSituationId}`] = true;
+      stopHeartbeatSound();
+      playAudioTone('unlock');
+
+      // UI 성공 상태
+      document.body.style.backgroundColor = "#071d10"; // 시원하고 편안한 그린
+      document.getElementById("app-container").className = "";
+      
+      // 온도계 및 소화기 숨기기
+      document.getElementById("thermometer-extinguisher-row").style.display = "none";
+
+      document.getElementById("act1-success-view").style.display = "flex";
+      document.getElementById("act1-success-view").querySelector("h2").innerText = "🧯 마음 진정 완료!";
+      
+      // 동적 감정 피드백 적용
+      document.getElementById("act1-success-emotion").innerText = selectedEmotion;
+      document.getElementById("act1-guide-bubble").innerText = "마음이 차분해졌으니, 이제 나의 진짜 마음을 상대방에게 전달해 보자.";
+
+      // 활동 2 시작하기 버튼 텍스트 수정
+      const nextBtn = document.getElementById("btn-act1-next");
+      nextBtn.innerText = "활동 2 시작하기 ➔";
+      updateFrameUI('view-act1');
+    }
+
+    function exitAct1Situation() {
+      playAudioTone('click');
+      activeActivityId = 2; // 다음으로 무조건 활동 2로 이동
+      switchViewAct2();
+    }
+
+    // =========================================
+    // Screen 3: 활동 2 - 감정 번역 타자기 로직
+    // =========================================
+    function switchViewAct2() {
+      clearChatAnimationTimers();
+      // 뷰 활성화
+      document.querySelectorAll('.view').forEach(el => {
+        el.classList.remove('active');
+        el.style.setProperty('display', 'none', 'important');
+      });
+      const activeEl = document.getElementById('view-act2');
+      if (activeEl) {
+        activeEl.classList.add('active');
+        activeEl.style.setProperty('display', 'flex', 'important'); // 인라인 노출
+      }
+      
+      // 프레임 UI 상태 연동
+      updateFrameUI('view-act2');
+
+      const data = SCENARIOS[activeSituationId];
+
+      // 텍스트 내용 채우기
+      document.getElementById("act2-header-title").innerText = `[활동 2] ${data.title}`;
+      document.getElementById("act2-situation-desc").innerText = data.desc;
+
+      // 텍스트에어리어 값 리셋
+      document.getElementById("act2-input-fact").value = "";
+      document.getElementById("act2-input-emotion").value = "";
+      document.getElementById("act2-input-request").value = "";
+
+      // 힌트 내용 채우기
+      document.getElementById("act2-tooltip-fact").innerText = data.hints.fact;
+      document.getElementById("act2-tooltip-emotion").innerText = data.hints.emotion;
+      document.getElementById("act2-tooltip-request").innerText = data.hints.request;
+
+      // 힌트 팝업들 전부 닫아놓기
+      document.getElementById("act2-tooltip-fact").style.display = "none";
+      document.getElementById("act2-tooltip-emotion").style.display = "none";
+      document.getElementById("act2-tooltip-request").style.display = "none";
+
+      document.getElementById("act2-overlay-result").style.display = "none";
+
+      // 전송했던 말풍선 깨끗하게 초기화(리셋)
+      const sentContainer = document.getElementById("act2-chat-sent-container");
+      if (sentContainer) sentContainer.style.display = "none";
+      const sentBubble = document.getElementById("act2-chat-sent-bubble");
+      if (sentBubble) {
+        sentBubble.classList.remove("chat-pop-in");
+        sentBubble.innerText = "";
+      }
+
+      document.getElementById("act2-guide-bubble").innerText = "마음온의 감정 번역 타자기를 사용해 너의 솔직한 진심을 전해봐! ⌨️";
+    }
+
+    // 힌트 토글 함수
+    function toggleTooltip(step) {
+      playAudioTone('click');
+      let id = "";
+      if (step === 1) id = "act2-tooltip-fact";
+      else if (step === 2) id = "act2-tooltip-emotion";
+      else if (step === 3) id = "act2-tooltip-request";
+
+      const tooltip = document.getElementById(id);
+      if (tooltip.style.display === "none") {
+        tooltip.style.display = "block";
+      } else {
+        tooltip.style.display = "none";
+      }
+    }
+
+    // 번역 검사 및 전송 (말풍선 애니메이션 & 1.6초 딜레이)
+    function validateAndTranslate() {
+      const factText = document.getElementById("act2-input-fact").value.trim();
+      const emotionText = document.getElementById("act2-input-emotion").value.trim();
+      const requestText = document.getElementById("act2-input-request").value.trim();
+
+      // 글자수 유효성 검사 (각 최소 3자 이상)
+      if (factText.length < 3 || emotionText.length < 3 || requestText.length < 3) {
+        playAudioTone('fail');
+        triggerContainerShake();
+        alert("조금 더 너의 마음을 자세히 들려줄래?");
+        return;
+      }
+
+      // 문장 이어붙여 합치기
+      const fullTranslatedMessage = `${factText} ${emotionText} ${requestText}`;
+
+      // 1. 수락 사운드 바로 재생
+      playAudioTone('success');
+
+      // 2. 좌측 패널에 노란색 카카오톡 말풍선 형태로 슉 나타나는 애니메이션 동작
+      const sentContainer = document.getElementById("act2-chat-sent-container");
+      const sentBubble = document.getElementById("act2-chat-sent-bubble");
+      if (sentBubble) {
+        sentBubble.innerText = fullTranslatedMessage;
+      }
+      if (sentContainer) {
+        sentContainer.style.display = "flex";
+      }
+      if (sentBubble) {
+        sentBubble.classList.add("chat-pop-in");
+      }
+
+      // 결과 팝업 내부 텍스트 갱신
+      const mergedText = document.getElementById("act2-merged-bubble-text");
+      if (mergedText) {
+        mergedText.innerText = fullTranslatedMessage;
+      }
+
+      // 미션 클리어 상태 등록
+      clearedMissions[`act2_sit${activeSituationId}`] = true;
+
+      // 에피소드 및 버튼 텍스트 동적 수정
+      const nextBtn = document.getElementById("btn-act2-next");
+      if (nextBtn) {
+        if (activeSituationId === 1) {
+          nextBtn.innerText = "상황 2 시작하기 ➔";
+        } else {
+          nextBtn.innerText = "활동 완료 ➔";
+        }
+      }
+
+      // 3. 1.6초 딜레이를 거친 후에 자동으로 다음 단계로 넘어감 (팝업 제거)
+      setTimeout(() => {
+        exitAct2Situation();
+      }, 1600);
+    }
+
+    function exitAct2Situation() {
+      playAudioTone('click');
+      document.getElementById("act2-overlay-result").style.display = "none";
+      clearChatAnimationTimers();
+      
+      if (activeSituationId === 1) {
+        // 곧바로 상황 2(소통의 단절)의 활동 1로 진입
+        activeSituationId = 2;
+        activeActivityId = 1;
+        switchViewAct1();
+      } else {
+        // 상황 2 최종 완료: 아웃트로 화면으로 전환
+        switchView('view-outro');
+      }
+    }
+
+    // =========================================
+    // 최종 마무리 및 대시보드로 돌아가기
+    // =========================================
+    function finishCenterMission() {
+      playAudioTone('success');
+      clearChatAnimationTimers();
+      alert("사이버 감정조절 활동의 모든 단계를 성공적으로 이수했습니다! 대시보드로 돌아갑니다.");
+      
+      let inIframe = false;
+      try {
+        inIframe = (window.self !== window.top);
+      } catch (e) {
+        inIframe = true;
+      }
+
+      if (inIframe) {
+        try {
+          const factVal = document.getElementById('act2-input-fact') ? document.getElementById('act2-input-fact').value.trim() : "";
+          const emotionVal = document.getElementById('act2-input-emotion') ? document.getElementById('act2-input-emotion').value.trim() : "";
+          const requestVal = document.getElementById('act2-input-request') ? document.getElementById('act2-input-request').value.trim() : "";
+          window.parent.postMessage({ 
+            type: 'TASK_COMPLETE', 
+            category: '사이버 감정조절',
+            answers: {
+              "나 전달법 - 사실": factVal,
+              "나 전달법 - 감정": emotionVal,
+              "나 전달법 - 부탁": requestVal
+            }
+          }, '*');
+          return;
+        } catch (err) {
+          console.error("postMessage 전송 에러:", err);
+        }
+      }
+      location.reload();
+    }
+
+    // =========================================
+    // 임시 테스트용 순차적 스킵 기능
+    // =========================================
+    function skipToNextStep() {
+      playAudioTone('click');
+
+      const mainMenu = document.getElementById("view-main-menu");
+      const sitSelect = document.getElementById("view-situation-select");
+      const act1View = document.getElementById("view-act1");
+      const act2View = document.getElementById("view-act2");
+
+      if (mainMenu.classList.contains('active')) {
+        Object.keys(clearedMissions).forEach(k => {
+          clearedMissions[k] = true;
+        });
+        renderMainMenu();
+      } else if (sitSelect.classList.contains('active')) {
+        for (let sId = 1; sId <= 2; sId++) {
+          clearedMissions[`act1_sit${sId}`] = true;
+          clearedMissions[`act2_sit${sId}`] = true;
+        }
+        renderSituationSelect();
+      } else if (act1View.classList.contains('active')) {
+        const dragDrop = document.getElementById("drag-drop-area");
+        if (dragDrop.style.display !== "none") {
+          const data = SCENARIOS[activeSituationId];
+          selectEmotion(data.emotions[0]);
+        } else {
+          // 5초 누르기 스킵
+          act1HoldTime = 5000;
+          isAct1HoldActive = true;
+          completeAct1Breathing();
+        }
+      } else if (act2View.classList.contains('active')) {
+        const data = SCENARIOS[activeSituationId];
+        document.getElementById("act2-input-fact").value = data.hints.fact.replace("예시: ", "");
+        document.getElementById("act2-input-emotion").value = data.hints.emotion.replace("예시: ", "");
+        document.getElementById("act2-input-request").value = data.hints.request.replace("예시: ", "");
+        
+        validateAndTranslate();
+      }
+    }
+
+    function startTraining() {
+      playAudioTone('success');
+      clearChatAnimationTimers();
+      activeActivityId = 1;
+      activeSituationId = 1;
+      switchViewAct1();
+    }
+  </script>
+</body>
+</html>

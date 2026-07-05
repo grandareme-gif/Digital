@@ -1,0 +1,1952 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마음 온(ON) - 사이버 자기조절 활동</title>
+  
+  <!-- 둥근모꼴 폰트 (로컬 로드) -->
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['DungGeunMo', 'monospace'],
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-out forwards',
+            'fade-in-up': 'fadeInUp 0.4s ease-out forwards',
+            'pop-in': 'popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+            'sparkle': 'sparkle 1s ease-in-out infinite alternate',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' }
+            },
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(15px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' }
+            },
+            popIn: {
+              '0%': { opacity: '0', transform: 'scale(0.8)' },
+              '100%': { opacity: '1', transform: 'scale(1)' }
+            },
+            sparkle: {
+              '0%': { transform: 'scale(1)' },
+              '100%': { transform: 'scale(1.05)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    #btn-sc-next, #btn-to-step7, #btn-to-step8 {
+      display: none !important;
+    }
+    #standard-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 52px;
+      background-color: #1e293b;
+      border-bottom: 4px solid #000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 50;
+    }
+    #control-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 44px;
+      background-color: #1e293b;
+      border-top: 4px solid #000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 50;
+    }
+    /* 뷰포트 영역 공제 */
+    #view-story, #view-scenario, #view-step6, #view-step7 {
+      top: 52px !important;
+      height: calc(100% - 96px) !important;
+      padding: 12px 16px !important;
+    }
+    /* DungGeunMo 전역 폰트 강제 */
+    * {
+      font-family: 'DungGeunMo', monospace !important;
+      image-rendering: pixelated;
+    }
+    
+    /* 스크롤바 없애기 */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    
+    /* 레트로 그림자 및 보더 효과 */
+    .retro-border {
+      border: 4px solid #000000;
+    }
+    .retro-shadow {
+      box-shadow: 4px 4px 0px #000000;
+    }
+    .retro-shadow-active:active {
+      transform: translate(4px, 4px);
+      box-shadow: 0px 0px 0px #000000;
+    }
+
+    /* 마음온 픽셀 요정 스타일 추가 */
+    .pixel-fairy-container {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      animation: floatFairy 2.5s ease-in-out infinite;
+    }
+    .pixel-fairy-svg {
+      width: 100%;
+      height: 100%;
+    }
+    .fairy-wing-l {
+      animation: flapL 0.2s ease-in-out infinite alternate;
+      transform-origin: 32px 56px;
+    }
+    .fairy-wing-r {
+      animation: flapR 0.2s ease-in-out infinite alternate;
+      transform-origin: 64px 56px;
+    }
+    @keyframes floatFairy {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes flapL {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(12deg); }
+    }
+    @keyframes flapR {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(-12deg); }
+    }
+
+    /* 드래그 쉐이크 애니메이션 */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+    .shake-animation {
+      animation: shake 0.2s ease-in-out 2;
+    }
+
+    /* =========================================
+       인트로(도입) 화면 공통 표준 스타일
+       ========================================= */
+    .std-intro-container {
+      position: absolute;
+      inset: 0 !important;
+      height: 100% !important;
+      top: 0 !important;
+      padding: 0 !important;
+      display: flex;
+      flex-direction: column;
+      background-color: #1a1c23;
+      color: #ffffff;
+      overflow: hidden;
+      font-family: 'DungGeunMo', monospace;
+      z-index: 100; /* 인트로가 항상 최상위 노출 */
+    }
+
+    /* hidden 클래스가 들어갔을 때의 강제 감춤 규칙 */
+    .std-intro-container.hidden {
+      display: none !important;
+    }
+
+    .std-intro-header-simple {
+      width: 100%;
+      background-color: #2c3e50;
+      border-bottom: 4px solid #000000;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      z-index: 10;
+      box-sizing: border-box;
+    }
+
+    .std-intro-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin: 0;
+      color: #ffffff;
+      text-shadow: 2px 2px 0 #000000;
+    }
+
+    .std-intro-body {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      gap: 32px;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+
+    /* 모바일/태블릿 반응형 대응 */
+    @media (max-width: 768px) {
+      .std-intro-body {
+        flex-direction: column;
+        padding: 16px;
+        gap: 16px;
+        justify-content: flex-start;
+      }
+    }
+
+    .std-intro-char-wrapper-small {
+      width: 195px;
+      height: 195px;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .std-intro-char-wrapper-small {
+        width: 135px;
+        height: 135px;
+      }
+    }
+
+    .std-intro-char-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      animation: miniFloat 2.5s ease-in-out infinite;
+    }
+
+    .std-intro-unified-box {
+      background-color: #1e293b;
+      border: 4px solid #000000;
+      padding: 20px;
+      width: 100%;
+      max-width: 570px;
+      min-height: 220px;
+      box-shadow: 4px 4px 0 #000000;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .std-intro-dialog-inner {
+      color: #f1f5f9;
+      font-size: 0.975rem;
+      line-height: 1.6;
+      text-align: left;
+      word-break: keep-all;
+    }
+
+    .std-intro-divider {
+      height: 2px;
+      background-color: #475569;
+      width: 100%;
+    }
+
+    .std-intro-activities-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .std-activity-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .std-activity-badge {
+      background-color: #eab308;
+      color: #000000;
+      font-size: 0.775rem;
+      padding: 2px 6px;
+      font-weight: 800;
+      flex-shrink: 0;
+      border: 1px solid #000;
+    }
+
+    .std-activity-text {
+      color: #ffffff;
+      font-size: 0.875rem;
+      font-weight: bold;
+    }
+
+    .std-intro-footer {
+      width: 100%;
+      background-color: #2c3e50;
+      border-top: 4px solid #000000;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+      z-index: 10;
+      box-sizing: border-box;
+    }
+
+    .std-footer-btn-left {
+      padding: 10px 24px;
+      background-color: #475569;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 0.8rem;
+      border: 2px solid #000000;
+      box-shadow: 3px 3px 0 #000000;
+      cursor: pointer;
+      transition: all 0.1s;
+      font-family: 'DungGeunMo', monospace;
+    }
+
+    .std-footer-btn-left:hover {
+      background-color: #64748b;
+    }
+
+    .std-footer-btn-left:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 #000000;
+    }
+
+    .std-footer-btn-right {
+      padding: 10px 32px;
+      background-color: #fde047;
+      color: #000000;
+      font-weight: 800;
+      font-size: 0.85rem;
+      border: 2px solid #000000;
+      box-shadow: 3px 3px 0 #000000;
+      cursor: pointer;
+      transition: all 0.1s;
+      font-family: 'DungGeunMo', monospace;
+    }
+
+    .std-footer-btn-right:hover {
+      background-color: #facc15;
+    }
+
+    .std-footer-btn-right:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 #000000;
+    }
+
+    /* === 마음온 AI 공통 표준 가이드 배너 스타일 - 48px 레트로 핏 === */
+    .std-guide-banner {
+      background-color: #312e81 !important;
+      border: 3px solid #000000 !important;
+      box-shadow: 2px 2px 0px #000000 !important;
+      border-radius: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      padding: 6px 12px !important;
+      width: 100% !important;
+      height: 48px !important;
+      flex-shrink: 0 !important;
+      margin-top: 2px !important;
+      position: relative !important;
+      margin-bottom: 0px !important;
+    }
+    
+    @keyframes bounceFairy {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+  </style>
+</head>
+<body class="bg-[#1A252F] text-white flex justify-center items-center min-h-screen overflow-hidden select-none" style="padding: 0;">
+
+  <!-- 에러 디버깅 오버레이 -->
+  <div id="error-overlay" class="hidden fixed inset-0 bg-red-900/95 text-white z-[99999] p-8 overflow-y-auto font-mono text-sm">
+    <h1 class="text-2xl font-bold mb-4">🚨 마음 온(ON) 자바스크립트 오류 감지 🚨</h1>
+    <pre id="error-message" class="bg-black/50 p-4 rounded-none border border-red-500 whitespace-pre-wrap"></pre>
+    <button onclick="document.getElementById('error-overlay').classList.add('hidden')" class="mt-4 px-4 py-2 bg-white text-red-950 font-bold rounded-none shadow-md active:scale-95 transition-all">
+      오버레이 닫기
+    </button>
+  </div>
+
+  <div id="app-container" class="w-full h-screen relative bg-[#1a1c23] overflow-hidden flex flex-col rounded-none text-white">
+    
+    <!-- ==========================================
+         인트로: 마음온 브리핑 화면 (app-container 바로 아래 배치하여 상단바 가림)
+         ========================================== -->
+    <div id="view-intro" class="std-intro-container">
+      <!-- 상단 헤더 영역 (심플 헤더) -->
+      <div class="std-intro-header-simple">
+        <h1 class="std-intro-title">사이버 자기조절</h1>
+      </div>
+
+      <!-- 메인 본문 영역 -->
+      <div class="std-intro-body">
+        <!-- 좌측 캐릭터 영역 (더 작아짐) -->
+        <div class="std-intro-char-wrapper-small">
+          <img src="images/maeumon_intro.png" alt="마음온" class="std-intro-char-img">
+        </div>
+
+        <!-- 우측 단일 통합 상자 (대사 + 활동 요약) -->
+        <div class="std-intro-unified-box">
+          <!-- 대사 -->
+          <div class="std-intro-dialog-inner">
+            "딱 5분만 더 하려다 시간이 훅 가거나 홧김에 나쁜 말을 쓰고 싶었던 적 있지? 디지털 세상의 수많은 유혹 앞에서 스스로 멈추는 건 생각보다 정말 어려워."
+          </div>
+          <!-- 구분선 -->
+          <div class="std-intro-divider"></div>
+          <!-- 활동 요약 목록 -->
+          <div class="std-intro-activities-inner">
+            <div class="std-activity-row">
+              <span class="std-activity-badge">활동 1</span>
+              <span class="std-activity-text">친구의 이야기를 듣고 나의 자기조절을 방해하는 진짜 원인 찾기</span>
+            </div>
+            <div class="std-activity-row">
+              <span class="std-activity-badge">활동 2</span>
+              <span class="std-activity-text">원인에 맞는 극복 전략을 선택하고 가상 화면에서 직접 실천해보기</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 하단 버튼 영역 (좌측: 홈, 우측: 활동 시작) -->
+      <div class="std-intro-footer">
+        <button onclick="exitToMap()" class="std-footer-btn-left">🏠 홈으로</button>
+        <button onclick="goToStep(2)" class="std-footer-btn-right">활동 시작하기 ▶</button>
+      </div>
+
+      <script>
+        function exitToMap() {
+          try {
+            if (window.parent && window.parent !== window) {
+              window.parent.postMessage({ type: 'RETURN_TO_MAP' }, '*');
+            } else {
+              window.location.href = 'index.html';
+            }
+          } catch (e) {
+            window.location.href = 'index.html';
+          }
+        }
+      </script>
+    </div>
+
+    <!-- 공통 표준 상단 헤더바 -->
+    <div id="standard-header" class="w-full bg-[#1e293b] border-b-4 border-black px-6 py-2.5 flex justify-between items-center z-50 shrink-0 text-white select-none hidden" style="height: 52px; font-family: 'DungGeunMo', monospace;">
+      <!-- 좌측: 고유 역량 이미지 아이콘 & 역량명 -->
+      <div class="flex items-center gap-2">
+        <div class="relative w-10 h-10 flex items-center justify-center overflow-visible" style="margin-left: -5px; margin-right: 5px;">
+          <img src="images/icon_selfcontrol.png" alt="역량 아이콘" class="absolute w-24 h-24 object-contain max-w-none" id="header-logo-icon" style="image-rendering: pixelated; transform: scale(2.4); z-index: 20; pointer-events: none; top: -28px; left: -26px;">
+        </div>
+        <span class="font-bold text-[1.15rem] tracking-tight" id="header-competency-name" style="margin-left: 5px;">사이버 자기조절</span>
+      </div>
+      
+      <!-- 가운데: 활동명 및 진행 상태 (도트) -->
+      <div class="flex items-center gap-4">
+        <span class="text-xs font-bold text-slate-300" id="stage-title-text">사이버 자기조절</span>
+        <div class="flex items-center gap-1.5" id="header-progress-dots">
+          <span class="w-3 h-3 rounded-full border-2 border-black bg-slate-500 stage-dot flex items-center justify-center font-bold text-[8px]" id="dot-1">1</span>
+          <span class="w-3 h-3 rounded-full border-2 border-black bg-slate-500 stage-dot flex items-center justify-center font-bold text-[8px]" id="dot-2">2</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 뷰포트 영역 -->
+    <div class="flex-grow relative w-full overflow-hidden">
+
+      <!-- ==========================================
+           활동1 - 스토리 컷만화 화면
+           ========================================== -->
+      <div id="view-story" class="absolute inset-0 hidden flex-col p-4 bg-[#1a1c23] text-white">
+        <!-- 이야기 진행 헤더 -->
+        <div class="flex justify-between items-center bg-[#2c3e50] border-4 border-black p-2.5 mb-3 shrink-0 select-none hidden">
+          <span id="story-progress" class="font-bold text-xs text-slate-200">시나리오 1 / 2 - 이야기 읽기</span>
+          <span class="font-black text-xs text-[#ff79c6]">활동 1: 원인 찾기 🔍</span>
+        </div>
+        
+        <!-- 마음온 AI 공통 가이드 배너 (이야기 컷) -->
+        <div class="std-guide-banner" style="margin-bottom: 8px !important;">
+          <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
+            <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+          </div>
+          <div class="flex-grow flex flex-col justify-center" style="margin-left: 6px;">
+            <span class="text-[10.5px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
+            <span class="text-[12px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;" id="story-guide-bubble">
+              컷만화를 넘겨가며 이야기를 차근차근 집중해서 읽어봅시다! 📖
+            </span>
+          </div>
+        </div>
+        
+        <div class="flex-grow flex flex-col justify-start items-center overflow-hidden max-w-[550px] mx-auto w-full h-full pb-2 gap-1.5">
+
+          <!-- 컷 배치 컨테이너 (카드 크기 확대 h-[320px] max-w-[410px], 사진 h-[210px], 상단 밀착 mt-1 mb-2) -->
+          <div id="story-card" class="w-full max-w-[410px] h-[320px] bg-white border-4 border-black rounded-none p-3 shadow-[4px_4px_0_#000] text-black text-center flex flex-col justify-between items-center relative animate-fade-in-up mt-1 mb-2">
+            <!-- 이미지 영역 (세로폭 210px로 추가 확대) -->
+            <div class="w-full h-[210px] border-2 border-dashed border-slate-700 bg-black flex items-center justify-center overflow-hidden shrink-0 select-none relative">
+              <img id="story-card-image" src="" alt="그림 공간" class="w-full h-full object-contain hidden">
+              <div id="story-card-image-fallback" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center p-1 leading-normal">그림 로드 중...</div>
+            </div>
+            
+            <!-- 설명 자막 (글씨 크기 text-sm font-extrabold로 확대) -->
+            <p id="story-card-text" class="text-sm font-extrabold leading-relaxed whitespace-pre-wrap max-w-[96%] w-full text-center mt-1 flex-grow flex items-center justify-center text-black">이야기 내용 로딩 중...</p>
+          </div>
+
+          <!-- 스토리 제어 버튼 바 (카드 밑에 밀착 배치) -->
+          <div class="flex items-center gap-4 shrink-0 mb-4 select-none">
+            <button id="btn-story-prev" onclick="prevStoryCut()" class="px-5 py-2 bg-slate-700 hover:bg-slate-650 text-white font-bold border-2 border-black rounded-none shadow-[2px_2px_0px_#000] active:translate-y-0.5 active:shadow-none text-xs transition-all">◀ 이전 컷</button>
+            <span id="story-cut-indicator" class="text-xs font-bold text-slate-300">1 / 3</span>
+            <button id="btn-story-next" onclick="nextStoryCut()" class="px-6 py-2 bg-yellow-300 hover:bg-yellow-400 text-black font-bold border-4 border-black rounded-none retro-shadow retro-shadow-active text-xs transition-all">다음 컷 ▶</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           Step 3: 활동1 - 시나리오 공통 레이아웃 (방해물 체크)
+           ========================================== -->
+      <div id="view-scenario" class="absolute inset-0 hidden flex-col p-4 bg-[#1a1c23] text-white">
+        <!-- 마음온 AI 공통 가이드 배너 (1단계) -->
+        <div class="std-guide-banner" style="margin-bottom: 8px !important;">
+          <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
+            <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+          </div>
+          <div class="flex-grow flex flex-col justify-center" style="margin-left: 6px;">
+            <span class="text-[10.5px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
+            <span class="text-[12px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;" id="act1-guide-bubble">
+              행동을 분석하여 알맞은 진짜 원인을 딱 3개 골라보세요!
+            </span>
+          </div>
+        </div>
+        <!-- 진행 바 및 발견 개수 카운터 -->
+        <div class="flex justify-between items-center bg-[#2c3e50] border-4 border-black p-2.5 mb-3 shrink-0 select-none hidden">
+          <span id="sc-progress" class="font-bold text-xs text-slate-200">시나리오 1 / 2</span>
+          <div class="relative flex items-center gap-1 text-xs font-bold text-[#ff79c6]">
+            <span>고른 진짜 원인:</span>
+            <span id="global-counter-val" class="font-extrabold text-base transition-transform inline-block">0</span><span> / 3 개</span>
+          </div>
+        </div>
+
+        <!-- 메인 컨텐츠 영역 (가로폭 조정: 좌측 32%, 우측 66%) -->
+        <div class="grid grid-cols-[32%_66%] gap-4 flex-grow overflow-hidden" style="height: calc(100% - 56px) !important;">
+          <!-- 좌측 영역: 스토리 요약 카드 -->
+          <div class="bg-[#2c3e50] border-4 border-black rounded-none p-4 flex flex-col justify-between items-center shadow-[4px_4px_0px_#000] text-center select-none text-white h-fit max-h-[320px] justify-start gap-2.5">
+            <div class="w-full flex flex-col items-center">
+              <!-- 중복 타이틀 제거 및 요약 내용 카드 밀착 -->
+              
+              <!-- 시나리오 요약 박스 -->
+              <div class="bg-[#1e293b] border-2 border-black rounded-none p-3 w-full mb-3 text-left">
+                <span class="block text-xs font-black text-[#ff79c6] mb-1">시나리오 내용 요약</span>
+                <p id="sc-summary-text" class="text-xs font-bold text-slate-300 leading-relaxed">
+                  요약 내용이 들어갑니다.
+                </p>
+              </div>
+            </div>
+
+            <!-- 결과 박스 (실패) -->
+            <div id="sc-result-box" class="bg-[#7f1d1d] border-2 border-red-800 p-3 rounded-none text-red-200 font-bold text-xs leading-relaxed w-full">
+              <span class="block text-xs mb-1">결과</span>
+              <span id="sc-result-text">결과 요약</span>
+            </div>
+          </div>
+
+          <!-- 우측 영역: 미션 및 체크리스트 -->
+          <div class="flex flex-col gap-2 overflow-hidden justify-between text-white">
+            <!-- 미션 가이드 -->
+            <div class="bg-[#451a03] border-4 border-black p-2.5 rounded-none shrink-0 text-amber-200">
+              <div id="sc-mission-title" class="text-xs font-black">수아가 왜 멈추지 못했을까?</div>
+              <div class="text-xs font-bold text-amber-300/80">행동을 분석하여 알맞은 진짜 원인을 딱 3개 골라보세요!</div>
+            </div>
+
+            <!-- 체크박스 리스트 (최대높이 300px로 상향) -->
+            <div id="sc-checklist" class="flex-grow overflow-y-auto pr-1 flex flex-col gap-2 no-scrollbar max-h-[300px]">
+              <!-- JS 동적 생성 -->
+            </div>
+
+            <!-- 하단 다음 버튼 -->
+            <div class="flex justify-end items-center border-t-2 border-slate-700 pt-2 shrink-0">
+              <button id="btn-sc-next" onclick="handleNextScenario()" disabled class="px-4 py-1.5 bg-[#555] text-slate-400 font-bold border-2 border-black rounded-none cursor-not-allowed transition-all text-xs">
+                맞춤 전략 설계하기 ▶
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           Step 4: 활동2 - 방해물별 전략 매칭
+           ========================================== -->
+      <div id="view-step6" class="absolute inset-0 hidden flex-col p-4 pb-2.5 bg-[#1a1c23] justify-between overflow-hidden text-white relative">
+        <!-- 마음온 AI 공통 가이드 배너 (2단계 매칭) -->
+        <div class="std-guide-banner" style="margin-bottom: 2px !important;">
+          <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
+            <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+          </div>
+          <div class="flex-grow flex flex-col justify-center" style="margin-left: 6px;">
+            <span class="text-[10.5px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
+            <span class="text-[12px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;" id="step6-guide-bubble">
+              내가 찾은 진짜 원인을 완벽하게 극복해줄 알맞은 대응 전략을 서로 짝지어 매칭해 봐! 💡
+            </span>
+          </div>
+        </div>
+
+        <!-- 테이블 열 제목(헤더) 바 -->
+        <div class="flex items-center gap-3 p-2 bg-[#1e293b] border-2 border-black shrink-0 text-slate-300 text-xs font-bold select-none mb-1 mt-2">
+          <div class="w-[35%] text-center">진짜 원인</div>
+          <div class="w-[65%] text-center">극복 전략 후보</div>
+        </div>
+
+        <!-- 매칭 리스트 영역 (세로 배열, 최대 높이 310px 상향) -->
+        <div id="step6-match-rows" class="flex-grow overflow-y-auto pr-1 flex flex-col gap-2.5 my-1 max-h-[310px] no-scrollbar">
+          <!-- JS 동적 생성 -->
+        </div>
+
+        <!-- 하단 확인 버튼 (여백 간소화) -->
+        <div class="border-t-2 border-black pt-2 mt-1.5 flex justify-between items-center shrink-0">
+          <span class="text-[10px] text-slate-400 font-bold">모든 원인에 하나의 극복 전략을 선택해 주세요.</span>
+          <button id="btn-to-step7" onclick="goToStep(5)" disabled class="px-6 py-2.5 bg-[#555] text-slate-400 font-bold border-4 border-black rounded-none cursor-not-allowed transition-all text-xs">
+            시뮬레이션 보기 🎬
+          </button>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           Step 5: 미니 시뮬레이션
+           ========================================== -->
+      <div id="view-step7" class="absolute inset-0 hidden flex-col p-5 bg-[#1a1c23] text-white justify-between overflow-hidden animate-fade-in">
+        <!-- 마음온 AI 공통 가이드 배너 (2단계) -->
+        <div class="std-guide-banner" style="margin-bottom: 6px !important;">
+          <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
+            <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+          </div>
+          <div class="flex-grow flex flex-col justify-center" style="margin-left: 6px;">
+            <span class="text-[10.5px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
+            <span class="text-[12px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;" id="act2-guide-bubble">
+              우측의 극복 전략 카드들을 이야기 흐름에 알맞게 연결 지어보세요!
+            </span>
+          </div>
+        </div>
+        <!-- 중복 타이틀 제거 -->
+
+        <!-- 시뮬레이션 메인 레이아웃 (카드 뉴스와 드래그 덱 가로 배치, z-index 추가) -->
+        <div class="my-2 flex-grow grid grid-cols-[58%_40%] gap-3 overflow-hidden" style="height: calc(100% - 56px) !important;">
+          <!-- 좌측: 카드 & 컨트롤 (relative z-0 지정) -->
+          <div class="flex flex-col justify-between items-center h-full select-none relative z-0">
+            <!-- 시뮬레이션 카드 (세로 최소높이 축소하여 콤팩트하게 조율) -->
+            <div id="sim-card" class="w-full bg-[#2c3e50] border-4 border-black rounded-none p-4 shadow-[4px_4px_0_#000] text-white flex flex-col justify-center items-center relative animate-fade-in-up flex-grow" style="min-h: 140px !important;">
+              <!-- JS 동적 주입 -->
+            </div>
+
+            <!-- 슬라이드 조작 패널 (카드 상자와의 간격 이격을 위해 mt-2.5 부여) -->
+            <div class="flex items-center gap-4 shrink-0 mb-1 mt-2.5" style="margin-top: 10px !important;">
+              <button id="btn-sim-prev" onclick="prevSlide()" class="px-3 py-1.5 bg-slate-800 border-2 border-slate-650 rounded-none text-xs hover:bg-slate-750 text-slate-300">◀ 이전</button>
+              <div id="sim-dots" class="flex gap-1.5">
+                <!-- JS 동적 생성 -->
+              </div>
+              <button id="btn-sim-next" onclick="nextSlide()" class="px-3 py-1.5 bg-slate-800 border-2 border-slate-650 rounded-none text-xs hover:bg-slate-750 text-slate-300">다음 ▶</button>
+            </div>
+          </div>
+
+          <!-- 우측: 드래그 덱 패널 (relative z-10 지정) -->
+          <div class="bg-[#2c3e50] border-4 border-black p-3 rounded-none flex flex-col gap-2 h-full overflow-hidden select-none relative z-10">
+            <div class="text-[12px] font-black text-yellow-400 border-b border-slate-700 pb-1.5 shrink-0">극복 전략 카드</div>
+            <div id="sim-drag-dock" class="flex-grow flex flex-col gap-2 overflow-y-auto no-scrollbar py-1">
+              <!-- JS 동적 생성 -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 마무리 질문 -->
+        <div id="sim-reflection" class="hidden bg-[#451a03] text-amber-200 border-4 border-black p-2.5 rounded-none shrink-0 flex flex-col gap-2 animate-fade-in-up">
+          <span class="text-xs font-black text-amber-300 text-center">이 전략들, 너한테도 효과가 있을 것 같아?</span>
+          <div class="flex gap-3">
+            <button onclick="selectReflection('yes', this)" class="btn-reflection flex-1 py-2 bg-white text-slate-700 border-2 border-black font-bold text-xs rounded-none active:translate-y-0.5 shadow-[2px_2px_0px_#000] hover:bg-slate-50 transition-all">응, 써볼게! ✋</button>
+            <button onclick="selectReflection('no', this)" class="btn-reflection flex-1 py-2 bg-white text-slate-700 border-2 border-black font-bold text-xs rounded-none active:translate-y-0.5 shadow-[2px_2px_0px_#000] hover:bg-slate-50 transition-all">아직 어려울 것 같아</button>
+          </div>
+        </div>
+
+        <!-- 하단 확인 완료 버튼 -->
+        <div class="border-t border-slate-800 pt-3 flex justify-between items-center shrink-0">
+          <button onclick="skipCurrentStep()" class="text-[10px] font-bold text-slate-400 hover:text-slate-200 underline">현재 단계 스킵 ⏭</button>
+          <button id="btn-to-step8" onclick="handleFinishScenarioSim()" disabled class="px-6 py-2.5 bg-[#555] text-slate-400 font-bold border-4 border-black rounded-none cursor-not-allowed transition-all">
+            다음 이야기 ▶
+          </button>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           Step 6: 완료 화면 (최종 리포트)
+           ========================================== -->
+      <div id="view-step8" class="std-intro-container view" style="display: none;">
+        <!-- 상단 헤더 영역 (심플 헤더) -->
+        <div class="std-intro-header-simple">
+          <h1 class="std-intro-title">사이버 자기조절 활동 완료 🌟</h1>
+        </div>
+
+        <!-- 메인 본문 영역 (좌측 캐릭터 복원, 우측 성찰대사 통합 개편) -->
+        <div class="std-intro-body" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 30px; padding: 20px 40px !important; box-sizing: border-box;">
+          
+          <!-- 좌측 캐릭터 영역 (마음온 캐릭터 원래대로 복원) -->
+          <div class="std-intro-char-wrapper-small">
+            <img src="images/maeumon_outro.png" alt="마음온" class="std-intro-char-img">
+          </div>
+
+          <!-- 우측 단일 통합 상자 (밝은 배경색 적용, 배지+배지제목+설명 텍스트 수직 구성) -->
+          <div class="std-intro-unified-box" style="flex-grow: 1; height: auto; min-height: 240px; display: flex; flex-direction: column; align-items: stretch; padding: 15px 25px 20px 25px !important; box-shadow: 6px 6px 0 #000000; border: 4px solid #000000; background-color: #f8fafc; color: #000000; margin: 0; max-width: 550px; gap: 10px;">
+            
+            <!-- 상단: 배지 아이콘 + 배지 타이틀 (경계선 구분) -->
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 8px; flex-shrink: 0;">
+              <!-- 크기 5배 상향된 뱃지 이미지 -->
+              <div style="width: 50px; height: 50px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 30px 0 10px 0; flex-shrink: 0;">
+                <img src="images/icon_selfcontrol.png" alt="자기조절 뱃지" style="width: 160px; height: 160px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
+              </div>
+              <span style="font-size: 1.25rem; color: #1e3a8a; font-weight: bold; margin-top: 10px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [사이버 자기조절] 배지 획득!</span>
+            </div>
+
+            <!-- 하단: 코멘트/설명 텍스트 (줄바꿈/들여쓰기 제거, 검정 폰트색상 적용) -->
+            <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.05rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">디지털 기기나 게임을 스스로 제어하기 어려웠던 숨겨진 원인들을 파악하고, 너에게 꼭 맞는 멋진 극복 전략들을 설계해 냈구나! 앞으로도 건강하게 조절해 나갈 너의 멋진 의지를 응원할게!</div>
+          </div>
+
+        </div>
+
+        <!-- 하단 버튼 영역 (오른쪽 정렬 및 가로 넓이 확장) -->
+        <div class="std-intro-footer" style="justify-content: flex-end !important; padding: 16px 40px !important;">
+          <button onclick="finishStage()" class="std-footer-btn-right" style="width: 380px; box-shadow: 4px 4px 0 #000; font-size: 1.1rem; height: 48px;">활동완료 & 대시보드로 돌아가기 ➔</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 공통 표준 하단 푸터바 -->
+    <div id="control-bar" class="w-full bg-[#1e293b] border-t-4 border-black px-6 py-1.5 flex justify-between items-center z-50 shrink-0 select-none hidden" style="height: 44px; font-family: 'DungGeunMo', monospace;">
+      <!-- 좌측: 이전 단계 -->
+      <button id="btn-prev" class="px-4 py-1 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="prevStep()">
+        ◀ 이전 단계
+      </button>
+      
+      <!-- 중앙: 홈으로 (맵으로) -->
+      <button id="footer-home-btn" class="px-5 py-1 bg-amber-400 hover:bg-amber-500 text-black text-xs font-black border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="exitToMap()">
+        🏠 홈으로 (맵)
+      </button>
+      
+      <!-- 우측: 다음 단계 -->
+      <button id="btn-next" class="px-4 py-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="nextStep()">
+        다음 단계 ▶
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // 에러 오버레이 핸들러
+    // ==========================================
+    window.onerror = function(message, source, lineno, colno, error) {
+      // ResizeObserver 관련 무해한 브라우저 경고/오류는 오류 오버레이 표시에서 제외합니다.
+      if (typeof message === 'string' && (message.includes('ResizeObserver') || message.includes('resize observer'))) {
+        return true; // 브라우저 기본 및 커스텀 오류 처리를 스킵합니다.
+      }
+      const overlay = document.getElementById('error-overlay');
+      const msgEl = document.getElementById('error-message');
+      if (overlay && msgEl) {
+        overlay.classList.remove('hidden');
+        msgEl.innerText = 'Error: ' + message + '\nSource: ' + source + '\nLine: ' + lineno + ':' + colno + '\n\nStack:\n' + (error ? error.stack : 'N/A');
+      }
+      return false;
+    };
+
+    // ==========================================
+    // 오디오 사운드 합성기 (Web Audio API)
+    // ==========================================
+    const synth = {
+      playSelect() {
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.08);
+          
+          gain.gain.setValueAtTime(0.08, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+          
+          osc.start();
+          osc.stop(ctx.currentTime + 0.1);
+        } catch(e) {}
+      },
+      playCheck() {
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(550, ctx.currentTime);
+          osc.frequency.setValueAtTime(750, ctx.currentTime + 0.04);
+          
+          gain.gain.setValueAtTime(0.12, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+          
+          osc.start();
+          osc.stop(ctx.currentTime + 0.12);
+        } catch(e) {}
+      },
+      playSuccess() {
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const now = ctx.currentTime;
+          const notes = [523.25, 659.25, 783.99, 1046.50];
+          notes.forEach((f, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(f, now + idx * 0.06);
+            gain.gain.setValueAtTime(0.08, now + idx * 0.06);
+            gain.gain.exponentialRampToValueAtTime(0.002, now + idx * 0.06 + 0.2);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + idx * 0.06);
+            osc.stop(now + idx * 0.06 + 0.2);
+          });
+        } catch(e) {}
+      },
+      playBuzzer() {
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(130, ctx.currentTime);
+          osc.frequency.linearRampToValueAtTime(90, ctx.currentTime + 0.2);
+          
+          gain.gain.setValueAtTime(0.12, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+          
+          osc.start();
+          osc.stop(ctx.currentTime + 0.2);
+        } catch(e) {}
+      }
+    };
+
+    // ==========================================
+    // 상태 및 데이터 구조
+    // ==========================================
+    const state = {
+      currentStep: 0,
+      currentScenarioIdx: 0,
+      currentCutIdx: 0,
+      checkedObstacles: {},
+      selectedStrategies: {},
+      matchedObstacles: [],
+      solvedObstacles: {}
+    };
+
+    // 활동1 2인 시나리오 구성 (지호 제거, 진짜 원인 5개로 정합 및 명칭 변경)
+    const scenario1 = {
+      id: "shorts",
+      character: "수아",
+      characterEmoji: "👧",
+      title: "수아의 이야기",
+      summary: "숙제하기 전에 잠깐 유튜브 쇼츠를 켰으나, 재미있는 영상의 자동 재생 늪에 빠져 1시간 30분 동안 쉬지 않고 시청하게 됨.",
+      cuts: [
+        { number: 1, image: "images/shorts_sua_cut1.jpg", text: "숙제가 있는데 '잠깐만 보고 해야지' 하고 쇼츠를 켰어." },
+        { number: 2, image: "images/shorts_sua_cut2.jpg", text: "재미있는 영상이 자동으로 계속 나왔어. '이것만 보고 진짜 끊어야지...'" },
+        { number: 3, image: "images/shorts_sua_cut3.jpg", text: "어느새 1시간 30분이 지났어. 숙제장은 아직 펼치지도 못했어." }
+      ],
+      result: "숙제를 시작도 못 하고 밤이 깊어버렸어.",
+      obstacles: [
+        { id: "s1_1", text: "다음 영상이 자동으로 켜져서 나도 모르게 보게 돼서", category: "s_external" },
+        { id: "s1_2", text: "방금 영상이 재밌어서 비슷한 게 더 있을까 봐 호기심에", category: "s_desire" },
+        { id: "s1_3", text: "귀찮은 숙제를 미루고 조금만 더 놀고 싶어서", category: "s_avoidance" },
+        { id: "s1_4", text: "시간이 얼마나 지나갔는지 알 수 없어서", category: "s_time" },
+        { id: "s1_5", text: "조금만 더 보면 진짜 그만둘 수 있을 것 같아서", category: "s_misjudge_shorts" }
+      ]
+    };
+
+    const scenario2 = {
+      id: "game",
+      character: "도윤",
+      characterEmoji: "👦",
+      title: "도윤의 이야기",
+      summary: "도윤이는 친구들과 팀전 모바일 게임을 하던 중, 마지막 친구의 실수로 패배하자 욱하는 마음에 채팅창에 친구를 비난하는 나쁜 말을 입력하여 계정이 정지됨.",
+      cuts: [
+        { number: 1, image: "images/game_doyun_cut1.jpg", text: "친구들과 한창 긴장감 넘치게 팀전 게임을 진행하고 있었어." },
+        { number: 2, image: "images/game_doyun_cut2.jpg", text: "거의 다 이긴 판이었는데, 마지막 순간에 친구의 실수로 아쉽게 패배했어." },
+        { number: 3, image: "images/game_doyun_cut3.jpg", text: "순간 욱해서 나도 모르게 친구를 향해 거친 말을 채팅창에 마구 적어 보냈어." }
+      ],
+      result: "계정이 비매너로 정지되었고 친구와도 사이가 서먹해졌어.",
+      obstacles: [
+        { id: "s2_1", text: "무조건 이길 거라 기대했던 경기를 아쉽게 져서 억울해서", category: "d_expectation" },
+        { id: "s2_2", text: "순간적으로 감정을 조절하지 못하고 욱하는 화가 치밀어서", category: "d_desire" },
+        { id: "s2_3", text: "내 실수가 아니라 친구의 실수 탓으로 넘겨 비난하고 싶어서", category: "d_social" },
+        { id: "s2_4", text: "채팅방에 화풀이를 해야만 내 기분이 풀릴 것 같은 느낌에", category: "d_emotion" },
+        { id: "s2_5", text: "화가 나면 깊이 생각하지 않고 채팅창에 거친 말을 적는 습관에", category: "d_habit" }
+      ]
+    };
+
+    const scenarios = [scenario1, scenario2];
+
+    // 전략 설계 맵 (이모티콘 완벽 제거 및 수아 s1_5 극복 전략 구체화)
+    const strategyMap = {
+      // 수아 해결 전략
+      s_external: [
+        { id: "ex1", text: "자동 재생 기능을 꺼둔다" },
+        { id: "ex2", text: "볼 영상의 개수를 미리 정하고 본다" },
+        { id: "ex3", text: "앱 사용 시간 제한을 설정해둔다" }
+      ],
+      s_desire: [
+        { id: "d1", text: "더 자극적인 숏폼을 찾으려 할 때 5초간 멈춘다" },
+        { id: "d2", text: "다음에 이어서 볼 수 있다고 스스로 타이른다" },
+        { id: "d3", text: "오늘 계획한 분량만 시청하기로 약속한다" }
+      ],
+      s_avoidance: [
+        { id: "a1", text: "숙제를 먼저 10분만 시작해본다" },
+        { id: "a2", text: "할 일을 끝낸 후 볼 수 있도록 폰을 치운다" },
+        { id: "a3", text: "숙제를 다 끝내면 줄 스스로의 보상을 준비한다" }
+      ],
+      s_time: [
+        { id: "t1", text: "시작하기 전에 30분 타이머를 맞춰둔다" },
+        { id: "t2", text: "시간이 잘 보이는 곳에 디지털 시계를 둔다" },
+        { id: "t3", text: "부모님께 30분 뒤에 말해달라고 부탁한다" }
+      ],
+      s_misjudge_shorts: [
+        { id: "mj1", text: "뇌의 착각을 인지하고 즉시 스마트폰 화면을 끈다" },
+        { id: "mj2", text: '"이번 쇼츠만 보고 끄기!" 규칙을 입 밖으로 소리 내어 외친다' },
+        { id: "mj3", text: "폰을 뒤집어 손에 안 닿는 다른 방으로 바로 가져다 놓는다" }
+      ],
+
+      // 도윤 해결 전략
+      d_expectation: [
+        { id: "ep1", text: "패배하더라도 내일 다시 이길 수 있다고 생각한다" },
+        { id: "ep2", text: "게임은 승패가 있는 단순한 놀이일 뿐임을 기억한다" },
+        { id: "ep3", text: "승리 집착에서 벗어나 오늘 플레이 자체를 즐긴다" }
+      ],
+      d_desire: [
+        { id: "de1", text: "키보드에서 손을 즉시 떼고 심호흡을 크게 3회 한다" },
+        { id: "de2", text: "눈을 감고 속으로 1부터 5까지 천천히 세어본다" },
+        { id: "de3", text: "분노의 감정이 가라앉을 때까지 마우스에서 손을 뗀다" }
+      ],
+      d_social: [
+        { id: "so1", text: "친구에게 직접적인 화풀이 대신 감정을 누르고 마우스를 꾹 잡는다" },
+        { id: "so2", text: "친구도 일부러 실수한 것이 아님을 이해해 본다" },
+        { id: "so3", text: "서로를 비난하기보다 괜찮다고 격려 한마디를 나눈다" }
+      ],
+      d_emotion: [
+        { id: "em1", text: "비매너 신고를 당해 소중한 계정이 정지당하는 상황을 상상한다" },
+        { id: "em2", text: "나쁜 말을 적고 나면 나중에 후회하고 미안해질 것임을 떠올린다" },
+        { id: "em3", text: "화풀이 채팅이 나와 친구 모두에게 상처가 됨을 인지한다" }
+      ],
+      d_habit: [
+        { id: "ha1", text: "게임 종료 버튼을 누르고 시원한 물을 마시러 자리를 피한다" },
+        { id: "ha2", text: "컴퓨터나 게임기를 즉시 종료하고 기지개를 힘껏 편다" },
+        { id: "ha3", text: "주변의 가족이나 다른 취미 활동으로 시선을 환기한다" }
+      ]
+    };
+
+    // ==========================================
+    // Step 전환 관리 및 UI 드로잉
+    // ==========================================
+    function goToStep(stepNum) {
+      const views = ['view-intro', 'view-story', 'view-scenario', 'view-step6', 'view-step7', 'view-step8'];
+      views.forEach(v => {
+        const el = document.getElementById(v);
+        if (el) {
+          el.classList.add('hidden');
+          el.style.setProperty('display', 'none', 'important'); // FOUC 방지 인라인 숨김
+        }
+      });
+
+      state.currentStep = stepNum;
+      updateProgressBarDots(stepNum);
+
+      let targetViewId = '';
+      if (stepNum === 0 || stepNum === 1) targetViewId = 'view-intro';
+      else if (stepNum === 2) targetViewId = 'view-story';
+      else if (stepNum === 3) targetViewId = 'view-scenario';
+      else if (stepNum === 4) targetViewId = 'view-step6';
+      else if (stepNum === 5) targetViewId = 'view-step7';
+      else if (stepNum === 6) targetViewId = 'view-step8';
+
+      const targetEl = document.getElementById(targetViewId);
+      if (targetEl) {
+        targetEl.classList.remove('hidden');
+        targetEl.classList.add('active'); // active 클래스 동적 부여 복구
+        targetEl.style.setProperty('display', 'flex', 'important'); // 인라인 노출
+      }
+
+      if (stepNum === 2) {
+        state.currentCutIdx = 0;
+        renderActiveStory();
+      } else if (stepNum === 3) {
+        renderActiveScenario();
+      } else if (stepNum === 4) {
+        initStep6();
+      } else if (stepNum === 5) {
+        initStep7();
+      } else if (stepNum === 6) {
+        initStep8();
+      }
+
+      // 상하단바 프레임 UI 상태 동기화
+      updateFrameUI(stepNum);
+    }
+
+    // 상하단 프레임 워크 제어
+    function updateFrameUI(stepNum) {
+      const header = document.getElementById("standard-header");
+      const footer = document.getElementById("control-bar");
+      if (!header || !footer) return;
+
+      if (stepNum <= 1 || stepNum === 6) {
+        header.classList.add('hidden');
+        footer.classList.add('hidden');
+      } else {
+        header.classList.remove('hidden');
+        footer.classList.remove('hidden');
+
+        // 타이틀 및 도트 갱신
+        const titleText = document.getElementById("stage-title-text");
+        const dot1 = document.getElementById("dot-1");
+        const dot2 = document.getElementById("dot-2");
+
+        if (dot1) dot1.className = "w-3 h-3 rounded-full border-2 border-black bg-slate-500 stage-dot flex items-center justify-center font-bold text-[8px]";
+        if (dot2) dot2.className = "w-3 h-3 rounded-full border-2 border-black bg-slate-500 stage-dot flex items-center justify-center font-bold text-[8px]";
+
+        if (stepNum === 2 || stepNum === 3) {
+          if (titleText) titleText.innerText = "활동 1: 친구의 이야기를 듣고 나의 자기조절을 방해하는 진짜 원인 찾기";
+          if (dot1) dot1.classList.add('active');
+        } else if (stepNum === 4 || stepNum === 5) {
+          if (titleText) titleText.innerText = "활동 2: 원인에 맞는 극복 전략을 선택하고 가상 화면에서 직접 실천해보기";
+          if (dot1) dot1.classList.add('completed');
+          if (dot2) dot2.classList.add('active');
+        }
+
+        const prevBtn = document.getElementById("btn-prev");
+        const nextBtn = document.getElementById("btn-next");
+
+        // 이전 단계 비활성 클래스 제어
+        if (stepNum === 2) {
+          if (prevBtn) prevBtn.classList.add('disabled');
+        } else {
+          if (prevBtn) prevBtn.classList.remove('disabled');
+        }
+
+        // 다음 단계 비활성 클래스 제어 (미션 상태 검증)
+        let isTaskCompleted = false;
+        const scenario = scenarios[state.currentScenarioIdx];
+
+        if (stepNum === 2) {
+          // 이야기 끝까지 보았는지
+          if (state.currentCutIdx === scenario.cuts.length - 1) {
+            isTaskCompleted = true;
+          }
+        } else if (stepNum === 3) {
+          // 방해물 3개 다 찾았는지
+          const selectedCount = Object.keys(state.checkedObstacles).filter(id => {
+            return scenario.obstacles.some(ob => ob.id === id);
+          }).length;
+          if (selectedCount === 3) {
+            isTaskCompleted = true;
+          }
+        } else if (stepNum === 4) {
+          // 전략 후보 모두 다 골랐는지
+          const isAllMatched = state.matchedObstacles.length === 3 && state.matchedObstacles.every(ob => !!state.selectedStrategies[ob.id]);
+          if (isAllMatched) {
+            isTaskCompleted = true;
+          }
+        } else if (stepNum === 5) {
+          // 시뮬레이션 끝나고 성찰 완료했는지
+          if (state.simReflectionSelected) {
+            isTaskCompleted = true;
+          }
+        }
+
+        if (isTaskCompleted) {
+          if (nextBtn) nextBtn.classList.remove('disabled');
+        } else {
+          if (nextBtn) nextBtn.classList.add('disabled');
+        }
+
+        // 비주얼 피드백 유도 및 잠금 해제 (물리적 차단 없이 alert 팝업창 활성)
+        if (prevBtn) {
+          prevBtn.disabled = false;
+          if (prevBtn.classList.contains('disabled')) {
+            prevBtn.style.opacity = "0.5";
+            prevBtn.style.cursor = "not-allowed";
+          } else {
+            prevBtn.style.opacity = "1";
+            prevBtn.style.cursor = "pointer";
+          }
+        }
+        if (nextBtn) {
+          nextBtn.disabled = false;
+          if (nextBtn.classList.contains('disabled')) {
+            nextBtn.style.opacity = "0.5";
+            nextBtn.style.cursor = "not-allowed";
+          } else {
+            nextBtn.style.opacity = "1";
+            nextBtn.style.cursor = "pointer";
+          }
+
+          if (stepNum === 5) {
+            nextBtn.innerText = "활동 완료 ➔";
+          } else {
+            nextBtn.innerText = "다음 단계 ▶";
+          }
+        }
+      }
+    }
+
+    // 이전/다음 단계 푸터 이벤트 리디렉션
+    function prevStep() {
+      const prevBtn = document.getElementById("btn-prev");
+      if (prevBtn && prevBtn.classList.contains('disabled')) {
+        synth.playSelect();
+        alert("이전 단계가 존재하지 않습니다. (첫 번째 활동 화면입니다)");
+        return;
+      }
+
+      synth.playSelect();
+      if (state.currentStep === 3) {
+        goToStep(2);
+      } else if (state.currentStep === 4) {
+        goToStep(3);
+      } else if (state.currentStep === 5) {
+        goToStep(4);
+      }
+    }
+
+    function nextStep() {
+      const nextBtn = document.getElementById("btn-next");
+      
+      // 미완료 상태에서 클릭 시 친절한 안내 피드백 팝업창 출력
+      if (nextBtn && nextBtn.classList.contains('disabled')) {
+        synth.playSelect();
+        if (state.currentStep === 2) {
+          alert("수아의 컷만화 이야기를 [다음 컷 ▶] 버튼을 눌러 마지막 장까지 정독한 후 이동할 수 있습니다!");
+        } else if (state.currentStep === 3) {
+          alert("수아의 행동을 방해한 진짜 원인 3가지를 체크박스에서 모두 골라 주세요!");
+        } else if (state.currentStep === 4) {
+          alert("네가 선택한 모든 진짜 원인에 알맞은 극복 전략 후보들을 매칭 박스에서 하나씩 골라 주세요!");
+        } else if (state.currentStep === 5) {
+          alert("모든 전략 카드를 드래그 슬롯에 꽂고, 하단의 마무리 성찰 질문에 답변해 주세요!");
+        }
+        return;
+      }
+
+      synth.playSelect();
+      if (state.currentStep === 2) {
+        goToStep(3);
+      } else if (state.currentStep === 3) {
+        goToStep(4);
+      } else if (state.currentStep === 4) {
+        goToStep(5);
+      } else if (state.currentStep === 5) {
+        goToStep(6);
+      }
+    }
+
+    function updateProgressBarDots(stepNum) {
+      const dot1 = document.getElementById('dot-act1');
+      const dot2 = document.getElementById('dot-act2');
+      const dot3 = document.getElementById('dot-finish');
+      
+      if (!dot1 || !dot2 || !dot3) return;
+      
+      dot1.className = "w-4 h-4 rounded-full border-2 border-black transition-all bg-slate-300";
+      dot2.className = "w-4 h-4 rounded-full border-2 border-black transition-all bg-slate-300";
+      dot3.className = "w-4 h-4 rounded-full border-2 border-black transition-all bg-slate-300";
+      
+      if (stepNum >= 2 && stepNum <= 3) {
+        dot1.className = "w-4 h-4 rounded-full border-4 border-blue-500 bg-white ring-2 ring-blue-200 transition-all";
+      } else if (stepNum >= 4 && stepNum <= 5) {
+        dot1.className = "w-4 h-4 rounded-full border-2 border-black bg-blue-600 transition-all";
+        dot2.className = "w-4 h-4 rounded-full border-4 border-blue-500 bg-white ring-2 ring-blue-200 transition-all";
+      } else if (stepNum === 6) {
+        dot1.className = "w-4 h-4 rounded-full border-2 border-black bg-blue-600 transition-all";
+        dot2.className = "w-4 h-4 rounded-full border-2 border-black bg-blue-600 transition-all";
+        dot3.className = "w-4 h-4 rounded-full border-4 border-blue-500 bg-white ring-2 ring-blue-200 transition-all";
+      }
+    }
+
+    // ==========================================
+    // 활동1 - 스토리 컷만화 화면 렌더링 & 제어 (카드 뉴스 형식)
+    // ==========================================
+    function renderActiveStory() {
+      const scenario = scenarios[state.currentScenarioIdx];
+      
+      // 진행 상태 및 헤더 (존재성 체크로 크래시 전면 차단)
+      const storyProgressEl = document.getElementById('story-progress');
+      if (storyProgressEl) {
+        storyProgressEl.innerText = "시나리오 " + (state.currentScenarioIdx + 1) + " / 2 - 이야기 읽기";
+      }
+      
+      const charEmojiEl = document.getElementById('story-char-emoji');
+      if (charEmojiEl) {
+        charEmojiEl.innerText = scenario.characterEmoji;
+      }
+      
+      const charTitleEl = document.getElementById('story-char-title');
+      if (charTitleEl) {
+        charTitleEl.innerText = scenario.title;
+      }
+
+      // 단일 스토리 카드 데이터 업데이트
+      const cut = scenario.cuts[state.currentCutIdx];
+      const imgEl = document.getElementById('story-card-image');
+      const fallbackEl = document.getElementById('story-card-image-fallback');
+
+      if (cut.image) {
+        imgEl.src = cut.image;
+        imgEl.classList.remove('hidden');
+        imgEl.onerror = () => {
+          imgEl.classList.add('hidden');
+          fallbackEl.innerText = "그림을 넣어주세요!\n파일명: " + cut.image;
+          fallbackEl.classList.remove('hidden');
+        };
+        fallbackEl.innerText = "그림 로드 중...\n(" + cut.image + ")";
+        imgEl.onload = () => {
+          fallbackEl.classList.add('hidden');
+        };
+      } else {
+        imgEl.classList.add('hidden');
+        fallbackEl.innerText = "그림 정보 없음";
+        fallbackEl.classList.remove('hidden');
+      }
+
+      document.getElementById('story-card-text').innerText = cut.text;
+      document.getElementById('story-cut-indicator').innerText = (state.currentCutIdx + 1) + " / " + scenario.cuts.length;
+      updateFrameUI(state.currentStep);
+
+      // 버튼 제어
+      const prevBtn = document.getElementById('btn-story-prev');
+      const nextBtn = document.getElementById('btn-story-next');
+
+      prevBtn.disabled = (state.currentCutIdx === 0);
+      if (prevBtn.disabled) {
+        prevBtn.className = "px-5 py-2 bg-slate-800 text-slate-500 font-bold border-2 border-slate-700 rounded-none text-xs cursor-not-allowed";
+      } else {
+        prevBtn.className = "px-5 py-2 bg-slate-700 hover:bg-slate-650 text-white font-bold border-2 border-black rounded-none shadow-[2px_2px_0px_#000] active:translate-y-0.5 active:shadow-none text-xs transition-all";
+      }
+
+      if (state.currentCutIdx === scenario.cuts.length - 1) {
+        nextBtn.innerText = "진짜 원인 분석하기 ➔";
+        nextBtn.className = "px-6 py-2 bg-green-400 hover:bg-green-500 text-black font-extrabold border-4 border-black rounded-none retro-shadow retro-shadow-active text-xs transition-all cursor-pointer";
+      } else {
+        nextBtn.innerText = "다음 컷 ▶";
+        nextBtn.className = "px-6 py-2 bg-yellow-300 hover:bg-yellow-400 text-black font-bold border-4 border-black rounded-none retro-shadow retro-shadow-active text-xs transition-all cursor-pointer";
+      }
+    }
+
+    function nextStoryCut() {
+      const scenario = scenarios[state.currentScenarioIdx];
+      if (state.currentCutIdx < scenario.cuts.length - 1) {
+        state.currentCutIdx++;
+        synth.playSelect();
+        renderActiveStory();
+      } else {
+        // 질문으로 넘어가기 (Step 3)
+        synth.playSuccess();
+        goToStep(3);
+      }
+    }
+
+    function prevStoryCut() {
+      if (state.currentCutIdx > 0) {
+        state.currentCutIdx--;
+        synth.playSelect();
+        renderActiveStory();
+      }
+    }
+
+    // ==========================================
+    // Step 3: 활동1 - 시나리오 동적 렌더링 (방해물 체크)
+    // ==========================================
+    function renderActiveScenario() {
+      const scenario = scenarios[state.currentScenarioIdx];
+      
+      // 마음온 AI 동적 가이드 멘트 주입
+      const guideBubble = document.getElementById("act1-guide-bubble");
+      if (guideBubble) {
+        if (state.currentScenarioIdx === 0) {
+          guideBubble.innerText = "수아가 왜 스마트폰 사용을 스스로 멈추지 못했을까? 행동을 분석하여 진짜 원인 3가지를 골라봐! 🧐";
+        } else {
+          guideBubble.innerText = "도윤이가 게임을 멈추지 못하고 과몰입하게 된 진짜 원인 3가지를 면밀하게 분석해 보자! 🕹️";
+        }
+      }
+      
+      // 상단 헤더 업데이트
+      document.getElementById('sc-progress').innerText = "시나리오 " + (state.currentScenarioIdx + 1) + " / 2";
+      
+      const currentSelectedCount = Object.keys(state.checkedObstacles).filter(id => {
+        return scenario.obstacles.some(ob => ob.id === id);
+      }).length;
+      document.getElementById('global-counter-val').innerText = currentSelectedCount;
+
+      // 좌측 타이틀 (존재성 체크로 크래시 전면 방지)
+      const scTitleEl = document.getElementById('sc-title');
+      if (scTitleEl) {
+        scTitleEl.innerText = scenario.title;
+      }
+
+      // 시나리오 요약 텍스트 노출
+      document.getElementById('sc-summary-text').innerText = scenario.summary;
+
+      // 좌측 실패 결과 요약
+      document.getElementById('sc-result-text').innerText = scenario.result;
+
+      // 우측 미션 타이틀
+      document.getElementById('sc-mission-title').innerText = scenario.character + "가 왜 멈추지 못했을까?";
+
+      // 우측 체크리스트 (이모티콘 제거 및 텍스트 폰트 대폭 확대 및 패딩 추가)
+      const listContainer = document.getElementById('sc-checklist');
+      listContainer.innerHTML = '';
+
+      scenario.obstacles.forEach(ob => {
+        const isChecked = !!state.checkedObstacles[ob.id];
+        
+        const label = document.createElement('label');
+        label.className = "flex items-center gap-3 border-2 p-2.5 rounded-none cursor-pointer transition-all select-none hover:bg-slate-750 " +
+          (isChecked 
+            ? 'border-blue-500 bg-[#1e3a8a] font-bold text-blue-200 scale-[1.01] shadow-sm' 
+            : 'border-black bg-[#1e293b] font-normal text-slate-200');
+        
+        label.innerHTML = `
+          <input type="checkbox" onchange="toggleObstacle('${ob.id}', this)" ${isChecked ? 'checked' : ''} class="w-4.5 h-4.5 accent-blue-500 shrink-0 border border-black cursor-pointer">
+          <span class="text-[14.5px] font-bold select-none leading-snug">${ob.text}</span>
+        `;
+        listContainer.appendChild(label);
+      });
+
+      validateScenarioNextBtn();
+      updateFrameUI(state.currentStep);
+    }
+
+    function toggleObstacle(obId, checkboxEl) {
+      const isChecked = checkboxEl.checked;
+      const scenario = scenarios[state.currentScenarioIdx];
+      const count = Object.keys(state.checkedObstacles).filter(id => {
+        return scenario.obstacles.some(ob => ob.id === id);
+      }).length;
+
+      if (isChecked && count >= 3) {
+        checkboxEl.checked = false;
+        showFeedbackModal("진짜 원인은 딱 3개만 고를 수 있습니다!");
+        return;
+      }
+
+      const card = checkboxEl.closest('label');
+      if (isChecked) {
+        state.checkedObstacles[obId] = true;
+        card.className = "flex items-center gap-3 border-2 border-blue-500 bg-[#1e3a8a] p-2.5 rounded-none cursor-pointer transition-all select-none font-bold text-blue-200 scale-[1.01] shadow-sm";
+        synth.playCheck();
+      } else {
+        delete state.checkedObstacles[obId];
+        card.className = "flex items-center gap-3 border-2 border-black bg-[#1e293b] p-2.5 rounded-none cursor-pointer transition-all select-none hover:bg-slate-700 font-normal text-slate-200";
+        synth.playCheck();
+      }
+      
+      // 카운터 갱신
+      const currentSelectedCount = Object.keys(state.checkedObstacles).filter(id => {
+        return scenario.obstacles.some(ob => ob.id === id);
+      }).length;
+      document.getElementById('global-counter-val').innerText = currentSelectedCount;
+      
+      validateScenarioNextBtn();
+      
+      // 하단 고정바 다음 버튼(#btn-next) 활성 상태 실시간 연동
+      updateFrameUI(state.currentStep);
+    }
+
+    function validateScenarioNextBtn() {
+      const scenario = scenarios[state.currentScenarioIdx];
+      const count = Object.keys(state.checkedObstacles).filter(id => {
+        return scenario.obstacles.some(ob => ob.id === id);
+      }).length;
+      
+      const nextBtn = document.getElementById('btn-sc-next');
+      
+      nextBtn.innerText = "맞춤 전략 설계하기 ▶";
+
+      if (count === 3) {
+        nextBtn.disabled = false;
+        nextBtn.className = "px-4 py-1.5 bg-[#a8ffda] hover:bg-[#7effc9] text-black font-bold border-2 border-black rounded-none retro-shadow retro-shadow-active transition-all cursor-pointer text-xs";
+      } else {
+        nextBtn.disabled = true;
+        nextBtn.className = "px-4 py-1.5 bg-[#555] text-slate-400 font-bold border-2 border-black rounded-none cursor-not-allowed transition-all text-xs";
+      }
+    }
+
+    function handleNextScenario() {
+      const scenario = scenarios[state.currentScenarioIdx];
+      const count = Object.keys(state.checkedObstacles).filter(id => {
+        return scenario.obstacles.some(ob => ob.id === id);
+      }).length;
+      if (count !== 3) return;
+
+      goToStep(4); // 전략 설계사 (Step 4)로 이동
+    }
+
+    // ==========================================
+    // Step 4: 활동2 - 전략 매칭
+    // ==========================================
+    function initStep6() {
+      const scenario = scenarios[state.currentScenarioIdx];
+
+      // 체크한 3개의 방해물만 수집
+      const checkedObstaclesList = [];
+      scenario.obstacles.forEach(ob => {
+        if (state.checkedObstacles[ob.id]) {
+          checkedObstaclesList.push({
+            id: ob.id,
+            text: ob.text,
+            category: ob.category,
+            scenarioId: scenario.id,
+            characterName: scenario.character
+          });
+        }
+      });
+
+      state.matchedObstacles = checkedObstaclesList;
+
+      // 행 렌더링
+      const container = document.getElementById('step6-match-rows');
+      container.innerHTML = '';
+
+      checkedObstaclesList.forEach(ob => {
+        const row = document.createElement('div');
+        row.className = "flex items-center gap-3 p-2 border-2 border-black bg-[#2c3e50] rounded-none shadow-[2px_2px_0px_#000] shrink-0 text-white";
+
+        // 방해물 칩
+        const left = document.createElement('div');
+        left.className = "w-[35%] bg-[#7f1d1d] border-2 border-red-800 p-2 rounded-none text-center shrink-0 flex flex-col justify-center items-center h-[78px] text-red-200 text-[13px] font-bold";
+        left.innerHTML = `
+          <span class="line-clamp-3 leading-snug">${ob.text}</span>
+        `;
+
+        // 3개 전략
+        const right = document.createElement('div');
+        right.className = "w-[65%] flex gap-1.5";
+
+        const strategies = strategyMap[ob.category] || [];
+
+        strategies.forEach(st => {
+          const btn = document.createElement('button');
+          btn.className = "flex-1 border-2 border-black bg-[#f1f5f9] hover:bg-[#e2e8f0] rounded-none p-1 flex flex-col items-center justify-center text-center h-[78px] transition-all transform active:scale-95 text-black";
+          btn.innerHTML = `
+            <span class="text-[12px] font-bold text-black leading-snug">${st.text}</span>
+          `;
+          
+          btn.onclick = () => {
+            state.selectedStrategies[ob.id] = st;
+            synth.playSelect();
+            
+            // 테두리 갱신
+            right.querySelectorAll('button').forEach(b => {
+              b.className = "flex-1 border-2 border-black bg-[#f1f5f9] hover:bg-[#e2e8f0] rounded-none p-1 flex flex-col items-center justify-center text-center h-[78px] transition-all transform active:scale-95 text-black";
+            });
+            btn.className = "flex-1 border-3 border-black bg-[#a8ffda] hover:bg-[#7effc9] rounded-none p-1 flex flex-col items-center justify-center text-center h-[78px] transition-all transform scale-[1.03] shadow-sm font-bold text-black";
+            
+            validateStep6();
+          };
+
+          // 이미 이전에 골라진 상태라면 하이라이트 복원
+          const prevSelected = state.selectedStrategies[ob.id];
+          if (prevSelected && prevSelected.id === st.id) {
+            btn.className = "flex-1 border-3 border-black bg-[#a8ffda] hover:bg-[#7effc9] rounded-none p-1 flex flex-col items-center justify-center text-center h-[78px] transition-all transform scale-[1.03] shadow-sm font-bold text-black";
+          }
+
+          right.appendChild(btn);
+        });
+
+        row.appendChild(left);
+        row.appendChild(right);
+        container.appendChild(row);
+      });
+
+      validateStep6();
+    }
+
+    function validateStep6() {
+      const scenario = scenarios[state.currentScenarioIdx];
+      const isAllMatched = state.matchedObstacles.length === 3 && state.matchedObstacles.every(ob => !!state.selectedStrategies[ob.id]);
+      const nextBtn = document.getElementById('btn-to-step7');
+      
+      if (isAllMatched) {
+        nextBtn.disabled = false;
+        nextBtn.className = "px-6 py-2.5 bg-green-400 hover:bg-green-500 text-black font-bold border-4 border-black rounded-none retro-shadow retro-shadow-active transition-all cursor-pointer text-xs";
+      } else {
+        nextBtn.disabled = true;
+        nextBtn.className = "px-6 py-2.5 bg-[#555] text-slate-400 font-bold border-4 border-black rounded-none cursor-not-allowed transition-all text-xs";
+      }
+      updateFrameUI(state.currentStep);
+    }
+
+    // ==========================================
+    // Step 5: 미니 시뮬레이션
+    // ==========================================
+    let currentSlideIdx = 0;
+
+    function initStep7() {
+      state.simReflectionSelected = false; // 성찰 상태 리셋
+      const scenario = scenarios[state.currentScenarioIdx];
+      
+      // 마음온 AI 동적 가이드 멘트 주입 (2단계 미니 시뮬레이션)
+      const guideBubble = document.getElementById("act2-guide-bubble");
+      if (guideBubble) {
+        if (state.currentScenarioIdx === 0) {
+          guideBubble.innerText = "우측의 극복 전략 카드들을 수아의 행동 흐름에 알맞게 연결 지어봐!";
+        } else {
+          guideBubble.innerText = "우측의 극복 전략 카드들을 도윤이의 행동 흐름에 알맞게 연결 지어봐!";
+        }
+      }
+
+      // 시뮬레이션 타이틀 (존재성 체크로 크래시 전면 방지)
+      const simTitleEl = document.getElementById('sim-title');
+      if (simTitleEl) {
+        simTitleEl.innerText = `🎬 ${scenario.character}의 이야기`;
+      }
+
+      // 5개 시뮬레이션 컷 설계
+      const simCuts = [];
+      
+      // Slide 0: 인트로 가이드
+      simCuts.push({
+        isCrisis: false,
+        emoji: scenario.characterEmoji,
+        text: `다음 날 ${scenario.character}가 행동을 개시했어. 이번에는 장착한 극복 전략 카드들을 사용해 위기 상황들을 돌파해보자!`
+      });
+
+      // Slides 1, 2, 3: 위기 상황들 (사용자가 체크한 3개 방해물에 매핑)
+      const selectedObs = state.matchedObstacles.filter(o => o.scenarioId === scenario.id);
+      selectedObs.forEach(ob => {
+        let crisisText = "";
+        if (ob.id === "s1_1") crisisText = "다음 영상이 자동으로 나와서 수아가 계속 영상을 보고 있습니다!";
+        else if (ob.id === "s1_2") crisisText = "더 신나고 자극적인 숏폼 영상을 찾기 위해 계속 화면을 쓸어올려 내리고 있습니다!";
+        else if (ob.id === "s1_3") crisisText = "어려운 숙제 생각에 머리가 아파와서, 숙제를 하기 싫어 계속 영상을 시청하고 있습니다!";
+        else if (ob.id === "s1_4") crisisText = "시간이 얼마나 흘렀는지 모른 채 숙제할 시간이 다 지나가고 있습니다!";
+        else if (ob.id === "s1_5") crisisText = "조금만 더 보면 진짜 그만둘 수 있을 것 같아서 계속 다음 영상을 쓸어 올리고 있습니다!";
+        
+        else if (ob.id === "s2_1") crisisText = "기대와 다른 아쉬운 패배 화면이 뜨자 게임 오버 글자를 보며 억울해하고 있습니다!";
+        else if (ob.id === "s2_2") crisisText = "순간 욱하는 감정을 다스리지 못하고 채팅창에 마구 글자를 적어내리려 하고 있습니다!";
+        else if (ob.id === "s2_3") crisisText = "친구의 실수 때문에 패배했다고 생각하며 친구 귓속말방을 열어 비난을 하려 합니다!";
+        else if (ob.id === "s2_4") crisisText = "비난 채팅을 전송해야만 답답하고 화난 기분이 풀릴 것 같은 착각에 사로잡혀 있습니다!";
+        else if (ob.id === "s2_5") crisisText = "화가 머리끝까지 난 도윤이의 손가락이 습관적으로 채팅 키보드를 두드리려 합니다!";
+
+        simCuts.push({
+          isCrisis: true,
+          obstacleId: ob.id,
+          category: ob.category,
+          text: crisisText
+        });
+      });
+
+      // Slide 4: 미션 클리어 성공
+      simCuts.push({
+        isCrisis: false,
+        emoji: "🏆",
+        text: "SUCCESS"
+      });
+
+      state.simCuts = simCuts;
+      state.slideResolved = [true, false, false, false, true]; // 인트로와 성공은 즉시 해소, 위기(1,2,3)는 미해결 상태 시작
+      state.reflectionResponse = null;
+
+      currentSlideIdx = 0;
+      renderSlide(currentSlideIdx);
+
+      // 질문 및 완료 버튼 숨김
+      document.getElementById('sim-reflection').classList.add('hidden');
+      document.getElementById('btn-to-step8').disabled = true;
+      document.getElementById('btn-to-step8').className = "px-6 py-2.5 bg-[#555] text-slate-400 font-bold border-4 border-black rounded-none cursor-not-allowed transition-all text-xs";
+      
+      document.querySelectorAll('.btn-reflection').forEach(btn => {
+        btn.className = "btn-reflection flex-1 py-2 bg-white text-slate-700 border-2 border-black font-bold text-xs rounded-none active:translate-y-0.5 shadow-[2px_2px_0px_#000] hover:bg-slate-50 transition-all";
+      });
+    }
+
+    function renderSlide(idx) {
+      const simCuts = state.simCuts;
+      const currentCut = simCuts[idx];
+      const simCard = document.getElementById('sim-card');
+      const scenario = scenarios[state.currentScenarioIdx];
+
+      const isResolved = state.slideResolved[idx];
+
+      // 카드 비주얼 정돈 및 🚨 위기 발생! 연출 (본문 왼쪽 정렬 및 템플릿 스트링 들여쓰기 공백 제거)
+      if (currentCut.isCrisis) {
+        if (isResolved) {
+          // 해결 완료 상태
+          const matchedObId = currentCut.obstacleId;
+          const st = state.selectedStrategies[matchedObId];
+          simCard.className = "w-full bg-[#14532d] border-4 border-green-500 rounded-none p-4 shadow-[4px_4px_0_#000] text-white flex flex-col items-start text-left relative animate-pop-in flex-grow min-h-[170px] pt-8 justify-start w-full";
+          simCard.innerHTML = `
+<div class="text-[12px] font-black text-green-400 uppercase tracking-wider mb-2 text-center w-full">🏆 위기 해결 성공!</div>
+<div class="text-[13px] font-bold leading-relaxed text-left mx-auto w-[90%] mb-6 text-green-100">${currentCut.text}</div>
+<div class="w-[90%] h-12 border-2 border-green-500 bg-green-900/30 flex items-center justify-center text-xs font-bold text-green-200 mx-auto text-center">적용된 전략: ${st.text}</div>
+          `;
+        } else {
+          // 해결 대기 상태 (위기 발생!)
+          simCard.className = "w-full bg-[#7f1d1d] border-4 border-red-500 rounded-none p-4 shadow-[4px_4px_0_#000] text-white flex flex-col items-start text-left relative animate-fade-in-up flex-grow min-h-[170px] pt-8 justify-start w-full";
+          simCard.innerHTML = `
+<div class="text-[12px] font-black text-red-500 uppercase tracking-wider mb-2 text-center w-full">🚨 위기 상황 발생!</div>
+<div class="text-[13px] font-bold leading-relaxed text-left mx-auto w-[90%] mb-6 text-red-100">${currentCut.text}</div>
+<div id="sim-dropzone" class="w-[90%] h-12 border-2 border-dashed border-red-500 bg-red-950/30 flex items-center justify-center text-xs font-bold text-red-300 mx-auto text-center">오른쪽에서 알맞은 극복 전략 카드를 선택(클릭)하세요!</div>
+          `;
+        }
+      } else {
+        // 인트로 혹은 성공 화면
+        if (idx === simCuts.length - 1) {
+          // 성공 화면 (이모지 및 소감 대사 삭제, text-base 확대, text-sm font-extrabold text-[#a8ffda] 단독 적용)
+          const successText = scenario.id === "shorts"
+            ? "약속한 시간에 동영상 쇼츠 끊기 성공!"
+            : "친구와의 우정도 지키고 매너 플레이어로 칭찬받음!";
+
+          simCard.className = "w-full bg-[#2c3e50] border-4 border-black rounded-none p-4 shadow-[4px_4px_0_#000] text-white flex flex-col justify-center items-center relative animate-fade-in-up flex-grow min-h-[170px]";
+          simCard.innerHTML = `
+<div class="text-base font-black text-[#a8ffda] uppercase tracking-wider mb-2 text-center w-full animate-bounce">미션 올 클리어!</div>
+<div class="text-sm font-extrabold text-[#a8ffda] tracking-wide text-center w-full my-4">${successText}</div>
+          `;
+        } else {
+          // 인트로 화면
+          simCard.className = "w-full bg-[#2c3e50] border-4 border-black rounded-none p-4 shadow-[4px_4px_0_#000] text-white flex flex-col justify-center items-center relative animate-fade-in-up flex-grow min-h-[200px]";
+          simCard.innerHTML = `
+<div class="text-5xl mb-4 animate-bounce">${currentCut.emoji}</div>
+<p class="text-[13px] font-bold leading-relaxed text-center max-w-sm text-slate-200">${currentCut.text}</p>
+          `;
+        }
+      }
+
+      // 덱 렌더링 (매 회차마다 소멸형 적용)
+      renderDragDock();
+
+      // 닷 업데이트
+      const dotsContainer = document.getElementById('sim-dots');
+      dotsContainer.innerHTML = '';
+      simCuts.forEach((_, cIdx) => {
+        const dot = document.createElement('div');
+        dot.className = "w-2.5 h-2.5 rounded-full border border-black transition-all " +
+          (cIdx === idx ? 'bg-yellow-400 scale-110' : 'bg-slate-600');
+        dotsContainer.appendChild(dot);
+      });
+
+      // 좌우 버튼 조율
+      document.getElementById('btn-sim-prev').disabled = idx === 0;
+      
+      // 위기가 해결되지 않았다면 다음 버튼을 잠금
+      const nextBtn = document.getElementById('btn-sim-next');
+      if (isResolved) {
+        nextBtn.disabled = idx === simCuts.length - 1;
+        nextBtn.className = "px-3 py-1.5 bg-slate-800 border-2 border-slate-600 rounded-none text-xs hover:bg-slate-700 text-slate-200 cursor-pointer";
+      } else {
+        nextBtn.disabled = true;
+        nextBtn.className = "px-3 py-1.5 bg-slate-900 border-2 border-slate-800 rounded-none text-xs text-slate-600 cursor-not-allowed";
+      }
+
+      // 마지막 성공 컷 도달 시 피드백 및 질문 노출
+      if (idx === simCuts.length - 1) {
+        document.getElementById('sim-reflection').classList.remove('hidden');
+        
+        // 다음 이야기 / 완료 버튼 셋업
+        const toStep8Btn = document.getElementById('btn-to-step8');
+        if (state.currentScenarioIdx === scenarios.length - 1) {
+          toStep8Btn.innerText = "최종 완료 리포트 ▶";
+        } else {
+          toStep8Btn.innerText = "다음 이야기 ▶";
+        }
+      } else {
+        document.getElementById('sim-reflection').classList.add('hidden');
+      }
+    }
+
+    function renderDragDock() {
+      const dock = document.getElementById('sim-drag-dock');
+      dock.innerHTML = '';
+
+      const scenario = scenarios[state.currentScenarioIdx];
+      const selectedObs = state.matchedObstacles.filter(o => o.scenarioId === scenario.id);
+
+      selectedObs.forEach(ob => {
+        // 이미 매칭 완료되어 해결된 카드는 덱에서 숨김 (소멸형 설계)
+        const cutIdxForOb = state.simCuts.findIndex(c => c.isCrisis && c.obstacleId === ob.id);
+        if (cutIdxForOb !== -1 && state.slideResolved[cutIdxForOb]) {
+          return; 
+        }
+
+        const st = state.selectedStrategies[ob.id];
+        if (!st) return;
+
+        const card = document.createElement('div');
+        card.className = "strategy-click-card border-2 border-black bg-[#f1f5f9] hover:bg-[#e2e8f0] active:scale-95 text-black rounded-none p-3 text-center text-sm font-extrabold shadow-[2px_2px_0px_#000] cursor-pointer flex items-center justify-center min-h-[60px] transition-all select-none";
+        card.innerText = st.text;
+
+        // 클릭 선택 이벤트 장착
+        card.addEventListener('click', () => handleStrategySelect(ob.id, ob.category, st));
+
+        dock.appendChild(card);
+      });
+
+      // 만약 덱이 비어 있다면 (모든 위기 해결 시)
+      if (dock.children.length === 0) {
+        const finishedLabel = document.createElement('div');
+        finishedLabel.className = "text-center text-[12px] text-green-400 font-bold border-2 border-dashed border-green-900/50 py-3";
+        finishedLabel.innerText = "모든 전략 카드 장착 완료!";
+        dock.appendChild(finishedLabel);
+      }
+    }
+
+    // 극복 전략 클릭 매칭 핸들러
+    function handleStrategySelect(obstacleId, category, st) {
+      const currentCut = state.simCuts[currentSlideIdx];
+      if (!currentCut || !currentCut.isCrisis) return;
+
+      if (currentCut.category === category) {
+        // 정답 피드백
+        synth.playSuccess();
+        state.slideResolved[currentSlideIdx] = true;
+
+        // 성공 결과 카드로 리렌더링 (덱에서 소멸 및 녹색 테마 변환)
+        renderSlide(currentSlideIdx);
+        showToastNotification("🏆 올바른 극복 전략 카드가 적용되었습니다!");
+      } else {
+        // 오답 피드백
+        synth.playBuzzer();
+
+        // 클릭된 카드를 찾아서 에러 흔들림 효과 부여
+        const cards = document.querySelectorAll('.strategy-click-card');
+        cards.forEach(card => {
+          if (card.innerText === st.text) {
+            card.classList.add('shake-animation', 'border-red-500', 'bg-red-950');
+            setTimeout(() => {
+              card.classList.remove('shake-animation', 'border-red-500', 'bg-red-950');
+            }, 300);
+          }
+        });
+
+        showToastNotification("❌ 이 위기 상황에는 알맞지 않은 대처 전략입니다.");
+      }
+    }
+
+    function nextSlide() {
+      const simCuts = state.simCuts;
+      if (currentSlideIdx < simCuts.length - 1) {
+        currentSlideIdx++;
+        renderSlide(currentSlideIdx);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlideIdx > 0) {
+        currentSlideIdx--;
+        renderSlide(currentSlideIdx);
+      }
+    }
+
+    function selectReflection(response, btnEl) {
+      state.reflectionResponse = response;
+      synth.playSelect();
+
+      // 버튼 선택 스타일 초기화
+      document.querySelectorAll('.btn-reflection').forEach(btn => {
+        btn.className = "btn-reflection flex-1 py-2 bg-white text-slate-700 border-2 border-black font-bold text-xs rounded-none active:translate-y-0.5 shadow-[2px_2px_0px_#000] hover:bg-slate-50 transition-all";
+      });
+
+      if (response === 'yes') {
+        btnEl.className = "btn-reflection flex-1 py-2 bg-green-100 text-green-800 border-2 border-green-600 font-bold text-xs rounded-none shadow-sm";
+      } else {
+        btnEl.className = "btn-reflection flex-1 py-2 bg-amber-100 text-amber-800 border-2 border-amber-600 font-bold text-xs rounded-none shadow-sm";
+      }
+
+      // 다음 이야기 / 완료 보기 버튼 활성화
+      const toStep8Btn = document.getElementById('btn-to-step8');
+      toStep8Btn.disabled = false;
+      state.simReflectionSelected = true;
+      updateFrameUI(state.currentStep);
+      toStep8Btn.className = "px-6 py-2.5 bg-blue-400 hover:bg-blue-500 text-black font-bold border-4 border-black rounded-none retro-shadow retro-shadow-active transition-all cursor-pointer text-xs";
+    }
+
+    function handleFinishScenarioSim() {
+      if (state.currentScenarioIdx < scenarios.length - 1) {
+        // 도윤 세트로 반복 진입
+        state.currentScenarioIdx++;
+        goToStep(2); // 도윤이의 story 진입
+      } else {
+        // 최종 리포트
+        goToStep(6);
+      }
+    }
+
+    // ==========================================
+    // Step 6: 완료 화면 (최종 리포트)
+    // ==========================================
+    function initStep8() {
+      const obstacleEl = document.getElementById('final-obstacle-count');
+      if (obstacleEl) {
+        const totalChecked = Object.keys(state.checkedObstacles).length;
+        obstacleEl.innerText = totalChecked;
+      }
+
+      // 장착한 극복 전략 리스트 나열 (이모티콘 삭제, 텍스트 확대)
+      const stratContainer = document.getElementById('final-strategies-list');
+      if (stratContainer) {
+        stratContainer.innerHTML = '';
+        const strategies = Object.values(state.selectedStrategies);
+        if (strategies.length > 0) {
+          strategies.forEach(st => {
+            const chip = document.createElement('div');
+            chip.className = "bg-green-50 border-2 border-green-600 text-green-900 text-[13px] font-bold px-3 py-1.5 rounded-none shadow-[2px_2px_0px_#000] shrink-0 flex items-center gap-1.5 animate-pop-in";
+            chip.innerHTML = "<span>" + st.text + "</span>";
+            stratContainer.appendChild(chip);
+          });
+        } else {
+          stratContainer.innerHTML = `<span class="text-xs text-slate-500 font-bold">장착한 극복 전략이 없습니다.</span>`;
+        }
+      }
+    }
+
+    function resetAllState() {
+      state.currentStep = 0;
+      state.currentScenarioIdx = 0;
+      state.currentCutIdx = 0;
+      state.checkedObstacles = {};
+      state.selectedStrategies = {};
+      state.matchedObstacles = [];
+      state.solvedObstacles = {};
+
+      goToStep(0);
+    }
+
+    function finishStage() {
+      alert("사이버 자기조절 활동의 모든 단계를 성공적으로 이수했습니다! 대시보드로 돌아갑니다.");
+
+      let inIframe = false;
+      try {
+        inIframe = (window.self !== window.top);
+      } catch (e) {
+        inIframe = true; 
+      }
+
+      if (inIframe) {
+        try {
+          window.parent.postMessage({ type: 'TASK_COMPLETE', category: '사이버 자기조절' }, '*');
+          return;
+        } catch (err) {
+          console.error("postMessage failed:", err);
+        }
+      }
+
+      window.location.href = 'index.html';
+    }
+
+    // 스킵 테스트 헬퍼 함수
+    function skipCurrentStep() {
+      const step = state.currentStep;
+      if (step === 0 || step === 1) {
+        goToStep(2);
+      } else if (step === 2) {
+        // Story: skip cuts
+        const scenario = scenarios[state.currentScenarioIdx];
+        state.currentCutIdx = scenario.cuts.length - 1;
+        renderActiveStory();
+      } else if (step === 3) {
+        // Obstacles check: auto check 3, enable button
+        const scenario = scenarios[state.currentScenarioIdx];
+        scenario.obstacles.slice(0, 3).forEach(ob => {
+          state.checkedObstacles[ob.id] = true;
+        });
+        validateScenarioNextBtn();
+      } else if (step === 4) {
+        // Strategies matching: auto match strategies for 3 checked
+        const scenario = scenarios[state.currentScenarioIdx];
+        const selectedObs = state.matchedObstacles.filter(o => o.scenarioId === scenario.id);
+        selectedObs.forEach(ob => {
+          const strategies = strategyMap[ob.category] || [];
+          if (strategies.length > 0) {
+            state.selectedStrategies[ob.id] = strategies[0];
+          }
+        });
+        validateStep6();
+      } else if (step === 5) {
+        // Simulation: resolve all slides
+        state.slideResolved = [true, true, true, true, true];
+        currentSlideIdx = state.simCuts.length - 1;
+        renderSlide(currentSlideIdx);
+        selectReflection('yes', document.querySelector('.btn-reflection'));
+      }
+    }
+
+    // 전역 피드백 모달 호출용 오버레이가 없을 시 자동 폴백 처리용 mock 함수
+    function showFeedbackModal(text) {
+      alert(text);
+    }
+
+    function showToastNotification(message) {
+      const toast = document.createElement('div');
+      toast.style.position = 'absolute';
+      toast.style.bottom = '55px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%) translateY(10px)';
+      toast.style.background = '#000';
+      toast.style.color = '#ffb86c';
+      toast.style.border = '3px solid #ffb86c';
+      toast.style.padding = '10px 16px';
+      toast.style.width = '85%';
+      toast.style.maxWidth = '500px';
+      toast.style.textAlign = 'center';
+      toast.style.whiteSpace = 'normal';
+      toast.style.wordBreak = 'keep-all';
+      toast.style.fontSize = '0.85rem';
+      toast.style.fontWeight = 'bold';
+      toast.style.zIndex = '999';
+      toast.style.transition = 'all 0.25s ease';
+      toast.style.opacity = '0';
+      toast.style.pointerEvents = 'none';
+      
+      const container = document.getElementById('app-container') || document.body;
+      container.appendChild(toast);
+      toast.innerText = message;
+      
+      void toast.offsetWidth;
+      toast.style.transform = 'translateX(-50%) translateY(0)';
+      toast.style.opacity = '1';
+
+      setTimeout(() => {
+        toast.style.transform = 'translateX(-50%) translateY(-10px)';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 250);
+      }, 2000);
+    }
+
+    // 초기 실행
+    goToStep(0);
+  </script>
+</body>
+</html>

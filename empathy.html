@@ -1,0 +1,2472 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마음 온(ON) - 사이버 공감 튜닝 대작전</title>
+  
+  <!-- Noto Sans KR 폰트 제거 -->
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            kakao: {
+              yellow: '#FEE500',
+              hover: '#FACC15',
+              text: '#333333',
+            },
+            category1: {
+              light: '#DBEAFE',
+              dark: '#3B82F6',
+            },
+            category2: {
+              light: '#EDE9FE',
+              dark: '#7C3AED',
+            },
+            category3: {
+              light: '#DCFCE7',
+              dark: '#16A34A',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    @font-face {
+      font-family: 'DungGeunMo';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    :root {
+      --neon-pink: #ff79c6;
+      --neon-hotpink: #ff007f;
+      --neon-blue: #8be9fd;
+      --neon-sky: #00a8ff;
+      --neon-mint: #50fa7b;
+      --soft-yellow: #fff9db;
+      --dark-gray: #1A252F;
+      --panel-bg: #2C3E50;
+      --pure-black: #000000;
+      --pixel-thick: 4px;
+    }
+
+    /* 기본 레트로 테마 스타일 (1단계용) */
+    .retro-theme * {
+      font-family: 'DungGeunMo', monospace;
+      image-rendering: pixelated;
+    }
+
+    .retro-btn {
+      background-color: var(--neon-pink);
+      color: var(--pure-black);
+      border: var(--pixel-thick) solid var(--pure-black);
+      padding: 10px 20px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 var(--pure-black);
+      transition: transform 0.1s, box-shadow 0.1s, background-color 0.2s;
+      outline: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0px;
+    }
+
+    .retro-btn:active {
+      box-shadow: 0px 0px 0 var(--pure-black);
+      transform: translate(4px, 4px);
+    }
+
+    .retro-btn:hover:not(.disabled) {
+      background-color: var(--neon-blue);
+    }
+
+    .retro-btn.disabled {
+      background-color: #555 !important;
+      color: #888 !important;
+      cursor: not-allowed;
+      box-shadow: 4px 4px 0 #111;
+      transform: none !important;
+    }
+
+    /* 흔들림 연출 */
+    .shake {
+      animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    @keyframes shake {
+      10%, 90% { transform: translate3d(-4px, 0, 0); }
+      20%, 80% { transform: translate3d(4px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-8px, 0, 0); }
+      40%, 60% { transform: translate3d(8px, 0, 0); }
+    }
+
+    /* 포션 병 스타일 */
+    .potion-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 140px;
+      height: 200px;
+      position: relative;
+    }
+
+    .potion-bottle {
+      width: 100px;
+      height: 140px;
+      border: 5px solid var(--pure-black);
+      border-radius: 0px;
+      background-color: rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset -8px -8px 0 rgba(0,0,0,0.2);
+    }
+
+    .potion-neck {
+      width: 34px;
+      height: 25px;
+      border: 5px solid var(--pure-black);
+      border-bottom: none;
+      background-color: rgba(255, 255, 255, 0.1);
+      position: absolute;
+      top: -25px;
+      left: 33px;
+      border-radius: 0px;
+    }
+
+    .potion-layer {
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      transition: height 0.3s ease, background-color 0.3s ease;
+      box-shadow: inset -4px 0 0 rgba(0,0,0,0.1);
+    }
+
+    /* 상황창 */
+    .bubble-story {
+      background-color: #fff;
+      color: #000;
+      border: var(--pixel-thick) solid var(--pure-black);
+      border-radius: 0px;
+      padding: 12px 15px;
+      font-size: 1.1rem;
+      line-height: 1.4;
+      word-break: keep-all;
+      position: relative;
+      box-shadow: 4px 4px 0 var(--pure-black);
+    }
+
+    .bubble-story::before {
+      content: '';
+      position: absolute;
+      left: -15px;
+      top: 20px;
+      border-width: 8px 15px 8px 0;
+      border-style: solid;
+      border-color: transparent var(--pure-black) transparent transparent;
+      display: block;
+      width: 0;
+    }
+
+    .bubble-story::after {
+      content: '';
+      position: absolute;
+      left: -10px;
+      top: 20px;
+      border-width: 8px 15px 8px 0;
+      border-style: solid;
+      border-color: transparent #fff transparent transparent;
+      display: block;
+      width: 0;
+    }
+
+    /* 슬라이더 조작대 */
+    .sliders-box {
+      background-color: #1A252F;
+      border: var(--pixel-thick) solid var(--pure-black);
+      border-radius: 0px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .slider-row label {
+      width: 100px;
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: var(--soft-yellow);
+    }
+
+    .slider-row input[type="range"] {
+      flex-grow: 1;
+      height: 15px;
+      appearance: none;
+      background: #1e272e;
+      border: 3px solid var(--pure-black);
+      border-radius: 0px;
+      outline: none;
+    }
+
+    .slider-row input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: var(--neon-pink);
+      border: 3px solid var(--pure-black);
+      border-radius: 0px;
+      cursor: pointer;
+    }
+
+    .slider-row span {
+      width: 50px;
+      text-align: right;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    /* 1단계 모달 */
+    .overlay-modal {
+      display: none;
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(26, 28, 35, 0.9);
+      backdrop-filter: blur(5px);
+      z-index: 100;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background-color: #1A252F;
+      border: var(--pixel-thick) solid var(--pure-black);
+      border-radius: 0px;
+      width: 90%;
+      max-width: 520px;
+      padding: 20px;
+      box-shadow: 6px 6px 0 var(--pure-black);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .compare-charts {
+      display: flex;
+      gap: 20px;
+    }
+
+    .compare-side {
+      flex: 1;
+      background-color: #1e272e;
+      border: 3px solid var(--pure-black);
+      border-radius: 0px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .compare-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      text-align: center;
+      color: var(--neon-blue);
+      border-bottom: 2px solid var(--pure-black);
+      padding-bottom: 5px;
+    }
+
+    .mini-bar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .mini-bar-label {
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .mini-bar-container {
+      width: 100%;
+      height: 12px;
+      background: #000;
+      border-radius: 0px;
+      overflow: hidden;
+    }
+
+    .mini-bar-fill {
+      height: 100%;
+      transition: width 0.5s ease;
+    }
+
+    .reflection-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .reflection-box label {
+      font-size: 1.05rem;
+      font-weight: bold;
+      color: var(--soft-yellow);
+    }
+
+    .reflection-box textarea {
+      width: 100%;
+      height: 60px;
+      border: 3px solid var(--pure-black);
+      border-radius: 0px;
+      padding: 8px;
+      font-size: 1rem;
+      resize: none;
+      outline: none;
+      background: #fff;
+      color: #000;
+    }
+
+    #success-toast {
+      display: none;
+      position: absolute;
+      top: 20px;
+      background-color: var(--neon-mint);
+      color: #000;
+      border: var(--pixel-thick) solid var(--pure-black);
+      padding: 10px 20px;
+      font-weight: bold;
+      border-radius: 0px;
+      box-shadow: 4px 4px 0 var(--pure-black);
+      z-index: 100;
+    }
+
+    /* 빨간 플래시 효과 */
+    #flash-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: transparent;
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    .flash-red {
+      animation: flashRedEffect 0.3s;
+    }
+
+    @keyframes flashRedEffect {
+      0%, 100% { background-color: transparent; }
+      50% { background-color: rgba(231, 76, 60, 0.4); }
+    }
+
+    /* 마음온 픽셀 요정 스타일 추가 */
+    .pixel-fairy-container {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      animation: floatFairy 2.5s ease-in-out infinite;
+    }
+    .pixel-fairy-svg {
+      width: 100%;
+      height: 100%;
+    }
+    .fairy-wing-l {
+      animation: flapL 0.2s ease-in-out infinite alternate;
+      transform-origin: 32px 56px;
+    }
+    .fairy-wing-r {
+      animation: flapR 0.2s ease-in-out infinite alternate;
+      transform-origin: 64px 56px;
+    }
+    @keyframes floatFairy {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes flapL {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(12deg); }
+    }
+    @keyframes flapR {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(-12deg); }
+    }
+    .intro-dialog {
+      background-color: rgba(0, 0, 0, 0.85);
+      border: var(--pixel-thick) solid var(--text-main);
+      padding: 15px 20px;
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+      box-shadow: 6px 6px 0 var(--pure-black);
+      position: relative;
+    }
+    .intro-dialog p {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #fff;
+      word-break: keep-all;
+    }
+    .activity-summary-box {
+      margin-top: 15px;
+      border-top: 2px dashed rgba(255, 255, 255, 0.2);
+      padding-top: 12px;
+      text-align: left;
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+    .activity-summary-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .activity-summary-badge {
+      background: #FFD700;
+      color: #000;
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border: 2px solid #000;
+      box-shadow: 2px 2px 0 #000;
+      border-radius: 0px;
+      font-weight: bold;
+    }
+    #stage1-story-text::before, #stage1-story-text::after {
+      display: none !important;
+    }
+
+    /* =========================================
+       인트로(도입) 화면 공통 표준 스타일
+       ========================================= */
+    .std-intro-container {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      background-color: #1a1c23;
+      color: #ffffff;
+      overflow: hidden;
+      font-family: 'DungGeunMo', monospace;
+      z-index: 100; /* 인트로가 항상 최상위 노출 */
+    }
+
+    .std-intro-header-simple {
+      width: 100%;
+      background-color: #2c3e50;
+      border-bottom: 4px solid #000000;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      z-index: 10;
+      box-sizing: border-box;
+    }
+
+    .std-intro-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin: 0;
+      color: #ffffff;
+      text-shadow: 2px 2px 0 #000000;
+    }
+
+    .std-intro-body {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      gap: 32px;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+
+    /* 모바일/태블릿 반응형 대응 */
+    @media (max-width: 768px) {
+      .std-intro-body {
+        flex-direction: column;
+        padding: 16px;
+        gap: 16px;
+        justify-content: flex-start;
+      }
+    }
+
+    .std-intro-char-wrapper-small {
+      width: 195px;
+      height: 195px;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .std-intro-char-wrapper-small {
+        width: 135px;
+        height: 135px;
+      }
+    }
+
+    .std-intro-char-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      animation: miniFloat 2.5s ease-in-out infinite;
+    }
+
+    .std-intro-unified-box {
+      background-color: #1e293b;
+      border: 4px solid #000000;
+      padding: 20px;
+      width: 100%;
+      max-width: 520px;
+      min-height: 220px;
+      box-shadow: 4px 4px 0 #000000;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .std-intro-dialog-inner {
+      color: #f1f5f9;
+      font-size: 0.975rem;
+      line-height: 1.6;
+      text-align: left;
+      word-break: keep-all;
+    }
+
+    .std-intro-divider {
+      height: 2px;
+      background-color: #475569;
+      width: 100%;
+    }
+
+    .std-intro-activities-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .std-activity-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .std-activity-badge {
+      background-color: #eab308;
+      color: #000000;
+      font-size: 0.775rem;
+      padding: 2px 6px;
+      font-weight: 800;
+      flex-shrink: 0;
+      border: 1px solid #000;
+    }
+
+    .std-activity-text {
+      color: #ffffff;
+      font-size: 0.875rem;
+      font-weight: bold;
+    }
+
+    .std-intro-footer {
+      width: 100%;
+      background-color: #2c3e50;
+      border-top: 4px solid #000000;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+      z-index: 10;
+      box-sizing: border-box;
+    }
+
+    .std-footer-btn-left {
+      padding: 10px 24px;
+      background-color: #475569;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 0.8rem;
+      border: 2px solid #000000;
+      box-shadow: 3px 3px 0 #000000;
+      cursor: pointer;
+      transition: all 0.1s;
+      font-family: 'DungGeunMo', monospace;
+    }
+
+    .std-footer-btn-left:hover {
+      background-color: #64748b;
+    }
+
+    .std-footer-btn-left:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 #000000;
+    }
+
+    .std-footer-btn-right {
+      padding: 10px 32px;
+      background-color: #fde047;
+      color: #000000;
+      font-weight: 800;
+      font-size: 0.85rem;
+      border: 2px solid #000000;
+      box-shadow: 3px 3px 0 #000000;
+      cursor: pointer;
+      transition: all 0.1s;
+      font-family: 'DungGeunMo', monospace;
+    }
+
+    .std-footer-btn-right:hover {
+      background-color: #facc15;
+    }
+
+    .std-footer-btn-right:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 #000000;
+    }
+
+    /* 공통 표준 헤더 및 하단바 스타일 (self_control.html 기준 동기화) */
+    #standard-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 52px;
+      background-color: #1e293b;
+      border-bottom: 4px solid #000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 50;
+    }
+    #control-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 44px;
+      background-color: #1e293b;
+      border-top: 4px solid #000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 50;
+    }
+    /* 본활동 전용 높이 영역 공제 (상단 헤더 52px + 하단 푸터 44px 제외) */
+    #view-stage1, #view-stage2 {
+      top: 52px !important;
+      height: calc(100% - 96px) !important;
+      padding: 12px 16px !important;
+      position: absolute !important;
+      width: 100% !important;
+      left: 0 !important;
+    }
+    
+    /* 기존 옛날 헤더/진행바 무력화 */
+    #stage-bar {
+      display: none !important;
+    }
+    
+    /* 부모 컨테이너 풀스크린화 */
+    #app-container {
+      display: flex !important;
+      flex-direction: column !important;
+      height: 100vh !important;
+      max-height: none !important;
+      max-width: none !important;
+      width: 100vw !important;
+      border: none !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      overflow: hidden !important;
+      position: relative !important;
+    }
+
+    /* 마음온 가이드 배너 공통 스타일 및 레이아웃 조율 */
+    .std-guide-banner {
+      background-color: #312e81 !important; /* 약간 더 밝아진 산뜻한 레트로 인디고 블루 */
+      border: 3px solid #000000 !important;
+      box-shadow: 2px 2px 0px #000000 !important;
+      border-radius: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      padding: 6px 12px !important;
+      width: 100% !important;
+      height: 48px !important;
+      flex-shrink: 0 !important;
+      margin-top: -12px !important; /* 상단 헤더바 밀착 */
+      position: relative !important;
+    }
+    @keyframes bounceFairy {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+  </style>
+</head>
+<body class="bg-[#1a1c23] text-white flex justify-center items-center min-h-screen overflow-hidden transition-all duration-500 retro-theme" id="app-body">
+
+  <div id="flash-overlay"></div>
+
+  <div id="app-container" class="w-full h-screen relative bg-[#1a1c23] overflow-hidden flex flex-col rounded-none text-white">
+    <!-- 공통 표준 상단 헤더바 (self_control.html 기준) -->
+    <div id="standard-header" class="w-full bg-[#1e293b] border-b-4 border-black px-6 py-2.5 flex justify-between items-center z-50 shrink-0 text-white select-none hidden" style="height: 52px; font-family: 'DungGeunMo', monospace;">
+      <!-- 좌측: 고유 역량 이미지 아이콘 & 역량명 -->
+      <div class="flex items-center gap-2">
+        <div class="relative w-10 h-10 flex items-center justify-center overflow-visible" style="margin-left: -5px; margin-right: 5px;">
+          <img src="images/icon_empathy.png" alt="역량 아이콘" class="absolute w-24 h-24 object-contain max-w-none" id="header-logo-icon" style="image-rendering: pixelated; transform: scale(2.4); z-index: 20; pointer-events: none; top: -28px; left: -26px;">
+        </div>
+        <span class="font-bold text-[1.15rem] tracking-tight" id="header-competency-name" style="margin-left: 5px;">사이버 공감</span>
+      </div>
+      
+      <!-- 가운데: 활동명 및 진행 상태 (도트) -->
+      <div class="flex items-center gap-4">
+        <span class="text-xs font-bold text-slate-300" id="stage-title-text">사이버 공감</span>
+        <div class="flex items-center gap-1.5" id="header-progress-dots">
+          <span class="w-3 h-3 rounded-full border-2 border-black bg-slate-500 stage-dot flex items-center justify-center font-bold text-[8px]" id="dot-1">1</span>
+          <span class="w-3 h-3 rounded-full border-2 border-black bg-slate-500 stage-dot flex items-center justify-center font-bold text-[8px]" id="dot-2">2</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 상단 진행 상황 바 -->
+    <div id="stage-bar" class="flex justify-between items-center p-3.5 px-5 bg-[#1A252F] border-b-4 border-black text-white">
+      <div class="stage-title text-[1.4rem] font-bold text-[#ff79c6] retro-shadow" id="stage-title-text">사이버 공감 : 1단계</div>
+      <div class="stage-dots flex gap-3">
+        <div class="stage-dot w-6 h-6 bg-[#ff79c6] border-2 border-black flex justify-center items-center text-xs font-bold text-black rounded-none-none active shadow-[0_0_8px_#ff79c6]" id="dot-1">1</div>
+        <div class="stage-dot w-6 h-6 bg-[#555] border-2 border-black flex justify-center items-center text-xs font-bold text-white rounded-none-none" id="dot-2">2</div>
+      </div>
+    </div>
+
+    <!-- ==========================================================
+         인트로: 마음온 브리핑 화면
+         ========================================================== -->
+    <div id="view-intro" class="std-intro-container">
+      <!-- 상단 헤더 영역 (심플 헤더) -->
+      <div class="std-intro-header-simple">
+        <h1 class="std-intro-title">사이버 공감</h1>
+      </div>
+
+      <!-- 메인 본문 영역 -->
+      <div class="std-intro-body">
+        <!-- 좌측 캐릭터 영역 (더 작아짐) -->
+        <div class="std-intro-char-wrapper-small">
+          <img src="images/maeumon_intro.png" alt="마음온" class="std-intro-char-img">
+        </div>
+
+        <!-- 우측 단일 통합 상자 (대사 + 활동 요약) -->
+        <div class="std-intro-unified-box">
+          <!-- 대사 -->
+          <div class="std-intro-dialog-inner">
+            "온라인에서 친구가 남긴 짧은 글이나 이모티콘에는 여러 가지 복잡한 속마음이 섞여 있어. 그래서 겉으로 보이는 글 뒤에 숨은 진짜 마음에 주파수를 맞춰야 해."
+          </div>
+          <!-- 구분선 -->
+          <div class="std-intro-divider"></div>
+          <!-- 활동 요약 목록 -->
+          <div class="std-intro-activities-inner">
+            <div class="std-activity-row">
+              <span class="std-activity-badge">활동 1</span>
+              <span class="std-activity-text">친구의 댓글 속 복합적인 감정 비율 분석하고 이유 적기</span>
+            </div>
+            <div class="std-activity-row">
+              <span class="std-activity-badge">활동 2</span>
+              <span class="std-activity-text">친구의 마음을 이해하고 공감 메시지 조합해서 보내기</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 하단 버튼 영역 (좌측: 홈, 우측: 활동 시작) -->
+      <div class="std-intro-footer">
+        <button onclick="exitToMap()" class="std-footer-btn-left">🏠 홈으로</button>
+        <button id="btn-start-training" class="std-footer-btn-right">활동 시작하기 ▶</button>
+      </div>
+
+      <script>
+        function exitToMap() {
+          try {
+            if (window.parent && window.parent !== window) {
+              window.parent.postMessage({ type: 'RETURN_TO_MAP' }, '*');
+            } else {
+              window.location.href = 'index.html';
+            }
+          } catch (e) {
+            window.location.href = 'index.html';
+          }
+        }
+      </script>
+    </div>
+
+    <!-- ==========================================================
+         스테이지 1: 마음 포션 제조기 (좌우 2분할 레이아웃)
+         ========================================================== -->
+    <div id="view-stage1" class="view hidden flex-grow p-5 pb-28 flex flex-col gap-3 overflow-y-auto">
+      <!-- 임시 스킵 단추 -->
+      <button class="temp-skip-btn" onclick="skipStage()" style="position: absolute; top: 10px; right: 10px; z-index: 100; font-size: 0.75rem; padding: 4px 8px; background: #e67e22; color: #fff; border: 2px solid #000; cursor: pointer; font-family: 'DungGeunMo', monospace;">스킵 ⏭️</button>
+
+      <!-- 마음온 AI 가이드 배너 -->
+      <div class="std-guide-banner mb-2">
+        <!-- 정밀 인라인 크기(38px) 픽스 및 돌출값 최적화 -->
+        <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
+          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+        </div>
+        <div class="flex-grow flex flex-col justify-center" style="margin-left: 6px;">
+          <div class="flex justify-between items-center w-full">
+            <span class="text-[10.5px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
+            <span id="stage1-progress-text" class="text-[9px] font-bold text-slate-400" style="font-family: 'DungGeunMo', monospace !important;">사연 1 / 3</span>
+          </div>
+          <span class="text-[12px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;">
+            "친구의 댓글 속 복합적인 감정 비율을 분석하고 그렇게 판단한 이유를 적어주세요!"
+          </span>
+        </div>
+      </div>
+
+      <div class="flex gap-5 flex-grow overflow-hidden h-[410px]">
+        <!-- 좌측 패널 (SNS 상황 또는 하트 그릇) -->
+        <div id="stage1-left-panel" class="w-[45%] flex flex-col justify-center bg-[#1e272e] border-4 border-black p-3 shadow-[inset_4px_4px_0_rgba(0,0,0,0.3)] relative">
+        <!-- SNS 상황 카드 -->
+        <div class="bubble-story text-black text-sm w-full bg-white border-4 border-black p-3.5 shadow-[4px_4px_0_#000]" id="stage1-story-text">
+          사연 로딩 중...
+        </div>
+
+        <!-- 감정 하트 뷰어 (초기 숨김) -->
+        <div id="potion-viewer" class="w-full flex flex-col items-center justify-center hidden" style="display: none;">
+          <div class="heart-svg-container" style="display: flex; justify-content: center; align-items: center; width: 140px; height: 140px; position: relative;">
+            <svg width="120" height="120" viewBox="0 0 100 100" style="overflow: visible;">
+              <defs>
+                <clipPath id="heart-clip">
+                  <path d="M 50 90 C 50 90 10 60 10 35 A 20 20 0 0 1 50 15 A 20 20 0 0 1 90 35 C 90 60 50 90 50 90 Z" />
+                </clipPath>
+              </defs>
+              <!-- Clipped background and layers -->
+              <g clip-path="url(#heart-clip)">
+                <!-- Light gray background for empty heart -->
+                <rect x="0" y="0" width="100" height="100" fill="rgba(255, 255, 255, 0.15)" />
+                <!-- Colored layers (filling from bottom) -->
+                <rect id="potion-layer-2" x="0" y="100" width="100" height="0" fill="transparent" style="transition: y 0.3s, height 0.3s, fill 0.3s;" />
+                <rect id="potion-layer-1" x="0" y="100" width="100" height="0" fill="transparent" style="transition: y 0.3s, height 0.3s, fill 0.3s;" />
+                <rect id="potion-layer-0" x="0" y="100" width="100" height="0" fill="transparent" style="transition: y 0.3s, height 0.3s, fill 0.3s;" />
+              </g>
+              <!-- Heart thick border on top -->
+              <path d="M 50 90 C 50 90 10 60 10 35 A 20 20 0 0 1 50 15 A 20 20 0 0 1 90 35 C 90 60 50 90 50 90 Z" fill="none" stroke="black" stroke-width="6" stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div id="potion-total-bar" class="mt-4 text-center text-[1.2rem] font-bold text-[#ffccd5]">감정 합계: 0% / 100%</div>
+          <div class="text-[0.85rem] text-[#ccc] mt-1.5 text-center">합계가 딱 100%가 되면 마음이 완성됩니다!</div>
+        </div>
+      </div>
+
+      <!-- 우측 패널 (감정 선택 또는 슬라이더) -->
+      <div id="stage1-right-panel" class="w-[55%] flex flex-col justify-between bg-[#1b252f]/40 border-4 border-black p-3 shadow-[inset_4px_4px_0_rgba(0,0,0,0.2)]">
+        <!-- 감정 선택 패널 -->
+        <div id="emotion-selection-panel" class="flex flex-col gap-2.5 h-full justify-between">
+          <div class="flex flex-col gap-2">
+            <div class="text-[1.05rem] font-bold text-yellow-350" id="emotion-selection-title">💡 이 상황에서 친구의 감정은 어떤 것일지 3가지를 골라보세요.</div>
+            <div class="grid grid-cols-4 gap-2 mt-1" id="emotion-chips-container">
+              <!-- JS에서 8가지 감정 칩 동적 생성 -->
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <div class="text-xs text-gray-300 text-center font-bold" id="emotion-selection-count">선택된 감정: 0 / 3</div>
+            <button class="retro-btn disabled w-full py-2" id="btn-create-sliders" disabled style="font-size: 1.1rem;">선택 완료 ❤️</button>
+          </div>
+        </div>
+
+        <!-- 슬라이더 조작 패널 -->
+        <div id="sliders-panel" class="flex flex-col gap-2.5 h-full justify-between hidden" style="display: none;">
+          <div class="flex flex-col gap-2">
+            <div class="text-[1.05rem] font-bold text-green-300">❤️ 선택한 3가지 감정의 비율을 조절하여 100% 마음을 완성해 보세요.</div>
+            <div class="sliders-box mt-1" id="sliders-box-container">
+              <!-- JS에서 동적으로 선택된 3가지 슬라이더 생성 -->
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button class="retro-btn" id="btn-back-to-selection" style="background-color: #7f8c8d; font-size: 1.1rem; padding: 10px 15px;">◀ 다시 선택</button>
+            <button class="retro-btn disabled flex-grow" id="btn-analyze-potion" disabled style="font-size: 1.1rem; padding: 10px 15px;">마음 분석하기 🧪</button>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- ==========================================================
+         스테이지 2: 카카오톡 스타일 메신저 감정/블록 조합 (완전 개편)
+         ========================================================== -->
+    <div id="view-stage2" class="view hidden flex-grow p-4 flex flex-col gap-3 overflow-y-auto w-full pb-24 relative">
+      <!-- 임시 스킵 단추 -->
+      <button class="temp-skip-btn" onclick="skipStage()" style="position: absolute; top: 10px; right: 10px; z-index: 100; font-size: 0.75rem; padding: 4px 8px; background: #e67e22; color: #fff; border: 2px solid #000; cursor: pointer; font-family: 'DungGeunMo', monospace;">스킵 ⏭️</button>
+
+      <!-- 마음온 AI 가이드 배너 -->
+      <div class="std-guide-banner mb-2">
+        <!-- 정밀 인라인 크기(38px) 픽스 및 돌출값 최적화 -->
+        <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
+          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+        </div>
+        <div class="flex-grow flex flex-col justify-center" style="margin-left: 6px;">
+          <div class="flex justify-between items-center w-full">
+            <span class="text-[10.5px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
+            <span id="stage2-progress-text" class="text-[9px] font-bold text-slate-400" style="font-family: 'DungGeunMo', monospace !important;">시나리오 1 / 3</span>
+          </div>
+          <span class="text-[12px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;">
+            "친구의 마음에 깊이 공감하고 위로해주는 메시지 카드를 조합해서 보내봐요!"
+          </span>
+        </div>
+      </div>
+
+      <div class="flex gap-4 flex-grow overflow-hidden h-[410px]">
+        <!-- 좌측 영역: 상황, 메신저, 기분 추측 -->
+        <div class="w-1/2 flex flex-col gap-3 min-w-0">
+
+        <!-- 카카오톡 스타일 채팅창 (내부에 입력바 통합) -->
+        <div class="flex-grow min-h-[220px] bg-[#ecf0f1] border-4 border-black rounded-none p-3.5 flex flex-col justify-between overflow-y-auto shadow-[4px_4px_0_#000]">
+          <div class="flex flex-col gap-3 overflow-y-auto flex-grow pb-2">
+
+            <!-- 친구 메시지 말풍선 -->
+            <div class="flex gap-2 items-start max-w-[85%] self-start" id="chat-friend-row">
+              <div class="w-7 h-7 rounded-none bg-slate-200 flex justify-center items-center text-xs border-2 border-black text-black font-bold">👤</div>
+              <div class="flex flex-col gap-1">
+                <span class="text-[10px] text-slate-800 font-black" id="chat-friend-label">친구</span>
+                <div id="chat-friend-bubble" class="bg-[#e0f7fa] text-black border-4 border-black rounded-none p-2.5 text-xs font-bold leading-relaxed break-all relative shadow-[4px_4px_0_#000]">
+                  <span id="chat-typed-text"></span>
+                  <span id="chat-cursor" class="w-1.5 h-3.5 inline-block bg-slate-800 ml-0.5 animate-pulse"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 내 전송 말풍선 -->
+            <div class="flex gap-2 items-start max-w-[85%] self-end hidden" id="chat-my-row">
+              <div class="flex flex-col gap-1 items-end">
+                <span class="text-[10px] text-slate-800 font-black">나</span>
+                <div id="chat-my-bubble" class="bg-[#fff9c4] text-black border-4 border-black rounded-none p-2.5 text-xs font-bold leading-relaxed break-keep relative shadow-[4px_4px_0_#000]">
+                  <!-- 조합된 메시지가 동적으로 들어갈 자리 -->
+                </div>
+              </div>
+              <div class="w-7 h-7 rounded-none bg-[#FFD700] flex justify-center items-center text-xs border-2 border-black text-black font-bold">나</div>
+            </div>
+
+            <!-- 전송 로더 -->
+            <div id="chat-loader" class="self-end mr-3 flex items-center gap-1.5 text-[10px] text-slate-650 font-bold hidden">
+              <span class="animate-spin text-sm">⏳</span> 전송하는 중...
+            </div>
+          </div>
+
+          <!-- 내장형 입력바 -->
+          <div id="chat-messenger-input-bar" class="mt-2 pt-2 border-t-4 border-black flex gap-2 items-stretch transition-all duration-300 opacity-40 pointer-events-none">
+            <span id="chat-medal-icon" class="text-xl flex items-center justify-center hidden" style="image-rendering: pixelated; margin-right: 2px;">🥇</span>
+            <div id="chat-preview-text" class="flex-grow bg-[#ffffff] border-4 border-black p-2 rounded-none text-[12px] font-bold text-black leading-relaxed break-keep min-h-[38px] flex items-center gap-1 shadow-[inset_1px_1px_3px_rgba(0,0,0,0.1)]">
+              <!-- 동적으로 칩 텍스트가 바인딩됨 -->
+            </div>
+            <button id="chat-send-btn" disabled class="p-2 px-3 font-extrabold text-xs border-4 border-black shadow-[4px_4px_0_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none rounded-none transition-all flex justify-center items-center gap-1 bg-gray-500 text-slate-700 cursor-not-allowed">
+              <span>전송</span> 📤
+            </button>
+          </div>
+        </div>
+
+        <!-- 감정 추측 영역 (개별 카드형 분리) -->
+        <div id="chat-emotion-section" class="transition-all duration-300 opacity-40 pointer-events-none bg-[#2c3e50] p-3 border-4 border-black shadow-[4px_4px_0_#000] rounded-none text-white">
+          <h3 class="text-[12px] font-black text-yellow-300 mb-2 pl-0.5 flex items-center gap-1">🔍 이 친구는 지금 어떤 기분일까?</h3>
+          <div class="grid grid-cols-4 gap-2" id="chat-emotion-buttons">
+            <!-- JS 동적 생성 -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 우측 영역: 블록 선택 영역 (단계별 개별 카드형 분리) -->
+      <div class="w-1/2 flex flex-col gap-3 min-w-0">
+        <div id="chat-block-section" class="flex flex-col gap-2 transition-all duration-300 opacity-40 pointer-events-none">
+          <!-- 1단계 카드 -->
+          <div class="bg-[#1e293b] p-2 border-4 border-black shadow-[4px_4px_0_#000] rounded-none text-white">
+            <h4 class="text-[12px] font-black text-blue-300 mb-1 pl-0.5 flex items-center gap-1">💙 1단계: 감정을 알아줘요</h4>
+            <div class="grid grid-cols-2 gap-1" id="chat-blocks-cat1"></div>
+          </div>
+          <!-- 2단계 카드 -->
+          <div class="bg-[#1e293b] p-2 border-4 border-black shadow-[4px_4px_0_#000] rounded-none text-white">
+            <h4 class="text-[12px] font-black text-purple-300 mb-1 pl-0.5 flex items-center gap-1">💜 2단계: 공감해요</h4>
+            <div class="grid grid-cols-2 gap-1" id="chat-blocks-cat2"></div>
+          </div>
+          <!-- 3단계 카드 -->
+          <div class="bg-[#1e293b] p-2 border-4 border-black shadow-[4px_4px_0_#000] rounded-none text-white">
+            <h4 class="text-[12px] font-black text-green-300 mb-1 pl-0.5 flex items-center gap-1">💚 3단계: 응원해요</h4>
+            <div class="grid grid-cols-2 gap-1" id="chat-blocks-cat3"></div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- 피드백 팝업 모달 -->
+      <div id="chat-feedback-card" class="overlay-modal">
+        <div class="modal-content" style="background-color: #ffffff; color: #333333; max-width: 520px; width: 90%;">
+          <div class="flex justify-between items-center border-b pb-2 mb-3 border-black">
+            <h3 class="text-xs font-black text-slate-855">💡 마음 온(ON)의 공감 피드백</h3>
+            <span class="text-lg">💖</span>
+          </div>
+          <div class="flex flex-col gap-2.5">
+            <div id="chat-feedback-desc" class="bg-blue-50 text-slate-800 border-2 border-black p-3.5 rounded-none text-xs leading-relaxed font-bold break-keep shadow-[2px_2px_0_#000]"></div>
+          </div>
+          <button id="chat-feedback-next-btn" class="w-full mt-2 p-3 bg-[#50fa7b] text-black font-extrabold text-sm border-4 border-black shadow-[4px_4px_0_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none rounded-none">
+            다음 시나리오 →
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==========================================================
+         아웃트로: 활동 완료 뷰 (신규 추가)
+         ========================================================== -->
+    <div id="view-outro" class="std-intro-container view" style="display: none;">
+      <!-- 상단 헤더 영역 (심플 헤더) -->
+      <div class="std-intro-header-simple">
+        <h1 class="std-intro-title">사이버 공감 활동 완료 🌟</h1>
+      </div>
+
+      <!-- 메인 본문 영역 (좌측 캐릭터 복원, 우측 성찰대사 통합 개편) -->
+      <div class="std-intro-body" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 30px; padding: 20px 40px !important; box-sizing: border-box;">
+        
+        <!-- 좌측 캐릭터 영역 (마음온 캐릭터 원래대로 복원) -->
+        <div class="std-intro-char-wrapper-small">
+          <img src="images/maeumon_outro.png" alt="마음온" class="std-intro-char-img">
+        </div>
+
+        <!-- 우측 단일 통합 상자 (밝은 배경색 적용, 배지+배지제목+설명 텍스트 수직 구성) -->
+        <div class="std-intro-unified-box" style="flex-grow: 1; height: auto; min-height: 240px; display: flex; flex-direction: column; align-items: stretch; padding: 15px 25px 20px 25px !important; box-shadow: 6px 6px 0 #000000; border: 4px solid #000000; background-color: #f8fafc; color: #000000; margin: 0; max-width: 550px; gap: 10px;">
+          
+          <!-- 상단: 배지 아이콘 + 배지 타이틀 (경계선 구분) -->
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 8px; flex-shrink: 0;">
+            <!-- 크기 5배 상향된 뱃지 이미지 -->
+            <div style="width: 50px; height: 50px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 30px 0 10px 0; flex-shrink: 0;">
+              <img src="images/icon_empathy.png" alt="공감 뱃지" style="width: 160px; height: 160px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
+            </div>
+            <span style="font-size: 1.25rem; color: #1e3a8a; font-weight: bold; margin-top: 10px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [사이버 공감] 배지 획득!</span>
+          </div>
+
+          <!-- 하단: 코멘트/설명 텍스트 (줄바꿈/들여쓰기 제거, 검정 폰트색상 적용) -->
+          <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.05rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">글이나 쪽지 속에 숨어있던 눈에 보이지 않는 친구의 복잡한 감정들을 깊이 들여다보고, 상대방의 슬픈 마음에 다정하게 귀를 기울이며 3단계 공감 답변(감정 인정 ➔ 적극 공감 ➔ 응원/격려)을 나눴구나! 너의 속 깊은 공감 능력이 상처받은 마음을 따스하게 지켜줄 거란다.</div>
+        </div>
+
+      </div>
+
+      <!-- 하단 버튼 영역 (오른쪽 정렬 및 가로 넓이 확장) -->
+      <div class="std-intro-footer" style="justify-content: flex-end !important; padding: 16px 40px !important;">
+        <button onclick="finishStage()" class="std-footer-btn-right" style="width: 380px; box-shadow: 4px 4px 0 #000; font-size: 1.1rem; height: 48px;">활동완료 & 대시보드로 돌아가기 ➔</button>
+      </div>
+    </div>
+
+    <!-- 공감 비교 및 성찰 모달 (최상위 레이어 이동) -->
+    <div id="compare-modal" class="overlay-modal">
+      <div class="modal-content">
+        <h2 class="text-[1.6rem] font-bold text-[#ff79c6] text-center retro-shadow">🧪 마음 분석 결과 🧪</h2>
+        
+        <div class="bg-[#1e272e] border-3 border-black p-3.5 flex flex-col gap-2">
+          <div class="compare-title">내가 분석한 감정 비율</div>
+          <div id="my-compare-bars" class="flex flex-col gap-2"></div>
+        </div>
+
+
+
+        <div class="reflection-box">
+          <label for="reflection-textarea" id="reflection-prompt-label" class="text-xs text-yellow-250 font-bold">친구의 감정을 왜 그렇게 분석했나요? 내 생각을 짧게 적어주세요!</label>
+          <textarea id="reflection-textarea" class="w-full h-12 bg-white text-black p-2 border-2 border-black rounded-none text-xs outline-none resize-none" placeholder="여기에 이유를 적어주세요 (최소 5자 입력 필요)" oninput="validateReflection()"></textarea>
+        </div>
+
+        <button class="retro-btn disabled" id="btn-submit-opinion" disabled>의견 저장 및 다음 상황 ▶</button>
+      </div>
+    </div>
+
+        <!-- 공통 표준 하단 푸터바 (self_control.html 기준) -->
+    <div id="control-bar" class="w-full bg-[#1e293b] border-t-4 border-black px-6 py-1.5 flex justify-between items-center z-50 shrink-0 select-none hidden" style="height: 44px; font-family: 'DungGeunMo', monospace;">
+      <!-- 좌측: 이전 단계 -->
+      <button id="btn-prev" class="px-4 py-1 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="prevStage()">
+        ◀ 이전 단계
+      </button>
+      
+      <!-- 중앙: 홈으로 (맵으로) -->
+      <button id="footer-home-btn" class="px-5 py-1 bg-amber-400 hover:bg-amber-500 text-black text-xs font-black border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="exitToMap()">
+        🏠 홈으로 (맵)
+      </button>
+      
+      <!-- 우측: 다음 단계 -->
+      <button id="btn-next" class="px-4 py-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold border-2 border-black retro-shadow cursor-pointer transition-all active:translate-y-[1px] active:box-shadow-none" onclick="nextStage()">
+        다음 단계 ▶
+      </button>
+    </div>
+  </div>
+  <div id="success-toast"></div>
+
+  <script>
+    // =========================================
+    // [1] Web Audio API 8비트 사운드 믹서
+    // =========================================
+    const AudioHelper = {
+      ctx: null,
+      init() {
+        try {
+          if (!this.ctx) {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+          }
+        } catch (e) {
+          console.warn("AudioContext initialization failed:", e);
+        }
+      },
+      playBuzzer() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(150, now);
+          osc.frequency.exponentialRampToValueAtTime(80, now + 0.3);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        } catch (e) { console.log(e); }
+      },
+      playSuccess() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.08);
+          osc.frequency.setValueAtTime(783.99, now + 0.16);
+          osc.frequency.setValueAtTime(1046.50, now + 0.24);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.4);
+        } catch (e) { console.log(e); }
+      },
+      playPop() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(600, now);
+          osc.frequency.exponentialRampToValueAtTime(1100, now + 0.08);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.1);
+        } catch (e) { console.log(e); }
+      },
+      playArpeggio() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const now = this.ctx.currentTime;
+          const freqs = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
+          freqs.forEach((f, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(f, now + idx * 0.08);
+            gain.gain.setValueAtTime(0.06, now + idx * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.005, now + idx * 0.08 + 0.3);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now + idx * 0.08);
+            osc.stop(now + idx * 0.08 + 0.3);
+          });
+        } catch (e) { console.log(e); }
+      }
+    };
+
+    // =========================================
+    // [2] 전역 애플리케이션 상태 관리
+    // =========================================
+    const state = {
+      currentStage: 0,
+      stageCompleted: [false, false, false],
+
+      // 1단계 상태
+      stage1: {
+        activeScenarioIdx: 0,
+        scenarios: [
+          {
+            type: 'instagram',
+            author: '민지',
+            comment: '오~ 부럽네 나도 나중에 끼워줘!',
+            prompt: '🔍 이 댓글을 남긴 준우의 감정은 어떤 것일지 3가지를 골라보세요.',
+            feedback: "준우는 겉으로는 쿨한 척 아무렇지 않게 댓글을 달았지만, 마음속으로는 친구들의 모임 소식을 보고 소외감과 서운함, 외로움을 복합적으로 느끼고 있을 가능성이 높습니다."
+          },
+          {
+            type: 'kakaotalk',
+            author: '민아',
+            statusMessage: '말해도 모르는 사람들은 평생 모름... 어차피 나 혼자지 뭐',
+            prompt: '🔍 이 상태메시지를 남긴 민아의 감정은 어떤 것일지 3가지를 골라보세요.',
+            feedback: "민아는 단톡방에서 대화가 끊긴 상황에 대해 서운함과 고립감을 느껴, 상태메시지로 우회하여 외로운 감정을 표현하고 있습니다. 친구의 소리 없는 신호에 관심을 기울여 주세요."
+          }
+        ],
+        selectedEmotions: [],
+        currentValues: [5, 5, 5]
+      },
+
+      // 2단계 (카톡 감정/블록 조합) 상태
+      stage2: {
+        activeScenarioIdx: 0,
+        scenarios: [
+          {
+            situation: "친구가 그림 그리기 대회에서 금상을 받았어!",
+            friendName: "서연",
+            friendMessage: "나 완전 기분 완전 좋아! 이번 그림 대회에서 글쎄 내가 금상을 받았어! 진짜 꿈같아!! ><",
+            emotions: ["기쁘다", "뿌듯하다", "자랑스럽다", "놀랍다"],
+            correctEmotions: ["기쁘다", "뿌듯하다", "자랑스럽다"],
+            blockCategory1: ["진짜 기쁘겠다", "그 소식 들으니 나도 행복해", "너무 뿌듯하겠다", "얼마나 노력했는지 알아"],
+            blockCategory2: ["나라도 기분 좋았을 거야", "이해해, 충분히 자랑스러워", "너의 노력이 보상받았어", "그림 실력 인정받은 거야"],
+            blockCategory3: ["앞으로도 계속 응원할게", "넌 정말 대단해!", "우리 같이 축하하자!", "다음 대회도 화이팅!"],
+            emotionFeedbackCorrect: "맞아! 그림 그리기 대회에서 금상을 받으면 날아갈 듯이 기쁘고 뿌듯하며 스스로 자랑스럽지!",
+            emotionFeedbackIncorrect: "친구가 그림 대회 금상 수상을 전하며 아주 자랑스러워하는 감정을 다시 한 번 생각해봐.",
+            feedback: "맞아! 공들여 그린 그림이 대회에서 금상을 차지하면 너무나 기쁘고 마음이 벅차오르지. 서연이의 기쁜 감정에 동참해주고, 그동안의 끊임없는 노력을 응원해 주는 다정하고 멋진 축하 메시지를 훌륭히 전했어!"
+          },
+          {
+            situation: "학교 온라인 과제방에 올린 발표 영상에 모르는 사람이 나쁜 댓글을 달았어",
+            friendName: "지안",
+            friendMessage: "아 발표 영상 온라인 과제방에 올렸는데... 모르는 애가 댓글에 이상한 말 달아놨어. 그냥 영상 지우고 싶어",
+            emotions: ["창피하다", "무섭다", "화가 난다", "속상하다"],
+            correctEmotions: ["창피하다", "무섭다", "속상하다"],
+            blockCategory1: ["많이 창피하고 무서웠겠다", "그 댓글 보고 많이 놀랐겠다", "진짜 속상하겠다", "기분이 많이 안 좋겠다"],
+            blockCategory2: ["나도 그 상황이면 무서웠을 거야", "충분히 그런 기분 들 수 있어", "이해해, 진짜로", "그럴 수 있어, 당연해"],
+            blockCategory3: ["선생님께 말하는 게 좋을 것 같아", "같이 생각해보자", "내가 여기 있을게", "혼자 고민하지 마"],
+            emotionFeedbackCorrect: "맞아! 모르는 사람이 나쁜 말을 달면 창피하고 무섭고 속상할 수 있어.",
+            emotionFeedbackIncorrect: "모르는 사람이 나쁜 댓글을 단 상황을 다시 생각해봐.",
+            feedback: "맞아! 누군가 내 영상에 나쁜 댓글을 달면 창피하고 무서우며 속상한 기분이 들지. 지안이가 더 이상 무서워하지 않고 든든한 해결 방법을 찾을 수 있도록 깊은 공감과 따뜻한 응원의 한마디를 훌륭하게 보내주었어!"
+          }
+        ],
+        selectedEmotion: null,
+        emotionVerified: null,
+        selectedBlocks: [null, null, null],
+        typingTimer: null
+      }
+    };
+
+    const emotionColors = {
+      '서운함': '#9b59b6',
+      '외로움': '#7f8c8d',
+      '분노': '#e74c3c',
+      '슬픔': '#3498db',
+      '당황': '#f1c40f',
+      '억울함': '#e67e22',
+      '창피함': '#ff79c6',
+      '불안': '#1abc9c'
+    };
+
+    const bgColors = {
+      1: "#1a1c23", // 8비트 남색
+      2: "#F5F5F5"  // 2단계 배경 연회색
+    };
+
+    const stageTitles = {
+      0: "활동 안내",
+      1: "사이버 공감 활동 1: 친구 댓글 속 감정 비율 분석 및 판단 성찰하기",
+      2: "사이버 공감 활동 2: 친구 마음 공감하고 위로 메시지 완성하기",
+      3: "사이버 공감 활동 완료"
+    };
+
+    // =========================================
+    // [3] 공통 진행 및 레이아웃 처리
+    // =========================================
+    function updateStageUI() {
+      const body = document.getElementById('app-body');
+      
+      const header = document.getElementById("standard-header");
+      const footer = document.getElementById("control-bar");
+
+      // 뷰 활성화 토글
+      if (state.currentStage === 0) {
+        document.getElementById('view-intro').classList.remove('hidden');
+        document.getElementById('view-stage1').classList.add('hidden');
+        document.getElementById('view-stage2').classList.add('hidden');
+        if (document.getElementById('view-outro')) document.getElementById('view-outro').classList.add('hidden');
+        body.className = "bg-[#1a1c23] text-white flex justify-center items-center min-h-screen overflow-hidden transition-all duration-500 retro-theme";
+        
+        // 상하단바 가리기
+        if (header) header.classList.add('hidden');
+        if (footer) footer.classList.add('hidden');
+      } else if (state.currentStage === 1) {
+        document.getElementById('view-intro').classList.add('hidden');
+        document.getElementById('view-stage1').classList.remove('hidden');
+        document.getElementById('view-stage2').classList.add('hidden');
+        if (document.getElementById('view-outro')) document.getElementById('view-outro').classList.add('hidden');
+        body.className = "bg-[#1a1c23] text-white flex justify-center items-center min-h-screen overflow-hidden transition-all duration-500 retro-theme";
+        
+        // 상하단바 보이기
+        if (header) header.classList.remove('hidden');
+        if (footer) footer.classList.remove('hidden');
+      } else if (state.currentStage === 2) {
+        document.getElementById('view-intro').classList.add('hidden');
+        document.getElementById('view-stage1').classList.add('hidden');
+        document.getElementById('view-stage2').classList.remove('hidden');
+        if (document.getElementById('view-outro')) document.getElementById('view-outro').classList.add('hidden');
+        body.className = "bg-[#1a1c23] text-white flex justify-center items-center min-h-screen overflow-hidden transition-all duration-500 retro-theme";
+        
+        // 상하단바 보이기
+        if (header) header.classList.remove('hidden');
+        if (footer) footer.classList.remove('hidden');
+      } else if (state.currentStage === 3) {
+        document.getElementById('view-intro').classList.add('hidden');
+        document.getElementById('view-stage1').classList.add('hidden');
+        document.getElementById('view-stage2').classList.add('hidden');
+        if (document.getElementById('view-outro')) {
+          document.getElementById('view-outro').classList.remove('hidden');
+          document.getElementById('view-outro').style.setProperty('display', 'flex', 'important');
+        }
+        body.className = "bg-[#1a1c23] text-white flex justify-center items-center min-h-screen overflow-hidden transition-all duration-500 retro-theme";
+        
+        // 상하단바 가리기
+        if (header) header.classList.add('hidden');
+        if (footer) footer.classList.add('hidden');
+      }
+
+      // 상단 타이틀 및 인디케이터 도트 (self_control.html 규격으로 완전 동기화)
+      const titleText = document.getElementById("stage-title-text");
+      if (titleText) titleText.innerText = stageTitles[state.currentStage];
+
+      const dot1 = document.getElementById("dot-1");
+      const dot2 = document.getElementById("dot-2");
+
+      if (dot1) dot1.className = "w-3 h-3 rounded-full border-2 border-black bg-slate-500 stage-dot flex items-center justify-center font-bold text-[8px]";
+      if (dot2) dot2.className = "w-3 h-3 rounded-full border-2 border-black bg-slate-500 stage-dot flex items-center justify-center font-bold text-[8px]";
+
+      if (state.currentStage === 0) {
+        // 인트로 상태 도트 초기화
+      } else if (state.currentStage === 1) {
+        if (dot1) dot1.classList.add('active');
+      } else if (state.currentStage === 2) {
+        if (dot1) dot1.classList.add('completed');
+        if (dot2) dot2.classList.add('active');
+      }
+
+      // 하단 버튼 제어
+      const prevBtn = document.getElementById('btn-prev');
+      const nextBtn = document.getElementById('btn-next');
+
+      if (prevBtn) {
+        if (state.currentStage <= 1) {
+          prevBtn.style.setProperty('opacity', '0.5', 'important');
+          prevBtn.style.setProperty('cursor', 'not-allowed', 'important');
+          prevBtn.classList.add('disabled');
+        } else {
+          prevBtn.style.setProperty('opacity', '1', 'important');
+          prevBtn.style.setProperty('cursor', 'pointer', 'important');
+          prevBtn.classList.remove('disabled');
+        }
+      }
+
+      // 1단계일 때는 stageCompleted[1]에 따라 다음 버튼 판단
+      if (nextBtn) {
+        const isCompleted = !!state.stageCompleted[state.currentStage];
+        if (isCompleted) {
+          nextBtn.style.setProperty('opacity', '1', 'important');
+          nextBtn.style.setProperty('cursor', 'pointer', 'important');
+          nextBtn.classList.remove('disabled');
+        } else {
+          nextBtn.style.setProperty('opacity', '0.5', 'important');
+          nextBtn.style.setProperty('cursor', 'not-allowed', 'important');
+          nextBtn.classList.add('disabled');
+        }
+
+        if (state.currentStage === 2) {
+          nextBtn.innerText = "활동 완료 ➔";
+        } else {
+          nextBtn.innerText = "다음 단계 ▶";
+        }
+      }
+
+      // 각 단계 초기화 로직
+      if (state.currentStage === 1) {
+        setupScenario();
+      } else if (state.currentStage === 2) {
+        initStage2();
+      }
+    }
+
+    function startTraining() {
+      state.currentStage = 1;
+      updateStageUI();
+    }
+
+    function nextStage() {
+      const nextBtn = document.getElementById('btn-next');
+      if (nextBtn && nextBtn.classList.contains('disabled')) {
+        playFailSound();
+        if (state.currentStage === 1) {
+          alert("감정 분석 미션을 아직 완료하지 않았습니다! 친구의 댓글 속 복합적인 감정 비율을 분석하고 그렇게 생각한 이유(5자 이상)를 성찰 상자에 적어 '의견 저장 및 다음 상황'을 클릭해 완료해 주세요!");
+        } else if (state.currentStage === 2) {
+          alert("공감 메시지 조합 미션을 완료해 주세요! 속상해하는 친구의 마음에 알맞은 공감 메시지 카드 조각들을 빈칸에 정확하게 맞추어 완성한 뒤 대화방에 전송해 주세요!");
+        }
+        return;
+      }
+
+      playBeepSound();
+      if (state.currentStage < 3) {
+        state.currentStage++;
+        updateStageUI();
+      }
+    }
+
+    function prevStage() {
+      const prevBtn = document.getElementById('btn-prev');
+      if (prevBtn && prevBtn.classList.contains('disabled')) return;
+      playBeepSound();
+      if (state.currentStage > 1) {
+        state.currentStage--;
+        updateStageUI();
+      }
+    }
+
+    function playBeepSound() {
+      if (typeof AudioHelper !== 'undefined') {
+        try { AudioHelper.playSelect(); } catch(e) {}
+      }
+    }
+    function playFailSound() {
+      if (typeof AudioHelper !== 'undefined') {
+        try { AudioHelper.playSelect(); } catch(e) {}
+      }
+    }
+
+    function prevStageOld() {
+      if (state.currentStage > 1) {
+        state.currentStage--;
+        updateStageUI();
+      }
+    }
+
+    function skipStage() {
+      state.stageCompleted[state.currentStage] = true;
+      showToast(`테스트 모드: ${state.currentStage}단계를 스킵했습니다!`);
+      updateStageUI();
+    }
+
+    function showToast(message, isWarning = false) {
+      let toast = document.getElementById('success-toast');
+      toast.innerText = message;
+      if (isWarning) {
+        toast.style.backgroundColor = '#ff79c6';
+        toast.style.color = '#000';
+      } else {
+        toast.style.backgroundColor = 'var(--neon-mint)';
+        toast.style.color = '#000';
+      }
+      toast.style.display = 'block';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      
+      if (toast.timeoutId) clearTimeout(toast.timeoutId);
+      toast.timeoutId = setTimeout(() => {
+        toast.style.display = 'none';
+      }, 2500);
+    }
+
+    // =========================================
+    // [4] 1단계 마음 포션 제조기 구현
+    // =========================================
+    const stage1Emotions = ['서운함', '외로움', '분노', '슬픔', '당황', '억울함', '창피함', '불안'];
+
+    function renderSNSPost(scenario) {
+      if (scenario.type === 'instagram') {
+        if (scenario.author === '민지') {
+          return `
+            <div class="flex flex-col gap-2.5 font-sans text-black">
+              <!-- SNS 헤더 -->
+              <div class="flex items-center justify-between border-b pb-1.5 border-gray-300">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-full bg-slate-200 border-2 border-black flex items-center justify-center font-bold text-sm">👤</div>
+                  <div class="flex flex-col text-left">
+                    <span class="text-xs font-bold text-slate-800">${scenario.author}</span>
+                    <span class="text-[9px] text-gray-500">@minji_love</span>
+                  </div>
+                </div>
+              </div>
+              <!-- SNS 이미지 영역 -->
+              <div class="bg-amber-100 border-2 border-black h-24 flex flex-col items-center justify-center font-bold text-xs text-amber-900 shadow-[inset_2px_2px_0_rgba(0,0,0,0.1)] overflow-hidden relative">
+                <img src="images/maratang.jpg" alt="주말 마라탕 모임 사진" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="absolute inset-0 flex flex-col items-center justify-center bg-amber-100" style="display: none;">
+                  <span>🍲 [주말 마라탕 모임 사진]</span>
+                  <span class="text-[9px] text-amber-750/80 font-normal mt-0.5">#마라탕 #친구들 #꿀잼</span>
+                </div>
+              </div>
+              <!-- SNS 본문 -->
+              <div class="text-xs text-left leading-normal text-slate-855">
+                <span class="font-extrabold text-black mr-1.5">${scenario.author}</span>주말이 순식간에 지나가 버렸네~ 단짝들 뭉침!
+              </div>
+              <!-- SNS 댓글 영역 -->
+              <div class="border-t pt-2 border-gray-200">
+                <div class="bg-rose-50/50 p-2 border-2 border-dashed border-rose-450 rounded-sm text-left">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="font-bold text-xs text-rose-700">💬 준우의 댓글:</span>
+                    <span class="text-[9px] text-gray-400 font-bold">10분 전</span>
+                  </div>
+                  <p class="text-xs text-slate-800 font-bold bg-white p-2 border-2 border-black shadow-[2px_2px_0_#000]">${scenario.comment}</p>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          // 준희의 인스타그램 글 (소외감 상황)
+          return `
+            <div class="flex flex-col gap-2.5 font-sans text-black">
+              <!-- SNS 헤더 -->
+              <div class="flex items-center justify-between border-b pb-1.5 border-gray-300">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-full bg-slate-200 border-2 border-black flex items-center justify-center font-bold text-sm">👤</div>
+                  <div class="flex flex-col text-left">
+                    <span class="text-xs font-bold text-slate-800">${scenario.author}</span>
+                    <span class="text-[9px] text-gray-500">@junhee_daily</span>
+                  </div>
+                </div>
+              </div>
+              <!-- SNS 이미지 영역 -->
+              <div class="bg-orange-100 border-2 border-black h-24 flex flex-col items-center justify-center font-bold text-xs text-orange-950 shadow-[inset_2px_2px_0_rgba(0,0,0,0.1)] overflow-hidden relative">
+                <img src="images/tteokbokki.jpg" alt="친구들의 떡볶이 모임 캡처 사진" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="absolute inset-0 flex flex-col items-center justify-center bg-orange-100" style="display: none;">
+                  <span>🍲 [친구들의 떡볶이 모임 캡처 사진]</span>
+                  <span class="text-[9px] text-orange-850/80 font-normal mt-0.5">#떡볶이 #나만빼고 #섭섭해</span>
+                </div>
+              </div>
+              <!-- SNS 본문 -->
+              <div class="text-xs text-left leading-normal text-slate-855 bg-amber-50/50 p-2 border-2 border-black shadow-[2px_2px_0_#000] break-keep font-bold">
+                <p>${scenario.comment}</p>
+              </div>
+            </div>
+          `;
+        }
+      } else if (scenario.type === 'kakaotalk') {
+        return `
+          <div class="flex flex-col gap-2.5 font-sans text-black">
+            <!-- 카카오톡 헤더 -->
+            <div class="flex items-center justify-between border-b pb-1.5 border-gray-300">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-slate-200 border-2 border-black flex items-center justify-center font-bold text-sm">👤</div>
+                <div class="flex flex-col text-left">
+                  <span class="text-xs font-bold text-slate-800">${scenario.author}</span>
+                  <span class="text-[9px] text-gray-500">프로필 상태메시지</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 상태메시지 단독 표시 (상황 및 프로필 칸 제거) -->
+            <div class="text-xs text-slate-800 bg-white border-4 border-black p-3.5 mt-2 font-bold shadow-[4px_4px_0_#000] text-center w-full break-keep my-3">
+              "${scenario.statusMessage}"
+            </div>
+
+          </div>
+        `;
+      }
+      return '';
+    }
+
+    function setupScenario() {
+      try {
+        if (autoModalTimer) {
+          clearTimeout(autoModalTimer);
+          autoModalTimer = null;
+        }
+
+        const idx = state.stage1.activeScenarioIdx;
+        const scenario = state.stage1.scenarios[idx];
+
+        const progressText1 = document.getElementById('stage1-progress-text');
+        if (progressText1) {
+          progressText1.innerText = `사연 ${idx + 1} / ${state.stage1.scenarios.length}`;
+        }
+        
+        const storyTextEl = document.getElementById('stage1-story-text');
+        if (storyTextEl) {
+          storyTextEl.innerHTML = renderSNSPost(scenario);
+          storyTextEl.style.display = 'block';
+          storyTextEl.classList.remove('hidden');
+        }
+
+        const selectionTitleEl = document.getElementById('emotion-selection-title');
+        if (selectionTitleEl && scenario.prompt) {
+          selectionTitleEl.innerText = `💡 ${scenario.prompt.replace('🔍 ', '')}`;
+        }
+        
+        state.stage1.selectedEmotions = [];
+        state.stage1.currentValues = [5, 5, 5];
+
+        // 패널 활성화 상태 초기화 (클래스 및 인라인 스타일 동시 조작으로 확실한 전환 보장)
+        const selPanel = document.getElementById('emotion-selection-panel');
+        if (selPanel) {
+          selPanel.style.display = 'flex';
+          selPanel.classList.remove('hidden');
+        }
+        const slidePanel = document.getElementById('sliders-panel');
+        if (slidePanel) {
+          slidePanel.style.display = 'none';
+          slidePanel.classList.add('hidden');
+        }
+
+        // 물약병 감추기
+        const viewer = document.getElementById('potion-viewer');
+        if (viewer) {
+          viewer.style.display = 'none';
+          viewer.classList.add('hidden');
+        }
+
+        // 8가지 감정 칩 그리기
+        const chipsContainer = document.getElementById('emotion-chips-container');
+        if (chipsContainer) {
+          chipsContainer.innerHTML = '';
+          stage1Emotions.forEach(emo => {
+            const btn = document.createElement('button');
+            btn.innerText = emo;
+            btn.className = "p-2 rounded-none text-xs font-bold bg-[#2C3E50] border-2 border-black text-white hover:bg-slate-700 transition-all duration-150 shadow-[2px_2px_0_#000]";
+            btn.addEventListener('click', () => toggleEmotionSelection(emo, btn));
+            chipsContainer.appendChild(btn);
+          });
+        }
+
+        updateEmotionChipsUI();
+        updatePotionBottle([0, 0, 0]);
+        
+        const totalBar = document.getElementById('potion-total-bar');
+        if (totalBar) {
+          totalBar.innerText = "감정 합계: 0% / 100%";
+          totalBar.style.color = "#ffccd5";
+        }
+      } catch (err) {
+        console.error("Error in setupScenario:", err);
+        showToast("⚠️ 화면 초기화 중 오류가 발생했습니다.", true);
+      }
+    }
+
+    function toggleEmotionSelection(emo, btnEl) {
+      try {
+        AudioHelper.playPop();
+        const selected = state.stage1.selectedEmotions;
+        const idx = selected.indexOf(emo);
+
+        if (idx > -1) {
+          selected.splice(idx, 1);
+        } else {
+          if (selected.length >= 3) {
+            showToast("⚠️ 감정은 최대 3개까지만 고를 수 있습니다!", true);
+            return;
+          }
+          selected.push(emo);
+        }
+
+        updateEmotionChipsUI();
+      } catch (err) {
+        console.error("Error in toggleEmotionSelection:", err);
+      }
+    }
+
+    function updateEmotionChipsUI() {
+      try {
+        const selected = state.stage1.selectedEmotions || [];
+        const chipsContainer = document.getElementById('emotion-chips-container');
+        
+        if (chipsContainer) {
+          Array.from(chipsContainer.children).forEach(btn => {
+            const emo = btn.innerText.trim();
+            if (selected.includes(emo)) {
+              btn.style.backgroundColor = emotionColors[emo] || 'var(--neon-pink)';
+              btn.style.color = '#000';
+              btn.className = "p-2 rounded-none text-xs font-bold border-2 border-black font-bold shadow-[2px_2px_0_#000] scale-95 transition-all duration-150";
+            } else {
+              btn.style.backgroundColor = '#2C3E50';
+              btn.style.color = '#fff';
+              btn.className = "p-2 rounded-none text-xs font-bold border-2 border-black hover:bg-slate-700 transition-all duration-150 shadow-[2px_2px_0_#000]";
+            }
+          });
+        }
+
+        const countEl = document.getElementById('emotion-selection-count');
+        if (countEl) {
+          countEl.innerText = `선택된 감정: ${selected.length} / 3`;
+          if (selected.length === 3) {
+            countEl.className = "text-sm text-green-400 text-center font-extrabold animate-bounce";
+            showToast("👍 감정 3가지 선택 완료! 아래 [선택 완료 ❤️] 버튼을 누르세요.");
+          } else {
+            countEl.className = "text-xs text-gray-300 text-center font-bold";
+          }
+        }
+        
+        const createBtn = document.getElementById('btn-create-sliders');
+        if (createBtn) {
+          if (selected.length === 3) {
+            createBtn.classList.remove('disabled');
+            createBtn.disabled = false;
+            createBtn.style.backgroundColor = 'var(--neon-mint)';
+            createBtn.classList.add('animate-pulse');
+          } else {
+            createBtn.classList.add('disabled');
+            createBtn.disabled = true;
+            createBtn.style.backgroundColor = '';
+            createBtn.classList.remove('animate-pulse');
+          }
+        }
+      } catch (err) {
+        console.error("Error in updateEmotionChipsUI:", err);
+      }
+    }
+
+    function switchToSliders() {
+      try {
+        AudioHelper.playSuccess();
+        
+        // 클래스 및 인라인 스타일 동시 조작으로 화면 노출 보장
+        const storyTextEl = document.getElementById('stage1-story-text');
+        if (storyTextEl) {
+          storyTextEl.style.display = 'none';
+          storyTextEl.classList.add('hidden');
+        }
+        const viewer = document.getElementById('potion-viewer');
+        if (viewer) {
+          viewer.style.display = 'flex';
+          viewer.classList.remove('hidden');
+        }
+
+        const selPanel = document.getElementById('emotion-selection-panel');
+        if (selPanel) {
+          selPanel.style.display = 'none';
+          selPanel.classList.add('hidden');
+        }
+        
+        const slidePanel = document.getElementById('sliders-panel');
+        if (slidePanel) {
+          slidePanel.style.display = 'flex';
+          slidePanel.classList.remove('hidden');
+        }
+
+        const container = document.getElementById('sliders-box-container');
+        if (container) {
+          container.innerHTML = '';
+          const selected = state.stage1.selectedEmotions || [];
+          selected.forEach((emo, i) => {
+            const row = document.createElement('div');
+            row.className = 'slider-row';
+            row.innerHTML = `
+              <label style="color: ${emotionColors[emo] || '#fff'}">${emo}</label>
+              <input type="range" id="slider-${i}" min="5" max="100" value="5">
+              <span id="val-${i}">5%</span>
+            `;
+            container.appendChild(row);
+            
+            // range input에 동적으로 oninput 리스너 바인딩
+            const sliderInput = row.querySelector(`input[type="range"]`);
+            if (sliderInput) {
+              sliderInput.addEventListener('input', () => adjustSliders(i));
+            }
+          });
+        }
+
+        state.stage1.currentValues = [5, 5, 5];
+        updatePotionBottle([5, 5, 5]);
+        
+        const totalBar = document.getElementById('potion-total-bar');
+        if (totalBar) {
+          totalBar.innerText = "감정 합계: 15% / 100%";
+          totalBar.style.color = "#ffccd5";
+        }
+
+        const btn = document.getElementById('btn-analyze-potion');
+        if (btn) {
+          btn.classList.add('disabled');
+          btn.disabled = true;
+          btn.style.backgroundColor = '';
+          btn.classList.remove('animate-pulse');
+        }
+      } catch (err) {
+        console.error("Error in switchToSliders:", err);
+        alert("화면 전환 도중 오류가 발생했습니다: " + err.message);
+      }
+    }
+
+    function backToEmotionSelection() {
+      try {
+        AudioHelper.playPop();
+        // 클래스 및 인라인 스타일 동시 조작으로 화면 노출 보장
+        const storyTextEl = document.getElementById('stage1-story-text');
+        if (storyTextEl) {
+          storyTextEl.style.display = 'block';
+          storyTextEl.classList.remove('hidden');
+        }
+        const viewer = document.getElementById('potion-viewer');
+        if (viewer) {
+          viewer.style.display = 'none';
+          viewer.classList.add('hidden');
+        }
+
+        const selPanel = document.getElementById('emotion-selection-panel');
+        if (selPanel) {
+          selPanel.style.display = 'flex';
+          selPanel.classList.remove('hidden');
+        }
+        const slidePanel = document.getElementById('sliders-panel');
+        if (slidePanel) {
+          slidePanel.style.display = 'none';
+          slidePanel.classList.add('hidden');
+        }
+        
+        state.stage1.selectedEmotions = [];
+        state.stage1.currentValues = [5, 5, 5];
+        updateEmotionChipsUI();
+        updatePotionBottle([5, 5, 5]);
+        
+        const totalBar = document.getElementById('potion-total-bar');
+        if (totalBar) {
+          totalBar.innerText = "감정 합계: 0% / 100%";
+          totalBar.style.color = "#ffccd5";
+        }
+      } catch (err) {
+        console.error("Error in backToEmotionSelection:", err);
+      }
+    }
+
+    let autoModalTimer = null;
+
+    function adjustSliders(changedIdx) {
+      try {
+        AudioHelper.init();
+        
+        if (autoModalTimer) {
+          clearTimeout(autoModalTimer);
+          autoModalTimer = null;
+        }
+        
+        const slider0 = document.getElementById('slider-0');
+        const slider1 = document.getElementById('slider-1');
+        const slider2 = document.getElementById('slider-2');
+
+        let values = [
+          parseInt(slider0 ? slider0.value : 0),
+          parseInt(slider1 ? slider1.value : 0),
+          parseInt(slider2 ? slider2.value : 0)
+        ];
+
+        let sum = values.reduce((a, b) => a + b, 0);
+
+        if (sum > 100) {
+          let excess = sum - 100;
+          values[changedIdx] -= excess;
+          const targetSlider = document.getElementById(`slider-${changedIdx}`);
+          if (targetSlider) {
+            targetSlider.value = values[changedIdx];
+          }
+          sum = 100;
+        }
+
+        state.stage1.currentValues = values;
+
+        for (let i = 0; i < 3; i++) {
+          const valEl = document.getElementById(`val-${i}`);
+          if (valEl) valEl.innerText = `${values[i]}%`;
+        }
+
+        updatePotionBottle(values);
+
+        const totalBar = document.getElementById('potion-total-bar');
+        const btn = document.getElementById('btn-analyze-potion');
+
+        if (totalBar) {
+          totalBar.innerText = `감정 합계: ${sum}% / 100%`;
+          if (sum === 100) {
+            totalBar.style.color = 'var(--neon-mint)';
+            totalBar.innerText += " (마음 완성! ❤️)";
+            if (btn) {
+              btn.classList.remove('disabled');
+              btn.disabled = false;
+              btn.style.backgroundColor = 'var(--neon-mint)';
+              btn.classList.add('animate-pulse');
+            }
+            showToast("👍 마음이 완성되었습니다! [마음 분석하기 🧪] 버튼을 눌러보세요.");
+          } else {
+            totalBar.style.color = '#ffccd5';
+            if (btn) {
+              btn.classList.add('disabled');
+              btn.disabled = true;
+              btn.style.backgroundColor = '';
+              btn.classList.remove('animate-pulse');
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Error in adjustSliders:", err);
+      }
+    }
+
+    function updatePotionBottle(values) {
+      try {
+        const emotions = state.stage1.selectedEmotions || [];
+
+        for (let i = 0; i < 3; i++) {
+          const layer = document.getElementById(`potion-layer-${i}`);
+          if (layer) {
+            layer.setAttribute('height', '0');
+            layer.setAttribute('y', '100');
+            layer.setAttribute('fill', 'transparent');
+          }
+        }
+
+        let cumSum = 0;
+        for (let i = 0; i < emotions.length; i++) {
+          cumSum += values[i];
+          const layer = document.getElementById(`potion-layer-${i}`);
+          if (layer) {
+            const emoName = emotions[i];
+            layer.setAttribute('height', `${cumSum}`);
+            layer.setAttribute('y', `${100 - cumSum}`);
+            layer.setAttribute('fill', emotionColors[emoName] || '#fff');
+          }
+        }
+      } catch (err) {
+        console.error("Error in updatePotionBottle:", err);
+      }
+    }
+
+    function showCompareModal() {
+      try {
+        AudioHelper.playSuccess();
+        const idx = state.stage1.activeScenarioIdx;
+        const scenario = state.stage1.scenarios[idx];
+        
+        const modal = document.getElementById('compare-modal');
+        modal.style.setProperty('display', 'flex', 'important');
+
+        document.getElementById('reflection-textarea').value = '';
+        document.getElementById('btn-submit-opinion').classList.add('disabled');
+        document.getElementById('btn-submit-opinion').disabled = true;
+
+        const feedbackDiv = document.getElementById('class-average-feedback');
+        if (feedbackDiv) {
+          feedbackDiv.innerHTML = scenario.feedback;
+        }
+
+        const myBox = document.getElementById('my-compare-bars');
+        myBox.innerHTML = '';
+        state.stage1.selectedEmotions.forEach((emo, i) => {
+          const val = state.stage1.currentValues[i];
+          const color = emotionColors[emo] || '#fff';
+          myBox.appendChild(createMiniBar(emo, val, color));
+        });
+      } catch (e) {
+        console.error("Error in showCompareModal", e);
+        const modal = document.getElementById('compare-modal');
+        if (modal) modal.style.setProperty('display', 'flex', 'important');
+      }
+    }
+
+    function createMiniBar(label, value, color) {
+      const container = document.createElement('div');
+      container.className = 'mini-bar-row';
+      container.innerHTML = `
+        <div class="mini-bar-label">
+          <span>${label}</span>
+          <span>${value}%</span>
+        </div>
+        <div class="mini-bar-container">
+          <div class="mini-bar-fill" style="width: ${value}%; background-color: ${color}"></div>
+        </div>
+      `;
+      return container;
+    }
+
+    function validateReflection() {
+      const text = document.getElementById('reflection-textarea').value.trim();
+      const btn = document.getElementById('btn-submit-opinion');
+      
+      if (text.length >= 5) {
+        btn.classList.remove('disabled');
+        btn.disabled = false;
+      } else {
+        btn.classList.add('disabled');
+        btn.disabled = true;
+      }
+    }
+
+    function saveOpinionAndNext() {
+      AudioHelper.playPop();
+      document.getElementById('compare-modal').style.display = 'none';
+      
+      const curIdx = state.stage1.activeScenarioIdx;
+      if (curIdx < state.stage1.scenarios.length - 1) {
+        state.stage1.activeScenarioIdx++;
+        setupScenario();
+        showToast("👍 다음 사연의 감정을 분석해 봅시다!");
+      } else {
+        state.stageCompleted[1] = true;
+        updateStageUI();
+        showToast("🎉 1단계 올 클리어! 2단계 공감 메신저로 이동합니다.");
+        state.currentStage = 2;
+        updateStageUI();
+      }
+    }
+
+    // =========================================
+    // [5] 2단계 카카오톡 스타일 메신저 감정/블록 조합 구현
+    // =========================================
+    function initStage2() {
+      state.stage2.activeScenarioIdx = 0;
+      loadChatScenario(0);
+    }
+
+    function loadChatScenario(idx) {
+      try {
+        const scenario = state.stage2.scenarios[idx];
+        state.stage2.selectedEmotion = null;
+        state.stage2.emotionVerified = null;
+        state.stage2.selectedBlocks = [null, null, null];
+
+        // 금메달 아이콘 노출 제어
+        const medalIcon = document.getElementById('chat-medal-icon');
+        if (medalIcon) {
+          if (idx === 0) {
+            medalIcon.classList.remove('hidden');
+          } else {
+            medalIcon.classList.add('hidden');
+          }
+        }
+
+        // UI 요소 매핑
+        const progressText = document.getElementById('chat-scenario-progress');
+        if (progressText) progressText.innerText = `시나리오 ${idx + 1} / ${state.stage2.scenarios.length}`;
+
+        const progressText2 = document.getElementById('stage2-progress-text');
+        if (progressText2) progressText2.innerText = `시나리오 ${idx + 1} / ${state.stage2.scenarios.length}`;
+        
+        const progressFill = document.getElementById('chat-progress-fill');
+        if (progressFill) progressFill.style.width = `${((idx + 1) / state.stage2.scenarios.length) * 100}%`;
+        
+        const friendName = document.getElementById('chat-friend-name');
+        if (friendName) friendName.innerText = scenario.friendName;
+        
+        const friendLabel = document.getElementById('chat-friend-label');
+        if (friendLabel) friendLabel.innerText = scenario.friendName;
+
+        // 텍스트 초기화 및 말풍선 보이기
+        const typedText = document.getElementById('chat-typed-text');
+        if (typedText) typedText.innerText = '';
+        
+        const cursor = document.getElementById('chat-cursor');
+        if (cursor) cursor.classList.remove('hidden');
+        
+        const myRow = document.getElementById('chat-my-row');
+        if (myRow) myRow.classList.add('hidden');
+        
+        const loader = document.getElementById('chat-loader');
+        if (loader) loader.classList.add('hidden');
+
+        // 영역 비활성화 초기화
+        const emotionSection = document.getElementById('chat-emotion-section');
+        if (emotionSection) emotionSection.className = "transition-all duration-300 opacity-40 pointer-events-none";
+        
+        const blockSection = document.getElementById('chat-block-section');
+        if (blockSection) blockSection.className = "flex flex-col gap-3 transition-all duration-300 opacity-40 pointer-events-none";
+        
+        const inputBar = document.getElementById('chat-messenger-input-bar');
+        if (inputBar) {
+          inputBar.className = "mt-2 pt-2 border-t-4 border-black flex gap-2 items-stretch transition-all duration-300 opacity-40 pointer-events-none";
+          inputBar.style.pointerEvents = "none";
+        }
+        
+        const feedbackCard = document.getElementById('chat-feedback-card');
+        if (feedbackCard) {
+          feedbackCard.style.display = 'none';
+        }
+
+        // 감정 버튼 그리기
+        const emoContainer = document.getElementById('chat-emotion-buttons');
+        if (emoContainer) {
+          emoContainer.innerHTML = '';
+          scenario.emotions.forEach(emo => {
+            const btn = document.createElement('button');
+            btn.innerText = emo;
+            btn.className = "p-2 rounded-none text-xs font-bold bg-[#2c3e50] border-4 border-black text-white hover:bg-slate-700 transition-all duration-150 active:scale-95 shadow-[4px_4px_0_#000]";
+            btn.addEventListener('click', () => selectEmotion(emo, btn));
+            emoContainer.appendChild(btn);
+          });
+        }
+
+        // 블록 그리기
+        renderChips('chat-blocks-cat1', scenario.blockCategory1, 0, 'bg-[#eff6ff] text-[#1d4ed8] hover:bg-[#dbeafe]', 'bg-[#3b82f6] text-white font-extrabold');
+        renderChips('chat-blocks-cat2', scenario.blockCategory2, 1, 'bg-[#faf5ff] text-[#6d28d9] hover:bg-[#f3e8ff]', 'bg-[#7c3aed] text-white font-extrabold');
+        renderChips('chat-blocks-cat3', scenario.blockCategory3, 2, 'bg-[#f0fdf4] text-[#15803d] hover:bg-[#dcfce7]', 'bg-[#16a34a] text-white font-extrabold');
+
+        // 실시간 미리보기 초기 바인딩
+        updatePreviewMessage();
+
+        // 친구 메시지 타이핑 애니메이션 실행
+        if (state.stage2.typingTimer) clearInterval(state.stage2.typingTimer);
+        
+        let charIdx = 0;
+        const msg = scenario.friendMessage;
+        state.stage2.typingTimer = setInterval(() => {
+          try {
+            if (charIdx < msg.length) {
+              const typedTextEl = document.getElementById('chat-typed-text');
+              if (typedTextEl) typedTextEl.innerText += msg.charAt(charIdx);
+              charIdx++;
+            } else {
+              clearInterval(state.stage2.typingTimer);
+              const cursorEl = document.getElementById('chat-cursor');
+              if (cursorEl) cursorEl.classList.add('hidden');
+              // 타이핑 끝나면 감정 추측 활성화
+              const emoSectionEl = document.getElementById('chat-emotion-section');
+              if (emoSectionEl) emoSectionEl.className = "transition-all duration-300 opacity-100 scale-100";
+            }
+          } catch (e) {
+            clearInterval(state.stage2.typingTimer);
+            console.error("Error in typing timer:", e);
+          }
+        }, 30);
+      } catch (err) {
+        console.error("Error in loadChatScenario:", err);
+      }
+    }
+
+    function renderChips(containerId, list, categoryIdx, defaultClass, activeClass) {
+      try {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+        list.forEach(item => {
+          const btn = document.createElement('button');
+          btn.innerText = item;
+          btn.className = `p-1 rounded-none text-[10px] font-bold text-center leading-normal break-keep h-9 flex justify-center items-center border-4 border-black transition-all duration-100 shadow-[4px_4px_0_#000] ${defaultClass}`;
+          btn.addEventListener('click', () => {
+            try {
+              // 클릭 시 스케일이 튄 뒤 원래대로 돌아오는 마이크로 애니메이션 효과
+              btn.classList.add('scale-105');
+              setTimeout(() => btn.classList.remove('scale-105'), 150);
+
+              AudioHelper.playPop();
+
+              // 형제 버튼들의 활성 클래스 리셋
+              Array.from(container.children).forEach(child => {
+                child.className = `p-1 rounded-none text-[10px] font-bold text-center leading-normal break-keep h-9 flex justify-center items-center border-4 border-black transition-all duration-100 shadow-[4px_4px_0_#000] ${defaultClass}`;
+              });
+
+              // 내 상태 저장 및 활성화 변경
+              state.stage2.selectedBlocks[categoryIdx] = item;
+              btn.className = `p-1 rounded-none text-[10px] font-bold text-center leading-normal break-keep h-9 flex justify-center items-center border-4 border-black transition-all duration-100 shadow-[2px_2px_0_#000] scale-95 ${activeClass}`;
+
+              // 미리보기 갱신
+              updatePreviewMessage();
+            } catch (e) {
+              console.error("Error in chip click listener:", e);
+            }
+          });
+          container.appendChild(btn);
+        });
+      } catch (err) {
+        console.error("Error in renderChips:", err);
+      }
+    }
+
+    function selectEmotion(emotion, btnEl) {
+      try {
+        if (state.stage2.emotionVerified === true) return; // 이미 정답 맞췄으면 무시
+
+        const idx = state.stage2.activeScenarioIdx;
+        const scenario = state.stage2.scenarios[idx];
+        const isCorrect = scenario.correctEmotions.includes(emotion);
+
+        // 모든 버튼의 디자인 리셋
+        const container = document.getElementById('chat-emotion-buttons');
+        if (container) {
+          Array.from(container.children).forEach(child => {
+            child.className = "p-2 rounded-none text-xs font-bold bg-[#2c3e50] border-4 border-black text-white hover:bg-slate-700 transition-all duration-150 active:scale-95 shadow-[4px_4px_0_#000]";
+          });
+        }
+
+        state.stage2.selectedEmotion = emotion;
+        state.stage2.emotionVerified = isCorrect;
+
+        if (isCorrect) {
+          AudioHelper.playSuccess();
+          if (btnEl) btnEl.className = "p-2 rounded-none text-xs font-bold bg-[#FFD700] text-black border-4 border-black font-bold shadow-[4px_4px_0_#000] transition-all duration-150";
+
+          // 블록 영역 활성화 및 메신저 입력 바 활성화
+          const blockSec = document.getElementById('chat-block-section');
+          if (blockSec) blockSec.className = "flex flex-col gap-3 transition-all duration-300 opacity-100 scale-100";
+          
+          const inputBar = document.getElementById('chat-messenger-input-bar');
+          if (inputBar) {
+            inputBar.className = "mt-2 pt-2 border-t-4 border-black flex gap-2 items-stretch transition-all duration-300 opacity-100";
+            inputBar.style.pointerEvents = "auto";
+          }
+        } else {
+          AudioHelper.playBuzzer();
+          if (btnEl) btnEl.className = "p-2 rounded-none text-xs font-bold bg-rose-500 text-white border-4 border-black font-bold shadow-[4px_4px_0_#000] transition-all duration-150";
+
+          // 블록 영역 비활성화 유지
+          const blockSec = document.getElementById('chat-block-section');
+          if (blockSec) blockSec.className = "flex flex-col gap-3 transition-all duration-300 opacity-40 pointer-events-none";
+          
+          const inputBar = document.getElementById('chat-messenger-input-bar');
+          if (inputBar) {
+            inputBar.className = "mt-2 pt-2 border-t-4 border-black flex gap-2 items-stretch transition-all duration-300 opacity-40 pointer-events-none";
+            inputBar.style.pointerEvents = "none";
+          }
+        }
+      } catch (err) {
+        console.error("Error in selectEmotion:", err);
+      }
+    }
+
+    function updatePreviewMessage() {
+      const preview = document.getElementById('chat-preview-text');
+      const blocks = state.stage2.selectedBlocks;
+
+      preview.innerHTML = '';
+
+      const chipColors = ['text-[#1d4ed8]', 'text-[#6d28d9]', 'text-[#15803d]'];
+      for (let i = 0; i < 3; i++) {
+        const span = document.createElement('span');
+        if (blocks[i]) {
+          span.innerText = blocks[i];
+          span.className = chipColors[i] + " font-extrabold";
+        } else {
+          span.innerText = "___";
+          span.className = "text-gray-400";
+        }
+        preview.appendChild(span);
+        if (i < 2) {
+          const space = document.createElement('span');
+          space.innerText = " ";
+          preview.appendChild(space);
+        }
+      }
+
+      // 3개 카테고리 다 채웠을 시 보내기 버튼 활성화
+      const sendBtn = document.getElementById('chat-send-btn');
+      const allSelected = blocks[0] && blocks[1] && blocks[2];
+      if (allSelected) {
+        sendBtn.disabled = false;
+        sendBtn.className = "p-2 px-3 font-extrabold text-xs border-2 border-black shadow-[2px_2px_0_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none rounded-none transition-all flex justify-center items-center gap-1 bg-[#FFD700] text-black hover:bg-[#FFC000] cursor-pointer";
+      } else {
+        sendBtn.disabled = true;
+        sendBtn.className = "p-2 px-3 font-extrabold text-xs border-2 border-black shadow-[2px_2px_0_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none rounded-none transition-all flex justify-center items-center gap-1 bg-gray-300 text-gray-500 cursor-not-allowed";
+      }
+    }
+
+    function sendChatMessage() {
+      AudioHelper.init();
+      
+      const sendBtn = document.getElementById('chat-send-btn');
+      sendBtn.disabled = true;
+      sendBtn.className = "p-2 px-3 font-extrabold text-xs border-2 border-black shadow-[2px_2px_0_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none rounded-none transition-all flex justify-center items-center gap-1 bg-gray-300 text-gray-500 cursor-not-allowed";
+
+      document.getElementById('chat-loader').classList.remove('hidden');
+
+      setTimeout(() => {
+        document.getElementById('chat-loader').classList.add('hidden');
+        const myRow = document.getElementById('chat-my-row');
+        myRow.classList.remove('hidden');
+        myRow.className = "flex gap-2 items-start max-w-[85%] self-end animate-[slideInRight_0.3s_ease-out_forwards]";
+
+        // 조합한 텍스트 메시지를 노란색 내 말풍선에 정상 렌더링
+        const combinedText = state.stage2.selectedBlocks.join(' ');
+        document.getElementById('chat-my-bubble').innerText = combinedText;
+
+        AudioHelper.playArpeggio();
+
+        const idx = state.stage2.activeScenarioIdx;
+        const scenario = state.stage2.scenarios[idx];
+        document.getElementById('chat-feedback-desc').innerHTML = scenario.feedback;
+
+        if (idx === state.stage2.scenarios.length - 1) {
+          document.getElementById('chat-feedback-next-btn').innerText = "활동 완료하기 ➔";
+        } else {
+          document.getElementById('chat-feedback-next-btn').innerText = "다음 시나리오 →";
+        }
+
+        setTimeout(() => {
+          const feedbackCard = document.getElementById('chat-feedback-card');
+          if (feedbackCard) {
+            feedbackCard.style.display = 'flex';
+          }
+        }, 500);
+      }, 800);
+    }
+
+    function nextChatScenario() {
+      const idx = state.stage2.activeScenarioIdx;
+      if (idx < state.stage2.scenarios.length - 1) {
+        state.stage2.activeScenarioIdx++;
+        loadChatScenario(state.stage2.activeScenarioIdx);
+        showToast("👍 다음 사연의 공감 대화를 나누어 봅시다!");
+      } else {
+        state.stageCompleted[2] = true;
+        state.currentStage = 3;
+        updateStageUI();
+      }
+    }
+
+    function finishStage() {
+      AudioHelper.playArpeggio();
+      alert("사이버 공감 활동의 모든 단계를 성공적으로 이수했습니다! 대시보드로 돌아갑니다.");
+      
+      let inIframe = false;
+      try {
+        inIframe = (window.self !== window.top);
+      } catch (e) {
+        inIframe = true; // Access blocked means we are in a cross-origin iframe
+      }
+
+      if (inIframe) {
+        try {
+          const reflectionVal = document.getElementById('reflection-textarea') ? document.getElementById('reflection-textarea').value.trim() : "";
+          window.parent.postMessage({ 
+            type: 'TASK_COMPLETE', 
+            category: '사이버 공감',
+            answers: {
+              "성찰 일기": reflectionVal
+            }
+          }, '*');
+          return; // Stop execution to prevent fallback redirect
+        } catch (err) {
+          console.error("postMessage failed:", err);
+        }
+      }
+      
+      window.location.href = 'index.html';
+    }
+
+    // =========================================
+    // 초기 로딩 진입 및 이벤트 리스너 바인딩
+    // =========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        // [1] 인트로 시작 버튼
+        const startBtn = document.getElementById('btn-start-training');
+        if (startBtn) {
+          startBtn.addEventListener('click', () => {
+            try { startTraining(); } catch (e) { console.error(e); }
+          });
+        }
+
+        // [2] 감정 포션 만들기 버튼 (슬라이더 전환)
+        const createSlidersBtn = document.getElementById('btn-create-sliders');
+        if (createSlidersBtn) {
+          createSlidersBtn.addEventListener('click', () => {
+            try { switchToSliders(); } catch (e) { console.error(e); }
+          });
+        }
+
+        // [3] 다시 선택 버튼
+        const backToSelBtn = document.getElementById('btn-back-to-selection');
+        if (backToSelBtn) {
+          backToSelBtn.addEventListener('click', () => {
+            try { backToEmotionSelection(); } catch (e) { console.error(e); }
+          });
+        }
+
+        // [4] 마음 분석하기 버튼
+        const analyzeBtn = document.getElementById('btn-analyze-potion');
+        if (analyzeBtn) {
+          analyzeBtn.addEventListener('click', () => {
+            try { showCompareModal(); } catch (e) { console.error(e); }
+          });
+        }
+
+        // [5] 성찰 제출 버튼
+        const submitOpinionBtn = document.getElementById('btn-submit-opinion');
+        if (submitOpinionBtn) {
+          submitOpinionBtn.addEventListener('click', () => {
+            try { saveOpinionAndNext(); } catch (e) { console.error(e); }
+          });
+        }
+
+        // [6] 하단바 이전 버튼
+        const prevBtn = document.getElementById('btn-prev');
+        if (prevBtn) {
+          prevBtn.addEventListener('click', () => {
+            try { prevStage(); } catch (e) { console.error(e); }
+          });
+        }
+
+        // [7] 하단바 스킵 버튼
+        const skipBtn = document.getElementById('btn-skip');
+        if (skipBtn) {
+          skipBtn.addEventListener('click', () => {
+            try { skipStage(); } catch (e) { console.error(e); }
+          });
+        }
+
+        // [8] 하단바 다음 버튼
+        const nextBtn = document.getElementById('btn-next');
+        if (nextBtn) {
+          nextBtn.addEventListener('click', () => {
+            try { nextStage(); } catch (e) { console.error(e); }
+          });
+        }
+
+        // [9] 채팅 메시지 보내기 버튼
+        const chatSendBtn = document.getElementById('chat-send-btn');
+        if (chatSendBtn) {
+          chatSendBtn.addEventListener('click', () => {
+            try { sendChatMessage(); } catch (e) { console.error(e); }
+          });
+        }
+
+        // [10] 채팅 피드백 다음 버튼
+        const chatNextBtn = document.getElementById('chat-feedback-next-btn');
+        if (chatNextBtn) {
+          chatNextBtn.addEventListener('click', () => {
+            try { nextChatScenario(); } catch (e) { console.error(e); }
+          });
+        }
+
+        // 상태 UI 및 초기 스테이지 그리기
+        updateStageUI();
+      } catch (err) {
+        console.error("Error in DOMContentLoaded init:", err);
+      }
+    });
+
+    document.body.addEventListener('click', () => {
+      try {
+        AudioHelper.init();
+      } catch (e) {
+        console.error(e);
+      }
+    }, { once: true });
+  </script>
+</body>
+</html>

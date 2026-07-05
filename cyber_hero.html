@@ -1,0 +1,3591 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사이버 어울림 활동</title>
+  
+  <!-- 둥근모꼴 폰트 (로컬 로드) -->
+
+  <style>
+    /* =========================================
+       디자인 시스템 (기존 style.css 및 empathy.html 통일)
+       ========================================= */
+    :root {
+      --neon-pink: #ff79c6;
+      --neon-hotpink: #ff007f;
+      --neon-blue: #8be9fd;
+      --neon-sky: #00a8ff;
+      --neon-mint: #50fa7b;
+      --soft-yellow: #fff9db;
+      --point-yellow: #FFD700;
+      --dark-gray: #1a1c23;
+      --panel-bg: rgba(26, 28, 35, 0.95);
+      --pure-black: #000000;
+      --pixel-thick: 4px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'DungGeunMo', monospace;
+      image-rendering: pixelated;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--dark-gray);
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 전체 앱 컨테이너 (비율 고정 & 픽셀 테두리) */
+    #app-container {
+      width: 100%;
+      max-width: 800px;
+      height: 100vh;
+      max-height: 600px;
+      position: relative;
+      background-color: var(--panel-bg);
+      border: var(--pixel-thick) solid var(--pure-black);
+      box-shadow: 0 0 30px rgba(255, 121, 198, 0.3), 8px 8px 0 var(--pure-black);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    
+
+    /* 상단 진행 바 (기존 스테이지바 통일) */
+    .header-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #2c3e50;
+      border: var(--pixel-thick) solid var(--pure-black);
+      padding: 10px 15px;
+      color: #fff;
+      box-shadow: inset 4px 4px 0 rgba(255,255,255,0.1);
+      margin-bottom: 5px;
+    }
+
+    .header-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--neon-pink);
+      text-shadow: 2px 2px 0 var(--pure-black);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header-progress {
+      background: var(--pure-black);
+      color: var(--point-yellow);
+      border: 2px solid var(--point-yellow);
+      padding: 2px 10px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+
+    /* 레트로 픽셀 버튼 (retro-btn 클래스로 기존 통일) */
+    .retro-btn {
+      background-color: var(--neon-pink);
+      color: var(--pure-black);
+      border: var(--pixel-thick) solid var(--pure-black);
+      padding: 10px 20px;
+      font-size: 1.25rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 var(--pure-black);
+      transition: transform 0.1s, box-shadow 0.1s;
+      outline: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 6px;
+    }
+
+    .retro-btn:active {
+      box-shadow: 0px 0px 0 var(--pure-black);
+      transform: translate(4px, 4px);
+    }
+
+    .retro-btn:hover:not(.disabled) {
+      background-color: var(--neon-blue);
+    }
+
+    .retro-btn.disabled {
+      background-color: #555 !important;
+      color: #888 !important;
+      cursor: not-allowed;
+      box-shadow: 4px 4px 0 #111;
+      transform: none !important;
+    }
+
+    /* =========================================
+       Screen 1: 메인 인트로 화면
+       ========================================= */
+    #view-intro {
+      justify-content: center;
+      gap: 20px;
+    }
+
+    /* 픽셀 요정 (기존 pixel-fairy 계승 및 고도화) */
+    .pixel-fairy-container {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      animation: float 2.5s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .pixel-fairy-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 픽셀 날개 파닥임 */
+    .fairy-wing-l {
+      animation: flapL 0.2s ease-in-out infinite alternate;
+      transform-origin: 32px 56px;
+    }
+    .fairy-wing-r {
+      animation: flapR 0.2s ease-in-out infinite alternate;
+      transform-origin: 64px 56px;
+    }
+
+    @keyframes flapL {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(12deg); }
+    }
+    @keyframes flapR {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(-12deg); }
+    }
+
+    /* 대화창 (기존 dialog-box 및 bubble-story 계승) */
+    .intro-dialog {
+      background-color: rgba(0, 0, 0, 0.85);
+      border: var(--pixel-thick) solid var(--text-main);
+      padding: 15px 20px;
+      width: 90%;
+      max-width: 550px;
+      text-align: center;
+      box-shadow: 6px 6px 0 var(--pure-black);
+      position: relative;
+    }
+
+    .intro-dialog p {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #fff;
+      word-break: keep-all;
+    }
+
+    /* =========================================
+       Screen 2: [활동 1] 시선 교차경
+       ========================================= */
+    .act1-content {
+      display: flex;
+      width: 100%;
+      flex-grow: 1;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+      margin: 10px 0;
+      height: calc(100% - 150px) !important;
+    }
+
+    /* 픽셀 가상 스마트폰 */
+    .phone-container {
+      width: 260px;
+      height: 380px;
+      background: #000;
+      border: var(--pixel-thick) solid var(--pure-black);
+      border-radius: 12px;
+      box-shadow: 6px 6px 0 var(--pure-black);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .phone-screen {
+      flex-grow: 1;
+      width: 100%;
+      position: relative;
+      background-color: #34495e; /* 기본 픽셀 네이비 */
+      display: flex;
+      flex-direction: column;
+      padding: 12px;
+      justify-content: space-between;
+    }
+
+    /* 토글 스위치 (픽셀 스타일) */
+    .toggle-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 5px;
+      z-index: 12;
+    }
+
+    .view-toggle {
+      display: flex;
+      background: #000;
+      border: 3px solid #fff;
+      padding: 2px;
+      border-radius: 4px;
+      width: 220px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      text-align: center;
+      padding: 4px 0;
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #7f8c8d;
+      z-index: 2;
+    }
+
+    .toggle-btn.active {
+      color: #000;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      top: 2px; left: 2px;
+      width: calc(50% - 2px);
+      height: calc(100% - 4px);
+      background: var(--point-yellow);
+      border-radius: 2px;
+      z-index: 1;
+      transition: transform 0.25s cubic-bezier(0.1, 0.8, 0.3, 1);
+    }
+
+    .phone-screen.victim-mode-active .toggle-slider {
+      transform: translateX(100%);
+      background: var(--neon-pink);
+    }
+
+    /* 픽셀 액정 크랙 오버레이 */
+    .crack-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 10;
+      opacity: 0;
+    }
+    
+    .crack-overlay.cracked {
+      opacity: 1;
+    }
+
+    /* 픽셀 형태의 각진 깨진 선들 */
+    .crack-line {
+      stroke: var(--neon-blue);
+      stroke-width: 3;
+      stroke-linecap: square;
+      fill: none;
+      stroke-dasharray: 800;
+      stroke-dashoffset: 800;
+    }
+
+    .crack-overlay.cracked .crack-line {
+      animation: drawCrack 0.5s forwards steps(15, end);
+    }
+
+    @keyframes drawCrack {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* 시점별 컨텐츠 */
+    .phone-body {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .content-card {
+      width: 100%;
+      border: 3px solid var(--pure-black);
+      background: white;
+      padding: 6px;
+      box-shadow: 3px 3px 0 var(--pure-black);
+      color: #000;
+      margin-bottom: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .phone-screen.victim-mode .content-card {
+      background: #1a1c23;
+      color: white;
+      border-color: #fff;
+      box-shadow: 3px 3px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .content-image {
+      width: 100%;
+      max-height: 100px;
+      border: 2px solid var(--pure-black);
+      object-fit: cover;
+    }
+
+    .phone-screen.victim-mode .content-image {
+      border-color: #fff;
+    }
+
+    .bubble-talk {
+      background: var(--soft-yellow);
+      border: 3px solid var(--pure-black);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #000;
+      line-height: 1.3;
+      position: relative;
+      margin-top: 5px;
+      max-width: 95%;
+      word-break: keep-all;
+      box-shadow: 2px 2px 0 var(--pure-black);
+    }
+
+    .bubble-talk::after {
+      content: '';
+      position: absolute;
+      top: -9px; left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-bottom-color: var(--pure-black);
+    }
+
+    .phone-screen.victim-mode .bubble-talk {
+      background: var(--neon-blue);
+      border-color: var(--pure-black);
+    }
+
+    /* 이모티콘 파티클 효과용 컨테이너 */
+    .particle-canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .particle-emoji {
+      position: absolute;
+      font-size: 1.3rem;
+      bottom: -30px;
+      animation: floatUpEmoji 2.2s linear forwards;
+      opacity: 0.8;
+    }
+
+    @keyframes floatUpEmoji {
+      0% { transform: translateY(0) scale(0.9) rotate(0deg); opacity: 0.8; }
+      100% { transform: translateY(-330px) scale(1.1) rotate(180deg); opacity: 0; }
+    }
+
+    /* 드롭존 (픽셀 스타일) */
+    .drop-zone {
+      width: 100%;
+      border: 3px dashed var(--pure-black);
+      background: rgba(255, 255, 255, 0.2);
+      padding: 6px;
+      min-height: 54px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+
+    .phone-screen.victim-mode .drop-zone {
+      border-color: #fff;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .drop-zone.drag-over {
+      background: rgba(255, 215, 0, 0.3);
+    }
+
+    .drop-zone-placeholder {
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: #ccc;
+      pointer-events: none;
+    }
+
+    .drop-label {
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: var(--point-yellow);
+      margin-bottom: 2px;
+      text-shadow: 1px 1px 0 #000;
+    }
+
+    /* 우측 제어 대시보드 */
+    .act1-dashboard {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      height: 100%;
+      justify-content: center;
+    }
+
+    .dashboard-guide {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 10px 14px;
+      border-left: 4px solid var(--point-yellow);
+      border-top: 2px solid var(--pure-black);
+      border-right: 2px solid var(--pure-black);
+      border-bottom: 2px solid var(--pure-black);
+      box-shadow: 3px 3px 0 var(--pure-black);
+      word-break: keep-all;
+    }
+
+    /* 감정 조각 트레이 */
+    .emotion-tray {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 10px;
+      border: 3px solid var(--pure-black);
+      box-shadow: inset 3px 3px 0 rgba(0,0,0,0.5);
+    }
+
+    .emotion-block {
+      background: white;
+      color: #000;
+      border: 3px solid var(--pure-black);
+      padding: 6px 12px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: grab;
+      transition: all 0.1s;
+      box-shadow: 3px 3px 0 var(--pure-black);
+    }
+
+    .emotion-block:active {
+      cursor: grabbing;
+    }
+
+    .emotion-block.selected {
+      background: var(--neon-blue);
+      transform: scale(1.05);
+      box-shadow: 0 0 8px var(--neon-blue);
+    }
+
+    .emotion-block.dragging {
+      opacity: 0.5;
+    }
+
+    .emotion-block.correct-placed {
+      background: var(--neon-mint);
+      color: #000;
+      border-color: var(--pure-black);
+      cursor: default;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* Step 3: 공감 처방전 폼 */
+    .prescription-form {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      animation: fadeInUp 0.3s ease-out forwards;
+    }
+
+    .prescription-form textarea {
+      width: 100%;
+      height: 70px;
+      border: 3px solid var(--pure-black);
+      padding: 8px;
+      font-size: 0.9rem;
+      resize: none;
+      outline: none;
+      background: white;
+      color: #000;
+      box-shadow: inset 2px 2px 0 rgba(0,0,0,0.1);
+    }
+
+    /* 치유 글로우 효과 */
+    .heal-glow {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 10px; height: 10px;
+      background: radial-gradient(circle, rgba(255,255,255,1) 0%, var(--point-yellow) 60%, rgba(0,0,0,0) 100%);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0;
+      z-index: 15;
+    }
+
+    .heal-glow.active {
+      animation: healFlash 1.2s forwards cubic-bezier(0.1, 0.8, 0.3, 1);
+    }
+
+    @keyframes healFlash {
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(80); opacity: 0; }
+    }
+
+    /* 피드백 모달 (기존 overlay-modal / modal-content 디자인 호환) */
+    .feedback-modal {
+      display: none;
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* =========================================
+       생각구름 & 캐릭터 액자 & 단체 채팅방 메신저 스타일
+       ========================================= */
+    .character-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      width: 150px;
+      flex-shrink: 0;
+    }
+
+    .thought-bubble {
+      position: relative;
+      background: #fff;
+      border: 3px solid #000;
+      border-radius: 12px;
+      padding: 6px 10px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      color: #000;
+      box-shadow: 2px 2px 0 #000;
+      text-align: center;
+      width: 100%;
+      min-height: 32px !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      word-break: keep-all;
+      box-sizing: border-box;
+    }
+
+    .thought-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px; height: 8px;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 50%;
+    }
+
+    .thought-bubble::before {
+      content: '';
+      position: absolute;
+      bottom: -14px;
+      left: 48%;
+      transform: translateX(-50%);
+      width: 5px; height: 5px;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 50%;
+    }
+
+    /* 준우/민수 각각의 생각구름 개성 부여 */
+    .thought-bubble.perp-bubble {
+      border-color: var(--point-yellow);
+      background: #fffdf0;
+    }
+    .thought-bubble.perp-bubble::after, .thought-bubble.perp-bubble::before {
+      background: #fffdf0;
+      border-color: var(--point-yellow);
+    }
+
+    .thought-bubble.vic-bubble {
+      border-color: var(--neon-pink);
+      background: #fff5f7;
+    }
+    .thought-bubble.vic-bubble::after, .thought-bubble.vic-bubble::before {
+      background: #fff5f7;
+      border-color: var(--neon-pink);
+    }
+
+    .character-frame {
+      width: 110px;
+      height: 120px;
+      border: 3px solid #000;
+      background: #f1f3f5;
+      box-shadow: 3px 3px 0 #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 6px;
+      box-sizing: border-box;
+    }
+
+    .character-frame-label {
+      position: absolute;
+      bottom: 4px;
+      font-size: 8px;
+      font-weight: black;
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+
+    .character-placeholder-text {
+      font-size: 0.65rem;
+      font-weight: bold;
+      color: #666;
+      line-height: 1.3;
+      text-align: center;
+      margin-top: -10px;
+    }
+
+    /* 단 단체 채팅방 스마트폰 스크린 */
+    .chat-room-screen {
+      background-color: #a0c0d6; /* 레트로 단체 채팅방 하늘색 */
+      color: #000;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    .chat-header {
+      background: rgba(0, 0, 0, 0.15);
+      border-bottom: 2px solid rgba(0,0,0,0.2);
+      padding: 4px;
+      font-size: 0.7rem;
+      font-weight: black;
+      text-align: center;
+      color: #000;
+      margin-bottom: 6px;
+      flex-shrink: 0;
+      box-shadow: inset 0 -1px 0 rgba(255,255,255,0.2);
+    }
+
+    .chat-messages-container {
+      flex-grow: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-bottom: 5px;
+      /* 커스텀 스크롤 */
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,0,0,0.3) transparent;
+    }
+
+    .chat-msg {
+      display: flex;
+      flex-direction: column;
+      max-width: 85%;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all 0.35s ease-out;
+    }
+    
+    .chat-msg.shown {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .chat-msg.left {
+      align-self: flex-start;
+    }
+
+    .chat-msg.right {
+      align-self: flex-end;
+    }
+
+    .chat-sender {
+      font-size: 10.5px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 1px;
+    }
+
+    .chat-bubble {
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 1.3;
+      word-break: break-all;
+      box-shadow: 1px 1px 0 #000;
+      color: #000;
+    }
+
+    .chat-bubble.photo {
+      padding: 2.5px;
+      background: #fff;
+    }
+
+    .chat-bubble.photo img {
+      width: 100%;
+      height: 90px;
+      object-fit: cover;
+      border: 1px solid #000;
+      display: block;
+    }
+
+    .chat-bubble.my-msg {
+      background: #ffeb3b; /* 준우 노란색 */
+      border-color: #000;
+    }
+
+    .modal-content {
+      background: #2c3e50;
+      border: var(--pixel-thick) solid var(--pure-black);
+      border-radius: 8px;
+      padding: 20px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 6px 6px 0 var(--pure-black);
+      animation: scaleUp 0.25s steps(4, end) forwards;
+      color: #fff;
+    }
+
+    @keyframes scaleUp {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-char {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 10px;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--point-yellow);
+      margin-bottom: 8px;
+      text-shadow: 2px 2px 0 var(--pure-black);
+    }
+
+    .modal-body {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #fff;
+      margin-bottom: 15px;
+      word-break: keep-all;
+    }
+
+    /* =========================================
+       Screen 3: [활동 2] SOS 구조대
+       ========================================= */
+    .act2-content {
+      display: flex;
+      width: 100%;
+      flex-grow: 1;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+      margin: 10px 0;
+      height: calc(100% - 70px) !important;
+    }
+
+    /* 픽셀 SNS 화면 */
+    .sns-container {
+      width: 270px;
+      height: 360px;
+      background: #34495e;
+      border: var(--pixel-thick) solid var(--pure-black);
+      box-shadow: 5px 5px 0 var(--pure-black);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .sns-header {
+      padding: 8px 12px;
+      border-bottom: var(--pixel-thick) solid var(--pure-black);
+      display: flex;
+      align-items: center;
+      background: #2c3e50;
+    }
+
+    .sns-logo {
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--point-yellow);
+      text-shadow: 1px 1px 0 var(--pure-black);
+    }
+
+    .sns-body {
+      flex-grow: 1;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+    }
+
+    .sns-post {
+      border: 3px solid var(--pure-black);
+      border-radius: 4px;
+      padding: 8px;
+      background: #fff;
+      color: #000;
+      box-shadow: 2px 2px 0 var(--pure-black);
+    }
+
+    .post-author-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .author-info {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .author-avatar {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--pure-black);
+      background: #cbd5e1;
+    }
+
+    .author-name {
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: #000;
+    }
+
+    .post-text {
+      font-size: 0.85rem;
+      font-weight: bold;
+      line-height: 1.4;
+      color: #1e293b;
+      word-break: keep-all;
+    }
+
+    .cyber-bulling-post {
+      border-color: var(--neon-hotpink);
+      background: #fff0f3;
+    }
+
+    /* 차단 버튼 */
+    .btn-block-user {
+      background: var(--neon-hotpink);
+      color: #000;
+      border: 2px solid var(--pure-black);
+      padding: 2px 6px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: none;
+      animation: pulse 0.8s infinite alternate steps(4);
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.06); box-shadow: 0 0 6px var(--neon-hotpink); }
+    }
+
+    /* 차단 완료 스탬프 (픽셀풍 도장) */
+    .blocked-stamp {
+      display: none;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) rotate(-12deg);
+      border: var(--pixel-thick) solid var(--neon-hotpink);
+      color: var(--neon-hotpink);
+      font-size: 1.6rem;
+      font-weight: bold;
+      padding: 6px 12px;
+      background: rgba(0, 0, 0, 0.95);
+      box-shadow: 4px 4px 0 var(--pure-black);
+      z-index: 12;
+      pointer-events: none;
+    }
+
+    /* 캡처 이펙트 */
+    .flash-screen {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: white;
+      opacity: 0;
+      z-index: 99;
+      pointer-events: none;
+    }
+
+    .flash-screen.active {
+      animation: cameraFlash 0.25s forwards ease-out;
+    }
+
+    @keyframes cameraFlash {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    /* 날아가는 캡처 썸네일 */
+    .flying-thumbnail {
+      position: absolute;
+      width: 80px;
+      height: 110px;
+      border: 3px solid white;
+      box-shadow: 4px 4px 0 var(--pure-black);
+      z-index: 100;
+      pointer-events: none;
+      display: none;
+      background: #f8fafc;
+    }
+
+    /* 우측 상단 안전 폴더 */
+    .safe-folder-container {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      z-index: 20;
+    }
+
+    .safe-folder {
+      font-size: 2.2rem;
+      position: relative;
+    }
+
+    .safe-folder.bounce {
+      animation: folderBounce 0.4s steps(4);
+    }
+
+    @keyframes folderBounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.25) rotate(6deg); }
+    }
+
+    .safe-badge {
+      position: absolute;
+      top: -2px; right: -6px;
+      background: var(--neon-mint);
+      color: #000;
+      border: 2px solid var(--pure-black);
+      border-radius: 4px;
+      width: 18px;
+      height: 18px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .safe-label {
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: var(--point-yellow);
+      text-shadow: 1px 1px 0 #000;
+    }
+
+    /* 선택지 박스 */
+    .choice-tray {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      animation: fadeInUp 0.3s ease-out forwards;
+    }
+
+    .btn-choice {
+      background: white;
+      color: #000;
+      border: 3px solid var(--pure-black);
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.1s;
+      box-shadow: 3px 3px 0 var(--pure-black);
+    }
+
+    .btn-choice:hover {
+      background: var(--soft-yellow);
+      transform: translateY(-1px);
+    }
+
+    .btn-choice.correct {
+      background: var(--neon-mint);
+      color: #000;
+    }
+
+    .btn-choice.incorrect {
+      background: var(--neon-hotpink);
+      color: #fff;
+    }
+
+    /* 흔들림 애니메이션 */
+    .shake {
+      animation: shakeContainer 0.4s ease-in-out;
+    }
+
+    @keyframes shakeContainer {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    /* 종이비행기 */
+    .paper-plane {
+      position: absolute;
+      font-size: 1.8rem;
+      z-index: 110;
+      pointer-events: none;
+      display: none;
+    }
+
+    @keyframes flyPlane {
+      0% {
+        transform: translate(0, 0) scale(1) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(200px, -200px) scale(0.2) rotate(-45deg);
+        opacity: 0;
+      }
+    }
+
+    /* =========================================
+       Screen 4: 아웃트로
+       ========================================= */
+    #view-outro {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .outro-card {
+      background: #2c3e50;
+      border: var(--pixel-thick) solid var(--pure-black);
+      padding: 25px 15px;
+      max-width: 480px;
+      box-shadow: 6px 6px 0 var(--pure-black);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      border-radius: 8px;
+    }
+
+    .outro-card h2 {
+      font-size: 1.6rem;
+      color: var(--point-yellow);
+      text-shadow: 2px 2px 0 var(--pure-black);
+    }
+
+    .outro-card p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #fff;
+      word-break: keep-all;
+    }
+
+    .badge-icon {
+      font-size: 3.5rem;
+      animation: scaleBeat 1.5s infinite ease-in-out steps(4);
+    }
+
+    @keyframes scaleBeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.12); }
+    }
+
+    /* =========================================
+       활동 2: 마음온의 실전 대처 미션 전용 스타일
+       ========================================= */
+    /* 하단 5개 대처 도구 모음 */
+    .tool-dock {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      background: #2c3e50;
+      border: var(--pixel-thick) solid var(--pure-black);
+      padding: 8px 6px;
+      box-shadow: inset 4px 4px 0 rgba(255,255,255,0.1), 6px 6px 0 var(--pure-black);
+      border-radius: 8px;
+      margin-top: 6px !important;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .tool-btn {
+      background: #ffffff;
+      color: #000000;
+      border: 3px solid var(--pure-black);
+      border-radius: 6px;
+      padding: 6px 4px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      flex: 1;
+      box-shadow: 3px 3px 0 var(--pure-black);
+      transition: all 0.1s;
+      outline: none;
+    }
+    .tool-btn:active:not(.disabled) {
+      transform: translate(3px, 3px);
+      box-shadow: 0 0 0 var(--pure-black);
+    }
+    .tool-btn.active-glow {
+      background: var(--point-yellow);
+      animation: toolPulse 1.2s infinite alternate;
+    }
+    @keyframes toolPulse {
+      from { box-shadow: 0 0 6px var(--point-yellow), 3px 3px 0 var(--pure-black); }
+      to { box-shadow: 0 0 16px var(--point-yellow), 3px 3px 0 var(--pure-black); }
+    }
+    .tool-btn.disabled {
+      background-color: #7f8c8d !important;
+      color: #bdc3c7 !important;
+      cursor: not-allowed;
+      box-shadow: 2px 2px 0 var(--pure-black);
+      transform: none !important;
+      opacity: 0.6;
+    }
+    .tool-btn-icon {
+      font-size: 1.3rem;
+    }
+
+    /* 단체 채팅방 햄버거 메뉴 및 패널 */
+    .hamburger-btn {
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 2px 6px;
+      border: 2px solid transparent;
+      border-radius: 4px;
+      display: none;
+      color: #fff;
+    }
+    .hamburger-btn.active-glow {
+      border-color: var(--point-yellow);
+      animation: menuPulse 0.8s infinite alternate;
+    }
+    @keyframes menuPulse {
+      from { box-shadow: 0 0 2px var(--point-yellow); }
+      to { box-shadow: 0 0 8px var(--point-yellow); }
+    }
+    .hamburger-panel {
+      position: absolute;
+      top: 38px; right: 0;
+      width: 140px;
+      background: #2c3e50;
+      border-left: var(--pixel-thick) solid var(--pure-black);
+      border-bottom: var(--pixel-thick) solid var(--pure-black);
+      box-shadow: -3px 3px 0 rgba(0,0,0,0.3);
+      display: none;
+      flex-direction: column;
+      z-index: 50;
+      padding: 8px;
+    }
+    .btn-leave-room {
+      background: var(--neon-hotpink);
+      color: #fff;
+      border: 2px solid var(--pure-black);
+      padding: 6px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      box-shadow: 2px 2px 0 var(--pure-black);
+    }
+    .btn-leave-room:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0 0 0 var(--pure-black);
+    }
+
+    /* 가해자 차단 사선 표시 */
+    .avatar-container {
+      position: relative;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .avatar-container.active-glow {
+      border-radius: 50%;
+      animation: avatarPulse 0.8s infinite alternate;
+    }
+    @keyframes avatarPulse {
+      from { box-shadow: 0 0 4px var(--point-yellow); }
+      to { box-shadow: 0 0 16px var(--point-yellow); }
+    }
+    .blocked-slash {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(45deg, transparent 45%, var(--neon-hotpink) 45%, var(--neon-hotpink) 55%, transparent 55%);
+      pointer-events: none;
+      z-index: 5;
+      display: none;
+    }
+
+    /* SOS 드롭 존 */
+    .sos-drop-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(46, 204, 113, 0.2);
+      border: 4px dashed var(--neon-mint);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 40;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: var(--neon-mint);
+      text-shadow: 2px 2px 0 var(--pure-black);
+      pointer-events: none;
+    }
+    .sos-drop-overlay.drag-over {
+      background: rgba(46, 204, 113, 0.4);
+      color: #fff;
+    }
+
+    /* 1:1 대화 입력창 영역 */
+    .direct-chat-input-area {
+      display: none;
+      width: 100%;
+      background: #2c3e50;
+      border-top: var(--pixel-thick) solid var(--pure-black);
+      padding: 6px;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .direct-chat-input {
+      flex-grow: 1;
+      height: 32px;
+      border: 2px solid var(--pure-black);
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 0.85rem;
+      outline: none;
+      background: #fff;
+      color: #000;
+    }
+    .direct-chat-send-btn {
+      background: var(--point-yellow);
+      color: #000;
+      border: 2px solid var(--pure-black);
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 var(--pure-black);
+    }
+    .direct-chat-send-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0 0 0 var(--pure-black);
+    }
+
+    /* 새로운 말풍선 스타일 */
+    .chat-bubble-left {
+      background: #ffffff;
+      color: #000000;
+      border: 2px solid var(--pure-black);
+      border-radius: 8px 8px 8px 0;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      max-width: 85%;
+      word-break: keep-all;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.15);
+      margin-top: 2px;
+    }
+    .chat-bubble-right {
+      background: var(--point-yellow);
+      color: #000000;
+      border: 2px solid var(--pure-black);
+      border-radius: 8px 8px 0 8px;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      max-width: 85%;
+      word-break: keep-all;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.15);
+      margin-top: 2px;
+      align-self: flex-end;
+    }
+    .chat-bubble-system {
+      align-self: center;
+      background: rgba(0, 0, 0, 0.45);
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid #555;
+      margin: 4px 0;
+      text-align: center;
+      max-width: 90%;
+      word-break: keep-all;
+    }
+
+    /* 8비트 레트로 전화기 다이얼 패드 */
+    #dial-pad-container {
+      position: absolute;
+      top: 38px; /* sns-header 밑에 배치 */
+      left: 0;
+      width: 100%;
+      height: calc(100% - 38px);
+      background: #2c3e50;
+      z-index: 60;
+      display: none;
+      flex-direction: column;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .dial-screen {
+      width: 100%;
+      height: 40px;
+      background: #000;
+      border: 3px solid #fff;
+      color: var(--neon-mint);
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 10px;
+      box-sizing: border-box;
+      font-family: 'DungGeunMo', monospace;
+      letter-spacing: 2px;
+      box-shadow: inset 3px 3px 0 rgba(0,0,0,0.8);
+      margin-bottom: 8px;
+    }
+    .dial-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      flex-grow: 1;
+    }
+    .dial-key {
+      background: #ecf0f1;
+      color: #000;
+      border: 2px solid #000;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 #000;
+      user-select: none;
+      padding: 4px 0;
+    }
+    .dial-key:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0 0 0 #000;
+    }
+    .dial-key.action-key {
+      background: var(--point-yellow);
+    }
+    .dial-key.call-key {
+      background: var(--neon-mint);
+      grid-column: span 3;
+      height: 34px;
+      color: #000;
+      font-size: 0.9rem;
+    }
+    .dial-key.call-key.disabled {
+      background: #7f8c8d;
+      color: #bdc3c7;
+      cursor: not-allowed;
+      box-shadow: 2px 2px 0 #111;
+      transform: none !important;
+    }
+
+    /* 8비트 레트로 차단 팝업 */
+    #profile-block-popup {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 70;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .block-popup-content {
+      background: #2c3e50;
+      border: var(--pixel-thick) solid #000;
+      border-radius: 8px;
+      padding: 12px;
+      width: 90%;
+      text-align: center;
+      color: #fff;
+      box-shadow: 4px 4px 0 #000;
+    }
+    .sns-avatar {
+      width: 28px;
+      height: 28px;
+      border: 2px solid var(--pure-black);
+      background-color: #cbd5e1;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>');
+      background-size: cover;
+      border-radius: 50%;
+      image-rendering: auto;
+      flex-shrink: 0;
+    }
+    .block-popup-avatar {
+      width: 44px;
+      height: 44px;
+      background-color: #cbd5e1;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>');
+      background-size: cover;
+      border: 2px solid #000;
+      border-radius: 50%;
+      margin: 0 auto 8px;
+    }
+    .block-popup-text {
+      font-size: 0.8rem;
+      line-height: 1.4;
+      margin-bottom: 10px;
+      word-break: keep-all;
+    }
+    .block-popup-buttons {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+    .block-popup-btn {
+      padding: 4px 12px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      border: 2px solid #000;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 #000;
+    }
+    .block-popup-btn.confirm {
+      background: var(--neon-hotpink);
+      color: #fff;
+    }
+    .block-popup-btn.cancel {
+      background: #cbd5e1;
+      color: #000;
+    }
+    .block-popup-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0px 0px 0 #000;
+    }
+
+
+    /* =========================================
+       유틸리티
+       ========================================= */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* =========================================
+       인트로(도입) 화면 공통 표준 스타일
+       ========================================= */
+    .std-intro-container {
+      position: absolute;
+      inset: 0 !important;
+      height: 100% !important;
+      top: 0 !important;
+      padding: 0 !important;
+      display: none; /* 기본 상태는 숨김 */
+      flex-direction: column;
+      background-color: #1a1c23;
+      color: #ffffff;
+      overflow: hidden;
+      font-family: 'DungGeunMo', monospace;
+      z-index: 100; /* 인트로가 항상 최상위 노출 */
+    }
+
+    .std-intro-container.active {
+      display: flex !important; /* active 상태일 때만 보임 */
+    }
+
+    /* hidden 클래스가 들어갔을 때의 강제 감춤 규칙 */
+    .std-intro-container.hidden {
+      display: none !important;
+    }
+
+    .std-intro-header-simple {
+      width: 100%;
+      background-color: #2c3e50;
+      border-bottom: 4px solid #000000;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      z-index: 10;
+      box-sizing: border-box;
+    }
+
+    .std-intro-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin: 0;
+      color: #ffffff;
+      text-shadow: 2px 2px 0 #000000;
+    }
+
+    .std-intro-body {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      gap: 32px;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+
+    /* 모바일/태블릿 반응형 대응 */
+    @media (max-width: 768px) {
+      .std-intro-body {
+        flex-direction: column;
+        padding: 16px;
+        gap: 16px;
+        justify-content: flex-start;
+      }
+    }
+
+    .std-intro-char-wrapper-small {
+      width: 195px;
+      height: 195px;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .std-intro-char-wrapper-small {
+        width: 135px;
+        height: 135px;
+      }
+    }
+
+    .std-intro-char-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      animation: miniFloat 2.5s ease-in-out infinite;
+    }
+
+    .std-intro-unified-box {
+      background-color: #1e293b;
+      border: 4px solid #000000;
+      padding: 20px;
+      width: 100%;
+      max-width: 500px;
+      min-height: 220px;
+      box-shadow: 4px 4px 0 #000000;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .std-intro-dialog-inner {
+      color: #f1f5f9;
+      font-size: 1.0rem;
+      line-height: 1.6;
+      text-align: left;
+      word-break: keep-all;
+    }
+
+    .std-intro-divider {
+      height: 2px;
+      background-color: #475569;
+      width: 100%;
+    }
+
+    .std-intro-activities-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .std-activity-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .std-activity-badge {
+      background-color: #eab308;
+      color: #000000;
+      font-size: 0.8rem;
+      padding: 2px 6px;
+      font-weight: 800;
+      flex-shrink: 0;
+      border: 1px solid #000;
+    }
+
+    .std-activity-text {
+      color: #ffffff;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+
+    .std-intro-footer {
+      width: 100%;
+      background-color: #2c3e50;
+      border-top: 4px solid #000000;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+      z-index: 10;
+      box-sizing: border-box;
+    }
+
+    .std-footer-btn-left {
+      padding: 10px 24px;
+      background-color: #475569;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 0.8rem;
+      border: 2px solid #000000;
+      box-shadow: 3px 3px 0 #000000;
+      cursor: pointer;
+      transition: all 0.1s;
+      font-family: 'DungGeunMo', monospace;
+    }
+
+    .std-footer-btn-left:hover {
+      background-color: #64748b;
+    }
+
+    .std-footer-btn-left:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 #000000;
+    }
+
+    .std-footer-btn-right {
+      padding: 10px 32px;
+      background-color: #fde047;
+      color: #000000;
+      font-weight: 800;
+      font-size: 0.85rem;
+      border: 2px solid #000000;
+      box-shadow: 3px 3px 0 #000000;
+      cursor: pointer;
+      transition: all 0.1s;
+      font-family: 'DungGeunMo', monospace;
+    }
+
+    .std-footer-btn-right:hover {
+      background-color: #facc15;
+    }
+
+    .std-footer-btn-right:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 #000000;
+    }
+
+    /* 공통 표준 헤더 및 하단바 스타일 (Tailwind 미지원 환경 호환 - ethics.html과 100% 동기화) */
+    #standard-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 52px;
+      background-color: #1e293b;
+      border-bottom: 4px solid #000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 9999 !important;
+      font-family: 'DungGeunMo', monospace;
+      box-sizing: border-box;
+      flex-shrink: 0 !important;
+    }
+    .stage-dot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      border-radius: 9999px;
+      border: 2px solid #000;
+      font-weight: bold;
+      font-size: 8px;
+      color: #fff;
+    }
+    #control-bar {
+      position: fixed !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 44px;
+      background-color: #1e293b;
+      border-top: 4px solid #000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 9999 !important;
+      font-family: 'DungGeunMo', monospace;
+      box-sizing: border-box;
+      flex-shrink: 0 !important;
+    }
+    
+    /* 옛날 중복 헤더바 영구 가리기 */
+    .header-bar {
+      display: none !important;
+    }
+    
+    /* 부모 컨테이너 및 뷰 크기 조율 (ethics.html 형식으로 완전 동기화) */
+    #app-container {
+      display: flex !important;
+      flex-direction: column !important;
+      height: 100vh !important;
+      max-height: none !important;
+      max-width: none !important;
+      width: 100vw !important;
+      border: none !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      overflow: hidden !important;
+      position: relative !important;
+    }
+    .view {
+      display: none;
+      width: 100% !important;
+      height: 100vh !important;
+      position: absolute !important;
+      top: 0;
+      left: 0;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      opacity: 0;
+      transform: none !important;
+      transition: opacity 0.4s ease;
+      box-sizing: border-box;
+      z-index: 1;
+    }
+    .view.active {
+      display: flex !important;
+      opacity: 1 !important;
+      z-index: 2;
+    }
+    /* 본활동 전용 높이 영역 공제 (상단 헤더 52px + 하단 푸터 44px 제외) */
+    #view-act1, #view-act2 {
+      top: 52px !important;
+      height: calc(100% - 92px) !important;
+      padding: 8px 16px 0px 16px !important;
+      box-sizing: border-box !important;
+    }
+
+    /* === 마음온 AI 공통 표준 가이드 배너 스타일 - 48px 레트로 핏 === */
+    .std-guide-banner {
+      background-color: #312e81 !important;
+      border: 3px solid #000000 !important;
+      box-shadow: 2px 2px 0px #000000 !important;
+      border-radius: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      padding: 6px 12px !important;
+      width: 100% !important;
+      height: 48px !important;
+      flex-shrink: 0 !important;
+      margin-top: -6px !important;
+      position: relative !important;
+      margin-bottom: 4px !important;
+    }
+    
+    @keyframes bounceFairy {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 화면 플래시 레이어 -->
+  <div id="flash-overlay" class="flash-screen"></div>
+
+  <!-- 날아가는 미니 썸네일 -->
+  <div id="flying-thumb" class="flying-thumbnail"></div>
+
+  <!-- 종이비행기 요소 -->
+  <div id="paper-plane" class="paper-plane">✈️</div>
+
+  <div id="app-container">
+    <!-- 공통 표준 상단 헤더바 -->
+    <div id="standard-header" style="display: none;">
+      <!-- 좌측: 고유 역량 이미지 아이콘 & 역량명 -->
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <div style="position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; overflow: visible; margin-left: -5px; margin-right: 5px; flex-shrink: 0;">
+          <!-- 4.5배율 돌출 효과 재현 (icon_violence.png) -->
+          <img src="images/icon_violence.png" alt="역량 아이콘" style="position: absolute; width: 96px; height: 96px; object-fit: contain; max-width: none; image-rendering: pixelated; transform: scale(2.4); z-index: 20; pointer-events: none; top: -28px; left: -26px;">
+        </div>
+        <span style="font-weight: bold; font-size: 1.15rem; letter-spacing: -0.025em; margin-left: 5px;">사이버폭력 인식</span>
+      </div>
+      
+      <!-- 가운데: 활동명 및 진행 상태 (도트) -->
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <span id="stage-title-text" style="font-size: 0.75rem; font-weight: bold; color: #cbd5e1; white-space: nowrap;">사이버폭력 인식</span>
+        <div id="header-progress-dots" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+          <span class="stage-dot" id="dot-1" style="width: 14px; height: 14px; border-radius: 9999px; border: 2px solid #000; background-color: #64748b; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 8px; color: #fff;">1</span>
+          <span class="stage-dot" id="dot-2" style="width: 14px; height: 14px; border-radius: 9999px; border: 2px solid #000; background-color: #64748b; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 8px; color: #fff;">2</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================
+         Screen 1: 메인 화면 (인트로)
+         ========================================= -->
+    <div id="view-intro" class="std-intro-container view active">
+      <!-- 상단 헤더 영역 (심플 헤더) -->
+      <div class="std-intro-header-simple">
+        <h1 class="std-intro-title">사이버폭력 인식</h1>
+      </div>
+
+      <!-- 메인 본문 영역 -->
+      <div class="std-intro-body">
+        <!-- 좌측 캐릭터 영역 (더 작아짐) -->
+        <div class="std-intro-char-wrapper-small">
+          <img src="images/maeumon_intro.png" alt="마음온" class="std-intro-char-img">
+        </div>
+
+        <!-- 우측 단일 통합 상자 (대사 + 활동 요약) -->
+        <div class="std-intro-unified-box">
+          <!-- 대사 -->
+          <div class="std-intro-dialog-inner">
+            "온라인에서는 똑같은 말을 들어도 사람마다 느끼는 마음의 상처와 온도가 완전히 다를 수 있어. 그래서 단순한 장난과 진짜 폭력의 차이를 아는 것이 중요해."
+          </div>
+          <!-- 구분선 -->
+          <div class="std-intro-divider"></div>
+          <!-- 활동 요약 목록 -->
+          <div class="std-intro-activities-inner">
+            <div class="std-activity-row">
+              <span class="std-activity-badge">활동 1</span>
+              <span class="std-activity-text">하나의 상황을 바라보는 두 친구의 다른 시선을 비교하기</span>
+            </div>
+            <div class="std-activity-row">
+              <span class="std-activity-badge">활동 2</span>
+              <span class="std-activity-text">사이버 폭력 상황에서 나를 지키는 4단계 대처법 실천하기</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 하단 버튼 영역 (좌측: 홈, 우측: 활동 시작) -->
+      <div class="std-intro-footer">
+        <button onclick="exitToMap()" class="std-footer-btn-left">🏠 홈으로</button>
+        <button onclick="startTraining()" class="std-footer-btn-right">활동 시작하기 ▶</button>
+      </div>
+
+      <script>
+        function exitToMap() {
+          try {
+            if (window.parent && window.parent !== window) {
+              window.parent.postMessage({ type: 'RETURN_TO_MAP' }, '*');
+            } else {
+              window.location.href = 'index.html';
+            }
+          } catch (e) {
+            window.location.href = 'index.html';
+          }
+        }
+      </script>
+    </div>
+
+    <div id="view-act1" class="view" style="display: flex !important; flex-direction: column !important; height: calc(100% - 96px) !important; justify-content: space-between !important; overflow: hidden !important;">
+      <div class="header-bar">
+        <span class="header-title">🔍 활동 1: 마음온의 시선 교차경</span>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button class="retro-btn" style="padding: 2px 8px; font-size: 10px; background: #e74c3c; color: white; box-shadow: 1px 1px 0 #000; cursor: pointer;" onclick="skipToActivity2()">스킵 ⏭</button>
+          <span class="header-progress" id="act1-progress">활동 진행 중</span>
+        </div>
+      </div>
+
+      <!-- 마음온 AI 공통 가이드 배너 (1단계) -->
+      <div class="std-guide-banner">
+        <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
+          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+        </div>
+        <div style="display: flex !important; flex-direction: column !important; justify-content: center !important; flex-grow: 1 !important; margin-left: 6px;">
+          <span style="font-size: 10.5px !important; font-weight: 900 !important; line-height: 1.1 !important; margin-bottom: 3px !important; font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important; display: block !important;">마음온 AI 가이드</span>
+          <span style="font-size: 12px !important; font-weight: bold !important; color: #e2e8f0 !important; line-height: 1.3 !important; font-family: 'DungGeunMo', monospace !important; display: block !important;" id="act1-guide-bubble">
+            사이버 폭력 방관자가 아닌 방어자가 되어 우리 반을 지키는 영웅이 되어줘! 🛡️
+          </span>
+        </div>
+      </div>
+      
+      <!-- 1단계 미션 질문 카드 (정밀화된 한줄 지시문) -->
+      <div class="mission-question-card" style="background-color: #451a03 !important; border: 3px solid #000000 !important; box-shadow: 2px 2px 0px #000000 !important; padding: 6px 12px !important; margin-bottom: 6px !important; color: #fde047 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important; max-width: 100% !important; width: 100% !important;">
+        <div style="font-size: 0.86rem !important; font-weight: bold !important; color: #fde047 !important; line-height: 1.4 !important;">
+          상황 속 인물들이 느꼈을 진짜 마음(감정) 카드를 알맞게 매칭해봅시다.
+        </div>
+      </div>
+
+      <div class="act1-content" style="display: flex !important; flex-direction: column !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; flex-grow: 1 !important; height: auto !important; overflow: hidden !important; padding: 4px 12px 50px 12px !important; margin-bottom: 0px !important;">
+        
+        <!-- 상단 대화방 & 캐릭터 생각구름 & 감정 매칭 드롭 영역 -->
+        <div class="act1-interactive-area" style="display: flex; flex-direction: row; justify-content: center; align-items: flex-end; gap: 15px; width: 100%; flex-grow: 1; max-height: 250px !important; margin-top: 12px !important;">
+          
+          <!-- 준우의 방 (좌측) -->
+          <div class="character-container" id="char-container-perp" style="gap: 6px;">
+            <!-- 준우 생각구름 -->
+            <div class="thought-bubble perp-bubble" id="bubble-perp" style="min-height: 32px; font-size: 10.5px; padding: 4px 8px;">
+              이거 대박이다ㅋㅋ
+            </div>
+            <!-- 캐릭터 사진 박스 -->
+            <div class="character-frame" style="border-color: var(--point-yellow); width: 120px !important; height: 120px !important; padding: 0; overflow: hidden;">
+              <img id="img-junwoo-char" src="images/cyber_junwoo.png" style="width: 100%; height: 100%; object-fit: cover;" alt="준우">
+              <div class="character-frame-label" style="background: var(--point-yellow); color: #000;">준우 👦</div>
+            </div>
+            <!-- 준우 감정 드롭 영역 (사진 바로 밑으로 이동!) -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 2px; width: 130px;">
+              <span style="font-size: 8px; font-weight: bold; color: var(--point-yellow);">준우 감정 드롭</span>
+              <div class="drop-zone border-2 border-dashed border-yellow-400 bg-yellow-400/5 p-1 min-h-[38px] flex flex-wrap gap-1 items-center justify-center w-full" id="drop-zone-perp" style="border-radius: 4px; box-sizing: border-box;">
+                <span class="drop-zone-placeholder text-[10px] text-yellow-400/50" id="drop-placeholder-perp">감정카드 드롭</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 중앙 학급 단체 채팅방 스마트폰 -->
+          <div class="phone-container" style="width: 260px; height: 280px; border-color: #000; shrink-0; box-shadow: 4px 4px 0 #000;">
+            <div class="chat-room-screen">
+              <div class="chat-header">학급 단체 채팅방 💬</div>
+              <div class="chat-messages-container" id="chat-messages-box">
+                <!-- JS에서 애니메이션 렌더링 -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 민수의 방 (우측) -->
+          <div class="character-container" id="char-container-vic" style="gap: 6px;">
+            <!-- 민수 생각구름 -->
+            <div class="thought-bubble vic-bubble" id="bubble-vic" style="min-height: 32px; font-size: 10.5px; padding: 4px 8px;">
+              다들 나를 비웃고 있어...ㅠ
+            </div>
+            <!-- 캐릭터 사진 박스 -->
+            <div class="character-frame" style="border-color: var(--neon-pink); width: 120px !important; height: 120px !important; padding: 0; overflow: hidden;">
+              <img id="img-minsu-char" src="images/cyber_minsu.png" style="width: 100%; height: 100%; object-fit: cover;" alt="민수">
+              <div class="character-frame-label" style="background: var(--neon-pink); color: #fff;">민수 👦</div>
+            </div>
+            <!-- 민수 감정 드롭 영역 (사진 바로 밑으로 이동!) -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 2px; width: 130px;">
+              <span style="font-size: 8px; font-weight: bold; color: var(--neon-pink);">민수 감정 드롭</span>
+              <div class="drop-zone border-2 border-dashed border-pink-400 bg-pink-400/5 p-1 min-h-[38px] flex flex-wrap gap-1 items-center justify-center w-full" id="drop-zone-vic" style="border-radius: 4px; box-sizing: border-box;">
+                <span class="drop-zone-placeholder text-[10px] text-pink-400/50" id="drop-placeholder-vic">감정카드 드롭</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 하단 질문 & 매칭 대시보드 (높이 110px로 상향, 레이아웃 개편) -->
+        <div class="act1-bottom-dashboard" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; height: 110px; background: rgba(0,0,0,0.5); border: 3px solid #000; box-shadow: 3px 3px 0 #000; padding: 6px 12px; box-sizing: border-box; shrink-0;">
+          
+          <!-- 좌측: 가이드/질문 영역 -->
+          <div style="display: flex; flex-direction: column; gap: 4px; width: 50%; justify-content: center; height: 100%;">
+            <div class="dashboard-guide text-[12px] font-bold leading-relaxed" id="act1-guide" style="border: none; background: transparent; padding: 0; box-shadow: none; border-left: 4px solid var(--point-yellow); padding-left: 8px; color: #fff; word-break: keep-all; transition: border-color 0.3s ease;">
+              준우와 민수가 느끼는 감정을 각 캐릭터 사진 아래 드롭 영역에 매칭해 주세요.
+            </div>
+          </div>
+
+          <!-- 우측: 감정카드 트레이 및 입력 폼 -->
+          <div style="display: flex; flex-direction: column; width: 46%; justify-content: center; height: 100%; position: relative; border-left: 1px solid rgba(255,255,255,0.2); padding-left: 12px; box-sizing: border-box;">
+            
+            <!-- 감정 블록 트레이 (우측 배치) -->
+            <div class="emotion-tray" id="emotion-tray" style="display: flex !important; flex-wrap: wrap; gap: 6px; padding: 6px; background: rgba(0,0,0,0.3); border: 2px solid #000; box-shadow: none; min-height: 48px; align-items: center; justify-content: center; box-sizing: border-box; width: 100%;">
+              <!-- 자바스크립트에서 렌더링 -->
+            </div>
+            
+            <!-- Step 3: 올바른 대처 메시지 작성 폼 (텍스트 입력창과 전송 버튼만 우측 배치) -->
+            <div class="prescription-form flex-col gap-1.5" id="prescription-form" style="display: none; width: 100%;">
+              <div style="display: flex; flex-direction: row; gap: 6px; width: 100%; align-items: center;">
+                <input type="text" id="prescription-text" style="font-size: 11.5px; padding: 6px 10px; height: 36px; box-sizing: border-box; flex-grow: 1;" class="font-bold text-black border-2 border-black bg-white focus:outline-none" placeholder="방관하지 않고 대처할 말을 적어주세요.">
+                <button class="retro-btn" style="background: var(--neon-pink); font-size: 12px; padding: 6px 14px; height: 36px; box-shadow: 1.5px 1.5px 0 #000; shrink-0; box-sizing: border-box; display: inline-flex; align-items: center;" onclick="submitPrescription()">전송 💬</button>
+              </div>
+            </div>
+
+            <!-- 완료 이동 버튼 -->
+            <button class="retro-btn w-full" id="btn-goto-act2" style="display: none; background: var(--neon-mint); font-size: 11.5px; padding: 8px; box-shadow: 1.5px 1.5px 0 #000;" onclick="goToActivity2()">활동 2: 4단계 대처법 실천하기 ▶</button>
+            <button class="retro-btn w-full" id="btn-act1-next" style="display: none !important; font-size: 12px;" onclick="goNextEpisode()"></button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- 활동 1 전용 내장 컨트롤 바 -->
+      <div id="act1-control-bar" style="display: flex !important; position: fixed !important; bottom: 0 !important; left: 0 !important; width: 100% !important; z-index: 1000 !important; height: 44px !important; background-color: #1e293b !important; border-top: 4px solid #000 !important; justify-content: space-between !important; align-items: center !important; padding: 0 20px !important; box-sizing: border-box !important;">
+        <!-- 좌측: 이전 단계 (활동 1은 첫 단계이므로 비활성화) -->
+        <button id="act1-btn-prev" style="padding: 4px 16px; background-color: #475569; color: #fff; font-size: 0.75rem; font-weight: bold; border: 2px solid #000; cursor: not-allowed; opacity: 0.5; font-family: 'DungGeunMo', monospace;" onclick="prevStep()">
+          ◀ 이전 단계
+        </button>
+        
+        <!-- 중앙: 홈으로 -->
+        <button id="act1-footer-home-btn" style="padding: 4px 20px; background-color: #fbbf24; color: #000; font-size: 0.75rem; font-weight: 900; border: 2px solid #000; cursor: pointer; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="exitToMap()">
+          🏠 홈으로 (맵)
+        </button>
+        
+        <!-- 우측: 다음 단계 -->
+        <button id="act1-inner-btn-next" style="padding: 4px 16px; background-color: #10b981; color: #fff; font-size: 0.75rem; font-weight: bold; border: 2px solid #000; cursor: not-allowed; opacity: 0.5; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="nextStep()">
+          다음 단계 ▶
+        </button>
+      </div>
+
+      <div class="heal-glow" id="heal-glow"></div>
+    </div>
+<!-- =========================================
+         Screen 3: [활동 2] SOS 구조대
+         ========================================= -->
+    <div id="view-act2" class="view" style="display: flex !important; flex-direction: column !important; height: calc(100% - 96px) !important; justify-content: space-between !important; overflow: hidden !important;">
+      <div class="header-bar">
+        <span class="header-title">🚨 활동 2: 마음온의 실전 대처 미션</span>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button class="retro-btn" style="padding: 2px 8px; font-size: 10px; background: #e74c3c; color: white; box-shadow: 1px 1px 0 #000; cursor: pointer;" onclick="skipToOutro()">스킵 ⏭</button>
+          <span class="header-progress" id="act2-progress">미션 1</span>
+        </div>
+      </div>
+
+      <!-- 마음온 AI 공통 가이드 배너 (2단계) -->
+      <div class="std-guide-banner" style="margin-bottom: 6px !important;">
+        <div class="relative w-8 h-8 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -4px; margin-right: -4px;">
+          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 38px; height: 38px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -5px; left: -3px;">
+        </div>
+        <div style="display: flex !important; flex-direction: column !important; justify-content: center !important; flex-grow: 1 !important; margin-left: 6px;">
+          <span style="font-size: 10.5px !important; font-weight: 900 !important; line-height: 1.1 !important; margin-bottom: 3px !important; font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important; display: block !important;">마음온 AI 가이드</span>
+          <span style="font-size: 12px !important; font-weight: bold !important; color: #e2e8f0 !important; line-height: 1.3 !important; font-family: 'DungGeunMo', monospace !important; display: block !important;" id="act2-guide-bubble">
+            단체 채팅방에서 친구를 은근히 놀리거나 괴롭히는 것도 집단 따돌림에 해당해! 알맞은 대처 카드를 클릭하여 친구를 보호해줘! 🚨
+          </span>
+        </div>
+      </div>
+
+      <!-- 2단계 미션 질문 카드 (헤더 아래 가로 100% 배치로 복원) -->
+      <div class="mission-question-card" style="background-color: #451a03 !important; border: 3px solid #000000 !important; box-shadow: 2px 2px 0px #000000 !important; padding: 6px 12px !important; margin-bottom: 4px !important; color: #fde047 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important; max-width: 100% !important; width: 100% !important; flex-shrink: 0 !important;">
+        <div style="font-size: 0.86rem !important; font-weight: bold !important; color: #fde047 !important; line-height: 1.4 !important;">
+          사이버 폭력에 처한 친구를 대처 카드를 사용해 지혜롭게 도와주세요.
+        </div>
+      </div>
+      
+
+
+      <div class="act2-content" style="display: flex !important; width: 100% !important; flex-grow: 1 !important; gap: 20px !important; align-items: stretch !important; justify-content: center !important; margin: 4px 0 !important; height: auto !important; overflow: hidden !important; padding-bottom: 50px !important; margin-bottom: 0px !important;">
+        <!-- 픽셀풍 SNS / 메신저 화면 -->
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0;">
+          <div class="sns-container" id="sns-container" onclick="handlePhoneScreenClick(event)" ondragover="handlePhoneDragOver(event)" ondragleave="handlePhoneDragLeave(event)" ondrop="handlePhoneDrop(event)">
+            <div class="sns-header">
+              <span class="sns-logo" id="sns-logo-text">학급 단체 채팅방</span>
+              <!-- 방 나가기 문 버튼 -->
+              <span class="hamburger-btn" id="act2-hamburger-btn" style="cursor: pointer; display: none;" onclick="toggleHamburgerMenu(event)">🚪</span>
+              <!-- 나가기 메뉴 패널 -->
+              <div class="hamburger-panel" id="act2-hamburger-panel" style="display: none;">
+                <button class="btn-leave-room" onclick="leaveRoomAction(event)">🚪 나가는 버튼</button>
+              </div>
+            </div>
+            
+            <div class="sns-body" id="sns-body">
+              <!-- 동적 내용 로드 영역 -->
+            </div>
+            
+            <!-- SOS 드롭/클릭 오버레이 -->
+            <div class="sos-drop-overlay" id="act2-sos-drop-overlay">
+              🚨 여기에 SOS 도구를 드롭하세요
+            </div>
+            
+            <!-- 차단 완료 스탬프 -->
+            <div class="blocked-stamp" id="blocked-stamp">차단 완료</div>
+
+            <!-- 차단 확인 팝업 -->
+            <div id="profile-block-popup">
+              <div class="block-popup-content">
+                <div class="block-popup-avatar"></div>
+                <div class="block-popup-text"><strong>진우</strong>님을 차단하시겠습니까?<br>차단하시면 더 이상 메시지를 받지 않습니다.</div>
+                <div class="block-popup-buttons">
+                  <button class="block-popup-btn confirm" onclick="confirmBlockBully(event)">차단</button>
+                  <button class="block-popup-btn cancel" onclick="closeBlockPopup(event)">취소</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 1388 다이얼 패드 -->
+            <div id="dial-pad-container" onclick="event.stopPropagation()">
+              <div class="dial-screen" id="dial-screen-display"></div>
+              <div class="dial-grid">
+                <button class="dial-key" onclick="pressDialKey('1')">1</button>
+                <button class="dial-key" onclick="pressDialKey('2')">2</button>
+                <button class="dial-key" onclick="pressDialKey('3')">3</button>
+                <button class="dial-key" onclick="pressDialKey('4')">4</button>
+                <button class="dial-key" onclick="pressDialKey('5')">5</button>
+                <button class="dial-key" onclick="pressDialKey('6')">6</button>
+                <button class="dial-key" onclick="pressDialKey('7')">7</button>
+                <button class="dial-key" onclick="pressDialKey('8')">8</button>
+                <button class="dial-key" onclick="pressDialKey('9')">9</button>
+                <button class="dial-key action-key" onclick="pressDialKey('*')">*</button>
+                <button class="dial-key" onclick="pressDialKey('0')">0</button>
+                <button class="dial-key action-key" onclick="pressDialKey('#')">#</button>
+                <button class="dial-key action-key" onclick="pressDialKey('clear')" style="grid-column: span 1.5;">⌫</button>
+                <button class="dial-key action-key" onclick="pressDialKey('reset')" style="grid-column: span 1.5;">초기화</button>
+                <button class="dial-key call-key disabled" id="dial-call-btn" disabled onclick="submitSosDial()">📞 통화 연결 (1388)</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 우측 활동 대시보드 (설명, 가이드, 대처도구가 세로로 묶인 최적화 카드) -->
+        <div class="act1-dashboard" style="display: flex !important; flex-direction: column !important; justify-content: flex-start !important; gap: 8px !important; padding-top: 4px !important; flex-grow: 1 !important; width: 310px !important; min-width: 310px !important; height: 100% !important;">
+          
+          <div>
+            <!-- [이동] 마음온 AI 가이드 배너 (우측 콤팩트 핏) -->
+            
+
+            <!-- 활동 가이드 미션 내용 카드 (세로폭 대폭 확장으로 가독성 보장) -->
+            <div style="position: relative !important;">
+              <div class="dashboard-guide" id="act2-guide" style="min-height: 250px !important; max-height: 280px !important; overflow-y: auto; margin-bottom: 0px !important; padding: 10px !important; padding-bottom: 45px !important;">
+                <!-- 동적 가이드 내용 로드 -->
+              </div>
+              
+              <!-- [이동] 안전 폴더를 미션 안내 박스 우하단에 배치 -->
+              <div class="safe-folder-container" style="position: absolute !important; bottom: 8px !important; right: 12px !important; top: auto !important; left: auto !important; z-index: 10 !important; flex-direction: row !important; gap: 4px !important; align-items: center !important;">
+                <span class="safe-label" style="font-size: 0.75rem !important; font-weight: bold !important; color: var(--point-yellow) !important; text-shadow: 1px 1px 0 #000 !important; display: inline-block !important;">안전 폴더</span>
+                <div class="safe-folder" id="safe-folder" style="font-size: 1.8rem !important; cursor: default !important;">
+                  📁
+                  <div class="safe-badge" id="safe-badge">0</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- [이동] 하단 대처 도구 모음 (우측 대시보드 맨 아래로 밀착 고정!) -->
+          <div class="tool-dock" style="margin-top: auto !important; margin-bottom: 0px !important; width: 100% !important; padding: 6px !important; box-shadow: inset 2px 2px 0 rgba(255,255,255,0.1), 3px 3px 0 var(--pure-black) !important;">
+            <button class="tool-btn" id="tool-capture" style="padding: 4px 2px !important; font-size: 10px !important;" onclick="useTool('capture')">
+              <span class="tool-btn-icon" style="font-size: 14px !important; margin-bottom: 2px !important;">📸</span>
+              <span>화면캡처</span>
+            </button>
+            <button class="tool-btn" id="tool-block" style="padding: 4px 2px !important; font-size: 10px !important;" onclick="useTool('block')">
+              <span class="tool-btn-icon" style="font-size: 14px !important; margin-bottom: 2px !important;">🚫</span>
+              <span>차단하기</span>
+            </button>
+            <button class="tool-btn" id="tool-exit" style="padding: 4px 2px !important; font-size: 10px !important;" onclick="useTool('exit')">
+              <span class="tool-btn-icon" style="font-size: 14px !important; margin-bottom: 2px !important;">🚪</span>
+              <span>나가기</span>
+            </button>
+            <button class="tool-btn" id="tool-sos" style="padding: 4px 2px !important; font-size: 10px !important;" onclick="useTool('sos')" draggable="true" ondragstart="handleSosDragStart(event)" ondragend="handleSosDragEnd(event)">
+              <span class="tool-btn-icon" style="font-size: 14px !important; margin-bottom: 2px !important;">🚨</span>
+              <span>SOS요청</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+      
+      <!-- =========================================
+         Screen 4: 아웃트로 & 완료
+         ========================================= -->
+    <div id="view-outro" class="std-intro-container view" style="display: none;">
+      <!-- 상단 헤더 영역 (심플 헤더) -->
+      <div class="std-intro-header-simple">
+        <h1 class="std-intro-title">사이버폭력 인식 활동 완료 🌟</h1>
+      </div>
+
+      <!-- 메인 본문 영역 (좌측 캐릭터 복원, 우측 성찰대사 통합 개편) -->
+      <div class="std-intro-body" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 30px; padding: 20px 40px !important; box-sizing: border-box;">
+        
+        <!-- 좌측 캐릭터 영역 (마음온 캐릭터 원래대로 복원) -->
+        <div class="std-intro-char-wrapper-small">
+          <img src="images/maeumon_outro.png" alt="마음온" class="std-intro-char-img">
+        </div>
+
+        <!-- 우측 단일 통합 상자 (밝은 배경색 적용, 배지+배지제목+설명 텍스트 수직 구성) -->
+        <div class="std-intro-unified-box" style="flex-grow: 1; height: auto; min-height: 240px; display: flex; flex-direction: column; align-items: stretch; padding: 15px 25px 20px 25px !important; box-shadow: 6px 6px 0 #000000; border: 4px solid #000000; background-color: #f8fafc; color: #000000; margin: 0; max-width: 550px; gap: 10px;">
+          
+          <!-- 상단: 배지 아이콘 + 배지 타이틀 (경계선 구분) -->
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 8px; flex-shrink: 0;">
+            <!-- 크기 5배 상향된 뱃지 이미지 -->
+            <div style="width: 50px; height: 50px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 30px 0 10px 0; flex-shrink: 0;">
+              <img src="images/icon_violence.png" alt="폭력인식 뱃지" style="width: 160px; height: 160px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
+            </div>
+            <span style="font-size: 1.25rem; color: #1e3a8a; font-weight: bold; margin-top: 10px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [사이버폭력 인식] 배지 획득!</span>
+          </div>
+
+          <!-- 하단: 코멘트/설명 텍스트 (줄바꿈/들여쓰기 제거, 검정 폰트색상 적용) -->
+          <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.05rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">장난 뒤에 숨겨진 친구의 아픔과 상처를 깊이 헤아리고, 사이버폭력 상황에서 용기 있게 올바른 대처 방법(캡처, 대응하지 않기, 차단, 알리기)을 다짐해 주었구나! 너의 정의로운 인식과 관심이 평화롭고 따뜻한 교실을 가꾸는 큰 힘이 될 거야.</div>
+        </div>
+
+      </div>
+
+      <!-- 하단 버튼 영역 (오른쪽 정렬 및 가로 넓이 확장) -->
+      <div class="std-intro-footer" style="justify-content: flex-end !important; padding: 16px 40px !important;">
+        <button onclick="finishStage()" class="std-footer-btn-right" style="width: 380px; box-shadow: 4px 4px 0 #000; font-size: 1.1rem; height: 48px;">활동완료 & 대시보드로 돌아가기 ➔</button>
+      </div>
+    </div>
+    <!-- 공통 표준 하단 컨트롤바 -->
+    <div id="control-bar" style="display: none;">
+      <!-- 좌측: 이전 단계 -->
+      <button id="btn-prev" style="padding: 4px 16px; background-color: #475569; color: #fff; font-size: 0.75rem; font-weight: bold; border: 2px solid #000; cursor: pointer; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="prevStep()">
+        ◀ 이전 단계
+      </button>
+      
+      <!-- 중앙: 홈으로 (맵으로) -->
+      <button id="footer-home-btn" style="padding: 4px 20px; background-color: #fbbf24; color: #000; font-size: 0.75rem; font-weight: 900; border: 2px solid #000; cursor: pointer; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="exitToMap()">
+        🏠 홈으로 (맵)
+      </button>
+      
+      <!-- 우측: 다음 단계 -->
+      <button id="btn-next" style="padding: 4px 16px; background-color: #10b981; color: #fff; font-size: 0.75rem; font-weight: bold; border: 2px solid #000; cursor: pointer; transition: all 0.1s; font-family: 'DungGeunMo', monospace;" onclick="nextStep()">
+        다음 단계 ▶
+      </button>
+    </div>
+
+  <!-- 마음온 피드백 모달 팝업 -->
+  <div class="feedback-modal" id="feedback-modal">
+    <div class="modal-content">
+      <svg class="modal-char" viewBox="0 0 96 96" style="display:block; margin:0 auto 10px;">
+        <rect x="28" y="28" width="40" height="40" fill="#ffb86c" stroke="#000" stroke-width="4"/>
+        <rect x="36" y="38" width="4" height="4" fill="#000"/>
+        <rect x="56" y="38" width="4" height="4" fill="#000"/>
+        <rect x="44" y="50" width="8" height="4" fill="#ff5555" stroke="#000" stroke-width="1"/>
+      </svg>
+      <div class="modal-title">마음온의 조언</div>
+      <div class="modal-body" id="modal-text">피드백 내용</div>
+      <button class="retro-btn" style="padding: 6px 16px; font-size: 1rem;" onclick="closeModal()">확인</button>
+    </div>
+  </div>
+
+  <script>
+    const episodes = [
+      {
+        id: 1,
+        situation: "친구의 엽기 표정 도촬 사진을 단체 채팅방에 올린 상황 (사이버 영상 유포)",
+        media: "images/cyber_chat.png",
+        perpText: "이거 대박이다ㅋㅋ",
+        vicText: "다들 나를 비웃고 있어...ㅠ"
+      }
+    ];
+
+    let activeTimers = [];
+    let currentEpIndex = 0;
+
+    // 정답 배치 상태
+    let answersState = {
+      perp: [], // 재미, 장난
+      vic: []   // 수치심, 두려움
+    };
+
+    // 선택된 감정 블록
+    let selectedBlock = null;
+
+    // ==========================================
+    // 뷰 제어 기능
+    // ==========================================
+    function switchView(viewId) {
+      document.querySelectorAll('.view').forEach(el => {
+        el.classList.remove('active');
+        el.style.setProperty('display', 'none', 'important');
+      });
+      const activeView = document.getElementById(viewId);
+      if (activeView) {
+        activeView.classList.add('active');
+        activeView.style.setProperty('display', 'flex', 'important');
+        activeView.style.opacity = '1';
+      }
+      
+      updateFrameUI(viewId);
+      
+      if (viewId === 'view-intro') {
+        document.body.style.backgroundColor = "#1A252F";
+      } else if (viewId === 'view-act1') {
+        initEpisode();
+      } else if (viewId === 'view-act2') {
+        initActivity2();
+      }
+    }
+
+    // 상하단 공통 프레임 제어 및 타이틀 동기화
+    function updateFrameUI(viewId) {
+      const header = document.getElementById("standard-header");
+      const footer = document.getElementById("control-bar");
+      if (!header || !footer) return;
+
+      if (viewId === 'view-intro' || viewId === 'view-outro' || viewId === 'view-act1') {
+        footer.style.setProperty('display', 'none', 'important');
+      } else {
+        footer.style.setProperty('display', 'flex', 'important');
+      }
+
+      if (viewId === 'view-intro' || viewId === 'view-outro') {
+        header.style.setProperty('display', 'none', 'important');
+      } else {
+        header.style.setProperty('display', 'flex', 'important');
+
+        // 타이틀 및 도트 갱신
+        const titleText = document.getElementById("stage-title-text");
+        const dot1 = document.getElementById("dot-1");
+        const dot2 = document.getElementById("dot-2");
+
+        const activeDotStyle = "width: 14px; height: 14px; border-radius: 9999px; border: 2px solid #000; background-color: #3b82f6; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 8px; color: #fff;";
+        const completedDotStyle = "width: 14px; height: 14px; border-radius: 9999px; border: 2px solid #000; background-color: #10b981; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 8px; color: #fff;";
+        const inactiveDotStyle = "width: 14px; height: 14px; border-radius: 9999px; border: 2px solid #000; background-color: #64748b; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 8px; color: #fff;";
+
+        if (dot1) dot1.style = inactiveDotStyle;
+        if (dot2) dot2.style = inactiveDotStyle;
+
+        if (viewId === 'view-act1') {
+          if (titleText) titleText.innerText = "활동 1: 하나의 상황을 바라보는 두 친구의 다른 시선을 비교하기";
+          if (dot1) dot1.style = activeDotStyle;
+        } else if (viewId === 'view-act2') {
+          if (titleText) titleText.innerText = "활동 2: 사이버 폭력 상황에서 나를 지키는 4단계 대처법 실천하기";
+          if (dot1) dot1.style = completedDotStyle;
+          if (dot2) dot2.style = activeDotStyle;
+        }
+
+        // 이전/다음 단계 버튼 상태 판단
+        let isTaskCompleted = false;
+        if (viewId === 'view-act1') {
+          // btn-goto-act2 버튼의 노출 상태로 활동 1 완료 판정
+          const gotoAct2Btn = document.getElementById('btn-goto-act2');
+          if (gotoAct2Btn && gotoAct2Btn.style.display !== 'none') {
+            isTaskCompleted = true;
+          }
+        } else if (viewId === 'view-act2') {
+          // SOS 도구가 발동되었거나, Block Stamp가 찍혔거나, sns-body 내부 텍스트로 판단
+          const stamp = document.getElementById('blocked-stamp');
+          if (stamp && stamp.style.display !== 'none') {
+            isTaskCompleted = true;
+          }
+        }
+
+        const nextBtn = document.getElementById('btn-next');
+        const prevBtn = document.getElementById('btn-prev');
+
+        // 이전 단계 비활성 제어 (첫 번째 활동 화면)
+        if (viewId === 'view-act1') {
+          if (prevBtn) {
+            prevBtn.style.opacity = "0.5";
+            prevBtn.style.cursor = "not-allowed";
+            prevBtn.classList.add('disabled');
+          }
+        } else {
+          if (prevBtn) {
+            prevBtn.style.opacity = "1";
+            prevBtn.style.cursor = "pointer";
+            prevBtn.classList.remove('disabled');
+          }
+        }
+
+        if (isTaskCompleted) {
+          if (nextBtn) {
+            nextBtn.classList.remove('disabled');
+            nextBtn.style.opacity = '1';
+            nextBtn.style.cursor = 'pointer';
+          }
+          const act1NextBtn = document.getElementById('act1-inner-btn-next');
+          if (act1NextBtn) {
+            act1NextBtn.classList.remove('disabled');
+            act1NextBtn.style.opacity = '1';
+            act1NextBtn.style.cursor = 'pointer';
+          }
+        } else {
+          if (nextBtn) {
+            nextBtn.classList.add('disabled');
+            nextBtn.style.opacity = '0.5';
+            nextBtn.style.cursor = 'not-allowed';
+          }
+          const act1NextBtn = document.getElementById('act1-inner-btn-next');
+          if (act1NextBtn) {
+            act1NextBtn.classList.add('disabled');
+            act1NextBtn.style.opacity = '0.5';
+            act1NextBtn.style.cursor = 'not-allowed';
+          }
+        }
+
+        if (nextBtn) {
+          if (viewId === 'view-act2') {
+            nextBtn.innerText = "활동 완료 ➔";
+          } else {
+            nextBtn.innerText = "다음 단계 ▶";
+          }
+        }
+      }
+    }
+
+    // 푸터 버튼을 통한 이전/다음 전환
+    function prevStep() {
+      const activeView = document.querySelector('.view.active');
+      if (!activeView) return;
+      playBeepSound("click");
+
+      if (activeView.id === 'view-act2') {
+        switchView('view-act1');
+      } else if (activeView.id === 'view-act1') {
+        alert("이전 단계가 존재하지 않습니다. (첫 번째 활동 화면입니다)");
+      }
+    }
+
+    function nextStep() {
+      const activeView = document.querySelector('.view.active');
+      if (!activeView) return;
+
+      const nextBtn = document.getElementById('btn-next');
+      if (nextBtn && nextBtn.classList.contains('disabled')) {
+        playBeepSound("fail");
+        if (activeView.id === 'view-act1') {
+          alert("단체 채팅방 속 하나의 상황을 바라보는 두 친구(준우와 민수)의 다른 시선(감정 블록)을 비교하여 감정 매칭을 모두 완료한 후 다음 단계로 넘어갈 수 있습니다!");
+        } else if (activeView.id === 'view-act2') {
+          alert("사이버 폭력 상황에서 나를 지키는 4단계 대처법(캡처하기, 차단하기, SOS 신고하기 등)의 실천 과정을 가상 화면에서 끝까지 수행한 후 완료해 주세요!");
+        }
+        return;
+      }
+
+      playBeepSound("click");
+      if (activeView.id === 'view-act1') {
+        switchView('view-act2');
+      } else if (activeView.id === 'view-act2') {
+        switchView('view-outro');
+      }
+    }
+
+    // 소리 재생 안전 쉴드 함수
+    function playBeepSound(type) {
+      if (typeof synth !== 'undefined') {
+        if (type === 'click' || type === 'select') synth.playSelect();
+        else if (type === 'success') synth.playSuccess();
+        else synth.playSelect();
+      }
+    }
+
+    // ==========================================
+    // Screen 1: 인트로
+    // ==========================================
+    function startTraining() {
+      switchView('view-act1');
+    }
+
+    // ==========================================
+    // Screen 2: 활동 1 - 마음온의 시선 교차경 (듀얼 뷰 버전)
+    // ==========================================
+    function initEpisode() {
+      // 기존 타이머 취소
+      activeTimers.forEach(clearTimeout);
+      activeTimers = [];
+
+      answersState = { perp: [], vic: [] };
+      selectedBlock = null;
+
+      // 프로그레스 갱신
+      document.getElementById('act1-progress').innerText = "활동 1 (에피소드 1 / 1)";
+      
+      // 준우 생각구름 설정
+      const bubblePerp = document.getElementById('bubble-perp');
+      if (bubblePerp) {
+        bubblePerp.innerText = "이거 대박이다ㅋㅋ";
+        bubblePerp.style.backgroundColor = "#fffdf0";
+        bubblePerp.style.borderColor = "var(--point-yellow)";
+      }
+
+      // 민수 생각구름 설정
+      const bubbleVic = document.getElementById('bubble-vic');
+      if (bubbleVic) {
+        bubbleVic.innerText = "다들 나를 비웃고 있어...ㅠ";
+        bubbleVic.style.backgroundColor = "#fff5f7";
+        bubbleVic.style.borderColor = "var(--neon-pink)";
+        bubbleVic.style.color = "#000";
+      }
+
+      // 민수 캐릭터 이미지 원래대로 초기화
+      const minsuImg = document.getElementById('img-minsu-char');
+      if (minsuImg) {
+        minsuImg.src = "images/cyber_minsu.png";
+      }
+
+      // 준우 캐릭터 이미지 원래대로 초기화
+      const junwooImg = document.getElementById('img-junwoo-char');
+      if (junwooImg) {
+        junwooImg.src = "images/cyber_junwoo.png";
+      }
+
+      // 단체 채팅방 스크린 및 메신저함 초기화
+      const screen = document.querySelector('.chat-room-screen');
+      if (screen) {
+        screen.style.backgroundColor = "#a0c0d6";
+      }
+      
+      const msgBox = document.getElementById('chat-messages-box');
+      if (msgBox) {
+        msgBox.innerHTML = '';
+      }
+
+      // 단체 채팅방 메시지 타임아웃 지연 등장 애니메이션
+      // 0.1초: 준우가 사진 전송
+      const t1 = setTimeout(() => {
+        if (!msgBox) return;
+        const msg = document.createElement('div');
+        msg.className = 'chat-msg left shown';
+        msg.innerHTML = `
+          <div class="chat-sender">준우</div>
+          <div class="chat-bubble photo">
+            <img src="${episodes[0].media}" alt="도촬 사진">
+          </div>
+        `;
+        msgBox.appendChild(msg);
+        msgBox.scrollTop = msgBox.scrollHeight;
+      }, 100);
+      activeTimers.push(t1);
+
+      // 1.2초: 준우가 메시지 전송
+      const t2 = setTimeout(() => {
+        if (!msgBox) return;
+        const msg = document.createElement('div');
+        msg.className = 'chat-msg left shown';
+        msg.innerHTML = `
+          <div class="chat-sender">준우</div>
+          <div class="chat-bubble my-msg">얘들아 이것 좀 봐봐ㅋㅋㅋ</div>
+        `;
+        msgBox.appendChild(msg);
+        msgBox.scrollTop = msgBox.scrollHeight;
+      }, 1200);
+      activeTimers.push(t2);
+
+      // 2.2초: 다른 친구(동현)의 호응 메시지
+      const t3 = setTimeout(() => {
+        if (!msgBox) return;
+        const msg = document.createElement('div');
+        msg.className = 'chat-msg left shown';
+        msg.innerHTML = `
+          <div class="chat-sender">동현</div>
+          <div class="chat-bubble">ㅋㅋㅋㅋ</div>
+        `;
+        msgBox.appendChild(msg);
+        msgBox.scrollTop = msgBox.scrollHeight;
+      }, 2200);
+      activeTimers.push(t3);
+
+      // 감정 트레이 및 드롭존 초기화
+      resetEmotionTray();
+      updateDropZoneUI('perp');
+      updateDropZoneUI('vic');
+
+      // 가이드 문구 초기화
+      document.getElementById('act1-guide').innerHTML = "준우와 민수가 느끼는 감정을 각 캐릭터 사진 아래 드롭 영역에 매칭해 주세요.";
+      document.getElementById('act1-guide').style.borderLeftColor = 'var(--point-yellow)';
+      
+      // 제어 컴포넌트 가리기
+      document.getElementById('prescription-form').style.display = 'none';
+      document.getElementById('btn-act1-next').style.display = 'none';
+      document.getElementById('btn-goto-act2').style.display = 'none';
+
+      // 드래그 앤 드롭 이벤트 바인딩
+      setupDropZoneEvents('perp');
+      setupDropZoneEvents('vic');
+    }
+
+    function resetEmotionTray() {
+      const tray = document.getElementById('emotion-tray');
+      if (!tray) return;
+      tray.style.display = 'flex';
+      tray.innerHTML = '';
+      
+      const emotions = ['재미', '장난', '수치심', '두려움'];
+      emotions.forEach(emo => {
+        const block = document.createElement('div');
+        block.className = 'emotion-block';
+        block.draggable = true;
+        block.innerText = emo;
+        block.dataset.emotion = emo;
+        block.id = `block-${emo}`;
+        
+        block.addEventListener('dragstart', handleDragStart);
+        block.addEventListener('dragend', handleDragEnd);
+        block.addEventListener('click', handleBlockClick);
+        
+        tray.appendChild(block);
+      });
+    }
+
+    function updateDropZoneUI(type) {
+      const zone = document.getElementById(`drop-zone-${type}`);
+      const placeholder = document.getElementById(`drop-placeholder-${type}`);
+      if (!zone) return;
+
+      zone.querySelectorAll('.emotion-block').forEach(el => el.remove());
+
+      const currentPlaced = answersState[type];
+      if (currentPlaced.length > 0) {
+        if (placeholder) placeholder.style.display = 'none';
+        currentPlaced.forEach(emo => {
+          const b = document.createElement('div');
+          b.className = 'emotion-block correct-placed';
+          b.innerText = emo;
+          b.style.fontSize = '11px';
+          b.style.padding = '4px 8px';
+          zone.appendChild(b);
+        });
+      } else {
+        if (placeholder) placeholder.style.display = 'block';
+      }
+    }
+
+    let draggedItem = null;
+
+    function handleDragStart(e) {
+      draggedItem = this;
+      this.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', this.dataset.emotion);
+    }
+
+    function handleDragEnd() {
+      this.classList.remove('dragging');
+    }
+
+    function setupDropZoneEvents(type) {
+      const zone = document.getElementById(`drop-zone-${type}`);
+      if (!zone) return;
+
+      zone.ondragover = function(e) {
+        e.preventDefault();
+        this.classList.add('drag-over');
+      };
+
+      zone.ondragleave = function() {
+        this.classList.remove('drag-over');
+      };
+
+      zone.ondrop = function(e) {
+        e.preventDefault();
+        this.classList.remove('drag-over');
+        const emotion = e.dataTransfer.getData('text/plain');
+        processEmotionMatching(emotion, type);
+      };
+
+      zone.onclick = function() {
+        if (selectedBlock) {
+          processEmotionMatching(selectedBlock.dataset.emotion, type);
+          selectedBlock.classList.remove('selected');
+          selectedBlock = null;
+        }
+      };
+    }
+
+    function handleBlockClick() {
+      if (this.classList.contains('correct-placed')) return;
+
+      document.querySelectorAll('.emotion-block').forEach(b => b.classList.remove('selected'));
+      selectedBlock = this;
+      this.classList.add('selected');
+
+      showToastNotification("원하는 캐릭터 사진 아래의 '드롭 영역'을 클릭하여 배치하세요!");
+    }
+
+    function processEmotionMatching(emotion, type) {
+      const correctSet = {
+        perp: ['재미', '장난'],
+        vic: ['수치심', '두려움']
+      };
+
+      if (correctSet[type].includes(emotion)) {
+        if (!answersState[type].includes(emotion)) {
+          answersState[type].push(emotion);
+          
+          const origBlock = document.getElementById(`block-${emotion}`);
+          if (origBlock) origBlock.style.display = 'none';
+
+          updateDropZoneUI(type);
+          checkActivity1Step2Complete();
+        }
+      } else {
+        // 해당 캐릭터 영역 전체 흔들기
+        const charBox = document.getElementById(type === 'perp' ? 'char-container-perp' : 'char-container-vic');
+        if (charBox) {
+          charBox.classList.remove('shake');
+          void charBox.offsetWidth;
+          charBox.classList.add('shake');
+        }
+        
+        let text = "";
+        if (type === 'perp') {
+          text = `[\${emotion}]은 준우의 감정이 아닙니다. 준우는 단지 '재미'와 '장난'으로 여기고 있습니다.`;
+        } else {
+          text = `[\${emotion}]은 민수의 감정이 아닙니다. 상처받은 민수의 입장에서 공감해 보세요.`;
+        }
+        playBeepSound('fail');
+        showToastNotification(text);
+      }
+    }
+
+    function checkActivity1Step2Complete() {
+      if (answersState.perp.length === 2 && answersState.vic.length === 2) {
+        playBeepSound('click');
+        showToastNotification("✨ 준우와 민수의 감정을 찾았습니다! 이제 대처 말을 전송해 주세요.");
+        startPrescriptionStep();
+      }
+    }
+
+    function startPrescriptionStep() {
+      const tray = document.getElementById('emotion-tray');
+      if (tray) tray.style.display = 'none';
+      
+      document.getElementById('prescription-form').style.display = 'flex';
+      document.getElementById('prescription-text').value = '';
+      document.getElementById('act1-guide').innerHTML = "이 단체 채팅방 상황에서 나는 친구들에게 어떻게 말해야 할까요?";
+      document.getElementById('act1-guide').style.borderLeftColor = 'var(--neon-mint)';
+    }
+
+    function submitPrescription() {
+      const text = document.getElementById('prescription-text').value.trim();
+      
+      if (text.length < 3) {
+        showFeedbackModal("상황에 대처하는 진심 어린 한마디를 3자 이상 작성해 주세요!");
+        return;
+      }
+
+      const glow = document.getElementById('heal-glow');
+      if (glow) glow.classList.add('active');
+
+      setTimeout(() => {
+        // 단체 채팅방 배경을 연노랑 치유색으로
+        const screen = document.querySelector('.chat-room-screen');
+        if (screen) {
+          screen.style.backgroundColor = "#ffeaa7";
+        }
+        
+        // 민수 생각구름 치유 대화로
+        const bubbleVic = document.getElementById('bubble-vic');
+        if (bubbleVic) {
+          bubbleVic.innerText = "방관하지 않고 날 대변해 줘서 정말 힘이 나... 고마워! 😊";
+          bubbleVic.style.backgroundColor = "var(--soft-yellow)";
+          bubbleVic.style.borderColor = "var(--soft-yellow)";
+        }
+
+        // 민수 프로필 사진 웃는 사진(images/minsu_smile.jpg)으로 변경
+        const minsuImg = document.getElementById('img-minsu-char');
+        if (minsuImg) {
+          minsuImg.src = "images/minsu_smile.jpg";
+        }
+
+        // 준우 생각구름 난처한 대사로 변경
+        const bubblePerp = document.getElementById('bubble-perp');
+        if (bubblePerp) {
+          bubblePerp.innerText = "앗... 내가 너무 심했나... 미안하네; 😅";
+          bubblePerp.style.backgroundColor = "#e2e8f0";
+          bubblePerp.style.borderColor = "#cbd5e1";
+        }
+
+        // 준우 프로필 사진 난처한 사진(images/junwoo_sorry.jpg)으로 변경
+        const junwooImg = document.getElementById('img-junwoo-char');
+        if (junwooImg) {
+          junwooImg.src = "images/junwoo_sorry.jpg";
+        }
+
+        // 단체 채팅방 메시지에 사용자가 작성한 메시지(나) 추가 연출!
+        const msgBox = document.getElementById('chat-messages-box');
+        if (msgBox) {
+          const msg = document.createElement('div');
+          msg.className = 'chat-msg right shown';
+          msg.innerHTML = `
+            <div class="chat-sender">나</div>
+            <div class="chat-bubble my-msg">${text}</div>
+          `;
+          msgBox.appendChild(msg);
+          msgBox.scrollTop = msgBox.scrollHeight;
+        }
+
+        document.getElementById('prescription-form').style.display = 'none';
+        if (glow) glow.classList.remove('active');
+
+        // 단일 시나리오이므로 즉시 활동 2 이동 버튼 노출
+        document.getElementById('btn-goto-act2').style.display = 'block';
+        updateFrameUI('view-act1');
+
+        
+      }, 1200);
+    }
+
+    function goNextEpisode() {
+      goToActivity2();
+    }
+
+    function goToActivity2() {
+      switchView('view-act2');
+    }
+
+    // ==========================================
+    // Screen 3: 활동 2 - 마음온의 SOS 구조대
+    // ==========================================
+    let act2Mission = 1;
+    let act2Step = 1;
+    let safeCount = 0;
+    let sosToolActive = false;
+    
+    function initActivity2() {
+      act2Mission = 1;
+      act2Step = 1;
+      safeCount = 0;
+      sosToolActive = false;
+      
+      document.getElementById('safe-badge').innerText = safeCount;
+      document.getElementById('blocked-stamp').style.display = 'none';
+      document.getElementById('act2-hamburger-btn').style.display = 'none';
+      document.getElementById('act2-hamburger-panel').style.display = 'none';
+      document.getElementById('act2-hamburger-panel').style.display = 'none';
+      // 1:1 대화방 입력창 제거에 따른 안전 검사
+      const chatInputArea = document.getElementById('act2-chat-input-area');
+      if (chatInputArea) chatInputArea.style.display = 'none';
+      document.getElementById('act2-sos-drop-overlay').style.display = 'none';
+      
+      loadMission(1);
+    }
+
+    let blockToolActive = false; // 차단 도구 활성화 여부
+    
+    function loadMission(missionNum) {
+      act2Mission = missionNum;
+      act2Step = 1;
+      sosToolActive = false;
+      blockToolActive = false;
+      
+      const snsLogo = document.getElementById('sns-logo-text');
+      const snsBody = document.getElementById('sns-body');
+      const guide = document.getElementById('act2-guide');
+      
+      // Reset stamps and overlays
+      document.getElementById('blocked-stamp').style.display = 'none';
+      document.getElementById('act2-hamburger-btn').style.display = 'none';
+      document.getElementById('act2-sos-drop-overlay').style.display = 'none';
+      document.getElementById('profile-block-popup').style.display = 'none';
+      document.getElementById('dial-pad-container').style.display = 'none';
+      
+      updateToolDockButtons();
+
+      if (missionNum === 1) {
+        document.getElementById('act2-progress').innerText = "미션 1";
+        const bubbleAct2_1 = document.getElementById('act2-guide-bubble');
+        if (bubbleAct2_1) bubbleAct2_1.innerText = "단체 채팅방에서 친구를 은근히 놀리거나 괴롭히는 것도 집단 따돌림에 해당해! 알맞은 대처 카드를 클릭하여 친구를 보호해줘! 🚨";
+        snsLogo.innerText = "💬 학급 단체 채팅방 (4)";
+        
+        snsBody.style.background = "#ffffff";
+        snsBody.style.padding = "10px";
+        snsBody.style.display = "flex";
+        snsBody.style.flexDirection = "column";
+        snsBody.style.gap = "6px";
+        
+        snsBody.innerHTML = '';
+        
+        // 0.1초: 초대 메시지
+        const t1 = setTimeout(() => {
+          snsBody.innerHTML += `<div class="chat-bubble-system">진우, 철민, 건우님이 나를 초대했습니다.</div>`;
+          snsBody.scrollTop = snsBody.scrollHeight;
+        }, 100);
+        activeTimers.push(t1);
+
+        // 1.2초: 진우 메시지
+        const t2 = setTimeout(() => {
+          snsBody.innerHTML += `
+            <div style="display:flex; gap:6px; align-items:flex-start;">
+              <div class="sns-avatar" style="cursor: pointer;" onclick="handleBullyProfileClick(event)"></div>
+              <div style="display:flex; flex-direction:column; align-items:flex-start; flex-grow:1;">
+                <span style="font-size:0.65rem; color:#666; font-weight:bold; margin-left:4px;">진우</span>
+                <div class="chat-bubble-left">야 얘 프사 사진 봐봐, 좀 이상하지 않냐?</div>
+              </div>
+            </div>
+          `;
+          snsBody.scrollTop = snsBody.scrollHeight;
+          playBlockStampSound();
+        }, 1200);
+        activeTimers.push(t2);
+
+        // 2.4초: 철민 메시지
+        const t3 = setTimeout(() => {
+          snsBody.innerHTML += `
+            <div style="display:flex; gap:6px; align-items:flex-start;">
+              <div class="sns-avatar"></div>
+              <div style="display:flex; flex-direction:column; align-items:flex-start; flex-grow:1;">
+                <span style="font-size:0.65rem; color:#666; font-weight:bold; margin-left:4px;">철민</span>
+                <div class="chat-bubble-left">원래 좀 이상하더라고ㅋㅋㅋ</div>
+              </div>
+            </div>
+          `;
+          snsBody.scrollTop = snsBody.scrollHeight;
+          playBlockStampSound();
+        }, 2400);
+        activeTimers.push(t3);
+
+        // 3.6초: 건우 메시지
+        const t4 = setTimeout(() => {
+          snsBody.innerHTML += `
+            <div style="display:flex; gap:6px; align-items:flex-start;">
+              <div class="sns-avatar"></div>
+              <div style="display:flex; flex-direction:column; align-items:flex-start; flex-grow:1;">
+                <span style="font-size:0.65rem; color:#666; font-weight:bold; margin-left:4px;">건우</span>
+                <div class="chat-bubble-left">너 왜 여기 들어와 있어? 좀 나가라;</div>
+              </div>
+            </div>
+          `;
+          snsBody.scrollTop = snsBody.scrollHeight;
+          playBlockStampSound();
+        }, 3600);
+        activeTimers.push(t4);
+        
+        guide.innerHTML = `
+          <strong>[미션 1]</strong><br>
+          진우, 철민, 건우가 단체 채팅방에서 나를 향해 불쾌한 말과 따돌림을 쏟아내고 있습니다.<br><br>
+          
+          하단의 도구 모음에서 <strong>[📸 화면캡처]</strong> 도구를 클릭하여 증거 화면을 먼저 확보하세요!
+        `;
+      } 
+      else if (missionNum === 2) {
+        document.getElementById('act2-progress').innerText = "미션 2";
+        const bubbleAct2_2 = document.getElementById('act2-guide-bubble');
+        if (bubbleAct2_2) bubbleAct2_2.innerText = "괴롭히는 친구의 메시지가 계속 올 때는, 프로필을 눌러 단단히 차단하는 대처법이 필요해! 🚫";
+        snsLogo.innerText = "💬 진우 (1:1)";
+        
+        snsBody.style.background = "#ffffff";
+        snsBody.style.padding = "10px";
+        snsBody.style.display = "flex";
+        snsBody.style.flexDirection = "column";
+        snsBody.style.gap = "6px";
+        
+        snsBody.innerHTML = `
+          <div style="display:flex; gap:6px; align-items:flex-start;" id="act2-bully-profile">
+            <div class="avatar-container" style="cursor: pointer;" onclick="handleBullyProfileClick(event)">
+              <div class="sns-avatar"></div>
+              <div class="blocked-slash" id="act2-blocked-slash"></div>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:flex-start; flex-grow:1;">
+              <span style="font-size:0.65rem; color:#666; font-weight:bold; margin-left:4px;">진우</span>
+              <div class="chat-bubble-left" id="act2-bully-msg">단체 채팅방 나가면 다 해결되는 줄 알았어? 도망칠 생각 마.</div>
+            </div>
+          </div>
+        `;
+        
+        guide.innerHTML = `
+          <strong>[미션 2]</strong><br>
+          가해자 진우가 개인 톡방까지 쫓아와 협박하고 있습니다. 무리한 대화는 피하고 차단해야 합니다.<br><br>
+          
+          하단의 도구 모음에서 <strong>[🚫 차단하기]</strong> 도구를 활성화한 후, 단체 채팅방 속 가해자 <strong>진우의 프로필 사진을 직접 터치/클릭</strong>하여 차단해 주세요.
+        `;
+      }
+    }
+
+    function updateToolDockButtons() {
+      const captureBtn = document.getElementById('tool-capture');
+      const blockBtn = document.getElementById('tool-block');
+      const exitBtn = document.getElementById('tool-exit');
+      const sosBtn = document.getElementById('tool-sos');
+      
+      [captureBtn, blockBtn, exitBtn, sosBtn].forEach(btn => {
+        if (btn) {
+          btn.className = "tool-btn disabled";
+          btn.disabled = true;
+        }
+      });
+      
+      if (act2Mission === 1) {
+        if (act2Step === 1) {
+          captureBtn.className = "tool-btn active-glow";
+          captureBtn.disabled = false;
+        } else if (act2Step === 2) {
+          exitBtn.className = "tool-btn active-glow";
+          exitBtn.disabled = false;
+        }
+      } 
+      else if (act2Mission === 2) {
+        if (act2Step === 1) {
+          blockBtn.className = "tool-btn active-glow";
+          blockBtn.disabled = false;
+        } else if (act2Step === 2) {
+          sosBtn.className = "tool-btn active-glow";
+          sosBtn.disabled = false;
+        }
+      }
+    }
+
+    function useTool(toolType) {
+      if (act2Mission === 1) {
+        if (toolType === 'capture' && act2Step === 1) {
+          captureEvidenceAction();
+        } else if (toolType === 'exit' && act2Step === 2) {
+          showToastNotification("우측 상단 🚪 버튼을 눌러서 단체 채팅방을 나가세요.");
+        }
+      } 
+      else if (act2Mission === 2) {
+        if (toolType === 'block' && act2Step === 1) {
+          blockToolActive = true;
+          const bullyProfile = document.querySelector('#act2-bully-profile .avatar-container');
+          if (bullyProfile) {
+            bullyProfile.classList.add('active-glow');
+          }
+          showToastNotification("🚫 단체 채팅방에서 차단할 가해자(진우)의 프로필 사진을 클릭하세요!");
+        } else if (toolType === 'sos' && act2Step === 2) {
+          sosToolActive = true;
+          document.getElementById('dial-pad-container').style.display = 'flex';
+          dialedNumber = "";
+          updateDialDisplay();
+          showToastNotification("🚨 다이얼 패드에 학교폭력 신고전화 번호 1388을 입력하세요.");
+        }
+      }
+    }
+
+    function playCameraShutterSound() {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const bufferSize = ctx.sampleRate * 0.12; 
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'highpass';
+        filter.frequency.value = 1200;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.8, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.09);
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        noise.start();
+      } catch (e) {}
+    }
+
+    function captureEvidenceAction() {
+      playCameraShutterSound();
+
+      const flash = document.getElementById('flash-overlay') || document.getElementById('flash-screen');
+      if (flash) {
+        flash.classList.add('active');
+        setTimeout(() => flash.classList.remove('active'), 250);
+      }
+
+      safeCount = 1;
+      document.getElementById('safe-badge').innerText = safeCount;
+
+      const folder = document.getElementById('safe-folder');
+      if (folder) {
+        folder.classList.add('bounce');
+        setTimeout(() => folder.classList.remove('bounce'), 400);
+      }
+
+      showToastNotification("📸 증거 확보 완료! 안전 폴더에 보관되었습니다.");
+
+      act2Step = 2;
+      updateToolDockButtons();
+
+      // 햄버거 버튼 활성화
+      const hamburgerBtn = document.getElementById('act2-hamburger-btn');
+      hamburgerBtn.style.display = 'block';
+      hamburgerBtn.classList.add('active-glow');
+
+      document.getElementById('act2-guide').innerHTML = `
+        <strong>[미션 1]</strong><br>
+        증거가 성공적으로 수집되었습니다. 가해자들과 말다툼을 하지 마세요.<br><br>
+        스마트폰 우측 상단의 <strong>[🚪]</strong> 아이콘 속 <strong>[🚪 나가는 버튼]</strong>을 클릭하여 단체 채팅방을 탈출하세요!
+      `;
+    }
+
+
+
+    function leaveRoomAction(e) {
+      if (e) e.stopPropagation();
+      
+      document.getElementById('act2-hamburger-panel').style.display = 'none';
+      document.getElementById('act2-hamburger-btn').classList.remove('active-glow');
+
+      const snsBody = document.getElementById('sns-body');
+      snsBody.innerHTML += `<div class="chat-bubble-system">내가 단체 채팅방을 퇴장하였습니다.</div>`;
+      
+      playBlockStampSound();
+      showToastNotification("🚪 단체 채팅방을 퇴장했습니다.");
+
+      // 카톡 감옥: 1.5초 후 강제 재초대 연출
+      setTimeout(() => {
+        snsBody.innerHTML += `<div class="chat-bubble-system">진우님이 나를 강제로 초대했습니다.</div>`;
+        snsBody.scrollTop = snsBody.scrollHeight;
+        playBlockStampSound();
+        
+        setTimeout(() => {
+          snsBody.innerHTML += `
+            <div style="display:flex; gap:6px; align-items:flex-start;">
+              <div class="sns-avatar" style="cursor: pointer;" onclick="handleBullyProfileClick(event)"></div>
+              <div style="display:flex; flex-direction:column; align-items:flex-start; flex-grow:1;">
+                <span style="font-size:0.65rem; color:#666; font-weight:bold; margin-left:4px;">진우</span>
+                <div class="chat-bubble-left">나간다고 끝날 줄 알았냐? ㅋㅋ</div>
+              </div>
+            </div>
+          `;
+          snsBody.scrollTop = snsBody.scrollHeight;
+          playBlockStampSound();
+        }, 800);
+
+        setTimeout(() => {
+          snsBody.innerHTML += `
+            <div style="display:flex; gap:6px; align-items:flex-start;">
+              <div class="sns-avatar"></div>
+              <div style="display:flex; flex-direction:column; align-items:flex-start; flex-grow:1;">
+                <span style="font-size:0.65rem; color:#666; font-weight:bold; margin-left:4px;">철민</span>
+                <div class="chat-bubble-left">우리가 계속 초대할 건데 어디 가냐?</div>
+              </div>
+            </div>
+          `;
+          snsBody.scrollTop = snsBody.scrollHeight;
+          playBlockStampSound();
+
+          // 가이드 갱신 및 미션 2로 전환 유도
+          const guide = document.getElementById('act2-guide');
+          guide.innerHTML = `
+            <strong>[미션 1]</strong><br>
+            방을 나갔지만 가해자들이 나를 다시 강제로 초대했습니다. 단순히 단체 채팅방을 나가는 것만으로는 사이버 폭력을 근본적으로 피하기 어렵습니다.<br><br>
+            
+            이제 <strong>[미션 2]</strong>로 넘어갑니다. 하단의 <strong>[🚫 차단하기]</strong> 도구를 클릭해 활성화해 주세요.
+          `;
+          
+          setTimeout(() => {
+            loadMission(2);
+          }, 4500);
+
+        }, 1600);
+
+      }, 1500);
+    }
+
+    // 프로필 차단 모달 제어 함수들
+    function handleBullyProfileClick(e) {
+      if (e) e.stopPropagation();
+      if (act2Mission === 2 && act2Step === 1 && blockToolActive) {
+        document.getElementById('profile-block-popup').style.display = 'flex';
+      }
+    }
+
+    function closeBlockPopup(e) {
+      if (e) e.stopPropagation();
+      document.getElementById('profile-block-popup').style.display = 'none';
+      blockToolActive = false;
+      const bullyProfile = document.querySelector('#act2-bully-profile .avatar-container');
+      if (bullyProfile) {
+        bullyProfile.classList.remove('active-glow');
+      }
+    }
+
+    function confirmBlockBully(e) {
+      if (e) e.stopPropagation();
+      document.getElementById('profile-block-popup').style.display = 'none';
+      blockToolActive = false;
+      blockBullyAction();
+    }
+
+    function blockBullyAction() {
+      playBlockStampSound();
+
+      document.getElementById('act2-blocked-slash').style.display = 'block';
+      const bullyProfile = document.querySelector('#act2-bully-profile .avatar-container');
+      if (bullyProfile) {
+        bullyProfile.classList.remove('active-glow');
+      }
+      const msg = document.getElementById('act2-bully-msg');
+      if (msg) {
+        msg.style.filter = 'blur(4px)';
+        msg.style.opacity = '0.5';
+      }
+
+      document.getElementById('blocked-stamp').style.display = 'block';
+        updateFrameUI('view-act2');
+      showToastNotification("🚫 가해자(진우)를 차단하였습니다.");
+
+      setTimeout(() => {
+        act2Step = 2;
+        updateToolDockButtons();
+
+        document.getElementById('act2-guide').innerHTML = `
+          <strong>[미션 2]</strong><br>
+          가해자 진우를 차단했습니다. 이제 단체 채팅방 증거 화면과 함께 청소년 학교폭력 신고센터에 도움을 요청해야 합니다.<br><br>
+          하단의 <strong>[🚨 SOS요청]</strong> 도구를 클릭한 뒤 다이얼 창에서 청소년 폭력신고 번호인 <strong>1388</strong>을 눌러 전화를 거세요!
+        `;
+      }, 1500);
+    }
+
+    function playBlockStampSound() {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(130, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(35, ctx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.7, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.12);
+      } catch(e) {}
+    }
+
+    // SOS 드래그 앤 드롭 및 클릭 핸들러
+    function handleSosDragStart(e) {
+      if (act2Mission === 2 && act2Step === 2) {
+        e.dataTransfer.setData('text/plain', 'sos');
+        document.getElementById('act2-sos-drop-overlay').style.display = 'flex';
+      }
+    }
+
+    function handleSosDragEnd(e) {
+      document.getElementById('act2-sos-drop-overlay').style.display = 'none';
+    }
+
+    function handlePhoneDragOver(e) {
+      if (act2Mission === 2 && act2Step === 2) {
+        e.preventDefault();
+        document.getElementById('act2-sos-drop-overlay').classList.add('drag-over');
+      }
+    }
+
+    function handlePhoneDragLeave(e) {
+      document.getElementById('act2-sos-drop-overlay').classList.remove('drag-over');
+    }
+
+    function handlePhoneDrop(e) {
+      e.preventDefault();
+      document.getElementById('act2-sos-drop-overlay').classList.remove('drag-over');
+      document.getElementById('act2-sos-drop-overlay').style.display = 'none';
+
+      const data = e.dataTransfer.getData('text/plain');
+      if (data === 'sos' && act2Mission === 2 && act2Step === 2) {
+        // SOS 드롭 시에도 다이얼 패드를 강제 로드
+        sosToolActive = true;
+        document.getElementById('dial-pad-container').style.display = 'flex';
+        dialedNumber = "";
+        updateDialDisplay();
+        showToastNotification("🚨 다이얼 패드에 학교폭력 신고전화 번호 1388을 입력하세요.");
+      }
+    }
+
+    function handlePhoneScreenClick(e) {
+      // do nothing now that we click dial keys
+    }
+
+    // 1388 다이얼 패드 입력 처리
+    let dialedNumber = "";
+    const dtmfFreqs = {
+      '1': [697, 1209], '2': [697, 1336], '3': [697, 1477],
+      '4': [770, 1209], '5': [770, 1336], '6': [770, 1477],
+      '7': [852, 1209], '8': [852, 1336], '9': [852, 1477],
+      '*': [941, 1209], '0': [941, 1336], '#': [941, 1477],
+      'clear': [440, 480], 'reset': [350, 440]
+    };
+
+    function playDialTone(key) {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const freqs = dtmfFreqs[key] || [440, 440];
+        
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc1.frequency.value = freqs[0];
+        osc2.frequency.value = freqs[1];
+        
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(ctx.destination);
+        
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+        
+        osc1.start();
+        osc2.start();
+        osc1.stop(ctx.currentTime + 0.15);
+        osc2.stop(ctx.currentTime + 0.15);
+      } catch(e) {}
+    }
+
+    function pressDialKey(key) {
+      playDialTone(key);
+      
+      if (key === 'clear') {
+        if (dialedNumber.length > 0) {
+          dialedNumber = dialedNumber.substring(0, dialedNumber.length - 1);
+        }
+      } else if (key === 'reset') {
+        dialedNumber = "";
+      } else {
+        if (dialedNumber.length < 8) {
+          dialedNumber += key;
+        }
+      }
+      updateDialDisplay();
+    }
+
+    function updateDialDisplay() {
+      document.getElementById('dial-screen-display').innerText = dialedNumber;
+      const callBtn = document.getElementById('dial-call-btn');
+      if (dialedNumber === "1388") {
+        callBtn.classList.remove('disabled');
+        callBtn.disabled = false;
+      } else {
+        callBtn.classList.add('disabled');
+        callBtn.disabled = true;
+      }
+    }
+
+    function submitSosDial() {
+      if (dialedNumber === "1388") {
+        document.getElementById('dial-pad-container').style.display = 'none';
+        triggerSOS();
+      }
+    }
+
+    function triggerSOS() {
+      playBlockStampSound();
+      updateFrameUI('view-act2');
+      
+      // 차단 완료 딱지 숨기기
+      const blockedStamp = document.getElementById('blocked-stamp');
+      if (blockedStamp) {
+        blockedStamp.style.display = 'none';
+      }
+
+      const snsBody = document.getElementById('sns-body');
+      snsBody.style.background = "#fff";
+      snsBody.innerHTML = `
+        <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center; padding:15px; color:#2c3e50; gap:8px;">
+          <span style="font-size:3rem; animation:scaleBeat 1s infinite alternate steps(4);">🚨</span>
+          <strong style="font-size:0.95rem; line-height:1.4; color:var(--neon-hotpink);">1388 청소년전화 및 보호자에게 증거자료를 안전하게 전송했습니다.</strong>
+          <span style="font-size:0.75rem; color:#7f8c8d; margin-bottom: 8px;">청소년 전화상담 및 피해신고 연동 완료</span>
+          <button class="retro-btn" style="padding: 6px 12px; font-size: 0.8rem; background-color: var(--neon-mint); color: #000; cursor: pointer; border: 2px solid #000; box-shadow: 2px 2px 0 #000; font-family: 'DungGeunMo', monospace;" onclick="switchView('view-outro')">확인</button>
+        </div>
+      `;
+
+      showToastNotification("🚨 SOS 신고 완료! 1388 청소년전화에 신고가 접수되었습니다.");
+    }
+
+    function triggerPaperPlaneAnimation(callback) {
+      const plane = document.getElementById('paper-plane');
+      const startEl = document.getElementById('act2-chat-input-area') || document.querySelector('.tool-dock');
+      const snsContainer = document.getElementById('sns-container');
+      
+      const startRect = startEl.getBoundingClientRect();
+      const snsRect = snsContainer.getBoundingClientRect();
+
+      plane.style.display = 'block';
+      plane.style.left = `${startRect.left + startRect.width / 2}px`;
+      plane.style.top = `${startRect.top}px`;
+
+      plane.style.animation = 'none';
+      void plane.offsetWidth;
+
+      plane.style.animation = 'flyPlane 1.0s forwards ease-in-out';
+
+      setTimeout(() => {
+        plane.style.display = 'none';
+        if (callback) callback();
+      }, 1000);
+    }
+
+    // ==========================================
+    // 에모지 파티클 애니메이션 엔진
+    // ==========================================
+    function startParticles(type) {
+      // 파티클 피어오르는 효과 제거
+    }
+
+    function stopParticles() {
+      // 파티클 피어오르는 효과 제거
+    }
+
+    // ==========================================
+    // 모달 및 토스트 알림 헬퍼
+    // ==========================================
+    let modalCallback = null;
+
+    function showFeedbackModal(text, callback = null) {
+      document.getElementById('modal-text').innerHTML = text;
+      document.getElementById('feedback-modal').style.display = 'flex';
+      modalCallback = callback;
+    }
+
+    function closeModal() {
+      document.getElementById('feedback-modal').style.display = 'none';
+      if (modalCallback) {
+        modalCallback();
+        modalCallback = null;
+      }
+    }
+
+    function showToastNotification(message) {
+      const toast = document.createElement('div');
+      toast.style.position = 'absolute';
+      toast.style.bottom = '55px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%) translateY(10px)';
+      toast.style.background = 'var(--pure-black)';
+      toast.style.color = 'var(--point-yellow)';
+      toast.style.border = '3px solid var(--point-yellow)';
+      toast.style.padding = '10px 16px';
+      toast.style.width = '85%';
+      toast.style.maxWidth = '500px';
+      toast.style.textAlign = 'center';
+      toast.style.whiteSpace = 'normal';
+      toast.style.wordBreak = 'keep-all';
+      toast.style.fontSize = '0.85rem';
+      toast.style.fontWeight = 'bold';
+      toast.style.zIndex = '999';
+      toast.style.transition = 'all 0.25s ease';
+      toast.style.opacity = '0';
+      toast.style.pointerEvents = 'none';
+      
+      const container = document.getElementById('app-container') || document.body;
+      container.appendChild(toast);
+      toast.innerText = message;
+      
+      void toast.offsetWidth;
+      toast.style.transform = 'translateX(-50%) translateY(0)';
+      toast.style.opacity = '1';
+
+      setTimeout(() => {
+        toast.style.transform = 'translateX(-50%) translateY(-10px)';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 250);
+      }, 2000);
+    }
+
+    // ==========================================
+    // 최종 대시보드 복귀 (연동)
+    // ==========================================
+    function finishStage() {
+      alert("사이버폭력 인식 활동의 모든 단계를 성공적으로 이수했습니다! 대시보드로 돌아갑니다.");
+      let inIframe = false;
+      try {
+        inIframe = (window.self !== window.top);
+      } catch (e) {
+        inIframe = true; 
+      }
+
+      if (inIframe) {
+        try {
+          const prescriptionVal = document.getElementById('prescription-text') ? document.getElementById('prescription-text').value.trim() : "";
+          window.parent.postMessage({ 
+            type: 'TASK_COMPLETE', 
+            category: '사이버폭력 인식',
+            answers: {
+              "사이버 폭력 예방 처방전": prescriptionVal,
+              "대응 대화 메시지": "1388 청소년전화 신고 접수 완료"
+            }
+          }, '*');
+        } catch (err) {
+          console.error("postMessage failed:", err);
+        }
+      } else {
+        location.reload();
+      }
+    }
+
+    function toggleHamburgerMenu(e) {
+      if (e) e.stopPropagation();
+      const panel = document.getElementById('act2-hamburger-panel');
+      if (panel.style.display === 'none' || panel.style.display === '') {
+        panel.style.display = 'flex';
+      } else {
+        panel.style.display = 'none';
+      }
+    }
+
+    // 스킵 테스트 헬퍼 함수
+    function skipToActivity2() {
+      goToActivity2();
+    }
+    function skipToOutro() {
+      switchView('view-outro');
+    }
+
+    // 초기 실행
+    switchView('view-intro');
+  </script>
+</body>
+</html>

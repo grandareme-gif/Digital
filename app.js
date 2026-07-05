@@ -1,0 +1,1629 @@
+// Firebase imports removed. Using global 'firebase' object from Compat SDK.
+
+// ==========================================
+// [파이어베이스 Config] 
+// ==========================================
+const firebaseConfig = {
+  apiKey: "AIzaSyD0MWdkXCdH0yfdjQxDYw08Zx3kOWoFe7Q",
+  authDomain: "cybertest-b2d53.firebaseapp.com",
+  projectId: "cybertest-b2d53",
+  storageBucket: "cybertest-b2d53.firebasestorage.app",
+  messagingSenderId: "969068841275",
+  appId: "1:969068841275:web:04f7786f2dd40251f8cf1e"
+};
+
+let db;
+let auth;
+let useFirebase = false;
+
+if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
+  try {
+    const app = firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    auth = firebase.auth();
+    useFirebase = true;
+    console.log("Firebase initialized.");
+  } catch (e) {
+    console.error("Firebase 초기화 에러:", e);
+  }
+}
+
+// ==========================================
+// [전역 상태 변수 및 데이터 정의]
+// ==========================================
+window.appState = {
+  classCode: "",
+  studentId: "",
+  studentName: "",
+  isClassMode: false,
+  isMember: false,
+  currentSceneIndex: 0,
+  surveyIndex: 0,
+  surveyScores: {
+    "사이버 공감": 0, "사이버 의사소통": 0, "사이버 자기조절": 0, "사이버 감정조절": 0,
+    "인터넷 윤리의식 및 활용": 0, "사이버 갈등관리 및 문제해결": 0, "사이버폭력 인식": 0, "사이버 자기존중감": 0
+  },
+  completedTasks: [], // 완료한 카테고리명 배열
+  recommendedRoute: [], // 추천 루트
+  taskAnswers: {} // 각 과제별 주관식 답변 저장
+};
+
+const questions = [
+  { id: 1, category: "사이버 공감", text: "친구가 올린 글을 볼 때, 그 친구가 어떤 기분일지 먼저 생각해 보나요?", isReverse: false },
+  { id: 2, category: "사이버 공감", text: "온라인에서 속상해하는 친구를 보면 위로하는 댓글을 남기고 싶나요?", isReverse: false },
+  { id: 3, category: "사이버 의사소통", text: "온라인 채팅을 할 때 나도 모르게 욕설이나 거친 표현을 사용한 적이 있나요?", isReverse: true },
+  { id: 4, category: "사이버 의사소통", text: "문자나 메신저를 보낼 때 상대방이 오해하지 않도록 신중하게 단어를 고르나요?", isReverse: false },
+  { id: 5, category: "사이버 자기조절", text: "디지털 미디어(스마트폰, 게임 등) 사용으로 인해 해야 할 일(숙제 등)을 미룬 적이 있나요?", isReverse: true },
+  { id: 6, category: "사이버 자기조절", text: "스마트폰을 사용하지 않으면 불안하거나 진동이 울리는 것 같은 착각이 드나요?", isReverse: true },
+  { id: 7, category: "사이버 감정조절", text: "온라인 게임이나 채팅 중 화가 나면 참지 못하고 주먹이 쥐어지거나 화면을 거칠게 다루나요?", isReverse: true },
+  { id: 8, category: "사이버 감정조절", text: "기분 나쁜 메시지를 받았을 때, 즉시 대거리하기보다 마음을 가라앉히려고 노력하나요?", isReverse: false },
+  { id: 9, category: "인터넷 윤리의식 및 활용", text: "딥페이크 영상이나 가짜 뉴스를 보면 그것이 진짜인지 의심하고 신고해야 한다고 생각하나요?", isReverse: false },
+  { id: 10, category: "인터넷 윤리의식 및 활용", text: "저작권이 있는 사진이나 글을 허락 없이 내 SNS에 올리는 것이 잘못임을 알고 있나요?", isReverse: false },
+  { id: 11, category: "사이버 갈등관리 및 문제해결", text: "단톡방에서 친구와 다툼이 생겼을 때, 화를 내기보다 대화로 오해를 풀려고 노력하나요?", isReverse: false },
+  { id: 12, category: "사이버 갈등관리 및 문제해결", text: "친구가 나를 비난할 때, '너 때문에 기분이 나빠'라고 솔직하고 차분하게 말할 수 있나요?", isReverse: false },
+  { id: 13, category: "사이버폭력 인식", text: "단체 채팅방에서 한 친구를 내보내지 못하게 하고 괴롭히는 것이 폭력임을 알고 있나요?", isReverse: false },
+  { id: 14, category: "사이버폭력 인식", text: "사이버폭력을 목격하면 화면을 캡처하여 선생님이나 부모님께 알릴 용기가 있나요?", isReverse: false },
+  { id: 15, category: "사이버 자기존중감", text: "비방하는 댓글을 보더라도 '나는 소중한 사람이야'라고 스스로를 다독일 수 있나요?", isReverse: false },
+  { id: 16, category: "사이버 자기존중감", text: "온라인 세상에서도 나의 장점을 당당하게 표현하고 자부심을 느끼나요?", isReverse: false }
+];
+
+// 마인드 웹 노드 정보 (위치 x, y 비율)
+const mapNodes = [
+  { id: "node-1", category: "사이버 공감", x: 26, y: 24 },              // 10시 반 방향
+  { id: "node-2", category: "사이버 의사소통", x: 50, y: 16 },            // 12시 방향
+  { id: "node-3", category: "사이버 자기조절", x: 84, y: 50 },            // 3시 방향 (우측 외곽)
+  { id: "node-4", category: "사이버 감정조절", x: 74, y: 76 },            // 4시 반 방향
+  { id: "node-5", category: "인터넷 윤리의식 및 활용", x: 50, y: 84 },      // 6시 방향
+  { id: "node-6", category: "사이버 갈등관리 및 문제해결", x: 16, y: 50 },  // 9시 방향 (좌측 외곽)
+  { id: "node-7", category: "사이버폭력 인식", x: 26, y: 76 },            // 7시 반 방향
+  { id: "node-8", category: "사이버 자기존중감", x: 74, y: 24 }             // 1시 반 방향
+];
+
+// 노드 연결선 엣지 (인덱스 기준)
+const mapEdges = [
+  [1, 7], [7, 2], [2, 3], [3, 4], [4, 6], [6, 5], [5, 0], [0, 1]
+];
+
+// 임시 어드민 확인용
+let mockStudents = [];
+
+// ==========================================
+// [로컬 스토리지 연동 헬퍼]
+// ==========================================
+function saveLocalState() {
+  if (!window.appState.isMember && !window.appState.isClassMode) {
+    // 비회원이면 로컬 스토리지에 데이터를 저장하지 않고 스킵
+    return;
+  }
+  const key = `mindweb_${window.appState.classCode}_${window.appState.studentId}`;
+  localStorage.setItem(key, JSON.stringify(window.appState));
+
+  if (useFirebase) {
+    const docId = `${window.appState.classCode}_${window.appState.studentId}`;
+    db.collection("students").doc(docId).set({
+      appState: {
+        surveyScores: window.appState.surveyScores,
+        completedTasks: window.appState.completedTasks,
+        recommendedRoute: window.appState.recommendedRoute,
+        currentSceneIndex: window.appState.currentSceneIndex,
+        surveyIndex: window.appState.surveyIndex,
+        taskAnswers: window.appState.taskAnswers || {}
+      },
+      lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true }).catch(err => {
+      console.error("Firestore 저장 에러:", err);
+    });
+  }
+}
+
+function loadLocalState() {
+  if (!window.appState.isMember && !window.appState.isClassMode) {
+    // 비회원이면 불러오지 않고 스킵
+    return false;
+  }
+  const key = `mindweb_${window.appState.classCode}_${window.appState.studentId}`;
+  const saved = localStorage.getItem(key);
+  if (saved) {
+    const data = JSON.parse(saved);
+    window.appState.surveyScores = data.surveyScores || window.appState.surveyScores;
+    window.appState.completedTasks = data.completedTasks || [];
+    window.appState.recommendedRoute = data.recommendedRoute || [];
+    window.appState.taskAnswers = data.taskAnswers || {};
+    return true; // 기존 데이터 있음
+  }
+  return false;
+}
+
+// ==========================================
+// [화면 전환 공통 함수]
+// ==========================================
+window.switchView = function(viewId) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById(viewId).classList.add('active');
+
+  // 각 활동 전환 시 필요한 초기화 로직 실행
+  if (typeof act2_init === 'function' && viewId === 'view-comm-act2') {
+    act2_init();
+  } else if (typeof act3_start === 'function' && viewId === 'view-comm-act3') {
+    act3_start();
+  } else if (typeof act4_init === 'function' && viewId === 'view-comm-act4') {
+    act4_init();
+  }
+}
+
+// ==========================================
+// [로그인 및 모드 선택 로직]
+// ==========================================
+// ==========================================
+// [로그인 및 모드 선택 로직]
+// ==========================================
+window.selectLoginMode = function(mode) {
+  // 모든 폼 우선 숨김
+  document.getElementById('login-mode-select').style.display = 'none';
+  document.getElementById('class-mode-form').style.display = 'none';
+  document.getElementById('member-login-form').style.display = 'none';
+  document.getElementById('member-signup-form').style.display = 'none';
+
+  if (mode === 'class') {
+    document.getElementById('class-mode-form').style.display = 'flex';
+  } else if (mode === 'member') {
+    document.getElementById('member-login-form').style.display = 'flex';
+  } else if (mode === 'nonmember') {
+    // 비회원 모드 즉시 진입
+    window.appState.isClassMode = false;
+    window.appState.isMember = false;
+    
+    // 임의의 Guest 계정 정보로 로그인 연동
+    const classCode = "nonmember_mode";
+    const studentId = "Guest_" + Math.floor(1000 + Math.random() * 9000);
+    window.performSync(classCode, studentId);
+  }
+}
+
+window.backToModeSelect = function() {
+  document.getElementById('login-mode-select').style.display = 'flex';
+  document.getElementById('class-mode-form').style.display = 'none';
+  document.getElementById('member-login-form').style.display = 'none';
+  document.getElementById('member-signup-form').style.display = 'none';
+}
+
+window.logout = function() {
+  // 전역 상태 초기화
+  window.appState = {
+    classCode: "",
+    studentId: "",
+    studentName: "",
+    isClassMode: false,
+    isMember: false,
+    currentSceneIndex: 0,
+    surveyIndex: 0,
+    surveyScores: {
+      "사이버 공감": 0, "사이버 의사소통": 0, "사이버 자기조절": 0, "사이버 감정조절": 0,
+      "인터넷 윤리의식 및 활용": 0, "사이버 갈등관리 및 문제해결": 0, "사이버폭력 인식": 0, "사이버 자기존중감": 0
+    },
+    completedTasks: [],
+    recommendedRoute: [],
+    taskAnswers: {}
+  };
+
+  // 자동 로그인용 세션 제거
+  localStorage.removeItem('last_sync_session');
+
+  // 화면 전환 및 폼 초기화
+  switchView('view-login');
+  document.getElementById('login-mode-select').style.display = 'flex';
+  document.getElementById('class-mode-form').style.display = 'none';
+  document.getElementById('member-login-form').style.display = 'none';
+  document.getElementById('member-signup-form').style.display = 'none';
+
+  // 파이어베이스 로그아웃 연동
+  if (useFirebase && auth) {
+    auth.signOut().catch(e => console.error("Firebase 로그아웃 에러:", e));
+  }
+}
+
+window.enterClassMode = async function() {
+  const classCode = document.getElementById('class-code-input').value.trim();
+  const studentId = document.getElementById('student-name-input').value.trim();
+
+  if (classCode === "adminmode") {
+    // 숨겨진 관리자 모드 실행
+    window.appState.isClassMode = true;
+    window.appState.isMember = false;
+    document.getElementById('admin-code-modal').style.display = 'flex';
+    renderCreatedCodesList();
+    return;
+  }
+
+  if (!classCode || !studentId) {
+    alert("학급 코드와 이름(번호)을 모두 입력해주세요!");
+    return;
+  }
+
+  // 영문 소문자와 숫자 조합 정규식 유효성 검사
+  const codeRegex = /^[a-z0-9]+$/;
+  if (!codeRegex.test(classCode)) {
+    alert("학급 코드는 소문자와 숫자만 입력해 주세요.");
+    return;
+  }
+
+  // 🔒 학급 코드 유효성 검증
+  if (useFirebase) {
+    try {
+      const classDoc = await db.collection("classes").doc(classCode).get();
+      if (!classDoc.exists) {
+        alert("존재하지 않는 학급 코드입니다. 교사 대시보드에서 생성된 정확한 코드를 입력해 주세요.");
+        return;
+      }
+    } catch (err) {
+      console.error("학급 코드 확인 오류:", err);
+      alert("학급 코드를 확인하는 중 문제가 발생했습니다. 네트워크 환경을 확인해 주세요.");
+      return;
+    }
+  } else {
+    // 로컬 모드인 경우
+    const createdCodes = JSON.parse(localStorage.getItem('created_class_codes') || '[]');
+    if (!createdCodes.includes(classCode)) {
+      alert("등록되지 않은 학급 코드입니다. (관리자 모드 'adminmode'에서 코드를 먼저 생성해 주세요.)");
+      return;
+    }
+  }
+
+  window.appState.isClassMode = true;
+  window.appState.isMember = false;
+  window.performSync(classCode, studentId);
+}
+
+// 회원가입 관련 상태 변수
+let generatedVerificationCode = "";
+let isEmailVerified = false;
+
+window.toggleSignupRoleFields = function(role) {
+  const fields = document.getElementById('student-specific-fields');
+  if (role === 'teacher') {
+    fields.style.display = 'none';
+  } else {
+    fields.style.display = 'flex';
+  }
+}
+
+window.showSignupForm = function() {
+  document.getElementById('member-login-form').style.display = 'none';
+  document.getElementById('member-signup-form').style.display = 'flex';
+  
+  // 학생 선택 기본값으로 복구
+  const studentRadio = document.querySelector('input[name="signup-role"][value="student"]');
+  if (studentRadio) studentRadio.checked = true;
+  window.toggleSignupRoleFields('student');
+}
+
+window.cancelSignup = function() {
+  document.getElementById('member-signup-form').style.display = 'none';
+  document.getElementById('member-login-form').style.display = 'flex';
+}
+
+// 회원가입 전송
+window.submitSignup = async function() {
+  const role = document.querySelector('input[name="signup-role"]:checked').value;
+  const id = document.getElementById('signup-id').value.trim();
+  const pw = document.getElementById('signup-pw').value.trim();
+  const school = document.getElementById('signup-school').value.trim();
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+
+  // 학생 가입 시 필요한 추가 정보
+  let grade = "";
+  let sClass = "";
+  let number = "";
+
+  if (role === 'student') {
+    grade = document.getElementById('signup-grade').value.trim();
+    sClass = document.getElementById('signup-class').value.trim();
+    number = document.getElementById('signup-number').value.trim();
+    
+    if (!id || !pw || !school || !name || !grade || !sClass || !number || !email) {
+      alert("모든 빈칸을 채워주세요!");
+      return;
+    }
+  } else {
+    if (!id || !pw || !school || !name || !email) {
+      alert("모든 빈칸을 채워주세요!");
+      return;
+    }
+    // 교사 이메일 제한 재검사
+    if (!/@korea\.kr$/i.test(email)) {
+      alert("교사 회원가입은 @korea.kr 메일로만 가능합니다!");
+      return;
+    }
+  }
+
+  if (useFirebase) {
+    try {
+      // 1. Firestore에서 기존 아이디 중복 확인
+      const doc = await db.collection("users").doc(id).get();
+      if (doc.exists) {
+        alert("이미 존재하는 아이디입니다!");
+        return;
+      }
+      
+      // 2. 파이어베이스 Auth로 계정 생성
+      const cred = await auth.createUserWithEmailAndPassword(email, pw);
+      
+      // 3. 이메일 인증 메일 발송
+      await cred.user.sendEmailVerification();
+      
+      // 4. Firestore에 상세 사용자 프로필 저장
+      const userData = {
+        uid: cred.user.uid,
+        id: id,
+        email: email,
+        school: school,
+        name: name,
+        role: role, // 'teacher' or 'student'
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        authProvider: 'email'
+      };
+
+      if (role === 'student') {
+        userData.grade = parseInt(grade);
+        userData.class = parseInt(sClass);
+        userData.number = parseInt(number);
+      }
+
+      await db.collection("users").doc(id).set(userData);
+      
+      alert("회원가입 요청이 완료되었습니다!\n\n입력하신 이메일 주소로 인증 메일이 발송되었습니다. 메일함에서 링크를 클릭하여 인증을 마친 뒤 로그인해 주세요.");
+      document.getElementById('member-signup-form').style.display = 'none';
+      document.getElementById('member-login-form').style.display = 'flex';
+    } catch (err) {
+      console.error("회원가입 에러:", err);
+      alert("회원가입 중 오류가 발생했습니다: " + err.message);
+    }
+  } else {
+    // 로컬 스토리지 폴백 모드 (교사 권한도 가상 지원)
+    let users = JSON.parse(localStorage.getItem('registered_users') || '[]');
+    if (users.some(u => u.id === id)) {
+      alert("이미 존재하는 아이디입니다!");
+      return;
+    }
+
+    const userData = { id, pw, school, name, email, role };
+    if (role === 'student') {
+      userData.grade = grade;
+      userData.class = sClass;
+      userData.number = number;
+    }
+
+    users.push(userData);
+    localStorage.setItem('registered_users', JSON.stringify(users));
+
+    alert("회원가입이 완료되었습니다!\n방금 가입하신 정보로 로그인해주세요. (로컬모드)");
+    document.getElementById('member-signup-form').style.display = 'none';
+    document.getElementById('member-login-form').style.display = 'flex';
+  }
+}
+
+// 회원 로그인 전송
+window.submitMemberLogin = async function() {
+  const id = document.getElementById('member-id-input').value.trim();
+  const pw = document.getElementById('member-pw-input').value.trim();
+
+  if (!id || !pw) {
+    alert("아이디와 비밀번호를 입력해주세요!");
+    return;
+  }
+
+  const selectedRole = document.querySelector('input[name="login-role"]:checked').value;
+
+  if (useFirebase) {
+    try {
+      // 1. Firestore에서 id 매핑 문서 조회
+      const doc = await db.collection("users").doc(id).get();
+      if (!doc.exists) {
+        alert("아이디 또는 비밀번호가 틀렸습니다!");
+        return;
+      }
+      
+      const userData = doc.data();
+      if (userData.role !== selectedRole) {
+        alert(`로그인 유형이 올바르지 않습니다!\n선택하신 유형(${selectedRole === 'teacher' ? '교사' : '학생'})과 가입 정보가 일치하지 않습니다.`);
+        return;
+      }
+
+      const email = userData.email;
+      // 2. 파이어베이스 Auth 로그인
+      await auth.signInWithEmailAndPassword(email, pw);
+      
+      // 3. 이메일 인증 여부 검사 (교사/학생 공통)
+      const user = auth.currentUser;
+      if (user && !user.emailVerified) {
+        alert("이메일 인증이 아직 완료되지 않았습니다!\n\n이메일 수신함을 확인해 인증 링크를 클릭하신 뒤 다시 로그인해 주세요.");
+        await auth.signOut();
+        return;
+      }
+      
+      if (userData.role === 'teacher') {
+        window.appState.isClassMode = false;
+        window.appState.isMember = true;
+        window.appState.studentName = userData.name || id;
+        
+        switchView('view-admin');
+        await loadTeacherClasses(auth.currentUser.uid);
+      } else {
+        window.appState.isClassMode = false;
+        window.appState.isMember = true;
+        window.appState.studentName = userData.name || id;
+        await window.performSync("member_mode", id);
+      }
+    } catch (err) {
+      console.error("로그인 에러:", err);
+      alert("로그인에 실패했습니다: " + err.message);
+    }
+  } else {
+    // 로컬 스토리지 폴백 모드
+    let users = JSON.parse(localStorage.getItem('registered_users') || '[]');
+    const user = users.find(u => u.id === id && u.pw === pw);
+
+    if (user) {
+      if (user.role !== selectedRole) {
+        alert(`로그인 유형이 올바르지 않습니다!\n선택하신 유형(${selectedRole === 'teacher' ? '교사' : '학생'})과 가입 정보가 일치하지 않습니다.`);
+        return;
+      }
+
+      window.appState.isClassMode = false;
+      window.appState.isMember = true;
+      window.appState.studentName = user.name || id;
+      
+      if (user.role === 'teacher') {
+        switchView('view-admin');
+      } else {
+        window.performSync("member_mode", id);
+      }
+    } else {
+      alert("아이디 또는 비밀번호가 틀렸습니다!");
+    }
+  }
+}
+
+// 구글 소셜 로그인
+window.loginWithGoogle = async function() {
+  if (!useFirebase) {
+    alert("Firebase가 설정되지 않았습니다. 로컬 모드에서는 지원하지 않습니다.");
+    return;
+  }
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    const result = await auth.signInWithPopup(provider);
+    const user = result.user;
+    
+    // Firestore에서 uid와 일치하는 사용자 문서 조회
+    const doc = await db.collection("users").doc(user.uid).get();
+    if (doc.exists) {
+      const userData = doc.data();
+      
+      if (userData.role === 'teacher') {
+        // 교사 권한이 구글 계정으로 있으면 교사 대시보드로 이동
+        window.appState.isClassMode = false;
+        window.appState.isMember = true;
+        window.appState.studentName = userData.name || user.displayName || "";
+        
+        switchView('view-admin');
+        await loadTeacherClasses(user.uid);
+      } else {
+        window.appState.isClassMode = false;
+        window.appState.isMember = true;
+        window.appState.studentName = userData.name || user.displayName || "";
+        
+        await window.performSync("member_mode", user.uid);
+      }
+    } else {
+      // 최초 구글 로그인 시도 -> 추가 정보 모달 노출 (구글은 무조건 학생으로 유도)
+      document.getElementById('google-signup-name').value = user.displayName || "";
+      document.getElementById('google-extra-modal').style.display = 'flex';
+      window.tempGoogleUser = user;
+    }
+  } catch (err) {
+    console.error("Google 로그인 에러:", err);
+    alert("Google 로그인에 실패했습니다: " + err.message);
+  }
+}
+
+window.cancelGoogleSignup = function() {
+  document.getElementById('google-extra-modal').style.display = 'none';
+  window.tempGoogleUser = null;
+}
+
+window.submitGoogleExtraInfo = async function() {
+  const user = window.tempGoogleUser;
+  if (!user) {
+    alert("구글 인증 정보가 유실되었습니다. 다시 시도해 주세요.");
+    return;
+  }
+  
+  const school = document.getElementById('google-signup-school').value.trim();
+  const name = document.getElementById('google-signup-name').value.trim();
+  const grade = document.getElementById('google-signup-grade').value.trim();
+  const sClass = document.getElementById('google-signup-class').value.trim();
+  const number = document.getElementById('google-signup-number').value.trim();
+  
+  if (!school || !name || !grade || !sClass || !number) {
+    alert("모든 빈칸을 채워주세요!");
+    return;
+  }
+  
+  try {
+    await db.collection("users").doc(user.uid).set({
+      uid: user.uid,
+      id: user.uid,
+      email: user.email,
+      school: school,
+      name: name,
+      grade: parseInt(grade),
+      class: parseInt(sClass),
+      number: parseInt(number),
+      role: 'student', // 구글 가입자는 항상 학생으로 고정
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      authProvider: 'google'
+    });
+    
+    document.getElementById('google-extra-modal').style.display = 'none';
+    window.appState.isClassMode = false;
+    window.appState.isMember = true;
+    window.appState.studentName = name;
+    
+    alert("구글 간편가입 및 정보 등록이 완료되었습니다!");
+    await window.performSync("member_mode", user.uid);
+  } catch (err) {
+    console.error("구글 추가 정보 저장 에러:", err);
+    alert("저장 중 오류가 발생했습니다: " + err.message);
+  }
+}
+
+// ==========================================
+// [교사용 대시보드 추가 연동 로직]
+// ==========================================
+
+window.createClassByTeacher = async function() {
+  if (!useFirebase) {
+    alert("Firebase가 연결되어 있지 않습니다. 로컬 모드에서는 생성할 수 없습니다.");
+    return;
+  }
+  
+  const className = document.getElementById('new-class-name').value.trim();
+  if (!className) {
+    alert("학급명(예: 6학년1반)을 입력해주세요!");
+    return;
+  }
+
+  try {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      alert("로그인 세션이 만료되었습니다. 다시 로그인해 주세요.");
+      return;
+    }
+
+    // 6자리 학급 난수 코드 생성
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+      code += chars[Math.floor(Math.random() * chars.length)];
+    }
+
+    // Firestore classes 컬렉션에 클래스 등록
+    await db.collection("classes").doc(code).set({
+      classCode: code,
+      className: className,
+      teacherUid: currentUser.uid,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    alert(`[${className}] 학급이 성공적으로 개설되었습니다!\n\n학급 코드: ${code}\n\n학생들에게 이 코드를 나눠주세요!`);
+    document.getElementById('new-class-name').value = '';
+    
+    // 학급 목록 새로고침
+    await loadTeacherClasses(currentUser.uid);
+  } catch (err) {
+    console.error("학급 생성 에러:", err);
+    alert("학급 생성에 실패했습니다: " + err.message);
+  }
+}
+
+async function loadTeacherClasses(teacherUid) {
+  const select = document.getElementById('teacher-class-select');
+  select.innerHTML = '<option value="">학급을 선택하세요...</option>';
+
+  if (!useFirebase) return;
+
+  try {
+    const snapshot = await db.collection("classes").where("teacherUid", "==", teacherUid).get();
+    if (snapshot.empty) {
+      return;
+    }
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const option = document.createElement('option');
+      option.value = data.classCode;
+      option.innerText = `${data.className} (${data.classCode})`;
+      select.appendChild(option);
+    });
+  } catch (err) {
+    console.error("학급 목록 로딩 오류:", err);
+  }
+}
+
+let activeClassListener = null;
+
+window.monitoredStudentsData = {};
+
+window.selectMonitorClass = function(classCode) {
+  const tbody = document.getElementById('student-list');
+  const classInfo = document.getElementById('monitored-class-info');
+  tbody.innerHTML = '';
+
+  if (activeClassListener) {
+    activeClassListener(); // 이전 실시간 구독 종료
+    activeClassListener = null;
+  }
+
+  if (!classCode) {
+    tbody.innerHTML = '<tr><td colspan="5" style="color:#aaa; padding: 20px;">학급을 선택하면 실시간으로 학생 현황이 표시됩니다.</td></tr>';
+    classInfo.innerText = '';
+    return;
+  }
+
+  classInfo.innerText = classCode === 'all' ? '전체 학급 모니터링 중' : `현재 모니터링 학급 코드: ${classCode}`;
+  tbody.innerHTML = '<tr><td colspan="5" style="color:#aaa; padding: 20px;">실시간 데이터를 불러오는 중...</td></tr>';
+
+  if (!useFirebase) {
+    tbody.innerHTML = '<tr><td colspan="5" style="color:#aaa; padding: 20px;">Firebase 로컬 모드에서는 지원하지 않는 기능입니다.</td></tr>';
+    return;
+  }
+
+  try {
+    let query = db.collection("students");
+    if (classCode !== 'all') {
+      query = query.where("classCode", "==", classCode);
+    }
+
+    activeClassListener = query.onSnapshot(snapshot => {
+      tbody.innerHTML = '';
+      window.monitoredStudentsData = {}; // 모니터링 데이터 캐시 초기화
+      
+      if (snapshot.empty) {
+        tbody.innerHTML = '<tr><td colspan="5" style="color:#aaa; padding: 20px;">아직 조건에 맞는 학생이 없습니다.</td></tr>';
+        return;
+      }
+
+      // 1. 스냅샷의 문서들을 정렬 가능한 배열로 변환
+      const studentsList = [];
+      snapshot.forEach(doc => {
+        studentsList.push({
+          id: doc.id,
+          data: doc.data()
+        });
+      });
+
+      // 2. 입력(제출/업데이트)한 순서대로 정렬 (오름차순)
+      // 업데이트가 없는 학생(진행 전)은 맨 아래로 보냄
+      studentsList.sort((a, b) => {
+        const timeA = a.data.lastUpdated ? a.data.lastUpdated.toDate().getTime() : 0;
+        const timeB = b.data.lastUpdated ? b.data.lastUpdated.toDate().getTime() : 0;
+        
+        if (timeA === 0 && timeB === 0) {
+          const nameA = a.data.studentId || "";
+          const nameB = b.data.studentId || "";
+          return nameA.localeCompare(nameB);
+        }
+        if (timeA === 0) return 1;
+        if (timeB === 0) return -1;
+        
+        return timeA - timeB; // 오름차순: 먼저 제출한 학생이 맨 위부터 정렬됨
+      });
+
+      // 3. 정렬된 순서대로 화면에 렌더링
+      studentsList.forEach(student => {
+        const data = student.data;
+        const docId = student.id;
+        window.monitoredStudentsData[docId] = data; // 캐시에 학생 데이터 등록
+        
+        const tr = document.createElement('tr');
+        const studentName = data.studentId || "-";
+        const stage = data.stage || "-";
+        const scanResult = data.scanResult || "대기중";
+        
+        let taskBadges = "-";
+        if (data.appState && data.appState.completedTasks) {
+          const completed = data.appState.completedTasks;
+          taskBadges = completed.map(t => {
+            return `<span onclick="showStudentDetailAnswers('${docId}', '${t}')" style="background: #2ed573; color: #fff; padding: 2px 6px; border-radius: 3px; font-size: 0.8rem; margin: 2px; display: inline-block; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1" title="클릭하여 답변 보기">${t} 🌟</span>`;
+          }).join(' ') || '<span style="color:#aaa;">진행 전 ❄️</span>';
+        }
+
+        let timeStr = "-";
+        if (data.lastUpdated) {
+          const date = data.lastUpdated.toDate();
+          timeStr = date.toLocaleTimeString();
+        }
+
+        tr.innerHTML = `
+          <td style="padding: 10px; border-bottom: 1px solid #444;">
+            ${studentName}<br>
+            <button class="retro-btn" onclick="showStudentDetailAnswers('${docId}')" style="padding: 3px 6px; font-size: 0.75rem; background-color: #a8ffda; color: #000; box-shadow: 2px 2px 0 #000; cursor: pointer; margin-top: 5px;">답변 보기</button>
+          </td>
+          <td style="padding: 10px; border-bottom: 1px solid #444; color: var(--point-yellow);">${stage}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #444;">${scanResult}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #444; text-align: left;">${taskBadges}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #444; font-size: 0.85rem; color: #aaa;">${timeStr}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }, error => {
+      console.error("실시간 모니터링 구독 에러:", error);
+      tbody.innerHTML = '<tr><td colspan="5" style="color:#ff5252; padding: 20px;">데이터 수신 중 에러가 발생했습니다. (보안 규칙 등을 확인하세요)</td></tr>';
+    });
+  } catch (err) {
+    console.error("리스너 설정 에러:", err);
+  }
+}
+
+// 교사용 학생 답변 상세조회 모달 열기/닫기 정의
+window.showStudentDetailAnswers = function(docId, targetTask) {
+  const data = window.monitoredStudentsData[docId];
+  if (!data) {
+    alert("학생 데이터를 찾을 수 없습니다.");
+    return;
+  }
+  
+  const name = data.studentId || "알 수 없음";
+  const stage = data.stage || "-";
+  let lastUpdatedStr = "-";
+  if (data.lastUpdated) {
+    const date = data.lastUpdated.toDate();
+    lastUpdatedStr = date.toLocaleTimeString();
+  }
+  
+  const appState = data.appState || {};
+  const completedTasks = appState.completedTasks || [];
+  const answers = appState.taskAnswers || {};
+  
+  const content = document.getElementById("detail-modal-content");
+  content.innerHTML = "";
+  
+  if (targetTask) {
+    // 특정 과제 답변만 필터링하여 보여줌
+    document.getElementById("detail-modal-title").innerText = `📄 [${name}] 학생의 '${targetTask}' 답변`;
+    document.getElementById("detail-modal-subtitle").innerText = `현재 단계: ${stage} | 최근 업데이트: ${lastUpdatedStr}`;
+    
+    const taskCard = document.createElement("div");
+    taskCard.style.border = "2px solid #444";
+    taskCard.style.background = "#222";
+    taskCard.style.padding = "12px";
+    taskCard.style.boxShadow = "4px 4px 0 #000";
+    
+    let taskContentHtml = `<span style="color: var(--point-yellow); font-weight: bold; font-size: 1rem; display: block; border-bottom: 1px solid #444; padding-bottom: 4px; margin-bottom: 8px;">🌟 ${targetTask} (완료)</span>`;
+    
+    const taskAns = answers[targetTask];
+    if (taskAns && typeof taskAns === 'object' && Object.keys(taskAns).length > 0) {
+      for (const [qText, aText] of Object.entries(taskAns)) {
+        taskContentHtml += `
+          <div style="margin-bottom: 8px;">
+            <span style="color: #a8ffda; font-weight: bold; font-size: 0.85rem; display: block; margin-bottom: 2px;">💬 ${qText}</span>
+            <span style="font-size: 0.95rem; word-break: break-all; color: #fff; background: #000; padding: 6px 10px; display: block; border: 1px solid #333; line-height: 1.45;">${aText}</span>
+          </div>
+        `;
+      }
+    } else {
+      taskContentHtml += `
+        <div style="color: #aaa; font-size: 0.85rem; padding: 4px 0;">
+          (이 과제는 객관식 선택 및 시뮬레이션 실천형 과제로, 별도의 주관식 답변 저장이 필요 없는 과제입니다.)
+        </div>
+      `;
+    }
+    
+    taskCard.innerHTML = taskContentHtml;
+    content.appendChild(taskCard);
+  } else {
+    // 기존 전체 보기 동작
+    document.getElementById("detail-modal-title").innerText = `📄 [${name}] 학생의 전체 활동 답변`;
+    document.getElementById("detail-modal-subtitle").innerText = `현재 단계: ${stage} | 최근 업데이트: ${lastUpdatedStr}`;
+    
+    if (completedTasks.length === 0) {
+      content.innerHTML = `<div style="color: #aaa; text-align: center; padding: 20px; font-size: 0.95rem;">아직 완료한 사이버 어울림 활동이 없습니다.</div>`;
+    } else {
+      completedTasks.forEach(task => {
+        const taskCard = document.createElement("div");
+        taskCard.style.border = "2px solid #444";
+        taskCard.style.background = "#222";
+        taskCard.style.padding = "12px";
+        taskCard.style.marginBottom = "12px";
+        taskCard.style.boxShadow = "4px 4px 0 #000";
+        
+        let taskContentHtml = `<span style="color: var(--point-yellow); font-weight: bold; font-size: 1rem; display: block; border-bottom: 1px solid #444; padding-bottom: 4px; margin-bottom: 8px;">🌟 ${task}</span>`;
+        
+        const taskAns = answers[task];
+        if (taskAns && typeof taskAns === 'object' && Object.keys(taskAns).length > 0) {
+          for (const [qText, aText] of Object.entries(taskAns)) {
+            taskContentHtml += `
+              <div style="margin-bottom: 8px;">
+                <span style="color: #a8ffda; font-weight: bold; font-size: 0.85rem; display: block; margin-bottom: 2px;">💬 ${qText}</span>
+                <span style="font-size: 0.95rem; word-break: break-all; color: #fff; background: #000; padding: 6px 10px; display: block; border: 1px solid #333; line-height: 1.45;">${aText}</span>
+              </div>
+            `;
+          }
+        } else {
+          taskContentHtml += `
+            <div style="color: #aaa; font-size: 0.85rem; padding: 4px 0;">
+              (이 과제는 객관식 선택 및 시뮬레이션 실천형 과제로, 별도의 주관식 답변 저장이 필요 없는 과제입니다.)
+            </div>
+          `;
+        }
+        
+        taskCard.innerHTML = taskContentHtml;
+        content.appendChild(taskCard);
+      });
+    }
+  }
+  
+  document.getElementById("teacher-detail-modal").style.display = "flex";
+};
+
+window.closeTeacherDetailModal = function() {
+  document.getElementById("teacher-detail-modal").style.display = "none";
+};
+
+// 공통 로그인 세션 연결 프로세스
+window.performSync = async function(classCode, studentId) {
+  window.appState.classCode = classCode;
+  window.appState.studentId = studentId;
+
+  // 세션 정보 기록 (자동 로그인용)
+  localStorage.setItem('last_sync_session', JSON.stringify({ classCode, studentId, isClassMode: window.appState.isClassMode }));
+
+  // 로컬 스토리지에서 이전 진행 내역 확인
+  let hasHistory = loadLocalState();
+  let shouldContinue = false;
+
+  // Firebase에서 상태 로딩
+  if (useFirebase) {
+    try {
+      const docId = `${classCode}_${studentId}`;
+      const doc = await db.collection("students").doc(docId).get();
+      if (doc.exists) {
+        const data = doc.data();
+        if (data.appState) {
+          window.appState.surveyScores = data.appState.surveyScores || window.appState.surveyScores;
+          window.appState.completedTasks = data.appState.completedTasks || [];
+          window.appState.recommendedRoute = data.appState.recommendedRoute || [];
+          window.appState.currentSceneIndex = data.appState.currentSceneIndex || 0;
+          window.appState.surveyIndex = data.appState.surveyIndex || 0;
+          window.appState.taskAnswers = data.appState.taskAnswers || {};
+          hasHistory = true;
+        }
+      }
+      
+      // 회원 정보 이름 로드
+      if (window.appState.isMember) {
+        const userDoc = await db.collection("users").doc(studentId).get();
+        if (userDoc.exists) {
+          window.appState.studentName = userDoc.data().name || "";
+        }
+      } else {
+        window.appState.studentName = studentId;
+      }
+    } catch (e) {
+      console.error("Firebase 데이터 동기화 조회 오류:", e);
+    }
+  } else {
+    window.appState.studentName = studentId;
+  }
+
+  if (hasHistory && window.appState.recommendedRoute.length > 0) {
+    shouldContinue = confirm("이전에 수행하던 진행 이력이 있습니다.\n이어서 계속하시겠습니까?\n\n('취소'를 누르시면 데이터가 초기화되고 처음 프롤로그부터 시작합니다.)");
+    if (!shouldContinue) {
+      // 로컬 스토리지 데이터 초기화 및 전역 상태 리셋
+      const key = `mindweb_${classCode}_${studentId}`;
+      localStorage.removeItem(key);
+      window.appState.completedTasks = [];
+      window.appState.recommendedRoute = [];
+      window.appState.taskAnswers = {};
+      for (let k in window.appState.surveyScores) { window.appState.surveyScores[k] = 0; }
+      
+      if (useFirebase) {
+        try {
+          const docId = `${classCode}_${studentId}`;
+          await db.collection("students").doc(docId).update({
+            appState: firebase.firestore.FieldValue.delete()
+          });
+        } catch (e) {}
+      }
+    }
+  }
+
+  if (useFirebase) {
+    try {
+      const docId = `${classCode}_${studentId}`;
+      await db.collection("students").doc(docId).set({
+        classCode, studentId,
+        isClassMode: window.appState.isClassMode,
+        isMember: window.appState.isMember,
+        stage: (hasHistory && shouldContinue) ? "진행 중" : "프롤로그 진입",
+        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    } catch (e) {}
+  } else {
+    mockStudents.push({ classCode, studentId, stage: "진행 중", scanResult: "대기중" });
+  }
+
+  if (hasHistory && shouldContinue && window.appState.recommendedRoute.length > 0) {
+    // 이미 설문을 마쳐서 맵 데이터가 있다면 바로 맵으로
+    switchView('view-map');
+    renderMap();
+  } else {
+    // 처음이라면 프롤로그
+    switchView('view-prologue');
+    startPrologue();
+  }
+}
+
+// ==========================================
+// [1. 프롤로그 엔진]
+// ==========================================
+const scenes = [
+  { bgName: "교실", bgColor: "#3b4d45", effect: "", speaker: "나", text: "휴.. 태블릿 활용 수업 끝났다. 패드 정리해서 충전함에 넣어야지..." },
+  { bgName: "교실", bgColor: "#3b4d45", effect: "", speaker: "나", text: "(멈칫하며) 하아... 그런데 어제 일때문에 오늘 하루종일 집중이 안되네.. 계속 생각나..." },
+  { bgName: "어제 저녁, 방 안", bgColor: "#111", effect: "effect-blur", speaker: "나", text: "어제 저녁에 민호랑 지수랑 같이 온라인 게임을 할 때였어. 내가 게임에서 실수를 했다고 민호가 채팅창에 엄청 핀잔을 줬지..." },
+  { bgName: "어제 저녁, 방 안", bgColor: "#111", effect: "effect-blur", speaker: "민호(채팅)", text: "야!! 너 때문에 졌잖아! 진짜 못하네, 짜증 나니까 그냥 나가라;;" },
+  { bgName: "어제 저녁, 방 안", bgColor: "#111", effect: "effect-blur", speaker: "지수(채팅)", text: "인정 ㅋㅋㅋ" },
+  { bgName: "어제 저녁, 방 안", bgColor: "#111", effect: "effect-blur", speaker: "나", text: "어쩌라고!!! 나 게임 안해!!!" },
+  { bgName: "어제 저녁, 방 안", bgColor: "#000", effect: "effect-power-off", speaker: "나", text: "지수까지 같이 웃는 걸 보고 너무 속상해서 그냥 게임을 꺼버렸는데...\n밤새 마음이 안 좋았어." },
+  { bgName: "교실", bgColor: "#3b4d45", effect: "effect-zoom", speaker: "민호", text: "[교실 저편에서 들리는 민호의 큰 웃음소리] 하하하! 대박! 진짜 웃겨!" },
+  { bgName: "교실", bgColor: "#3b4d45", effect: "effect-zoom", speaker: "나", text: "(깜짝 놀라며) 헉...! 민호랑 지수는 아무 일도 없었다는 듯이 저렇게 잘 놀고 있네..." },
+  { bgName: "교실", bgColor: "#3b4d45", effect: "effect-zoom", speaker: "나", text: "게임에서 있었던 일이니까 로그아웃하면 끝인 줄 알았는데... 막상 교실에서 얼굴을 보니까 왜 이렇게 마음이 무겁고 콕콕 찌르는 것 같지?" },
+  { bgName: "교실", bgColor: "#222", effect: "effect-glitch", speaker: "나", text: "어? 뭐야? 패드 화면이 왜 이래? 고장 났나?" },
+  { bgName: "교실", bgColor: "#2c2400", effect: "effect-glow", speaker: "마음 온(ON)", text: "치익- 치익- 마침내 연결 성공! 안녕? 난 디지털 세상의 마음 에너지를 연구하는 AI, '마음 온(ON)'이야!", showFairy: true },
+  { bgName: "교실", bgColor: "#2c2400", effect: "effect-glow", speaker: "나", text: "(소곤거리며) 으악, 깜짝이야! 너... 정체가 뭐야? 내 패드에 이런 앱 없었는데?", showFairy: true },
+  { bgName: "교실", bgColor: "#2c2400", effect: "effect-glow", speaker: "마음 온(ON)", text: "난 고장 난 게 아니야! 난 이 패드를 통해 '디지털 세상의 속상함 때문에 진짜 교실에서 마음 온도가 뚝 떨어진 사람'을 찾고 있었어. 바로 너처럼 말이지!", showFairy: true },
+  { bgName: "교실", bgColor: "#091223", effect: "", speaker: "나", text: "마음 온도...? 그게 무슨 소리야?", showFairy: true },
+  { bgName: "교실", bgColor: "#091223", effect: "effect-portal", speaker: "마음 온(ON)", text: "자! 나를 따라와!", showFairy: true },
+  { bgName: "마음웹", bgColor: "#091223", effect: "", speaker: "마음 온(ON)", text: "이것 봐! 이게 바로 너와 친구들의 마음이 촘촘하게 연결된 '마음웹(Mind-Web)'이야!", showFairy: true, fairyPosition: "top-left" },
+  { bgName: "마음웹", bgColor: "#050a14", effect: "effect-frozen", speaker: "마음 온(ON)", text: "어제 너희가 게임에서 거친 말을 쓰고 상처를 입은 바람에, 너희를 연결하던 마음웹이 꽁꽁 얼어붙어 버렸어!", showFairy: true, fairyPosition: "top-left" },
+  { bgName: "마음웹", bgColor: "#050a14", effect: "effect-frozen", speaker: "마음 온(ON)", text: "네가 오늘 아침부터 느꼈던 그 '마음이 무겁고 콕콕 찌르는 기분'이 바로 이 마음웹이 보낸 신호야. 디지털 공간과 현실의 마음은 하나로 이어져 있거든.", showFairy: true, fairyPosition: "top-left" },
+  { bgName: "마음웹", bgColor: "#050a14", effect: "effect-frozen", speaker: "나", text: "내 마음이 불편했던 이유가... 진짜 이것 때문이라고? 그럼 어떻게 해야 해?", showFairy: true, fairyPosition: "top-left" },
+  { bgName: "마음웹", bgColor: "#111", effect: "", speaker: "마음 온(ON)", text: "우리 반 마음웹을 다시 따뜻하게 녹일 수 있는 사람은 어제의 일을 후회하고 바꾸고 싶어 하는 너뿐이야!", showFairy: true, fairyPosition: "top-left" },
+  { bgName: "마음웹", bgColor: "#111", effect: "", speaker: "나", text: "내가... 마음웹을 고칠 수 있다고? 어떻게 해야 하는데?", showFairy: true, fairyPosition: "top-left" },
+  { bgName: "마음웹", bgColor: "#111", effect: "", speaker: "마음 온(ON)", text: "지금 네 마음 배터리가 어떤 상태인지 분석하기 위해 [마음웹 스캐닝]을 시작할게! 나와 대화하듯 솔직하게 대답해 줘!", showFairy: true, fairyPosition: "top-left", isLast: true }
+];
+
+window.skipPrologue = function() {
+  if (window.appState.isClassMode) {
+    switchView('view-map');
+    renderMap();
+  } else {
+    switchView('view-survey');
+    window.startSurvey();
+  }
+}
+
+window.startPrologue = function() {
+  window.appState.currentSceneIndex = 0;
+  renderScene();
+}
+
+function renderScene() {
+  const scene = scenes[window.appState.currentSceneIndex];
+  const sceneContainer = document.getElementById('scene-container');
+  
+  const talkNum = window.appState.currentSceneIndex + 1;
+  let bgImg = "";
+  if (talkNum >= 1 && talkNum <= 2) bgImg = "images/story_bg1.png";
+  else if (talkNum >= 3 && talkNum <= 7) bgImg = "images/story_bg2.png";
+  else if (talkNum >= 8 && talkNum <= 10) bgImg = "images/story_bg3.png";
+  else if (talkNum >= 11 && talkNum <= 15) bgImg = "images/story_bg4.png";
+  else if (talkNum === 16) bgImg = "images/story_bg5.png";
+  else if (talkNum >= 17 && talkNum <= 24) bgImg = "images/story_bg6.png";
+
+  if (bgImg) {
+    sceneContainer.style.backgroundImage = `url('${bgImg}')`;
+    sceneContainer.style.backgroundSize = "cover";
+    sceneContainer.style.backgroundPosition = "center";
+  } else {
+    sceneContainer.style.backgroundImage = "none";
+  }
+
+  sceneContainer.style.backgroundColor = scene.bgColor;
+  sceneContainer.className = scene.effect || "";
+  
+  const labelEl = document.getElementById('scene-label');
+  if (scene.bgName) {
+    labelEl.innerText = scene.bgName;
+    labelEl.style.display = 'block';
+  } else {
+    labelEl.style.display = 'none';
+  }
+  
+  const fairyEl = document.getElementById('fairy-char');
+  fairyEl.style.display = scene.showFairy ? 'block' : 'none';
+  if (scene.fairyPosition === 'top-left') {
+    fairyEl.classList.add('top-left');
+  } else {
+    fairyEl.classList.remove('top-left');
+  }
+  const speakerEl = document.getElementById('speaker-name');
+  speakerEl.innerText = scene.speaker;
+  
+  const dialogBoxEl = document.getElementById('dialog-box');
+  dialogBoxEl.classList.remove('effect-shake-dialog', 'effect-giggle-dialog');
+  if (scene.speaker === "민호(채팅)") {
+    dialogBoxEl.classList.add('effect-shake-dialog');
+  } else if (scene.speaker === "지수(채팅)") {
+    dialogBoxEl.classList.add('effect-giggle-dialog');
+  }
+  
+  if (scene.speaker === "민호(채팅)" || scene.speaker === "민호") {
+    speakerEl.style.color = "#fd6f22";
+  } else if (scene.speaker === "지수(채팅)") {
+    speakerEl.style.color = "#58ccff";
+  } else if (scene.speaker === "마음 온(ON)") {
+    speakerEl.style.color = "#01fcfa";
+  } else {
+    speakerEl.style.color = "var(--point-yellow)";
+  }
+  
+  if (scene.isLast) {
+    if (window.appState.isClassMode) {
+      document.getElementById('dialog-text').innerText = "자, 나랑 같이 사이버 어울림 역량을 기워서 얼어붙은 마음웹을 다시 따뜻하게 녹여볼까?";
+    } else {
+      document.getElementById('dialog-text').innerText = "내가 네 마음을 따뜻하게 녹여줄게! 먼저 지금 네 마음 상태가 어떤지 '마음 스캐닝'으로 진단해 볼까?";
+    }
+  } else {
+    document.getElementById('dialog-text').innerText = scene.text;
+  }
+
+  const nextBtn = document.getElementById('next-btn');
+  if (scene.isLast) {
+    if (window.appState.isClassMode) {
+      nextBtn.innerText = "마음 웹으로 이동 ▶";
+      nextBtn.onclick = function() {
+        switchView('view-map');
+        renderMap();
+      };
+    } else {
+      nextBtn.innerText = "마음 스캐닝 시작 ▶";
+      nextBtn.onclick = function() {
+        switchView('view-survey');
+        window.startSurvey();
+      };
+    }
+    nextBtn.style.backgroundColor = "var(--point-yellow)";
+  } else {
+    nextBtn.innerText = "다음 ▼";
+    nextBtn.style.backgroundColor = "var(--point-yellow)";
+    nextBtn.onclick = window.nextScene;
+  }
+}
+
+window.nextScene = function() {
+  if (window.appState.currentSceneIndex < scenes.length - 1) {
+    window.appState.currentSceneIndex++;
+    renderScene();
+  }
+}
+
+// ==========================================
+// [2. 마음웹 스캐닝 (설문 모듈)]
+// ==========================================
+window.startSurvey = function() {
+  window.appState.surveyIndex = 0;
+  renderSurveyQuestion();
+}
+
+function renderSurveyQuestion() {
+  const index = window.appState.surveyIndex;
+  const q = questions[index];
+  
+  const pct = ((index + 1) / questions.length) * 100;
+  document.getElementById('survey-bar-fill').style.width = `${pct}%`;
+  document.getElementById('survey-current').innerText = index + 1;
+  
+  document.getElementById('survey-question').innerText = q.text;
+}
+
+window.answerSurvey = function(score) {
+  const index = window.appState.surveyIndex;
+  const q = questions[index];
+  
+  let finalScore = score;
+  if (q.isReverse) {
+    finalScore = 6 - score;
+  }
+  
+  window.appState.surveyScores[q.category] += finalScore;
+  
+  if (index < questions.length - 1) {
+    window.appState.surveyIndex++;
+    renderSurveyQuestion();
+  } else {
+    finishSurvey();
+  }
+}
+
+window.skipSurvey = function() {
+  for (let k in window.appState.surveyScores) {
+    window.appState.surveyScores[k] = Math.floor(Math.random() * 6) + 5;
+  }
+  finishSurvey();
+}
+
+function finishSurvey() {
+  switchView('view-loading');
+  
+  const scoresArr = Object.keys(window.appState.surveyScores).map(key => ({
+    category: key,
+    score: window.appState.surveyScores[key]
+  }));
+  
+  scoresArr.sort((a, b) => a.score - b.score);
+  window.appState.recommendedRoute = scoresArr.map(item => item.category);
+  saveLocalState();
+  
+  if (useFirebase) {
+    const docId = `${window.appState.classCode}_${window.appState.studentId}`;
+    db.collection("students").doc(docId).set({
+      stage: "맵 이동",
+      scanResult: "완료",
+      lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  }
+  
+  setTimeout(() => {
+    switchView('view-map');
+    renderMap();
+  }, 2000);
+}
+
+window.renderMap = function() {
+  const container = document.getElementById('map-nodes-container');
+  const svg = document.getElementById('mind-web-svg');
+  
+  const soloMapArea = document.getElementById('solo-map-area');
+  
+  container.innerHTML = '';
+  svg.innerHTML = '';
+  
+  const compTasks = window.appState.completedTasks;
+
+  // 학급코드 여부와 관계없이 무조건 8대 역량 맵 화면(soloMapArea)을 노출합니다.
+  if (soloMapArea) {
+    soloMapArea.style.display = 'block';
+  }
+
+  const recommenderBar = document.getElementById('recommender-bar');
+  if (window.appState.isClassMode) {
+    recommenderBar.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 10px; width: 100%; padding: 0;">
+        <div style="width: 50px; height: 50px; flex-shrink: 0; background: url('images/maeumon.png') no-repeat center/contain; animation: miniFloat 2s ease-in-out infinite;"></div>
+        <div style="font-size: 0.95rem; color: #01fcfa; font-weight: bold; flex-grow: 1; text-align: left; line-height: 1.3; word-break: keep-all; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);">
+          친구들과 사이버 어울림 역량을 기르며, 마음 웹을 따뜻하게 녹여줘!
+        </div>
+      </div>
+    `;
+  } else {
+    recommenderBar.innerHTML = `
+      <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; width: 100%;">
+        <span id="recommender-title" style="font-weight: bold;">🎯 추천 순서:</span>
+        <div id="recommender-list"></div>
+      </div>
+    `;
+    const recList = document.getElementById('recommender-list');
+    const route = window.appState.recommendedRoute;
+    route.forEach((cat, idx) => {
+      const isComp = compTasks.includes(cat);
+      const text = isComp ? `<span style="color:#0f0">[✓] ${cat}</span>` : `<span>${cat}</span>`;
+      recList.innerHTML += text;
+      if (idx < route.length - 1) recList.innerHTML += " ➔ ";
+    });
+  }
+    
+  const nodeEls = [];
+  
+  mapNodes.forEach(node => {
+    const isComp = compTasks.includes(node.category);
+    
+    const div = document.createElement('div');
+    div.className = "map-node" + (isComp ? " completed" : "");
+    div.style.left = `${node.x}%`;
+    div.style.top = `${node.y}%`;
+    div.title = node.category;
+    div.onclick = () => window.enterTask(node.category);
+    
+    const iconFile = categoryIcons[node.category] || '';
+    if (iconFile) {
+      div.innerHTML = `<img src="${iconFile}" alt="${node.category}" style="width: 210px; height: 210px; object-fit: contain; filter: ${isComp ? 'none' : 'grayscale(100%) brightness(0.6)'}; transition: filter 0.5s ease; pointer-events: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;">`;
+    } else {
+      div.innerHTML = `<span style="font-size: 3rem;">${isComp ? '🌟' : '❄️'}</span>`;
+    }
+    
+    const label = document.createElement('div');
+    label.className = "map-node-label";
+    label.innerText = node.category;
+    div.appendChild(label);
+    
+    container.appendChild(div);
+    nodeEls.push({x: node.x, y: node.y, isComp: isComp});
+  });
+
+  // 정중앙 마음 하트 노드 추가
+  const totalCount = 8;
+  const isHeartCompleted = compTasks.length >= totalCount;
+  const heartDiv = document.createElement('div');
+  
+  heartDiv.className = "map-heart" + (isHeartCompleted ? " completed" : " broken");
+  heartDiv.style.left = "50%";
+  heartDiv.style.top = "50%";
+  
+  if (isHeartCompleted) {
+    heartDiv.innerHTML = `<span style="font-size: 3.5rem; filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.8));">❤️</span>`;
+    heartDiv.title = "마음 온(ON) 완료! 아웃트로 보기";
+    heartDiv.onclick = () => {
+      if (typeof synth !== 'undefined' && synth.playSuccess) {
+        try { synth.playSuccess(); } catch(e) {}
+      }
+      window.startOutro();
+    };
+  } else {
+    heartDiv.innerHTML = `<span style="font-size: 3.5rem;">💔</span>`;
+    heartDiv.title = "8개의 마음 에너지를 모아주세요";
+    heartDiv.onclick = () => {
+      if (typeof synth !== 'undefined' && synth.playSelect) {
+        try { synth.playSelect(); } catch(e) {}
+      }
+      alert("8개의 사이버 어울림 역량 마음 에너지를 모두 켜면 하트가 활성화됩니다! 💔\n남은 과제들을 완료해 주세요.");
+    };
+  }
+  
+  const heartLabel = document.createElement('div');
+  heartLabel.className = "map-node-label";
+  heartLabel.style.bottom = "-35px";
+  heartLabel.innerText = isHeartCompleted ? "마음 온(ON)!" : "";
+  heartDiv.appendChild(heartLabel);
+  
+  container.appendChild(heartDiv);
+  
+  mapEdges.forEach(edge => {
+    const n1 = nodeEls[edge[0]];
+    const n2 = nodeEls[edge[1]];
+    const bothComp = (n1.isComp && n2.isComp);
+    
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", `${n1.x}%`);
+    line.setAttribute("y1", `${n1.y}%`);
+    line.setAttribute("x2", `${n2.x}%`);
+    line.setAttribute("y2", `${n2.y}%`);
+    line.setAttribute("class", bothComp ? "mind-line completed" : "mind-line");
+    
+    svg.appendChild(line);
+  });
+
+  // 중앙 하트와 각 활동들을 연결하는 방사형 선 렌더링
+  nodeEls.forEach(n => {
+    const bothComp = n.isComp;
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", `${n.x}%`);
+    line.setAttribute("y1", `${n.y}%`);
+    line.setAttribute("x2", "50%");
+    line.setAttribute("y2", "50%");
+    line.setAttribute("class", bothComp ? "mind-line completed" : "mind-line");
+    
+    svg.appendChild(line);
+  });
+}
+
+// ==========================================
+// [4. 과제 화면 진입 및 처리]
+// ==========================================
+window.currentTaskCategory = "";
+
+const categoryPages = {
+  '사이버 공감': 'empathy.html',
+  '사이버 의사소통': 'communication.html',
+  '사이버폭력 인식': 'cyber_hero.html',
+  '사이버 자기조절': 'self_control.html',
+  '사이버 감정조절': 'emotion_control.html',
+  '인터넷 윤리의식 및 활용': 'ethics.html',
+  '사이버 자기존중감': 'self_esteem.html',
+  '사이버 갈등관리 및 문제해결': 'conflict_management.html'
+};
+
+const categoryIcons = {
+  '사이버 공감': 'images/icon_empathy.png',
+  '사이버 의사소통': 'images/icon_comm.png',
+  '사이버폭력 인식': 'images/icon_violence.png',
+  '사이버 자기조절': 'images/icon_selfcontrol.png',
+  '사이버 감정조절': 'images/icon_emotion.png',
+  '인터넷 윤리의식 및 활용': 'images/icon_ethics.png',
+  '사이버 자기존중감': 'images/icon_esteem.png',
+  '사이버 갈등관리 및 문제해결': 'images/icon_conflict.png'
+};
+
+window.enterTask = function(category) {
+  if (window.appState.completedTasks.includes(category)) {
+    if (!confirm(`[${category}] 과제는 이미 마음 에너지를 채운 곳입니다. 복습을 위해 다시 학습하시겠습니까?`)) {
+      return;
+    }
+  }
+  window.currentTaskCategory = category;
+  
+  const page = categoryPages[category];
+  if (page) {
+    switchView('view-task-iframe');
+    setTimeout(() => {
+      document.getElementById('task-iframe').src = page;
+    }, 50);
+  } else {
+    document.getElementById('task-title').innerText = `과제: [${category}]`;
+    switchView('view-task');
+  }
+}
+
+window.completeTask = function(category, answers) {
+  const targetCategory = category || window.currentTaskCategory;
+  if (targetCategory && !window.appState.completedTasks.includes(targetCategory)) {
+    window.appState.completedTasks.push(targetCategory);
+  }
+  
+  if (targetCategory) {
+    window.appState.taskAnswers = window.appState.taskAnswers || {};
+    if (answers) {
+      window.appState.taskAnswers[targetCategory] = answers;
+    }
+  }
+
+  saveLocalState();
+  
+  if (targetCategory) {
+    alert(`[${targetCategory}] 과제를 완료하여 마음 에너지가 채워졌습니다!`);
+  }
+  
+  window.returnToMap();
+}
+
+window.returnToMap = function() {
+  document.getElementById('task-iframe').src = '';
+  switchView('view-map');
+  renderMap();
+}
+
+window.addEventListener('message', function(event) {
+  if (event.data && event.data.type === 'TASK_COMPLETE') {
+    window.completeTask(event.data.category, event.data.answers);
+  } else if (event.data && event.data.type === 'RETURN_TO_MAP') {
+    window.returnToMap();
+  }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+});
+
+// ==========================================
+// [Screen 4: 아웃트로 엔진 (전면 개편)]
+// ==========================================
+const outroScenes = [
+  {
+    bgName: "마음웹",
+    bgImg: "images/story_bg7.jpg",
+    speaker: "마음 온(ON)",
+    text: "이것 봐! 네가 기른 ‘사이버 어울림 역량’ 덕분에 꽁꽁 얼어붙었던 우리 반 마음 웹이 따뜻하게 녹았어!",
+    showFairy: true,
+    isPromiseScene: false
+  },
+  {
+    bgName: "마음웹",
+    bgImg: "images/story_bg7.jpg",
+    speaker: "나",
+    text: "정말이네.. 차갑게 얼어있던 선들이 따스한 빛을 내며 다시 부드럽게 이어졌어!",
+    showFairy: true,
+    isPromiseScene: false
+  },
+  {
+    bgName: "마음웹",
+    bgImg: "images/story_bg7.jpg",
+    speaker: "마음 온(ON)",
+    text: "이제 넌 온라인에서 생긴 오해와 상처를 스스로 치유할 수 있는 멋진 힘을 가지게 된 거야! 현실 교실로 돌아가서도 이 따뜻한 마음 온도를 꼭 유지해 줘. 약속할 수 있지?",
+    showFairy: true,
+    isPromiseScene: true
+  },
+  {
+    bgName: "교실",
+    bgImg: "images/story_bg3.png",
+    speaker: "나",
+    text: "어...? 다시 교실이다. 앗, 태블릿 화면도 원래대로 돌아왔네.",
+    showFairy: false,
+    isPromiseScene: false
+  },
+  {
+    bgName: "교실",
+    bgImg: "images/story_bg3.png",
+    speaker: "나",
+    text: "신기하다. 아침까지만 해도 마음이 엄청 무겁고 콕콕 찔렀는데, 지금은 마음이 후련해.",
+    showFairy: false,
+    isPromiseScene: false
+  },
+  {
+    bgName: "교실",
+    bgImg: "images/story_bg3.png",
+    speaker: "나",
+    text: "좋아! 어제 일은 내가 먼저 다가가서 솔직하게 내 마음을 이야기해 봐야겠다. 로그아웃 한다고 끝나는 게 아니니까!",
+    showFairy: false,
+    isPromiseScene: false
+  },
+  {
+    bgName: "교실",
+    bgImg: "images/ending_friends.jpg",
+    speaker: "나",
+    text: "얘들아! 어제 있었던 일......",
+    showFairy: false,
+    isPromiseScene: false,
+    isLast: true
+  }
+];
+
+let currentOutroIndex = 0;
+
+window.startOutro = function() {
+  switchView('view-outro');
+  currentOutroIndex = 0;
+  
+  const overlay = document.getElementById('ending-white-overlay');
+  if (overlay) {
+    overlay.style.display = 'none';
+    overlay.style.opacity = '0';
+  }
+  const credit = document.getElementById('ending-title-credit');
+  if (credit) {
+    credit.style.opacity = '0';
+  }
+  
+  renderOutroScene();
+}
+
+function renderOutroScene() {
+  const scene = outroScenes[currentOutroIndex];
+  const viewOutro = document.getElementById('view-outro');
+  
+  if (scene.bgImg) {
+    viewOutro.style.backgroundImage = `url('${scene.bgImg}?v=${new Date().getTime()}')`;
+  } else {
+    viewOutro.style.backgroundImage = 'none';
+    viewOutro.style.backgroundColor = '#111';
+  }
+  
+  const labelEl = document.getElementById('outro-scene-label');
+  if (scene.bgName) {
+    labelEl.innerText = scene.bgName;
+    labelEl.style.display = 'block';
+  } else {
+    labelEl.style.display = 'none';
+  }
+  
+  const fairyEl = document.getElementById('outro-fairy-char');
+  if (fairyEl) {
+    fairyEl.style.display = scene.showFairy ? 'block' : 'none';
+    if (scene.bgName === "마음웹") {
+      fairyEl.classList.add('top-left');
+      // 아웃트로 전용 마음온 요정 캐릭터 이미지 적용
+      fairyEl.style.backgroundImage = `url('images/maeumon_outro.png?v=${new Date().getTime()}')`;
+    } else {
+      fairyEl.classList.remove('top-left');
+    }
+  }
+  
+  const speakerEl = document.getElementById('outro-speaker');
+  const textEl = document.getElementById('outro-text');
+  speakerEl.innerText = scene.speaker;
+  textEl.innerText = scene.text;
+  
+  if (scene.speaker === "마음 온(ON)") {
+    speakerEl.style.color = "#01fcfa";
+  } else {
+    speakerEl.style.color = "var(--point-yellow)";
+  }
+  
+  const nextBtn = document.getElementById('outro-dialog-next');
+  const promiseBtn = document.getElementById('outro-promise-btn');
+  
+  if (scene.isPromiseScene) {
+    nextBtn.style.display = 'none';
+    promiseBtn.style.display = 'block';
+  } else {
+    nextBtn.style.display = 'block';
+    promiseBtn.style.display = 'none';
+    
+    if (scene.isLast) {
+      nextBtn.innerText = "종료 ▶";
+    } else {
+      nextBtn.innerText = "다음 ▼";
+    }
+  }
+}
+
+window.nextOutroScene = function() {
+  const scene = outroScenes[currentOutroIndex];
+  if (scene.isLast) {
+    runEndingCreditSequence();
+    return;
+  }
+  
+  currentOutroIndex++;
+  renderOutroScene();
+}
+
+window.promiseAndContinue = function() {
+  const promiseBtn = document.getElementById('outro-promise-btn');
+  if (promiseBtn) promiseBtn.style.display = 'none';
+
+  const viewOutro = document.getElementById('view-outro');
+  if (viewOutro) {
+    viewOutro.classList.add('effect-vortex');
+  }
+
+  // 2.5초 동안 소용돌이 연출 진행 후 교실 씬으로 전환
+  setTimeout(() => {
+    if (viewOutro) {
+      viewOutro.classList.remove('effect-vortex');
+    }
+    currentOutroIndex++;
+    renderOutroScene();
+  }, 2500);
+}
+
+function runEndingCreditSequence() {
+  const overlay = document.getElementById('ending-white-overlay');
+  const credit = document.getElementById('ending-title-credit');
+  
+  overlay.style.display = 'flex';
+  setTimeout(() => {
+    overlay.style.opacity = '1';
+  }, 50);
+  
+  setTimeout(() => {
+    credit.style.opacity = '1';
+  }, 2000);
+  
+  setTimeout(() => {
+    credit.style.opacity = '0';
+    setTimeout(() => {
+      // 1. 하얀 화면 오버레이(opacity: 1)가 다 덮은 상태에서 먼저 로그아웃을 처리하여 뒤쪽 뷰를 로그인 화면으로 전환합니다.
+      logout();
+      
+      // 2. 로그인 화면이 깔린 후 하얀 화면을 서서히 걷어내어 페이드인 연출을 진행합니다.
+      overlay.style.opacity = '0';
+      setTimeout(() => {
+        overlay.style.display = 'none';
+      }, 2000);
+    }, 1500);
+  }, 5500);
+}
+
+// 테스트용 전체 완료 치트 함수
+window.cheatCompleteAll = function() {
+  const allCategories = [
+    '사이버 공감',
+    '사이버 의사소통',
+    '사이버폭력 인식',
+    '사이버 자기조절',
+    '사이버 감정조절',
+    '인터넷 윤리의식 및 활용',
+    '사이버 자기존중감',
+    '사이버 갈등관리 및 문제해결'
+  ];
+  
+  window.appState.completedTasks = [...allCategories];
+  saveLocalState();
+  renderMap();
+  
+  if (typeof synth !== 'undefined' && synth.playSuccess) {
+    try { synth.playSuccess(); } catch(e) {}
+  }
+  
+  alert("치트 적용: 8개 사이버 어울림 활동이 모두 완료되었습니다! 중앙의 붉게 켜진 하트를 클릭하여 아웃트로를 확인해 보세요. ❤️");
+};
