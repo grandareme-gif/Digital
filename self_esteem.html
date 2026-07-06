@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -44,11 +44,11 @@
       height: 62px;
       background-color: #1e293b;
       border-top: var(--pixel-thick) solid var(--border-color);
-      display: flex;
+      display: none; /* 초기 로딩 시 보이지 않도록 기본 숨김 */
       justify-content: space-between;
       align-items: center;
       padding: 0 30px;
-      z-index: 10;
+      z-index: 100 !important; /* 항상 최상위에 위치하여 가려짐 방지 */
     }
     :root {
       --bg-dark: #0e1017;
@@ -91,19 +91,12 @@
       display: flex;
       flex-direction: column;
 
-      /* 16:9 비율 유지 및 최대 1920x1080 제한 */
-      aspect-ratio: 16 / 9;
-      width: 100vw;
-      height: calc(100vw * 9 / 16);
-      max-width: 1920px;
-      max-height: 1080px;
-    }
-
-    @media (min-aspect-ratio: 16/9) {
-      #app-container {
-        height: 100vh;
-        width: calc(100vh * 16 / 9);
-      }
+      /* 16:9 뷰포트 강제 핏 수식 */
+      width: 100vw !important;
+      height: 56.25vw !important;
+      max-width: 177.78vh !important;
+      max-height: 100vh !important;
+      margin: auto !important;
     }
 
     /* 뷰 기본 스타일 (자연스러운 화면 전환용 애니메이션 적용) */
@@ -117,6 +110,11 @@
       padding: 6px 12px 10px 12px !important; /* 내부 상단 여백을 극도로 조여서 위로 밀착 */
       flex-direction: column;
       overflow-y: auto !important; /* 내용 초과 시 부드러운 스크롤 허용 */
+    }
+    #view-act1, #view-act2 {
+      height: calc(100% - 114px) !important;
+      max-height: calc(100% - 114px) !important;
+      overflow-y: auto !important;
     }
     #standard-header {
       height: 52px;
@@ -328,13 +326,13 @@
 
     /* 가상 스마트폰 레이아웃 및 초점 상태 효과 */
     .phone-mockup {
-      width: 250px;
-      height: 330px;
-      border: 8px solid #2d3436;
-      border-radius: 28px;
+      width: 375px;
+      height: 495px;
+      border: 12px solid #2d3436;
+      border-radius: 42px;
       background: #000000;
       position: relative;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -357,19 +355,19 @@
     }
     @keyframes phoneVibrate {
       0%, 100% { transform: translateX(0); }
-      15% { transform: translateX(-8px); }
-      30% { transform: translateX(7px); }
-      45% { transform: translateX(-6px); }
-      60% { transform: translateX(5px); }
-      75% { transform: translateX(-3px); }
+      15% { transform: translateX(-12px); }
+      30% { transform: translateX(10px); }
+      45% { transform: translateX(-9px); }
+      60% { transform: translateX(7px); }
+      75% { transform: translateX(-4px); }
       90% { transform: translateX(1px); }
     }
 
     .phone-notch {
-      width: 100px;
-      height: 14px;
+      width: 150px;
+      height: 21px;
       background: #2d3436;
-      border-radius: 0 0 10px 10px;
+      border-radius: 0 0 15px 15px;
       position: absolute;
       top: 0;
       left: 50%;
@@ -383,7 +381,7 @@
       display: flex;
       flex-direction: column;
       position: relative;
-      padding-top: 15px;
+      padding-top: 22px;
       transition: filter 0.5s ease;
     }
     
@@ -398,13 +396,13 @@
 
     .phone-appbar {
       background: #ffffff;
-      height: 34px;
+      height: 51px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 0.8rem;
-      border-bottom: 1px solid #e1e2e6;
+      font-size: 1.2rem;
+      border-bottom: 1.5px solid #e1e2e6;
       color: #2f3542;
       flex-shrink: 0;
     }
@@ -413,11 +411,11 @@
       flex-grow: 1;
       display: flex;
       flex-direction: column;
-      padding: 6px;
+      padding: 9px;
       position: relative;
       overflow-y: auto;
       color: #000000;
-      gap: 6px;
+      gap: 9px;
     }
 
     /* SNS 관련 스타일 */
@@ -437,18 +435,18 @@
     .sns-header {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 9px;
     }
     
     .sns-avatar {
-      width: 24px;
-      height: 24px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      border: 1px solid #ccc;
+      border: 1.5px solid #ccc;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.95rem;
+      font-size: 1.4rem;
       background: #dfe4ea;
       overflow: hidden;
       flex-shrink: 0;
@@ -456,14 +454,14 @@
     
     .sns-username {
       font-weight: bold;
-      font-size: 0.75rem;
+      font-size: 1.1rem;
     }
     
     .sns-image-container {
       position: relative;
       width: 100%;
-      border: 2px solid var(--border-color);
-      border-radius: 8px;
+      border: 3px solid var(--border-color);
+      border-radius: 12px;
       overflow: hidden;
     }
     
@@ -474,18 +472,18 @@
     }
 
     .sns-caption {
-      font-size: 0.7rem;
+      font-size: 1.05rem;
       line-height: 1.3;
       word-break: keep-all;
     }
     
     .sns-likes {
-      font-size: 0.7rem;
+      font-size: 1.05rem;
       font-weight: bold;
       color: var(--point-red);
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
     }
 
     .sns-overlay-text {
@@ -495,10 +493,10 @@
       transform: translate(-50%, -50%);
       background: rgba(0, 0, 0, 0.85);
       color: var(--point-yellow);
-      border: 2px solid var(--point-yellow);
-      border-radius: 8px;
-      padding: 4px 8px;
-      font-size: 0.65rem;
+      border: 3px solid var(--point-yellow);
+      border-radius: 12px;
+      padding: 6px 12px;
+      font-size: 1.0rem;
       font-weight: bold;
       text-align: center;
       max-width: 90%;
@@ -523,12 +521,12 @@
     .writing-container {
       display: none;
       flex-direction: column;
-      gap: 5px;
-      margin-top: 4px;
+      gap: 8px;
+      margin-top: 6px;
       background: rgba(0,0,0,0.03);
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px dashed rgba(0,0,0,0.15);
+      padding: 12px;
+      border-radius: 12px;
+      border: 1.5px dashed rgba(0,0,0,0.15);
       animation: slideDown 0.3s ease-out forwards;
     }
 
@@ -538,7 +536,7 @@
     }
 
     .writing-prompt {
-      font-size: 0.75rem;
+      font-size: 1.15rem;
       font-weight: bold;
       color: #333;
       line-height: 1.3;
@@ -546,13 +544,13 @@
 
     .writing-textarea {
       width: 100%;
-      height: 48px;
+      height: 72px;
       background: #ffffff;
       color: #000000;
-      border: 2px solid var(--border-color);
-      border-radius: 6px;
-      padding: 6px;
-      font-size: 0.8rem;
+      border: 3px solid var(--border-color);
+      border-radius: 9px;
+      padding: 9px;
+      font-size: 1.2rem;
       resize: none;
       outline: none;
     }
@@ -562,22 +560,22 @@
     }
 
     .writing-prompt {
-      font-size: 0.75rem; /* 글자가 상자 밖으로 삐져나가지 않도록 컴팩트하게 조율 */
+      font-size: 1.3rem; 
       font-weight: 900;
       color: #000000 !important; /* 가독성을 위한 검은색 */
       background-color: #fef08a; /* 따뜻한 파스텔 노란색 */
-      border: 3px solid #000000; /* 레트로 검은 테두리 */
-      border-radius: 8px;
-      padding: 6px 6px; /* 좌우 패딩을 줄여 내부 글자 공간 확보 */
-      margin-top: -8px; /* 위로 약간 밀어 올려 배치 균형 조율 */
-      margin-bottom: 8px;
+      border: 4px solid #000000; /* 레트로 검은 테두리 */
+      border-radius: 12px;
+      padding: 10px 12px; 
+      margin-top: -12px; 
+      margin-bottom: 12px;
       word-break: keep-all;
-      white-space: nowrap; /* 단일 행 1줄 표시 */
-      text-align: center;
+      white-space: normal; /* 여러 줄 표시로 세로 확장 가능 */
+      text-align: justify; /* 양쪽 정렬로 변경 */
       width: 100%;
       box-sizing: border-box; /* 패딩이 너비를 초과하지 않게 함 */
       display: block;
-      box-shadow: 3px 3px 0px #000000; /* 레트로 그림자 */
+      box-shadow: 4px 4px 0px #000000; /* 레트로 그림자 */
       letter-spacing: -0.5px; /* 자간을 조여 한 줄 안착 보장 */
     }
 
@@ -585,16 +583,16 @@
       align-self: flex-end;
       background: var(--point-blue);
       color: white;
-      border: 2px solid var(--border-color);
-      border-radius: 6px;
-      padding: 4px 12px;
-      font-size: 0.75rem;
+      border: 3px solid var(--border-color);
+      border-radius: 9px;
+      padding: 6px 18px;
+      font-size: 1.15rem;
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 2px 2px 0 var(--border-color);
+      box-shadow: 3px 3px 0 var(--border-color);
     }
     .writing-submit-btn:active {
-      transform: translate(2px, 2px);
+      transform: translate(3px, 3px);
       box-shadow: 0 0 0 var(--border-color);
     }
 
@@ -1179,7 +1177,7 @@
     
     /* 1단계 폰 컨테이너 높이 및 상단 밀착 정렬 */
     .phones-horizontal-container {
-      height: 334px !important; /* 원래 폰 높이 수용 */
+      height: 500px !important; /* 1.5배 스케일 수용을 위해 확장 */
       margin-top: 4px !important;
       gap: 12px !important;
       align-items: flex-start !important; /* 스마트폰 목업을 위로 밀착 정렬 */
@@ -1190,19 +1188,19 @@
     #control-panel {
       margin-top: 2px !important;
       margin-bottom: 10px !important; /* 하단바와 기분 좋은 이격 */
-      width: 100% !important;
-      max-width: 580px !important;
+      width: 375px !important; /* 스마트폰 가로 폭과 동일하게 설정 */
+      max-width: 375px !important;
     }
 
     /* 2단계 가로(row) 배치 복구 및 스마트폰 목업과 대칭되도록 수직 가운데 정렬 */
     .act2-screen-wrapper {
-      height: 354px !important;
+      height: auto !important;
       margin-top: 4px !important;
       display: flex !important;
       flex-direction: column !important; /* 위 태블릿, 아래 입력창 */
       align-items: center !important;
       justify-content: flex-start !important;
-      gap: 8px !important; /* 태블릿과 입력창 사이 적절한 간격 */
+      gap: 12px !important; /* 태블릿과 입력창 사이 적절한 간격 */
       width: 100% !important;
     }
 
@@ -1264,8 +1262,8 @@
 
     /* === 2단계 가로 태블릿(Tablet Mockup) 전용 레트로 스타일 - 시원하고 큼직하게 확장 === */
     .tablet-mockup {
-      width: 530px !important;
-      height: 325px !important; /* 285px -> 325px 세로 창 시원하게 대폭 확장 */
+      width: 795px !important; /* 530 * 1.5 = 795px */
+      height: 440px !important; /* 325 * 1.5 = 488px에서 440px로 축소 */
       background: #ffffff !important;
       border: 4px solid #000000 !important;
       box-shadow: 3px 3px 0px #000000 !important;
@@ -1302,13 +1300,13 @@
 
     /* 2단계 가로(row) 배치 복구 및 스마트폰 목업과 대칭되도록 수직 가운데 정렬 */
     .act2-screen-wrapper {
-      height: 334px !important; /* 세로 높이를 한화면에 완전히 맞춤 */
+      height: auto !important; /* 고정 크기 대신 auto로 설정하여 유동적 스크롤 유도 */
       margin-top: 4px !important;
       display: flex !important;
       flex-direction: column !important; /* 태블릿이 위, 입력창이 아래로 오도록 세로 정렬 */
       align-items: center !important;
       justify-content: flex-start !important;
-      gap: 9px !important;
+      gap: 12px !important;
       width: 100% !important;
     }
 
@@ -1317,20 +1315,20 @@
       margin-top: 2px !important;
       margin-bottom: 8px !important; /* 하단바와 완벽한 숨통 여백 */
       height: auto !important;
-      padding: 8px 12px !important;
-      gap: 4px !important;
-      width: 530px !important; /* 태블릿 가로폭과 100% 일치 */
+      padding: 12px 18px !important;
+      gap: 6px !important;
+      width: 795px !important; /* 태블릿 가로폭 1.5배와 100% 일치 */
     }
 
     .comment-writing-panel {
-      width: 530px !important;
+      width: 795px !important;
       background: rgba(255,255,255,0.03) !important;
       border: 2px solid rgba(255,255,255,0.1) !important;
       border-radius: 8px !important;
-      padding: 8px 12px !important;
+      padding: 12px 18px !important;
       display: flex !important;
       flex-direction: column !important;
-      gap: 4px !important;
+      gap: 6px !important;
       flex-shrink: 0 !important;
     }
     
@@ -1370,8 +1368,7 @@
       </div>
     </div>
 
-    <!-- 임시 테스트 스킵 버튼 -->
-    <button class="temp-skip-btn" onclick="skipToNextSection()">⏩ 스킵</button>
+
 
     <!-- =========================================
          Screen 1: 인트로 (안내 화면)
@@ -1449,7 +1446,6 @@
 
       <!-- 마음온 AI 공통 가이드 배너 (1단계) -->
       <div class="std-guide-banner">
-        <!-- 정밀 인라인 크기(38px) 픽스 및 돌출값 최적화 -->
         <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
           <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px; height: 57px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
         </div>
@@ -1461,19 +1457,18 @@
         </div>
       </div>
 
-      <!-- 양방향 가상 스마트폰 레이아웃 (좌: 지은 / 우: 나) - 명확하게 flex-row 가로 정렬 고정 -->
-      <div class="phones-horizontal-container">
+      <!-- 3열 가상 스마트폰 및 입력 제어 레이아웃 (좌: 지은 / 중: 나 / 우: 글쓰기 조작창) -->
+      <div class="phones-horizontal-container" style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 20px; width: 100%; height: 500px; margin-top: 8px;">
         
-        <!-- text-slate-300 및 대칭 구조 맞춤 -->
         <!-- 왼쪽 스마트폰: 지은의 SNS -->
-        <div id="phone-mockup-left" class="phone-mockup" style="width: 250px; height: 330px; margin: 0;">
+        <div id="phone-mockup-left" class="phone-mockup" style="width: 375px; height: 495px; margin: 0;">
           <div class="phone-notch"></div>
-          <div class="phone-screen" style="padding-top: 15px;">
+          <div class="phone-screen" style="padding-top: 22px;">
             <div class="phone-appbar">마음그램</div>
-            <div class="phone-content" style="padding: 6px; gap: 6px;">
-              <div id="post-1" class="sns-post" style="box-shadow: 1px 1px 0 rgba(0,0,0,0.15); padding: 8px; gap: 6px;">
+            <div class="phone-content" style="padding: 9px; gap: 9px;">
+              <div id="post-1" class="sns-post" style="box-shadow: 1px 1px 0 rgba(0,0,0,0.15); padding: 12px; gap: 9px;">
                 <div class="sns-header">
-                  <!-- 기본 실루엣 프로필 이미지 적용 (이모지 완전 대체) -->
+                  <!-- 기본 실루엣 프로필 이미지 적용 -->
                   <div class="sns-avatar">
                     <svg viewBox="0 0 24 24" fill="#a4b0be" style="width: 100%; height: 100%;">
                       <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
@@ -1481,16 +1476,16 @@
                   </div>
                   <div class="sns-username">지은</div>
                 </div>
-                <!-- 지은이 사진 컨테이너 높이 125px로 확대 및 그림 헬퍼 가이드 추가 -->
-                <div class="sns-image-container" style="height: 125px; display: flex; align-items: center; justify-content: center; background: #cbd5e1; border: 2px solid #000; border-radius: 8px; overflow: hidden; position: relative;">
+                <!-- 지은이 사진 컨테이너 높이 187px로 확대 -->
+                <div class="sns-image-container" style="height: 187px; display: flex; align-items: center; justify-content: center; background: #cbd5e1; border: 3px solid #000; border-radius: 12px; overflow: hidden; position: relative;">
                   <img id="post1-sns-img" src="images/theme_park_jieun.jpg" class="sns-image" alt="테마파크" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; document.getElementById('post1-fallback').style.display='flex';">
-                  <div id="post1-fallback" style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; text-align: center; font-size: 9px; font-weight: bold; color: #64748b; padding: 4px;" class="flex flex-col">
+                  <div id="post1-fallback" style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; text-align: center; font-size: 13.5px; font-weight: bold; color: #64748b; padding: 6px;" class="flex flex-col">
                     <span>그림을 넣어주세요!</span>
-                    <span style="color: #ef4444; font-size: 8px;">theme_park_jieun.jpg</span>
+                    <span style="color: #ef4444; font-size: 12px;">theme_park_jieun.jpg</span>
                   </div>
                 </div>
-                <div class="sns-likes" style="font-size: 0.7rem;">❤️ 좋아요 42개</div>
-                <div class="sns-caption" style="font-size: 0.7rem; line-height: 1.3;">
+                <div class="sns-likes" style="font-size: 1.05rem;">❤️ 좋아요 42개</div>
+                <div class="sns-caption" style="font-size: 1.05rem; line-height: 1.3;">
                   <b>지은</b> 주말 테마파크 완전 꿀잼! 대기 줄 길었지만 머리띠 사고 신났음 🎡 Rollercoaster! #행복 #꿀잼
                 </div>
               </div>
@@ -1498,15 +1493,14 @@
           </div>
         </div>
 
-        <!-- 오른쪽 스마트폰: 나의 SNS (지은이와 내부 상자 규격 125px로 완벽 1:1 일치) -->
-        <div id="phone-mockup-right" class="phone-mockup" style="width: 250px; height: 330px; margin: 0;">
+        <!-- 오른쪽 스마트폰: 나의 SNS -->
+        <div id="phone-mockup-right" class="phone-mockup" style="width: 375px; height: 495px; margin: 0;">
           <div class="phone-notch"></div>
-          <div class="phone-screen" style="padding-top: 15px;">
+          <div class="phone-screen" style="padding-top: 22px;">
             <div class="phone-appbar">마음그램</div>
-            <div class="phone-content" style="padding: 6px; gap: 6px; position: relative;">
-              <div id="post-2" class="sns-post" style="box-shadow: 1px 1px 0 rgba(0,0,0,0.15); padding: 8px; gap: 6px;">
+            <div class="phone-content" style="padding: 9px; gap: 9px; position: relative;">
+              <div id="post-2" class="sns-post" style="box-shadow: 1px 1px 0 rgba(0,0,0,0.15); padding: 12px; gap: 9px;">
                 <div class="sns-header">
-                  <!-- 기본 실루엣 프로필 이미지 적용 (이모지 완전 대체) -->
                   <div class="sns-avatar">
                     <svg viewBox="0 0 24 24" fill="#a4b0be" style="width: 100%; height: 100%;">
                       <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
@@ -1514,20 +1508,19 @@
                   </div>
                   <div class="sns-username">나</div>
                 </div>
-                <!-- 지은이와 외곽 보더 두께(2px), 둥글기(8px), 높이(125px) 완벽하게 똑같이 설계 -->
-                <div class="sns-image-container" style="height: 125px; display: flex; align-items: center; justify-content: center; background: #cbd5e1; border: 2px solid #000; border-radius: 8px; overflow: hidden; position: relative;">
+                <div class="sns-image-container" style="height: 187px; display: flex; align-items: center; justify-content: center; background: #cbd5e1; border: 3px solid #000; border-radius: 12px; overflow: hidden; position: relative;">
                   <!-- 등록 전: 빈 이미지 프레임 -->
-                  <div id="post2-empty-image" style="display: flex; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-size: 9px; font-weight: bold; color: #64748b; padding: 4px;" class="bg-slate-200">
+                  <div id="post2-empty-image" style="display: flex; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-size: 13.5px; font-weight: bold; color: #64748b; padding: 6px;" class="bg-slate-200">
                     <span>비어 있음</span>
-                    <span style="font-size: 8px; color: #94a3b8; margin-top: 2px;">나만의 행복을 등록해 주세요!</span>
+                    <span style="font-size: 12px; color: #94a3b8; margin-top: 3px;">나만의 행복을 등록해 주세요!</span>
                   </div>
                   <!-- 등록 후: 따뜻한 캐릭터 사진 노출 -->
                   <img id="post2-sns-img" src="" class="sns-image hidden" alt="나의 사진" style="width: 100%; height: 100%; object-fit: cover;">
                   <!-- 이미지 위에 글자가 새겨지는 가치 캡션 영역 -->
-                  <div id="post2-image-overlay" class="sns-overlay-text" style="display:none; font-size: 0.65rem; padding: 4px 8px;">이유</div>
+                  <div id="post2-image-overlay" class="sns-overlay-text" style="display:none; font-size: 1.0rem; padding: 6px 12px;">이유</div>
                 </div>
-                <div id="post2-likes-display" class="sns-likes" style="font-size: 0.7rem;">❤️ 좋아요 0개</div>
-                <div id="post2-caption-text" class="sns-caption" style="font-size: 0.7rem; line-height: 1.3;">
+                <div id="post2-likes-display" class="sns-likes" style="font-size: 1.05rem;">❤️ 좋아요 0개</div>
+                <div id="post2-caption-text" class="sns-caption" style="font-size: 1.05rem; line-height: 1.3;">
                   <b>나</b> <i>(아직 등록된 이야기가 없습니다)</i>
                 </div>
               </div>
@@ -1535,58 +1528,52 @@
           </div>
         </div>
 
-      </div>
-
-      <!-- 글쓰기 조작 영역 -->
-      <div id="control-panel" style="width:100%; max-width:580px; margin:0 auto; flex-shrink:0;">
-        
-        <!-- 질문 1 입력 영역 -->
-        <div id="writing-area" class="writing-container" style="display: flex;">
-          <div id="writing-prompt-text" class="writing-prompt">질문 텍스트</div>
-          <div style="display:flex; gap:8px; width:100%;">
-            <textarea id="writing-textarea-input" class="writing-textarea" placeholder="생각을 적어보세요. (최소 3글자)"></textarea>
-            <button class="writing-submit-btn" onclick="submitWriting()">확인</button>
+        <!-- 우측: 글쓰기 조작 영역 -->
+        <div id="control-panel" style="width: 375px; flex-shrink: 0; display: flex; flex-direction: column; justify-content: center; gap: 10px; margin: 0; height: 495px;">
+          
+          <!-- 질문 1 입력 영역 -->
+          <div id="writing-area" class="writing-container" style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+            <div id="writing-prompt-text" class="writing-prompt" style="margin-top: 0; margin-bottom: 4px;">질문 텍스트</div>
+            <div style="display:flex; flex-direction: column; gap:8px; width:100%;">
+              <textarea id="writing-textarea-input" class="writing-textarea" placeholder="생각을 적어보세요." style="height: 120px;"></textarea>
+              <button class="writing-submit-btn" onclick="submitWriting()" style="align-self: stretch;">확인</button>
+            </div>
           </div>
+
+          <!-- 질문 2 다중 입력 영역 (소확행, 해시태그, 스티커 이름) -->
+          <div id="writing-area-stage2" class="writing-container" style="display: none; flex-direction: column; gap: 8px; width: 100%;">
+            <div id="writing-prompt-text-stage2" class="writing-prompt" style="margin-top: 0; margin-bottom: 4px;">질문 텍스트</div>
+            
+            <div class="flex flex-col gap-1 w-full mt-1">
+              <span class="text-sm font-bold text-slate-300">1. 나의 소확행 내용:</span>
+              <input type="text" id="input-happiness" class="w-full bg-white text-black border-3 border-black rounded-none px-3 py-2 text-sm font-bold" placeholder="예: 집에서 아이스크림 먹기" style="font-size: 13.5px;">
+            </div>
+            
+            <div class="flex flex-col gap-1 w-full">
+              <span class="text-sm font-bold text-slate-300">2. 해시태그 (스페이스바 입력 시 # 자동):</span>
+              <input type="text" id="input-hashtag" class="w-full bg-white text-black border-3 border-black rounded-none px-3 py-2 text-sm font-bold" placeholder="예: 꿀잠, 나만의시간" style="font-size: 13.5px;">
+            </div>
+
+            <div class="flex flex-col gap-1 w-full">
+              <span class="text-sm font-bold text-slate-300">3. 나만의 '좋아요' 스티커 이름:</span>
+              <input type="text" id="input-sticker-name" class="w-full bg-white text-black border-3 border-black rounded-none px-3 py-2 text-sm font-bold" placeholder="예: 칭찬방울, 나를사랑해" style="font-size: 13.5px;">
+            </div>
+            
+            <button class="writing-submit-btn mt-2" onclick="submitStage2()" style="align-self: stretch;">나의 SNS에 등록 ▶</button>
+          </div>
+
         </div>
-
-        <!-- 질문 2 다중 입력 영역 (소확행, 해시태그, 스티커 이름) -->
-        <div id="writing-area-stage2" class="writing-container" style="display: none; flex-direction: column; gap: 6px;">
-          <div id="writing-prompt-text-stage2" class="writing-prompt">질문 텍스트</div>
-          
-          <div class="flex flex-col gap-1 w-full mt-1">
-            <span class="text-xs font-bold text-slate-300">1. 나의 소확행 내용:</span>
-            <input type="text" id="input-happiness" class="w-full bg-white text-black border-2 border-black rounded-none px-2 py-1.5 text-xs font-bold" placeholder="예: 더운 여름 집에서 아이스크림 먹기">
-          </div>
-          
-          <div class="flex flex-col gap-1 w-full">
-            <span class="text-xs font-bold text-slate-300">2. 해시태그 (스페이스바 누를 시 자동으로 # 생성):</span>
-            <input type="text" id="input-hashtag" class="w-full bg-white text-black border-2 border-black rounded-none px-2 py-1.5 text-xs font-bold" placeholder="예: 꿀잠, 나만의시간">
-          </div>
-
-          <div class="flex flex-col gap-1 w-full">
-            <span class="text-xs font-bold text-slate-300">3. 나만의 특별한 '좋아요' 또는 '스티커'의 이름은?</span>
-            <input type="text" id="input-sticker-name" class="w-full bg-white text-black border-2 border-black rounded-none px-2 py-1.5 text-xs font-bold" placeholder="예: 마음온도, 칭찬방울, 나를사랑해">
-          </div>
-          
-          <button class="writing-submit-btn mt-1" onclick="submitStage2()">나의 SNS에 등록 ▶</button>
-        </div>
-
-
 
       </div>
       
       <div class="act-controls">
         <button id="btn-act1-next" class="retro-btn" style="display: none;" onclick="progressToPost2()">나의 SNS 채우기 ▶</button>
         <div id="btn-act1-to-act2-wrapper" class="w-full flex justify-center" style="display: none;">
-          <button id="btn-act1-to-act2" class="retro-btn" onclick="progressToAct2()">활동 2로 이동 ➔</button>
+          <button id="btn-act1-to-act2" class="retro-btn" onclick="progressToAct2()">활동 2로 이동 ▶</button>
         </div>
       </div>
     </div>
-
-    <!-- =========================================
-         Screen 3: 활동 2 (선플 실천과 칭찬 샤워)
-         ========================================= -->
-    <div id="view-act2" class="view" style="display: none;">
+<div id="view-act2" class="view" style="display: none;">
       
       <!-- miracle-modal 팝업 비활성화 (피드 가림 방지) -->
 
@@ -1620,57 +1607,54 @@
         <div class="tablet-mockup">
           <!-- 좌측 분할: 지수의 글 피드 -->
           <div class="tablet-left">
-            <div class="sns-header" style="margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
-              <div class="sns-avatar" style="width: 18px; height: 18px; border-radius: 50%; overflow: hidden; background: #cbd5e1;">
+            <div class="sns-header" style="margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+              <div class="sns-avatar" style="width: 27px; height: 27px; border-radius: 50%; overflow: hidden; background: #cbd5e1;">
                 <svg viewBox="0 0 24 24" fill="#a4b0be" style="width: 100%; height: 100%;">
                   <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                 </svg>
               </div>
-              <span class="sns-username" style="font-size: 0.75rem; font-weight: bold; color: #000;">지수</span>
+              <span class="sns-username" style="font-size: 1.1rem; font-weight: bold; color: #000;">지수</span>
             </div>
             
-            <!-- 지수 Lonely 사진 (세로 165px로 시원하게 대폭 확장 배치) -->
-            <div class="sns-image-container" style="height: 165px; display: flex; align-items: center; justify-content: center; background: #cbd5e1; border: 2px solid #000; border-radius: 6px; overflow: hidden; position: relative;">
+            <!-- 지수 Lonely 사진 (세로 248px로 확대 배율 적용) -->
+            <div class="sns-image-container" style="height: 248px; display: flex; align-items: center; justify-content: center; background: #cbd5e1; border: 3px solid #000; border-radius: 9px; overflow: hidden; position: relative;">
               <img id="act2-friend-img" src="images/lonely_jisu.jpg" class="sns-image grayscale" alt="우울한 지수" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; document.getElementById('act2-fallback').style.display='flex';">
-              <div id="act2-fallback" style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; text-align: center; font-size: 9px; font-weight: bold; color: #64748b; padding: 4px;" class="flex flex-col">
+              <div id="act2-fallback" style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; text-align: center; font-size: 13.5px; font-weight: bold; color: #64748b; padding: 6px;" class="flex flex-col">
                 <span>그림을 넣어주세요!</span>
-                <span style="color: #ef4444; font-size: 8px;">lonely_jisu.jpg</span>
+                <span style="color: #ef4444; font-size: 12px;">lonely_jisu.jpg</span>
               </div>
             </div>
             
-            <div class="sns-caption" id="act2-sns-caption" style="margin-top: 6px; font-size: 0.8rem; line-height: 1.3; color: #000; font-family: 'DungGeunMo', monospace !important;">
+            <div class="sns-caption" id="act2-sns-caption" style="margin-top: 9px; font-size: 1.2rem; line-height: 1.3; color: #000; font-family: 'DungGeunMo', monospace !important;">
               <b>지수:</b> 요즘 내 맘을 아는 사람이 아무도 없는 것 같아... 😔
             </div>
           </div>
           
           <!-- 우측 분할: 실시간 댓글 리스트 -->
           <div class="tablet-right" id="act2-comments-list-container">
-            <span style="font-size: 0.8rem; font-weight: bold; color: #475569; border-bottom: 1.5px dashed #cbd5e1; padding-bottom: 3px; margin-bottom: 6px; font-family: 'DungGeunMo', monospace !important;">💬 댓글 피드</span>
-            <div id="act2-comments-list" style="display: flex; flex-direction: column; gap: 4px; width: 100%;">
+            <span style="font-size: 1.2rem; font-weight: bold; color: #475569; border-bottom: 2px dashed #cbd5e1; padding-bottom: 4px; margin-bottom: 9px; font-family: 'DungGeunMo', monospace !important;">💬 댓글 피드</span>
+            <div id="act2-comments-list" style="display: flex; flex-direction: column; gap: 6px; width: 100%;">
               <!-- 사용자의 댓글이 여기에 쌓임 -->
             </div>
           </div>
         </div>
 
         <!-- 댓글(선플) 입력 영역 (태블릿 하단으로 배치) -->
-        <div id="comment-panel" class="comment-writing-panel" style="z-index: 45; display: flex; flex-direction: column; gap: 4px; justify-content: center; height: auto;">
-          <!-- 우측 질문창 추가 (마음온 디자인 정돈) -->
-          <div class="writing-prompt" style="font-size: 0.9rem; text-align: center; width: 100%; white-space: normal; line-height: 1.4; margin-top: -2px !important; margin-bottom: 2px !important;">
+        <div id="comment-panel" class="comment-writing-panel" style="z-index: 45; display: flex; flex-direction: column; gap: 6px; justify-content: center; height: auto;">
+          <!-- 우측 질문창 추가 (마음온 디자인 정돈 - font-size 1.3rem 및 양쪽 정렬) -->
+          <div class="writing-prompt" style="font-size: 1.3rem; text-align: justify; width: 100%; white-space: normal; line-height: 1.4; margin-top: -6px !important; margin-bottom: 6px !important;">
             내가 힘들 때 듣고 싶었던 따뜻한 위로의 말을 친구에게 선물해 볼까?
           </div>
           
           <!-- 입력창과 전송 버튼 가로 배치 -->
-          <div style="display: flex; gap: 8px; width: 100%; align-items: center;">
-            <input type="text" id="act2-comment-input" class="flex-grow bg-white text-black border-2 border-black px-2 py-1.5 text-xs font-bold" placeholder="위로의 말을 입력하세요. (최소 3글자)" style="height: 38px; border-radius: 6px; outline: none;">
-            <button id="btn-submit-comment" class="retro-btn" style="font-size: 0.85rem; padding: 0 16px; height: 38px; box-shadow: 2px 2px 0 #000; border-radius: 6px; flex-shrink: 0;" onclick="triggerPraiseShower()">전송</button>
+          <div style="display: flex; gap: 12px; width: 100%; align-items: center;">
+            <input type="text" id="act2-comment-input" class="flex-grow bg-white text-black border-3 border-black px-3 py-2 font-bold" placeholder="위로의 말을 입력하세요." style="height: 57px; font-size: 1.15rem; border-radius: 9px; outline: none;">
+            <button id="btn-submit-comment" class="retro-btn" style="font-size: 1.25rem; padding: 0 24px; height: 57px; box-shadow: 3px 3px 0 #000; border-radius: 9px; flex-shrink: 0;" onclick="triggerPraiseShower()">전송</button>
           </div>
         </div>
 
       </div>
-
-      </div>
-
-      <!-- 활동 완료 버튼 삭제 (우하단 버튼으로 활성화 대체) -->
+      
       <div id="act2-controls" style="display: none !important;"></div>
 
     </div>
@@ -1779,10 +1763,14 @@
 
       if (viewId === 'view-intro' || viewId === 'view-outro') {
         header.classList.add('hidden');
+        header.style.display = 'none';
         footer.classList.add('hidden');
+        footer.style.display = 'none'; /* 인라인으로 확실하게 숨김 */
       } else {
         header.classList.remove('hidden');
+        header.style.display = 'flex';
         footer.classList.remove('hidden');
+        footer.style.display = 'flex'; /* 인라인으로 확실하게 켬 */
         
         // 타이틀 및 도트 갱신
         const titleText = document.getElementById("stage-title-text");
@@ -2056,20 +2044,57 @@
 
       if (stageNum === 1) {
         document.getElementById("writing-area").style.display = "flex";
-        document.getElementById("writing-textarea-input").value = "";
+        
+        const textarea = document.getElementById("writing-textarea-input");
+        if (textarea) {
+          textarea.disabled = false;
+          textarea.value = "";
+          textarea.style.backgroundColor = "#ffffff";
+          textarea.style.color = "#000000";
+        }
+        const submitBtn = document.querySelector("#writing-area .writing-submit-btn");
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = "1";
+          submitBtn.style.cursor = "pointer";
+        }
         
         document.getElementById("act1-guide-bubble").innerText = "친구의 화려한 SNS 사진을 보았을 때, 내 마음을 지키는 올바른 대처 방법은 무엇일까?";
-        document.getElementById("writing-prompt-text").innerText = "이 사진 한 장이 이 친구의 모든 것을 나타낼 수 있을까? 아니라면 그 이유를 말해보자";
+        document.getElementById("writing-prompt-text").innerText = "1. 이 사진 한 장이 이 친구의 모든 것을 나타낼 수 있을까? 아니라면 그 이유를 말해보자";
         document.getElementById("writing-textarea-input").focus();
       } else if (stageNum === 2) {
         document.getElementById("writing-area-stage2").style.display = "flex";
         
-        document.getElementById("act1-guide-bubble").innerText = "비교와 박탈감은 훌훌 털어내고, 이제 나만의 가치가 가득 담긴 행복 피드를 꾸며보자!";
-        document.getElementById("writing-prompt-text-stage2").innerText = "내 일상 속에서 찾을 수 있는 작지만 확실한 나의 행복은 어떤 모양일까?";
+        const inputHappiness = document.getElementById("input-happiness");
+        if (inputHappiness) {
+          inputHappiness.disabled = false;
+          inputHappiness.value = "";
+          inputHappiness.style.backgroundColor = "#ffffff";
+          inputHappiness.style.color = "#000000";
+        }
+        const inputHashtag = document.getElementById("input-hashtag");
+        if (inputHashtag) {
+          inputHashtag.disabled = false;
+          inputHashtag.value = "#";
+          inputHashtag.style.backgroundColor = "#ffffff";
+          inputHashtag.style.color = "#000000";
+        }
+        const inputSticker = document.getElementById("input-sticker-name");
+        if (inputSticker) {
+          inputSticker.disabled = false;
+          inputSticker.value = "";
+          inputSticker.style.backgroundColor = "#ffffff";
+          inputSticker.style.color = "#000000";
+        }
+        const submitBtn2 = document.querySelector("#writing-area-stage2 .writing-submit-btn");
+        if (submitBtn2) {
+          submitBtn2.disabled = false;
+          submitBtn2.style.opacity = "1";
+          submitBtn2.style.cursor = "pointer";
+        }
         
-        document.getElementById("input-happiness").value = "";
-        document.getElementById("input-hashtag").value = "#"; // 기본적으로 '#' 기호 사전 세팅
-        document.getElementById("input-sticker-name").value = "";
+        document.getElementById("act1-guide-bubble").innerText = "비교와 박탈감은 훌훌 털어내고, 이제 나만의 가치가 가득 담긴 행복 피드를 꾸며보자!";
+        document.getElementById("writing-prompt-text-stage2").innerText = "2. 내 일상 속에서 찾을 수 있는 작지만 확실한 나의 행복은 어떤 모양일까?";
       }
       
       // 질문 단계 갱신 시 하단 푸터 바 상태 실시간 동기화
@@ -2099,10 +2124,20 @@
 
       playBeepSound("send");
       
-      // 입력 영역 숨기기
-      document.getElementById("writing-area").style.display = "none";
+      // 입력 영역 숨기지 않고 비활성화
+      const textarea = document.getElementById("writing-textarea-input");
+      if (textarea) {
+        textarea.disabled = true;
+        textarea.style.backgroundColor = "#cbd5e1"; /* 비활성화 느낌 그레이 */
+        textarea.style.color = "#475569";
+      }
+      const submitBtn = document.querySelector("#writing-area .writing-submit-btn");
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = "0.5";
+        submitBtn.style.cursor = "not-allowed";
+      }
       
-      // 첫 번째 생각 기록은 마음그램 화면에 억지로 띄우지 않고 로직을 단순화 (요청사항 반영)
       document.getElementById("act1-guide-bubble").innerHTML = `<span style="color:var(--point-green); font-weight:bold;">맞아! SNS 사진 한 장은 그 사람 삶의 아주 짧은 단편일 뿐, 모든 진실을 보여주는 것은 아니야! 🌟</span>`;
       document.getElementById("btn-act1-next").style.display = "inline-flex";
       updateFrameUI('view-act1');
@@ -2136,14 +2171,36 @@
       post2Img.classList.remove("hidden");
 
       document.getElementById("post2-caption-text").innerHTML = `<b>나</b> ${happiness}<br>${hashtag}`;
-      // 자존감은 비교 불가한 무한한 가치라는 교육용 디스플레이 바로 적용
       document.getElementById("post2-likes-display").innerHTML = `💖 ${stickerName}`;
 
-      // 2. 조작패널 숨기고 즉시 활동 2 이동 버튼 활성화
-      document.getElementById("writing-area-stage2").style.display = "none";
+      // 2. 조작패널 숨기지 않고 비활성화
+      const inputHappiness = document.getElementById("input-happiness");
+      if (inputHappiness) {
+        inputHappiness.disabled = true;
+        inputHappiness.style.backgroundColor = "#cbd5e1";
+        inputHappiness.style.color = "#475569";
+      }
+      const inputHashtag = document.getElementById("input-hashtag");
+      if (inputHashtag) {
+        inputHashtag.disabled = true;
+        inputHashtag.style.backgroundColor = "#cbd5e1";
+        inputHashtag.style.color = "#475569";
+      }
+      const inputSticker = document.getElementById("input-sticker-name");
+      if (inputSticker) {
+        inputSticker.disabled = true;
+        inputSticker.style.backgroundColor = "#cbd5e1";
+        inputSticker.style.color = "#475569";
+      }
+      const submitBtn2 = document.querySelector("#writing-area-stage2 .writing-submit-btn");
+      if (submitBtn2) {
+        submitBtn2.disabled = true;
+        submitBtn2.style.opacity = "0.5";
+        submitBtn2.style.cursor = "not-allowed";
+      }
+      
       document.getElementById("btn-act1-to-act2-wrapper").style.display = "flex";
       
-      // 요정 안내 말풍선 완료형 멘트로 업데이트
       document.getElementById("act1-guide-bubble").innerHTML = `<span style="color:var(--point-green); font-weight:bold;">멋져! 나만의 소중한 행복과 가치로 피드가 가득 찼어. 이제 다음 활동으로 이동해 보자! ➔</span>`;
       updateFrameUI('view-act1');
     }
@@ -2220,10 +2277,10 @@
       // display: none 이었던 댓글 리스트 노출
       commentsList.style.display = "flex";
 
-      // 1) 내가 쓴 댓글 먼저 추가
+      // 1) 내가 쓴 댓글 먼저 추가 (글자 크기 1.15rem 및 아바타 크기 상향)
       commentsList.innerHTML = `
-        <div style="display: flex; align-items: flex-start; gap: 4px; background: #eff6ff; border: 1.5px solid #2563eb; padding: 4px 6px; border-radius: 4px; font-size: 0.76rem; line-height: 1.25; animation: slideDown 0.25s forwards; width: 100%;">
-          <div style="width: 15px; height: 15px; border-radius: 50%; background: #2563eb; color: #fff; font-size: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; margin-top: 1px;">나</div>
+        <div style="display: flex; align-items: flex-start; gap: 6px; background: #eff6ff; border: 1.5px solid #2563eb; padding: 5px 8px; border-radius: 5px; font-size: 1.15rem; line-height: 1.3; animation: slideDown 0.25s forwards; width: 100%;">
+          <div style="width: 24px; height: 24px; border-radius: 50%; background: #2563eb; color: #fff; font-size: 13px; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; margin-top: 1px;">나</div>
           <div style="color: #1e3a8a; word-break: break-all; font-family: 'DungGeunMo', monospace !important;">
             <b style="font-weight: bold; color: #000; margin-right: 4px;">나:</b> ${commentText}
           </div>
@@ -2255,12 +2312,12 @@
         }
       ];
 
-      // 2) 0.4초, 0.8초, 1.2초 간격으로 가상 친구들의 칭찬/응원 댓글들이 태블릿 우측 피드에 쏟아짐!
+      // 2) 0.4초, 0.8초, 1.2초 간격으로 가상 친구들의 칭찬/응원 댓글들이 태블릿 우측 피드에 쏟아짐! (글자 크기 1.15rem 상향)
       classmateComments.forEach((c, index) => {
         setTimeout(() => {
           commentsList.innerHTML += `
-            <div style="display: flex; align-items: flex-start; gap: 6px; background: ${c.bgColor}; border: 1.5px solid ${c.color}; padding: 5px 8px; border-radius: 5px; font-size: 0.8rem; line-height: 1.3; animation: slideDown 0.25s forwards; width: 100%; margin-top: 3px;">
-              <div style="width: 16px; height: 16px; border-radius: 50%; background: ${c.color}; color: #fff; font-size: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; margin-top: 1px;">${c.name[0]}</div>
+            <div style="display: flex; align-items: flex-start; gap: 6px; background: ${c.bgColor}; border: 1.5px solid ${c.color}; padding: 5px 8px; border-radius: 5px; font-size: 1.15rem; line-height: 1.3; animation: slideDown 0.25s forwards; width: 100%; margin-top: 3px;">
+              <div style="width: 24px; height: 24px; border-radius: 50%; background: ${c.color}; color: #fff; font-size: 13px; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; margin-top: 1px;">${c.name[0]}</div>
               <div style="color: ${c.textColor}; word-break: break-all; font-family: 'DungGeunMo', monospace !important;">
                 <b style="font-weight: bold; color: #000; margin-right: 4px;">${c.name}:</b> ${c.text}
               </div>
@@ -2271,22 +2328,29 @@
           if (container) {
             container.scrollTop = container.scrollHeight;
           }
-        }, (index + 1) * 400);
+        }, (index + 1) * 1000); /* 1초씩 여유롭게 순차 노출 */
       });
 
-      // 2.5) 1.6초 시점에 지수 본인이 친구들의 응원에 큰 감동을 받아 본인의 SNS 캡션 본문 바로 하단에 화답 글을 덧붙임!
+      // 2.5) 4.2초 시점에 지수 본인이 친구들의 응원에 감동받아 우측 댓글 창 맨 아래에 화답 댓글 추가! (글씨 1.15rem)
       setTimeout(() => {
-        const snsCaption = document.getElementById("act2-sns-caption");
-        if (snsCaption) {
-          snsCaption.innerHTML += `
-            <div style="margin-top: 8px; padding-top: 6px; border-top: 1.5px dashed #cbd5e1; color: #b91c1c; font-weight: bold; animation: slideDown 0.3s ease-out forwards;">
-              <b>지수:</b> 와... 너희들 응원 댓글 보니까 정말 눈물 나게 고마워. 너희 덕분에 진짜 큰 힘이 난다! 내일 학교에서 밝은 모습으로 만나자! 😭❤️
+        if (commentsList) {
+          commentsList.innerHTML += `
+            <div style="display: flex; align-items: flex-start; gap: 6px; background: #fef2f2; border: 1.5px solid #ef4444; padding: 5px 8px; border-radius: 5px; font-size: 1.15rem; line-height: 1.3; animation: slideDown 0.25s forwards; width: 100%; margin-top: 3px;">
+              <div style="width: 24px; height: 24px; border-radius: 50%; background: #ef4444; color: #fff; font-size: 13px; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; margin-top: 1px;">지</div>
+              <div style="color: #991b1b; word-break: break-all; font-family: 'DungGeunMo', monospace !important;">
+                <b style="font-weight: bold; color: #000; margin-right: 4px;">지수:</b> 와... 너희들 응원 댓글 보니까 정말 눈물 나게 고마워. 너희 덕분에 진짜 큰 힘이 난다! 내일 학교에서 밝은 모습으로 만나자! 😭❤️
+              </div>
             </div>
           `;
+          
+          const container = document.getElementById("act2-comments-list-container");
+          if (container) {
+            container.scrollTop = container.scrollHeight;
+          }
         }
-      }, 1600);
+      }, 4200); /* 3초 하준이 댓글 이후 1.2초 뒤 지수 감사 등장 */
 
-      // 3) 모든 대화 피드백이 종료된 후(2.1초 뒤), 지수 흑백 이미지 필터 해제 및 하단 완료 버튼 활성화!
+      // 3) 모든 대화 피드백이 종료된 후(5.2초 뒤), 지수 흑백 이미지 필터 해제 및 하단 완료 버튼 활성화!
       setTimeout(() => {
         state.isPraiseActive = false;
 
@@ -2299,7 +2363,7 @@
         // 상태 완료로 플래그 설정 및 하단 바 UI 업데이트
         state.stageCompleted[2] = true;
         updateFrameUI('view-act2');
-      }, 2100);
+      }, 5200);
     }
 
     function closeMiracleModalAndStartShower() {

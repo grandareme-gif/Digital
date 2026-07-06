@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -210,7 +210,7 @@
 
     /* 좌측 탭 영역 */
     #scenario-tabs {
-      width: 22%;
+      width: 25%;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -221,14 +221,14 @@
       color: #ffffff !important;
       border: 4px solid #000000 !important;
       border-radius: 0 !important;
-      padding: 10px;
+      padding: 12px 10px;
       cursor: pointer;
-      font-size: 0.75rem !important;
+      font-size: 1.0rem !important;
       box-shadow: 4px 4px 0 #000000;
       transition: all 0.2s;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 5px;
     }
 
     .scenario-tab.active {
@@ -248,18 +248,22 @@
     .scenario-tab.completed::after {
       content: ' [완료]';
       color: #27ae60;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       font-weight: bold;
     }
 
     .tab-title {
       font-weight: bold;
-      font-size: 0.95rem;
+      font-size: 1.25rem;
+    }
+
+    .tab-desc {
+      font-size: 0.85rem !important;
     }
 
     /* 우측 시뮬레이터 */
     #simulator-phone {
-      width: 78%;
+      width: 75%;
       background-color: #ecf0f1;
       border: 6px solid var(--pure-black);
       border-radius: 0;
@@ -288,9 +292,9 @@
       max-width: 85%;
       border: 3px solid var(--pure-black);
       border-radius: 12px;
-      padding: 10px 15px;
-      font-size: 0.95rem;
-      line-height: 1.4;
+      padding: 12px 18px;
+      font-size: 1.5rem;
+      line-height: 1.45;
       word-break: keep-all;
     }
 
@@ -322,12 +326,12 @@
       margin-top: 15px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
     }
 
     .interaction-title {
       font-weight: bold;
-      font-size: 1rem;
+      font-size: 1.5rem;
       color: #555;
     }
 
@@ -343,13 +347,13 @@
       color: #000000 !important; /* 텍스트는 선명하게 검은색 */
       border: 3px solid #000000 !important;
       border-radius: 0 !important;
-      padding: 6px 12px;
+      padding: 10px 16px;
       cursor: pointer;
-      font-size: 0.85rem !important; /* 글씨 크기 축소 */
+      font-size: 1.3rem !important;
       box-shadow: 2px 2px 0 #000000;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
       transition: transform 0.1s;
       font-weight: 800;
     }
@@ -376,9 +380,9 @@
       color: #ffffff !important; /* 글씨는 무조건 흰색 */
       border: 3px solid #000000 !important;
       border-radius: 0 !important;
-      padding: 10px;
+      padding: 15px;
       cursor: pointer;
-      font-size: 0.85rem !important; /* 글씨 크기 축소 */
+      font-size: 1.25rem !important;
       text-align: left;
       box-shadow: 3px 3px 0 #000000;
       transition: transform 0.1s;
@@ -529,12 +533,12 @@
     }
 
     #char-name {
-      font-size: 1.4rem;
+      font-size: 1.55rem !important;
       font-weight: bold;
     }
 
     #char-status {
-      font-size: 1.05rem;
+      font-size: 1.1rem !important;
       color: #555;
       line-height: 1.3;
     }
@@ -545,11 +549,19 @@
       border: var(--pixel-thick) solid var(--pure-black);
       border-radius: 10px;
       padding: 12px 15px;
-      font-size: 1.05rem;
+      font-size: 1.45rem !important;
       line-height: 1.45;
       color: var(--dark-gray);
       box-shadow: 4px 4px 0 var(--pure-black);
       word-break: keep-all;
+    }
+
+    .story-box p {
+      font-size: 1.45rem !important;
+    }
+
+    .story-box strong {
+      font-size: 1.55rem !important;
     }
 
     /* 세로형 하트 온도계 */
@@ -603,7 +615,7 @@
     }
 
     #thermo-text {
-      font-size: 0.85rem;
+      font-size: 1.2rem;
       font-weight: bold;
       text-align: center;
       margin-top: 10px;
@@ -624,13 +636,17 @@
       gap: 8px;
     }
 
+    #chat-input-area label {
+      font-size: 1.4rem !important;
+    }
+
     #chat-textarea {
       width: 100%;
       height: 90px;
       border: var(--pixel-thick) solid var(--pure-black);
       border-radius: 8px;
       padding: 12px;
-      font-size: 1.15rem;
+      font-size: 1.35rem !important;
       resize: none;
       outline: none;
       box-shadow: 4px 4px 0 var(--pure-black);
@@ -641,6 +657,10 @@
 
     #chat-textarea:focus {
       border-color: #3498db;
+    }
+
+    #btn-submit-message {
+      font-size: 1.15rem !important;
     }
 
     /* 하트 파티클 컨테이너 */
@@ -1339,8 +1359,7 @@
          스테이지 1: 마음 온도 감별사 뷰
          ========================================================== -->
     <div id="view-stage1" class="view">
-      <!-- 임시 스킵 단추 (나중에 CSS로 한 번에 숨김 가능) -->
-      <button class="temp-skip-btn" onclick="skipStage()" style="position: absolute; top: 10px; right: 10px; z-index: 100; font-size: 0.75rem; padding: 4px 8px; background: #e67e22; color: #fff; border: 2px solid #000; cursor: pointer; font-family: 'DungGeunMo', monospace;">스킵 ⏭️</button>
+
       
       <!-- 마음온 AI 가이드 배너 (1단계) -->
       <div class="std-guide-banner mb-2">
@@ -1351,7 +1370,7 @@
         <div class="flex-grow flex flex-col justify-center" style="margin-left: 9px;">
           <span class="text-[14.25px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
           <span class="text-[16.5px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;">
-            "화면 너머 친구의 댓글 속 진짜 속마음은 어떨까요? 친구의 기분을 분석하고 그렇게 판단한 이유를 적어주세요!"
+            "화면 너머 친구들의 채팅 속 진짜 속마음은 어떨까요? 친구의 기분을 파악하고 어울리는 답변을 해봅시다."
           </span>
         </div>
       </div>
@@ -1421,60 +1440,63 @@
         <div class="flex-grow flex flex-col justify-center" style="margin-left: 9px;">
           <span class="text-[14.25px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
           <span class="text-[16.5px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;">
-            "온라인 악플로 상처받은 지은이의 마음 온도를 100℃로 올려줄 따뜻한 위로의 대화를 조합해 보세요!"
+            "온라인 악플로 상처받은 지은이의 마음 온도를 100℃로 올려줄 따뜻한 위로의 대화를 해보세요!"
           </span>
         </div>
       </div>
-      <div id="simulator-container">
+      <div id="simulator-container" style="display: flex; width: 100%; height: 100%; gap: 30px; align-items: stretch; justify-content: center;">
         
-        <!-- 좌측: 메인 대화 및 사연, 입력창 영역 -->
-        <div id="stage2-main-content">
-          <!-- 상단 사연 및 캐릭터 표정 레이아웃 -->
-          <div id="stage2-top-layout" style="display: flex; gap: 15px; width: 100%; align-items: stretch;">
-            <!-- 지은이의 속상한 이야기 스토리 박스 -->
-            <div class="story-box" style="flex: 1; margin: 0; display: flex; flex-direction: column; justify-content: center; gap: 6px;">
-              <strong>📢 지은이의 속상한 이야기:</strong>
-              <p style="font-size: 1rem; line-height: 1.45; word-break: keep-all; margin: 0;">어제 학급 과제 게시판에 열심히 연습한 리코더 연주 영상을 자랑스럽게 올렸는데, 어떤 친구가 <span style="font-family: 'DungGeunMo', monospace; color: #ef4444; font-weight: bold;">"진짜 못분다, 시끄럽기만 하네ㅋㅋ 안 들은 귀 삽니다~"</span> 라는 악플을 달아서 큰 충격을 받고 속상해하고 있어요. 😭</p>
+        <!-- 좌측: 대화창과 입력창이 묶인 영역 (가로 너비가 똑같고 세로로 긺, 가로 크기 750px 제한) -->
+        <div id="stage2-chat-column" style="width: 750px; max-width: 100%; display: flex; flex-direction: column; gap: 12px; height: 100%;">
+          <!-- 채팅창 머릿칸 (헤더) -->
+          <div id="stage2-chat-header" style="background-color: #e0f7fa; border: var(--pixel-thick) solid var(--pure-black); border-radius: 12px 12px 0 0; padding: 8px 15px; display: flex; align-items: center; gap: 10px; border-bottom: none; box-shadow: 4px 4px 0 var(--pure-black); flex-shrink: 0; z-index: 2;">
+            <!-- 프로필 사진 원형 -->
+            <div style="width: 38px; height: 38px; border-radius: 50%; background-color: var(--soft-yellow); border: 2px solid var(--pure-black); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; overflow: hidden; flex-shrink: 0;">
+              😭
             </div>
-
-            <!-- 캐릭터 카드 (이야기창 오른쪽 배치) -->
-            <div id="char-card" style="width: 170px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px; gap: 8px; margin: 0;">
-              <div id="char-pixel" style="width: 65px; height: 65px; font-size: 2.8rem; box-shadow: inset -3px -3px 0 rgba(0,0,0,0.1); margin: 0;">😭</div>
-              <div id="char-info" style="align-items: center; gap: 3px;">
-                <div id="char-name" style="font-size: 1.15rem; font-weight: bold;">친구 '지은이'</div>
-                <div id="char-status" style="font-size: 0.75rem; color: #555; word-break: keep-all; line-height: 1.25; max-width: 150px;">온라인 악플 때문에 깊은 상처를 받았어요...</div>
-              </div>
+            <!-- 이름 -->
+            <div style="font-size: 1.3rem !important; font-weight: bold; font-family: 'DungGeunMo', monospace; color: #000000 !important;">지은</div>
+            <!-- 온라인 상태 표시 녹색 원 -->
+            <div style="display: flex; align-items: center; gap: 5px; margin-left: auto;">
+              <span style="font-size: 0.95rem; color: #666; font-weight: bold;">온라인</span>
+              <div style="width: 10px; height: 10px; border-radius: 50%; background-color: #2ecc71; border: 1.5px solid #000;"></div>
             </div>
           </div>
 
-          <!-- 입력박스 -->
-          <div id="chat-input-area" style="margin-top: 5px;">
-            <label style="font-size: 1.15rem; font-weight: bold; margin-bottom: 5px; color: #fde047;">속상해하는 지은이에게 위로와 격려의 말을 건네보세요!</label>
-            <textarea id="chat-textarea" placeholder="여기에 따뜻한 말을 적어보세요. (예: 괜찮아, 내가 도와줄게, 힘내!)" oninput="onTyping()"></textarea>
-            <button class="retro-btn disabled" id="btn-submit-message" onclick="submitMessage()" style="align-self: flex-end; margin-top: 5px; min-width: 180px; background-color: #eab308 !important; color: #000000 !important; font-weight: 900 !important; font-size: 0.85rem !important; border-radius: 0 !important; border: 3px solid #000000 !important;">마음 전달하기 💌</button>
+          <!-- 지은이와 나누는 실시간 대화창 (가이드 배너 바로 밑까지 닿기 위해 flex-grow 적용, 헤더와 밀착을 위해 margin-top 적용) -->
+          <div id="stage2-chat-window" style="flex-grow: 1; margin: -12px 0 0 0; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; background-color: #f8fafc; border: var(--pixel-thick) solid var(--pure-black); border-radius: 0 0 12px 12px; padding: 15px; box-shadow: 4px 4px 0 var(--pure-black); z-index: 1;">
+            <!-- 대화 말풍선이 동적으로 생성됨 -->
+          </div>
+
+          <!-- 입력박스 (대화창과 가로가 완벽히 같도록 100% 설정) -->
+          <div id="chat-input-area" style="display: flex; flex-direction: column; gap: 8px; width: 100%; flex-shrink: 0; margin-top: 5px;">
+            <label id="chat-input-label" style="font-size: 1.5rem !important; font-weight: bold; color: #fde047; margin-bottom: 2px;">지은에게 답장해 보세요.</label>
+            <textarea id="chat-textarea" placeholder="여기에 따뜻한 말을 적어보세요. (예: 괜찮아, 내가 도와줄게, 힘내!)" oninput="onTyping()" style="height: 100px;"></textarea>
+            <button class="retro-btn disabled" id="btn-submit-message" onclick="submitMessage()" style="align-self: flex-end; margin-top: 5px; min-width: 180px; background-color: #eab308 !important; color: #000000 !important; font-weight: 900 !important; font-size: 1.15rem !important; border-radius: 0 !important; border: 3px solid #000000 !important; box-shadow: 3px 3px 0 #000;">대답 보내기 💬</button>
           </div>
         </div>
 
-        <!-- 우측: 세로형 하트 온도계 영역 -->
-        <div id="thermometer-wrapper">
-          <div class="heart-thermometer">
-            <!-- 온도계 기둥 -->
-            <div id="thermo-stem">
-              <div id="thermo-fill" style="height: 30%; background-color: #3498db;"></div>
+        <!-- 우측: 하트 온도계 영역만 배치 -->
+        <div id="stage2-sidebar" style="width: 160px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+          <!-- 세로형 하트 온도계 영역 -->
+          <div id="thermometer-wrapper" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+            <div class="heart-thermometer" style="height: 440px; width: 80px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;">
+              <!-- 온도계 기둥 -->
+              <div id="thermo-stem" style="height: 320px; width: 24px; margin-bottom: -4px;">
+                <div id="thermo-fill" style="height: 30%; background-color: #3498db;"></div>
+              </div>
+              
+              <!-- 온도계 하단 하트 구부 (Bulb) -->
+              <div id="thermo-bulb-heart" style="width: 64px; height: 64px; margin-top: -8px; z-index: 2;">
+                <svg viewBox="0 0 32 32" style="width: 100%; height: 100%; filter: drop-shadow(2px 2px 0px #000);">
+                  <path d="M16,28.5 L4.5,17 C1.5,14 1.5,9.5 4.5,6.5 C7.5,3.5 12,3.5 15,6.5 L16,7.5 L17,6.5 C20,3.5 24.5,3.5 27.5,6.5 C30.5,9.5 30.5,14 27.5,17 Z" fill="#fff" stroke="#000" stroke-width="2.5" stroke-linejoin="round" />
+                  <path id="svg-heart-fill" d="M16,26.5 L6,16.5 C3.7,14.2 3.7,10.8 6,8.5 C8.3,6.2 11.7,6.2 14,8.5 L16,10.5 L18,8.5 C20.3,6.2 23.7,6.2 26,8.5 C28.3,10.8 28.3,14.2 26,16.5 Z" fill="#3498db" style="transition: fill 0.5s ease;" />
+                </svg>
+              </div>
+              
+              <!-- 온도 텍스트 표시 말풍선 -->
+              <div id="thermo-text" style="font-size: 1.2rem; margin-top: 5px; width: 140px; box-sizing: border-box;">지은이의<br>마음 온도<br>30°C</div>
             </div>
-            
-            <!-- 온도계 하단 하트 구부 (Bulb) -->
-            <div id="thermo-bulb-heart">
-              <svg viewBox="0 0 32 32" style="width: 100%; height: 100%; filter: drop-shadow(2px 2px 0px #000);">
-                <!-- 외곽 테두리 및 배경 (하트 형태) -->
-                <path d="M16,28.5 L4.5,17 C1.5,14 1.5,9.5 4.5,6.5 C7.5,3.5 12,3.5 15,6.5 L16,7.5 L17,6.5 C20,3.5 24.5,3.5 27.5,6.5 C30.5,9.5 30.5,14 27.5,17 Z" fill="#fff" stroke="#000" stroke-width="2.5" stroke-linejoin="round" />
-                <!-- 내부 색상 채우기 (온도계 액체) -->
-                <path id="svg-heart-fill" d="M16,26.5 L6,16.5 C3.7,14.2 3.7,10.8 6,8.5 C8.3,6.2 11.7,6.2 14,8.5 L16,10.5 L18,8.5 C20.3,6.2 23.7,6.2 26,8.5 C28.3,10.8 28.3,14.2 26,16.5 Z" fill="#3498db" style="transition: fill 0.5s ease;" />
-              </svg>
-            </div>
-            
-            <!-- 온도 텍스트 표시 말풍선 -->
-            <div id="thermo-text">마음<br>온도<br>30°C</div>
           </div>
         </div>
 
@@ -1570,7 +1592,8 @@
       
       // 스테이지 2 상태
       stage2: {
-        completed: false
+        completed: false,
+        step: 1
       }
     };
 
@@ -1736,6 +1759,10 @@
         controlBar.classList.remove('hidden');
       }
 
+      if (state.currentStage === 2) {
+        initStage2Chat();
+      }
+
       // 이전 버튼
       if (state.currentStage <= 1) {
         prevBtn.classList.add('disabled');
@@ -1761,6 +1788,7 @@
     function startTraining() {
       state.currentStage = 1;
       updateStageUI();
+      selectScenario('A');
     }
 
     function nextStage() {
@@ -2041,9 +2069,11 @@
               // 스테이지 2 포탈 연출
               const portalBubble = document.createElement('div');
               portalBubble.className = "chat-bubble reaction";
-              portalBubble.style.backgroundColor = "var(--pastel-pink)";
+              portalBubble.style.backgroundColor = "#ffffff";
+              portalBubble.style.color = "#000000";
+              portalBubble.style.borderColor = "#000000";
               portalBubble.style.alignSelf = "center";
-              portalBubble.innerHTML = "🎉 마음 온도 100도 달성!<br>하단의 <strong>[다음 단계 ▶]</strong>를 눌러 2단계로 이동하세요!";
+              portalBubble.innerHTML = "🎉 활동1 완료!<br>하단의 <strong>[다음 단계 ▶]</strong>를 눌러 2단계로 이동하세요!";
               screen.appendChild(portalBubble);
               screen.scrollTop = screen.scrollHeight;
               playRetroChime();
@@ -2070,7 +2100,7 @@
           screen.scrollTop = screen.scrollHeight;
           playMessagePopSound();
 
-          // [변경 사항]: 친구가 상처받은 말풍선 반응을 먼저 충분히 읽을 수 있도록 2.5초 지연 후 쿨다운 팝업 표시
+          // 2.5초 지연 후 쿨다운 팝업 표시
           setTimeout(() => {
             // 폰 강하게 흔들기
             phone.classList.remove('shake');
@@ -2096,7 +2126,7 @@
                 renderScenario();
               }
             }, 1000);
-          }, 2500); // 2.5초 후에 상처발생 팝업 뜸
+          }, 2500); 
 
         }, 600);
       }
@@ -2105,128 +2135,142 @@
     // ==========================================================
     // [스테이지 2: AI 대화 시뮬레이터 로직]
     // ==========================================================
-    // ==========================================================
-    // [스테이지 2: AI 대화 시뮬레이터 로직 - 한국어 NLP 분석 엔진]
-    // ==========================================================
-    const comfortStems = [
-      // 1. 공감/감탄사 (매우 쉬운 공감을 위해 추가)
-      '정말', '진짜', '너무', '많이', '엄청', '진심', '정말로', '진짜로', '매우', '헐', '어떡해', '어떡하니', '속상했', '슬펐', '힘들었', '아팠', '속상하', '슬퍼하', '아파하',
-      '정말?', '진짜?', '많이?', '그랬구나', '그랬겠네', '그랬을', '맞아', '그치', '나도', '내 편', '네 편', '네편', '내편', '내맘', '내 마음',
-      // 2. 위로 / 진정
-      '괜찮', '괜차', '걱정', '지나갈', '잊어', '털어', '시간이', '토닥', '쓰담', '쓰담쓰담', '토닥토닥',
-      // 3. 격려 / 응원
-      '힘내', '기운', '화이팅', '파이팅', '응원', '최고', '대단', '훌륭', '천재', '기죽', '잘할', '잘될', '파이팅하자', '힘내자',
-      // 4. 지은이 칭찬 및 연주 인정
-      '멋지', '멋져', '예쁘', '예뻐', '잘 불', '잘불', '잘했', '잘한', '리코더', '연주', '소리 좋', '소리좋', '듣기 좋', '듣기좋', '실력', '재능', '최고야', '짱이야',
-      // 5. 감정적 지지
-      '고마', '고맙', '사랑', '소중', '든든', '귀엽', '이쁘', '이해', '공감',
-      // 6. 가해 행동 비판 및 대응 지지
-      '무시', '차가운 말', '나쁜 말', '나쁜말', '상처', '단톡방', '댓글', '악플', '괴롭', '신경 쓰지', '신경쓰지', '상처받지', '상처 받지', '기죽지'
-    ];
-
-    const comfortRegexes = [
-      /(슬퍼|속상|아파|힘들)\s*(하지\s*마|지\s*마|마라|마렴|마요|마|겠구나|겠네|었지)/,
-      /(할\s*수\s*있|잘\s*할\s*수|잘\s*될\s*거|기죽지\s*마|기\s*죽지|힘\s*내)/,
-      /(신경)\s*(쓰지\s*마|끄|지\s*마|지마|쓰지마)/,
-      /귀담아\s*듣지/,
-      /(도와\s*줄|함께\s*할|곁에\s*있|같이\s*할|곁에있|편이\s*되어)/,
-      /(그럴\s*수\s*있|누구나\s*그렇|다들\s*그래|토닥\s*토닥|토닥토닥)/,
-      /(진짜|정말)\s*(잘\s*불|멋|최고|최고였)/
-    ];
-
-function analyzeComfortScore(text) {
+    function analyzeComfortScore(text) {
       if (!text || text.trim() === '') return 0;
       
       const len = text.trim().length;
       if (len >= 10) {
-        return 2; // 10글자 이상이면 100도
+        return 2;
       } else if (len >= 5) {
-        return 1; // 5글자 이상이면 60도
+        return 1;
       }
-      return 0; // 5글자 미만은 30도
+      return 0;
+    }
+
+    function initStage2Chat() {
+      if (state.stage2.completed) return;
+      
+      const chatWin = document.getElementById('stage2-chat-window');
+      if (chatWin && chatWin.children.length === 0) {
+        // 지은이의 첫 말풍선 추가
+        const bubble = document.createElement('div');
+        bubble.className = "chat-bubble received";
+        bubble.innerText = `😭 지은: "나 오늘 속상한 일이 있었어..."`;
+        chatWin.appendChild(bubble);
+        chatWin.scrollTop = chatWin.scrollHeight;
+      }
+      
+      const textarea = document.getElementById('chat-textarea');
+      if (textarea && textarea.value === '' && state.stage2.step === 1) {
+        textarea.disabled = false;
+        textarea.placeholder = "지은에게 답장해 보세요. (예: 무슨 일 있어? / 뭔데?)";
+      }
+      
+      // 전송 버튼 초기 상태
+      const submitBtn = document.getElementById('btn-submit-message');
+      if (submitBtn && state.stage2.step === 1) {
+         submitBtn.classList.add('disabled');
+         submitBtn.classList.remove('blink-btn');
+         submitBtn.innerText = "대답 보내기 💬";
+      }
+
+      // 채팅창 헤더 프로필 이모지 리셋
+      const headerProfile = document.querySelector('#stage2-chat-header div');
+      if (headerProfile) {
+        headerProfile.innerText = "😭";
+      }
+
+      // 입력창 라벨 텍스트 초기화
+      const inputLabel = document.getElementById('chat-input-label');
+      if (inputLabel) {
+        inputLabel.innerText = "지은에게 답장해 보세요.";
+      }
+      
+      // 온도계 텍스트 초기화
+      const fill = document.getElementById('thermo-fill');
+      const heartFill = document.getElementById('svg-heart-fill');
+      const text = document.getElementById('thermo-text');
+      
+      if (fill) {
+        fill.style.height = "30%";
+        fill.style.backgroundColor = "#3498db";
+      }
+      if (heartFill) {
+        heartFill.style.fill = "#3498db";
+        heartFill.setAttribute('fill', "#3498db");
+      }
+      if (text) text.innerHTML = "지은이의<br>마음 온도<br>30°C";
     }
 
     function onTyping() {
       if (state.stage2.completed) return;
 
       const val = document.getElementById('chat-textarea').value.trim();
+      const submitBtn = document.getElementById('btn-submit-message');
       
-      const charPixel = document.getElementById('char-pixel');
-      const charCard = document.getElementById('char-card');
-      const charStatus = document.getElementById('char-status');
+      if (state.stage2.step === 1) {
+        // Step 1: 무슨 일인지 묻는 가벼운 리액션 대기
+        if (val !== '') {
+          submitBtn.classList.remove('disabled');
+          submitBtn.classList.add('blink-btn');
+        } else {
+          submitBtn.classList.add('disabled');
+          submitBtn.classList.remove('blink-btn');
+        }
+        return;
+      }
       
+      // Step 2: 진지한 위로 메시지 대기
       const fill = document.getElementById('thermo-fill');
       const heartFill = document.getElementById('svg-heart-fill');
       const text = document.getElementById('thermo-text');
-      const submitBtn = document.getElementById('btn-submit-message');
 
       const score = analyzeComfortScore(val);
 
       if (val === '') {
-        // 초기 상태 (30도)
-        charPixel.innerText = "😭";
-        charStatus.innerText = "온라인 악플 때문에 깊은 상처를 받았어요...";
-        charCard.style.backgroundColor = "#fff";
-        
         fill.style.height = "30%";
         fill.style.backgroundColor = "#3498db";
         if (heartFill) {
           heartFill.style.fill = "#3498db";
           heartFill.setAttribute('fill', "#3498db");
         }
-        text.innerHTML = "마음<br>온도<br>30°C";
+        text.innerHTML = "지은이의<br>마음 온도<br>30°C";
         submitBtn.classList.add('disabled');
         submitBtn.classList.remove('blink-btn');
         return;
       }
 
       if (score === 0) {
-        // 5글자 미만 (30도)
-        charPixel.innerText = "😭";
-        charStatus.innerText = "지은이에게 따뜻한 위로의 말을 건네보세요. (5자 이상)";
-        charCard.style.backgroundColor = "#f5f6fa";
-        
         fill.style.height = "30%";
         fill.style.backgroundColor = "#3498db";
         if (heartFill) {
           heartFill.style.fill = "#3498db";
           heartFill.setAttribute('fill', "#3498db");
         }
-        text.innerHTML = "마음 온도<br>30°C";
+        text.innerHTML = "지은이의<br>마음 온도<br>30°C";
         submitBtn.classList.add('disabled');
         submitBtn.classList.remove('blink-btn');
       } else if (score === 1) {
-        // 5글자 이상 9글자 이하 (60도)
-        charPixel.innerText = "😐";
-        charStatus.innerText = "좋은 생각이에요! 조금만 더 자세히 위로의 말을 적어볼까요? (10자 이상)";
-        charCard.style.backgroundColor = "var(--soft-yellow)";
-        
         fill.style.height = "60%";
-        fill.style.backgroundColor = "#2ecc71"; // Green
+        fill.style.backgroundColor = "#2ecc71";
         if (heartFill) {
           heartFill.style.fill = "#2ecc71";
           heartFill.setAttribute('fill', "#2ecc71");
         }
-        text.innerHTML = "마음<br>온도<br>60°C";
+        text.innerHTML = "지은이의<br>마음 온도<br>60°C";
         submitBtn.classList.add('disabled');
         submitBtn.classList.remove('blink-btn');
       } else {
-        // 10글자 이상 (100도) - 조건 충족!
-        charPixel.innerText = "🥰";
-        charStatus.innerText = "지은이가 환한 미소를 지으며 깊은 감동을 받았어요! 이제 마음을 전해줘! 💖";
-        charCard.style.backgroundColor = "var(--neon-mint)";
-        
         fill.style.height = "100%";
-        fill.style.backgroundColor = "#e74c3c"; // Red
+        fill.style.backgroundColor = "#e74c3c";
         if (heartFill) {
           heartFill.style.fill = "#e74c3c";
           heartFill.setAttribute('fill', "#e74c3c");
         }
-        text.innerHTML = "마음<br>온도<br>100°C<br>(준비 완료!)";
+        text.innerHTML = "지은이의<br>마음 온도<br>100°C<br>(준비 완료!)";
         submitBtn.classList.remove('disabled');
         submitBtn.classList.add('blink-btn');
 
-        // 하트 파티클 소환
         if (Math.random() < 0.3) {
           spawnHeartParticle();
         }
@@ -2249,37 +2293,114 @@ function analyzeComfortScore(text) {
     }
 
     function submitMessage() {
-      const val = document.getElementById('chat-textarea').value.trim();
-      const score = analyzeComfortScore(val);
+      if (state.stage2.completed) return;
 
-      if (score >= 2) {
-        state.stage2.completed = true;
-        state.stageCompleted[2] = true;
-        document.getElementById('btn-submit-message').classList.remove('blink-btn');
-        document.getElementById('btn-submit-message').classList.add('disabled');
-        document.getElementById('chat-textarea').disabled = true;
+      const textarea = document.getElementById('chat-textarea');
+      const submitBtn = document.getElementById('btn-submit-message');
+      const chatWin = document.getElementById('stage2-chat-window');
+      const val = textarea.value.trim();
+      
+      if (val === '') return;
 
-        const fill = document.getElementById('thermo-fill');
-        const heartFill = document.getElementById('svg-heart-fill');
-        const text = document.getElementById('thermo-text');
-        const charPixel = document.getElementById('char-pixel');
-
-        charPixel.innerText = "💖";
-        fill.style.height = "100%";
-        fill.style.backgroundColor = "#e74c3c"; // Red
-        if (heartFill) {
-          heartFill.style.fill = "#e74c3c";
-          heartFill.setAttribute('fill', "#e74c3c");
-        }
-        text.innerHTML = "마음<br>온도<br>100°C<br>(완벽 소통!)";
-
-        // 성대한 하트 파티클 폭포
-        const interval = setInterval(spawnHeartParticle, 80);
-        setTimeout(() => clearInterval(interval), 1500);
-
+      if (state.stage2.step === 1) {
+        // Step 1: 무슨 일인지 물어봄
+        playBeepSound();
+        
+        // 내 말풍선 추가
+        const myBubble = document.createElement('div');
+        myBubble.className = "chat-bubble sent";
+        myBubble.innerText = `👤 나: "${val}"`;
+        chatWin.appendChild(myBubble);
+        chatWin.scrollTop = chatWin.scrollHeight;
+        
+        textarea.value = '';
+        textarea.disabled = true;
+        submitBtn.classList.add('disabled');
+        submitBtn.classList.remove('blink-btn');
+        
+        // 지은이의 대답 (악플 사건 설명)
         setTimeout(() => {
-          alert("💌 지은이에게 따뜻한 진심과 위로가 전해졌습니다! 마음 온도가 100°C가 되었습니다.");
-          updateStageUI(); // 다음 단계 활성화 반영
+          playMessagePopSound();
+          const jBubble = document.createElement('div');
+          jBubble.className = "chat-bubble received";
+          jBubble.innerHTML = `😭 지은: "어제 학급 과제 게시판에 열심히 연습한 리코더 연주 영상을 올렸는데, 어떤 친구가 <span style="color: #ef4444; font-weight: bold;">'진짜 못분다, 시끄럽기만 하네ㅋㅋ 안 들은 귀 삽니다~'</span> 라는 악플을 달아서 속상해..."`;
+          chatWin.appendChild(jBubble);
+          chatWin.scrollTop = chatWin.scrollHeight;
+          
+          textarea.disabled = false;
+          textarea.placeholder = "속상한 지은에게 위로의 말을 건네보세요.";
+          submitBtn.innerText = "위로 전하기 💌";
+          
+          // 라벨 텍스트 변경
+          const inputLabel = document.getElementById('chat-input-label');
+          if (inputLabel) {
+            inputLabel.innerText = "속상해하는 지은에게 위로와 격려의 말을 건네보세요!";
+          }
+          
+          state.stage2.step = 2;
+          onTyping();
+        }, 1200);
+        
+        return;
+      }
+      
+      // Step 2: 위로 메시지 전송 (기존 완료 처리 로직을 태움)
+      const score = analyzeComfortScore(val);
+      if (score >= 2) {
+        playBeepSound();
+        
+        // 내 위로 말풍선 추가
+        const myBubble = document.createElement('div');
+        myBubble.className = "chat-bubble sent";
+        myBubble.innerText = `👤 나: "${val}"`;
+        chatWin.appendChild(myBubble);
+        chatWin.scrollTop = chatWin.scrollHeight;
+        
+        textarea.value = '';
+        textarea.disabled = true;
+        submitBtn.classList.add('disabled');
+        submitBtn.classList.remove('blink-btn');
+        
+        // 지은이의 마지막 감동 반응
+        setTimeout(() => {
+          playMessagePopSound();
+          const jBubble = document.createElement('div');
+          jBubble.className = "chat-bubble received";
+          jBubble.innerText = `🥰 지은: "고마워... 네 따뜻한 한마디를 들으니 속상했던 마음이 눈 녹듯 사라지고 힘이 나! 💖"`;
+          chatWin.appendChild(jBubble);
+          chatWin.scrollTop = chatWin.scrollHeight;
+          
+          // 헤더의 프로필 이모지를 🥰로 변경
+          const headerProfile = document.querySelector('#stage2-chat-header div');
+          if (headerProfile) {
+            headerProfile.innerText = "🥰";
+          }
+          
+          state.stage2.completed = true;
+          state.stageCompleted[2] = true;
+          
+          const fill = document.getElementById('thermo-fill');
+          const heartFill = document.getElementById('svg-heart-fill');
+          const text = document.getElementById('thermo-text');
+
+          if (fill) {
+            fill.style.height = "100%";
+            fill.style.backgroundColor = "#e74c3c";
+          }
+          if (heartFill) {
+            heartFill.style.fill = "#e74c3c";
+            heartFill.setAttribute('fill', "#e74c3c");
+          }
+          if (text) text.innerHTML = "지은이의<br>마음 온도<br>100°C<br>(완벽 소통!)";
+
+          // 성대한 하트 파티클 폭포
+          const interval = setInterval(spawnHeartParticle, 80);
+          setTimeout(() => clearInterval(interval), 1500);
+
+          setTimeout(() => {
+            alert("💌 지은에게 따뜻한 진심과 위로가 전해졌습니다! 마음 온도가 100°C가 되었습니다.");
+            updateStageUI();
+          }, 1200);
         }, 1200);
       }
     }
@@ -2538,7 +2659,6 @@ function analyzeComfortScore(text) {
 
     // 초기 실행
     updateStageUI();
-    selectScenario('A');
   </script>
 </body>
 </html>
