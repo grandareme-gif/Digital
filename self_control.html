@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -510,33 +510,30 @@
             </span>
           </div>
         </div>
-        
-        <div class="flex-grow flex flex-col justify-start items-center overflow-hidden max-w-[550px] mx-auto w-full h-full pb-2 gap-1.5">
 
-          <!-- 컷 배치 컨테이너 (카드 크기 확대 h-[320px] max-w-[410px], 사진 h-[210px], 상단 밀착 mt-1 mb-2) -->
-          <div id="story-card" class="w-full max-w-[410px] h-[320px] bg-white border-4 border-black rounded-none p-3 shadow-[4px_4px_0_#000] text-black text-center flex flex-col justify-between items-center relative animate-fade-in-up mt-1 mb-2">
-            <!-- 이미지 영역 (세로폭 210px로 추가 확대) -->
-            <div class="w-full h-[210px] border-2 border-dashed border-slate-700 bg-black flex items-center justify-center overflow-hidden shrink-0 select-none relative">
+        <div class="flex-grow flex flex-col justify-center items-center overflow-hidden max-w-[825px] mx-auto w-full h-full pb-3 gap-2">
+
+          <!-- 컷 배치 컨테이너 (1.5배 확대) -->
+          <div id="story-card" class="w-full max-w-[615px] h-[480px] bg-white border-4 border-black rounded-none p-4 shadow-[6px_6px_0_#000] text-black text-center flex flex-col justify-between items-center relative animate-fade-in-up mt-1 mb-2">
+            <!-- 이미지 영역 (세로폭 315px로 확대) -->
+            <div class="w-full h-[315px] border-3 border-dashed border-slate-700 bg-black flex items-center justify-center overflow-hidden shrink-0 select-none relative">
               <img id="story-card-image" src="" alt="그림 공간" class="w-full h-full object-contain hidden">
-              <div id="story-card-image-fallback" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center p-1 leading-normal">그림 로드 중...</div>
+              <div id="story-card-image-fallback" class="text-xs font-bold text-slate-400 uppercase tracking-wider text-center p-2 leading-normal">그림 로드 중...</div>
             </div>
             
-            <!-- 설명 자막 (글씨 크기 text-sm font-extrabold로 확대) -->
-            <p id="story-card-text" class="text-sm font-extrabold leading-relaxed whitespace-pre-wrap max-w-[96%] w-full text-center mt-1 flex-grow flex items-center justify-center text-black">이야기 내용 로딩 중...</p>
+            <!-- 설명 자막 (글씨 크기 text-lg ~ text-xl font-black로 확대) -->
+            <p id="story-card-text" class="text-lg font-black leading-relaxed whitespace-pre-wrap max-w-[96%] w-full text-center mt-2 flex-grow flex items-center justify-center text-black" style="font-family: 'DungGeunMo', monospace !important;">이야기 내용 로딩 중...</p>
           </div>
 
-          <!-- 스토리 제어 버튼 바 (카드 밑에 밀착 배치) -->
-          <div class="flex items-center gap-4 shrink-0 mb-4 select-none">
-            <button id="btn-story-prev" onclick="prevStoryCut()" class="px-5 py-2 bg-slate-700 hover:bg-slate-650 text-white font-bold border-2 border-black rounded-none shadow-[2px_2px_0px_#000] active:translate-y-0.5 active:shadow-none text-xs transition-all">◀ 이전 컷</button>
-            <span id="story-cut-indicator" class="text-xs font-bold text-slate-300">1 / 3</span>
-            <button id="btn-story-next" onclick="nextStoryCut()" class="px-6 py-2 bg-yellow-300 hover:bg-yellow-400 text-black font-bold border-4 border-black rounded-none retro-shadow retro-shadow-active text-xs transition-all">다음 컷 ▶</button>
+          <!-- 스토리 제어 버튼 바 (1.5배 확대 및 큼직한 폰트 적용) -->
+          <div class="flex items-center gap-6 shrink-0 mb-4 select-none">
+            <button id="btn-story-prev" onclick="prevStoryCut()" class="bg-slate-700 hover:bg-slate-650 text-white font-bold border-3 border-black rounded-none shadow-[3px_3px_0px_#000] active:translate-y-0.5 active:shadow-none transition-all" style="padding: 8px 24px; font-size: 1.15rem; font-family: 'DungGeunMo', monospace;">◀ 이전 컷</button>
+            <span id="story-cut-indicator" class="text-base font-bold text-slate-300" style="font-family: 'DungGeunMo', monospace;">1 / 3</span>
+            <button id="btn-story-next" onclick="nextStoryCut()" class="bg-yellow-300 hover:bg-yellow-400 text-black font-bold border-4 border-black rounded-none retro-shadow retro-shadow-active transition-all" style="padding: 8px 28px; font-size: 1.15rem; font-family: 'DungGeunMo', monospace;">다음 컷 ▶</button>
           </div>
         </div>
       </div>
 
-      <!-- ==========================================
-           Step 3: 활동1 - 시나리오 공통 레이아웃 (방해물 체크)
-           ========================================== -->
       <div id="view-scenario" class="absolute inset-0 hidden flex-col p-4 bg-[#1a1c23] text-white">
         <!-- 마음온 AI 공통 가이드 배너 (1단계) -->
         <div class="std-guide-banner" style="margin-bottom: 8px !important;">
@@ -546,7 +543,7 @@
           <div class="flex-grow flex flex-col justify-center" style="margin-left: 9px;">
             <span class="text-[10.5px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
             <span class="text-[12px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;" id="act1-guide-bubble">
-              행동을 분석하여 알맞은 진짜 원인을 딱 3개 골라보세요!
+              행동을 분석하여 알맞은 진짜 원인을 3개만 골라보세요!
             </span>
           </div>
         </div>
@@ -559,45 +556,52 @@
           </div>
         </div>
 
-        <!-- 메인 컨텐츠 영역 (가로폭 조정: 좌측 32%, 우측 66%) -->
-        <div class="grid grid-cols-[32%_66%] gap-4 flex-grow overflow-hidden" style="height: calc(100% - 80px) !important;">
-          <!-- 좌측 영역: 스토리 요약 카드 -->
-          <div class="bg-[#2c3e50] border-4 border-black rounded-none p-4 flex flex-col justify-between items-center shadow-[4px_4px_0px_#000] text-center select-none text-white h-fit max-h-[320px] justify-start gap-2.5">
+        <!-- 메인 컨텐츠 영역 (1:1 대칭, 가로여백 px-12, 세로 수직 정중앙 정렬 my-auto 및 가로/세로 여백 최적화) -->
+        <div class="grid grid-cols-2 gap-10 px-12 my-auto overflow-hidden w-full" style="max-height: 450px;">
+          <!-- 좌측 영역: 스토리 요약 카드 (세로 핏 정돈 max-h 440px) -->
+          <div class="bg-[#2c3e50] border-4 border-black rounded-none p-5 flex flex-col justify-between items-center shadow-[6px_6px_0px_#000] text-center select-none text-white h-fit max-h-[440px] justify-start gap-4" style="font-family: 'DungGeunMo', monospace;">
             <div class="w-full flex flex-col items-center">
-              <!-- 중복 타이틀 제거 및 요약 내용 카드 밀착 -->
               
-              <!-- 시나리오 요약 박스 -->
-              <div class="bg-[#1e293b] border-2 border-black rounded-none p-3 w-full mb-3 text-left">
-                <span class="block text-xs font-black text-[#ff79c6] mb-1">시나리오 내용 요약</span>
-                <p id="sc-summary-text" class="text-xs font-bold text-slate-300 leading-relaxed">
+              <!-- 시나리오 요약 박스 (글씨 크기 text-[1.25rem]로 상향, 배경색 흰색) -->
+              <div class="bg-white border-3 border-black rounded-none p-4 w-full mb-3 text-left shadow-[3px_3px_0px_#000]">
+                <span class="block text-[1.25rem] font-black text-red-700 mb-2">📝 시나리오 내용 요약</span>
+                <p id="sc-summary-text" class="text-[1.1rem] font-bold text-black leading-relaxed" style="font-family: 'DungGeunMo', monospace !important;">
                   요약 내용이 들어갑니다.
                 </p>
               </div>
             </div>
 
-            <!-- 결과 박스 (실패) -->
-            <div id="sc-result-box" class="bg-[#7f1d1d] border-2 border-red-800 p-3 rounded-none text-red-200 font-bold text-xs leading-relaxed w-full">
-              <span class="block text-xs mb-1">결과</span>
-              <span id="sc-result-text">결과 요약</span>
+            <!-- 결과 박스 (실패 - 좌측 텍스트, 우측 이미지 가로 배치로 여백 최소화) -->
+            <div id="sc-result-box" class="bg-[#7f1d1d] border-3 border-red-800 p-3 rounded-none text-red-100 font-bold leading-relaxed w-full flex flex-row items-center justify-between gap-3 h-[140px]" style="font-family: 'DungGeunMo', monospace;">
+              <!-- 좌측: 결과 글자 영역 -->
+              <div class="flex flex-col justify-center items-start flex-grow h-full text-left">
+                <span class="block text-[1.05rem] font-black text-red-300 mb-1">결과</span>
+                <span id="sc-result-text" class="text-[1.15rem] font-black text-red-100 leading-snug">결과 요약</span>
+              </div>
+              
+              <!-- 우측: 결과 이미지 영역 (검은 여백 제거 콤팩트 박스 - 크기 상향) -->
+              <div class="w-[145px] h-[110px] bg-black border-2 border-black overflow-hidden shrink-0 select-none flex items-center justify-center">
+                <img id="sc-result-image" src="" alt="결과 이미지" class="w-full h-full object-contain">
+              </div>
             </div>
           </div>
 
           <!-- 우측 영역: 미션 및 체크리스트 -->
-          <div class="flex flex-col gap-2 overflow-hidden justify-between text-white">
-            <!-- 미션 가이드 -->
-            <div class="bg-[#451a03] border-4 border-black p-2.5 rounded-none shrink-0 text-amber-200">
-              <div id="sc-mission-title" class="text-xs font-black">수아가 왜 멈추지 못했을까?</div>
-              <div class="text-xs font-bold text-amber-300/80">행동을 분석하여 알맞은 진짜 원인을 딱 3개 골라보세요!</div>
+          <div class="flex flex-col gap-3 overflow-hidden justify-between text-white" style="font-family: 'DungGeunMo', monospace;">
+            <!-- 미션 가이드 (요청에 따라 파스텔 노랑 bg-[#fef08a] 및 글자 검정 text-black 교체 및 1.5배 확대) -->
+            <div class="bg-[#fef08a] border-4 border-black p-4 rounded-none shrink-0 text-black shadow-[4px_4px_0px_#000]">
+              <div id="sc-mission-title" class="text-[1.35rem] font-black text-black">수아가 왜 멈추지 못했을까?</div>
+              <div class="text-[1.1rem] font-bold text-slate-800 mt-1">행동을 분석하여 알맞은 진짜 원인을 3개만 골라보세요!</div>
             </div>
 
-            <!-- 체크박스 리스트 (최대높이 300px로 상향) -->
-            <div id="sc-checklist" class="flex-grow overflow-y-auto pr-1 flex flex-col gap-2 no-scrollbar max-h-[300px]">
+            <!-- 체크박스 리스트 (최대높이 420px로 확대하여 원인 버튼 핏 확보) -->
+            <div id="sc-checklist" class="flex-grow overflow-y-auto pr-1 flex flex-col gap-2.5 no-scrollbar max-h-[420px]">
               <!-- JS 동적 생성 -->
             </div>
 
-            <!-- 하단 다음 버튼 -->
-            <div class="flex justify-end items-center border-t-2 border-slate-700 pt-2 shrink-0">
-              <button id="btn-sc-next" onclick="handleNextScenario()" disabled class="px-4 py-1.5 bg-[#555] text-slate-400 font-bold border-2 border-black rounded-none cursor-not-allowed transition-all text-xs">
+            <!-- 하단 다음 버튼 (크기 확대) -->
+            <div class="flex justify-end items-center border-t-2 border-slate-700 pt-3 shrink-0">
+              <button id="btn-sc-next" onclick="handleNextScenario()" disabled class="px-6 py-2.5 bg-[#555] text-slate-400 font-bold border-3 border-black rounded-none cursor-not-allowed transition-all text-base shadow-[3px_3px_0px_#000]">
                 맞춤 전략 설계하기 ▶
               </button>
             </div>
@@ -608,35 +612,35 @@
       <!-- ==========================================
            Step 4: 활동2 - 방해물별 전략 매칭
            ========================================== -->
-      <div id="view-step6" class="absolute inset-0 hidden flex-col p-4 pb-2.5 bg-[#1a1c23] justify-between overflow-hidden text-white relative">
+      <div id="view-step6" class="absolute inset-0 hidden flex-col px-20 py-4 bg-[#1a1c23] justify-between overflow-hidden text-white relative">
         <!-- 마음온 AI 공통 가이드 배너 (2단계 매칭) -->
         <div class="std-guide-banner" style="margin-bottom: 2px !important;">
           <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
             <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px; height: 57px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
           </div>
           <div class="flex-grow flex flex-col justify-center" style="margin-left: 9px;">
-            <span class="text-[10.5px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
-            <span class="text-[12px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;" id="step6-guide-bubble">
+            <span class="text-[0.95rem] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
+            <span class="text-[1.15rem] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;" id="step6-guide-bubble">
               내가 찾은 진짜 원인을 완벽하게 극복해줄 알맞은 대응 전략을 서로 짝지어 매칭해 봐! 💡
             </span>
           </div>
         </div>
 
-        <!-- 테이블 열 제목(헤더) 바 -->
-        <div class="flex items-center gap-3 p-2 bg-[#1e293b] border-2 border-black shrink-0 text-slate-300 text-xs font-bold select-none mb-1 mt-2">
+        <!-- 테이블 열 제목(헤더) 바 (1.5배 확대 및 px-4 추가) -->
+        <div class="flex items-center gap-4 p-3 bg-[#1e293b] border-3 border-black shrink-0 text-slate-200 text-[1.2rem] font-black select-none mb-1 mt-3" style="font-family: 'DungGeunMo', monospace;">
           <div class="w-[35%] text-center">진짜 원인</div>
           <div class="w-[65%] text-center">극복 전략 후보</div>
         </div>
 
-        <!-- 매칭 리스트 영역 (세로 배열, 최대 높이 310px 상향) -->
-        <div id="step6-match-rows" class="flex-grow overflow-y-auto pr-1 flex flex-col gap-2.5 my-1 max-h-[310px] no-scrollbar">
+        <!-- 매칭 리스트 영역 (세로 배열, 최대 높이 420px 상향) -->
+        <div id="step6-match-rows" class="flex-grow overflow-y-auto pr-1 flex flex-col gap-3.5 my-1 max-h-[420px] no-scrollbar">
           <!-- JS 동적 생성 -->
         </div>
 
-        <!-- 하단 확인 버튼 (여백 간소화) -->
-        <div class="border-t-2 border-black pt-2 mt-1.5 flex justify-between items-center shrink-0">
-          <span class="text-[10px] text-slate-400 font-bold">모든 원인에 하나의 극복 전략을 선택해 주세요.</span>
-          <button id="btn-to-step7" onclick="goToStep(5)" disabled class="px-6 py-2.5 bg-[#555] text-slate-400 font-bold border-4 border-black rounded-none cursor-not-allowed transition-all text-xs">
+        <!-- 하단 확인 버튼 (여백 및 글씨 1.5배 확대) -->
+        <div class="border-t-3 border-black pt-3 mt-2 flex justify-between items-center shrink-0" style="font-family: 'DungGeunMo', monospace;">
+          <span class="text-[1.05rem] text-slate-300 font-bold">모든 원인에 하나의 극복 전략을 선택해 주세요.</span>
+          <button id="btn-to-step7" onclick="goToStep(5)" disabled class="px-8 py-3 bg-[#555] text-slate-400 font-bold border-4 border-black rounded-none cursor-not-allowed transition-all text-base shadow-[3px_3px_0px_#000]">
             시뮬레이션 보기 🎬
           </button>
         </div>
@@ -645,108 +649,107 @@
       <!-- ==========================================
            Step 5: 미니 시뮬레이션
            ========================================== -->
-      <div id="view-step7" class="absolute inset-0 hidden flex-col p-5 bg-[#1a1c23] text-white justify-between overflow-hidden animate-fade-in">
+      <div id="view-step7" class="absolute inset-0 hidden flex-col px-20 py-5 bg-[#1a1c23] text-white justify-between overflow-hidden animate-fade-in">
         <!-- 마음온 AI 공통 가이드 배너 (2단계) -->
         <div class="std-guide-banner" style="margin-bottom: 6px !important;">
           <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
             <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px; height: 57px; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
           </div>
           <div class="flex-grow flex flex-col justify-center" style="margin-left: 9px;">
-            <span class="text-[10.5px] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
-            <span class="text-[12px] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;" id="act2-guide-bubble">
+            <span class="text-[0.95rem] font-black leading-none mb-0.5" style="font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important;">마음온 AI 가이드</span>
+            <span class="text-[1.15rem] font-bold text-slate-200 leading-tight truncate" style="font-family: 'DungGeunMo', monospace !important;" id="act2-guide-bubble">
               우측의 극복 전략 카드들을 이야기 흐름에 알맞게 연결 지어보세요!
             </span>
           </div>
         </div>
-        <!-- 중복 타이틀 제거 -->
 
-        <!-- 시뮬레이션 메인 레이아웃 (카드 뉴스와 드래그 덱 가로 배치, z-index 추가) -->
-        <div class="my-2 flex-grow grid grid-cols-[58%_40%] gap-3 overflow-hidden" style="height: calc(100% - 80px) !important;">
-          <!-- 좌측: 카드 & 컨트롤 (relative z-0 지정) -->
+        <!-- 시뮬레이션 메인 레이아웃 (카드 뉴스와 드래그 덱 가로 배치 - 간격 gap-6 확장) -->
+        <div class="my-2 flex-grow grid grid-cols-[55%_42%] gap-6 overflow-hidden" style="height: calc(100% - 90px) !important;">
+          <!-- 좌측: 카드 & 컨트롤 -->
           <div class="flex flex-col justify-between items-center h-full select-none relative z-0">
-            <!-- 시뮬레이션 카드 (세로 최소높이 축소하여 콤팩트하게 조율) -->
-            <div id="sim-card" class="w-full bg-[#2c3e50] border-4 border-black rounded-none p-4 shadow-[4px_4px_0_#000] text-white flex flex-col justify-center items-center relative animate-fade-in-up flex-grow" style="min-h: 140px !important;">
+            <!-- 시뮬레이션 카드 -->
+            <div id="sim-card" class="w-full bg-[#2c3e50] border-4 border-black rounded-none p-5 shadow-[5px_5px_0_#000] text-white flex flex-col justify-center items-center relative animate-fade-in-up flex-grow" style="min-h: 180px !important;">
               <!-- JS 동적 주입 -->
             </div>
 
-            <!-- 슬라이드 조작 패널 (카드 상자와의 간격 이격을 위해 mt-2.5 부여) -->
-            <div class="flex items-center gap-4 shrink-0 mb-1 mt-2.5" style="margin-top: 10px !important;">
-              <button id="btn-sim-prev" onclick="prevSlide()" class="px-3 py-1.5 bg-slate-800 border-2 border-slate-650 rounded-none text-xs hover:bg-slate-750 text-slate-300">◀ 이전</button>
-              <div id="sim-dots" class="flex gap-1.5">
+            <!-- 슬라이드 조작 패널 (버튼 1.5배 스케일 상향) -->
+            <div class="flex items-center gap-6 shrink-0 mb-1 mt-3" style="margin-top: 12px !important; font-family: 'DungGeunMo', monospace;">
+              <button id="btn-sim-prev" onclick="prevSlide()" class="px-5 py-2 bg-slate-800 border-3 border-slate-650 rounded-none text-base hover:bg-slate-750 text-slate-200 font-bold shadow-[2px_2px_0px_#000] active:translate-y-0.5">◀ 이전</button>
+              <div id="sim-dots" class="flex gap-2">
                 <!-- JS 동적 생성 -->
               </div>
-              <button id="btn-sim-next" onclick="nextSlide()" class="px-3 py-1.5 bg-slate-800 border-2 border-slate-650 rounded-none text-xs hover:bg-slate-750 text-slate-300">다음 ▶</button>
+              <button id="btn-sim-next" onclick="nextSlide()" class="px-5 py-2 bg-slate-800 border-3 border-slate-650 rounded-none text-base hover:bg-slate-750 text-slate-200 font-bold shadow-[2px_2px_0px_#000] active:translate-y-0.5">다음 ▶</button>
             </div>
           </div>
 
-          <!-- 우측: 드래그 덱 패널 (relative z-10 지정) -->
-          <div class="bg-[#2c3e50] border-4 border-black p-3 rounded-none flex flex-col gap-2 h-full overflow-hidden select-none relative z-10">
-            <div class="text-[12px] font-black text-yellow-400 border-b border-slate-700 pb-1.5 shrink-0">극복 전략 카드</div>
-            <div id="sim-drag-dock" class="flex-grow flex flex-col gap-2 overflow-y-auto no-scrollbar py-1">
+          <!-- 우측: 드래그 덱 패널 -->
+          <div class="bg-[#2c3e50] border-4 border-black p-4 rounded-none flex flex-col gap-3 h-full overflow-hidden select-none relative z-10" style="font-family: 'DungGeunMo', monospace;">
+            <div class="text-[1.2rem] font-black text-yellow-400 border-b-2 border-slate-750 pb-2 shrink-0">극복 전략 카드</div>
+            <div id="sim-drag-dock" class="flex-grow flex flex-col gap-3 overflow-y-auto no-scrollbar py-1">
               <!-- JS 동적 생성 -->
             </div>
           </div>
         </div>
 
-        <!-- 마무리 질문 -->
-        <div id="sim-reflection" class="hidden bg-[#451a03] text-amber-200 border-4 border-black p-2.5 rounded-none shrink-0 flex flex-col gap-2 animate-fade-in-up">
-          <span class="text-xs font-black text-amber-300 text-center">이 전략들, 너한테도 효과가 있을 것 같아?</span>
-          <div class="flex gap-3">
-            <button onclick="selectReflection('yes', this)" class="btn-reflection flex-1 py-2 bg-white text-slate-700 border-2 border-black font-bold text-xs rounded-none active:translate-y-0.5 shadow-[2px_2px_0px_#000] hover:bg-slate-50 transition-all">응, 써볼게! ✋</button>
-            <button onclick="selectReflection('no', this)" class="btn-reflection flex-1 py-2 bg-white text-slate-700 border-2 border-black font-bold text-xs rounded-none active:translate-y-0.5 shadow-[2px_2px_0px_#000] hover:bg-slate-50 transition-all">아직 어려울 것 같아</button>
+        <!-- 마무리 질문 (가로길이 줄이고 w-full max-w-[580px] mx-auto 정렬 및 버튼 글자크기 1.25rem 확대) -->
+        <div id="sim-reflection" class="hidden bg-[#451a03] text-amber-200 border-4 border-black p-4 rounded-none shrink-0 flex flex-col gap-3 animate-fade-in-up w-full max-w-[580px] mx-auto" style="font-family: 'DungGeunMo', monospace; margin-bottom: 8px !important;">
+          <span class="text-[1.25rem] font-black text-amber-300 text-center">이 전략들, 너한테도 효과가 있을 것 같아?</span>
+          <div class="flex gap-4">
+            <button onclick="selectReflection('yes', this)" class="btn-reflection flex-1 py-3 bg-white text-slate-800 border-3 border-black font-black text-[1.25rem] rounded-none active:translate-y-0.5 shadow-[3px_3px_0px_#000] hover:bg-slate-50 transition-all">응, 써볼게! ✋</button>
+            <button onclick="selectReflection('no', this)" class="btn-reflection flex-1 py-3 bg-white text-slate-800 border-3 border-black font-black text-[1.25rem] rounded-none active:translate-y-0.5 shadow-[3px_3px_0px_#000] hover:bg-slate-50 transition-all">아직 어려울 것 같아</button>
           </div>
         </div>
 
-        <!-- 하단 확인 완료 버튼 -->
-        <div class="border-t border-slate-800 pt-3 flex justify-between items-center shrink-0">
-          <button onclick="skipCurrentStep()" class="text-[10px] font-bold text-slate-400 hover:text-slate-200 underline">현재 단계 스킵 ⏭</button>
-          <button id="btn-to-step8" onclick="handleFinishScenarioSim()" disabled class="px-6 py-2.5 bg-[#555] text-slate-400 font-bold border-4 border-black rounded-none cursor-not-allowed transition-all">
-            다음 이야기 ▶
+        <!-- 하단 확인 완료 버튼 (스킵 버튼 완벽 삭제 및 우측 정렬) -->
+        <div class="border-t-2 border-slate-800 pt-3 flex justify-end items-center shrink-0" style="font-family: 'DungGeunMo', monospace;">
+          <button id="btn-to-step8" onclick="handleFinishScenarioSim()" disabled class="px-8 py-3 bg-[#555] text-slate-400 font-bold border-4 border-black rounded-none cursor-not-allowed transition-all text-base shadow-[3px_3px_0px_#000]">
+            활동 완료 ▶
           </button>
         </div>
       </div>
+    </div> <!-- 뷰포트 영역(div.flex-grow) 닫기 -->
 
-      <!-- ==========================================
-           Step 6: 완료 화면 (최종 리포트)
-           ========================================== -->
-      <div id="view-step8" class="std-intro-container view" style="display: none;">
-        <!-- 상단 헤더 영역 (심플 헤더) -->
-        <div class="std-intro-header-simple">
-          <h1 class="std-intro-title" style="font-size: 2.25rem;">사이버 자기조절 활동 완료 🌟</h1>
-        </div>
-
-        <!-- 메인 본문 영역 (좌측 캐릭터 복원, 우측 성찰대사 통합 개편) -->
-        <div class="std-intro-body" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 48px; padding: 30px 60px !important; box-sizing: border-box;">
-          
-          <!-- 좌측 캐릭터 영역 (마음온 캐릭터 원래대로 복원) -->
-          <div class="std-intro-char-wrapper-small">
-            <img src="images/maeumon_outro.png" alt="마음온" class="std-intro-char-img">
-          </div>
-
-          <!-- 우측 단일 통합 상자 (밝은 배경색 적용, 배지+배지제목+설명 텍스트 수직 구성) -->
-          <div class="std-intro-unified-box" style="flex-grow: 1; height: auto; min-height: 240px; display: flex; flex-direction: column; align-items: stretch; padding: 15px 25px 20px 25px !important; box-shadow: 6px 6px 0 #000000; border: 4px solid #000000; background-color: #f8fafc; color: #000000; margin: 0; max-width: 550px; gap: 10px;">
-            
-            <!-- 상단: 배지 아이콘 + 배지 타이틀 (경계선 구분) -->
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 8px; flex-shrink: 0;">
-              <!-- 크기 5배 상향된 뱃지 이미지 -->
-              <div style="width: 75px; height: 75px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 45px 0 15px 0; flex-shrink: 0;">
-                <img src="images/icon_selfcontrol.png" alt="자기조절 뱃지" style="width: 240px; height: 240px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
-              </div>
-              <span style="font-size: 1.25rem; color: #1e3a8a; font-weight: bold; margin-top: 10px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [사이버 자기조절] 배지 획득!</span>
-            </div>
-
-            <!-- 하단: 코멘트/설명 텍스트 (줄바꿈/들여쓰기 제거, 검정 폰트색상 적용) -->
-            <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.25rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">디지털 기기나 게임을 스스로 제어하기 어려웠던 숨겨진 원인들을 파악하고, 너에게 꼭 맞는 멋진 극복 전략들을 설계해 냈구나! 앞으로도 건강하게 조절해 나갈 너의 멋진 의지를 응원할게!</div>
-          </div>
-
-        </div>
-
-        <!-- 하단 버튼 영역 (오른쪽 정렬 및 가로 넓이 확장) -->
-        <div class="std-intro-footer" style="justify-content: flex-end !important; padding: 16px 40px !important;">
-          <button onclick="finishStage()" class="std-footer-btn-right" style="width: 380px; box-shadow: 4px 4px 0 #000; font-size: 1.1rem; height: 48px;">활동완료 & 대시보드로 돌아가기 ➔</button>
-        </div>
+    <!-- ==========================================
+         Step 6: 완료 화면 (최종 리포트) - 뷰포트 밖 직계 자식으로 격리 복원
+         ========================================== -->
+    <div id="view-step8" class="std-intro-container view" style="display: none;">
+      <!-- 상단 헤더 영역 (심플 헤더) -->
+      <div class="std-intro-header-simple">
+        <h1 class="std-intro-title" style="font-size: 2.25rem;">사이버 자기조절 활동 완료 🌟</h1>
       </div>
 
+      <!-- 메인 본문 영역 (좌측 캐릭터 복원, 우측 성찰대사 통합 개편) -->
+      <div class="std-intro-body" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 48px; padding: 30px 60px !important; box-sizing: border-box;">
+        
+        <!-- 좌측 캐릭터 영역 (마음온 캐릭터 원래대로 복원) -->
+        <div class="std-intro-char-wrapper-small">
+          <img src="images/maeumon_outro.png" alt="마음온" class="std-intro-char-img">
+        </div>
+
+        <!-- 우측 단일 통합 상자 (밝은 배경색 적용, 배지+배지제목+설명 텍스트 수직 구성) -->
+        <div class="std-intro-unified-box" style="flex-grow: 1; height: auto; min-height: 240px; display: flex; flex-direction: column; align-items: stretch; padding: 15px 25px 20px 25px !important; box-shadow: 6px 6px 0 #000000; border: 4px solid #000000; background-color: #f8fafc; color: #000000; margin: 0; max-width: 550px; gap: 10px;">
+          
+          <!-- 상단: 배지 아이콘 + 배지 타이틀 (경계선 구분) -->
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 8px; flex-shrink: 0;">
+            <!-- 크기 5배 상향된 뱃지 이미지 -->
+            <div style="width: 75px; height: 75px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 45px 0 15px 0; flex-shrink: 0;">
+              <img src="images/icon_selfcontrol.png" alt="자기조절 뱃지" style="width: 240px; height: 240px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
+            </div>
+            <span style="font-size: 1.25rem; color: #1e3a8a; font-weight: bold; margin-top: 10px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [사이버 자기조절] 배지 획득!</span>
+          </div>
+
+          <!-- 하단: 아웃트로 멘트 코멘트 (존중감과 통일된 훈화 메시지 및 가독성 1.25rem 확대) -->
+          <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.25rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">
+            디지털 기기나 게임을 스스로 제어하기 어려웠던 숨겨진 원인들을 파악하고, 너에게 꼭 맞는 멋진 극복 전략들을 설계해 냈구나! 앞으로도 건강하게 조절해 나갈 너의 멋진 의지를 응원할게!
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 하단 버튼 영역 (오른쪽 정렬 및 가로 넓이 확장) -->
+      <div class="std-intro-footer" style="justify-content: flex-end !important; padding: 16px 40px !important;">
+        <button onclick="finishStage()" class="std-footer-btn-right" style="width: 380px; box-shadow: 4px 4px 0 #000; font-size: 1.1rem; height: 48px;">활동완료 & 대시보드로 돌아가기 ➔</button>
+      </div>
     </div>
 
     <!-- 공통 표준 하단 푸터바 -->
@@ -887,9 +890,9 @@
       character: "수아",
       characterEmoji: "👧",
       title: "수아의 이야기",
-      summary: "숙제하기 전에 잠깐 유튜브 쇼츠를 켰으나, 재미있는 영상의 자동 재생 늪에 빠져 1시간 30분 동안 쉬지 않고 시청하게 됨.",
+      summary: "숙제하기 전에 잠깐 짧은 동영상을 켰으나, 재미있는 영상의 자동 재생 늪에 빠져 1시간 30분 동안 쉬지 않고 시청하게 됨.",
       cuts: [
-        { number: 1, image: "images/shorts_sua_cut1.jpg", text: "숙제가 있는데 '잠깐만 보고 해야지' 하고 쇼츠를 켰어." },
+        { number: 1, image: "images/shorts_sua_cut1.jpg", text: "숙제가 있는데 '잠깐만 보고 해야지' 하고 짧은 동영상을 켰어." },
         { number: 2, image: "images/shorts_sua_cut2.jpg", text: "재미있는 영상이 자동으로 계속 나왔어. '이것만 보고 진짜 끊어야지...'" },
         { number: 3, image: "images/shorts_sua_cut3.jpg", text: "어느새 1시간 30분이 지났어. 숙제장은 아직 펼치지도 못했어." }
       ],
@@ -924,7 +927,7 @@
       ]
     };
 
-    const scenarios = [scenario1, scenario2];
+    const scenarios = [scenario1];
 
     // 전략 설계 맵 (이모티콘 완벽 제거 및 수아 s1_5 극복 전략 구체화)
     const strategyMap = {
@@ -951,7 +954,7 @@
       ],
       s_misjudge_shorts: [
         { id: "mj1", text: "뇌의 착각을 인지하고 즉시 스마트폰 화면을 끈다" },
-        { id: "mj2", text: '"이번 쇼츠만 보고 끄기!" 규칙을 입 밖으로 소리 내어 외친다' },
+        { id: "mj2", text: '"이번 짧은 동영상만 보고 끄기!" 규칙을 입 밖으로 소리 내어 외친다' },
         { id: "mj3", text: "폰을 뒤집어 손에 안 닿는 다른 방으로 바로 가져다 놓는다" }
       ],
 
@@ -1316,7 +1319,7 @@
       }
       
       // 상단 헤더 업데이트
-      document.getElementById('sc-progress').innerText = "시나리오 " + (state.currentScenarioIdx + 1) + " / 2";
+      document.getElementById('sc-progress').innerText = "시나리오 " + (state.currentScenarioIdx + 1) + " / " + scenarios.length;
       
       const currentSelectedCount = Object.keys(state.checkedObstacles).filter(id => {
         return scenario.obstacles.some(ob => ob.id === id);
@@ -1335,6 +1338,12 @@
       // 좌측 실패 결과 요약
       document.getElementById('sc-result-text').innerText = scenario.result;
 
+      // 결과 이미지 바인딩 (마지막 컷 이미지 사용)
+      const resultImg = document.getElementById('sc-result-image');
+      if (resultImg && scenario.cuts && scenario.cuts.length > 0) {
+        resultImg.src = scenario.cuts[scenario.cuts.length - 1].image;
+      }
+
       // 우측 미션 타이틀
       document.getElementById('sc-mission-title').innerText = scenario.character + "가 왜 멈추지 못했을까?";
 
@@ -1346,14 +1355,14 @@
         const isChecked = !!state.checkedObstacles[ob.id];
         
         const label = document.createElement('label');
-        label.className = "flex items-center gap-3 border-2 p-2.5 rounded-none cursor-pointer transition-all select-none hover:bg-slate-750 " +
+        label.className = "flex items-center gap-4 border-3 p-3 rounded-none cursor-pointer transition-all select-none hover:bg-slate-200 " +
           (isChecked 
-            ? 'border-blue-500 bg-[#1e3a8a] font-bold text-blue-200 scale-[1.01] shadow-sm' 
-            : 'border-black bg-[#1e293b] font-normal text-slate-200');
+            ? 'border-black bg-[#86efac] font-black text-black scale-[1.01] shadow-sm' 
+            : 'border-black bg-[#f8fafc] font-extrabold text-black');
         
         label.innerHTML = `
-          <input type="checkbox" onchange="toggleObstacle('${ob.id}', this)" ${isChecked ? 'checked' : ''} class="w-4.5 h-4.5 accent-blue-500 shrink-0 border border-black cursor-pointer">
-          <span class="text-[14.5px] font-bold select-none leading-snug">${ob.text}</span>
+          <input type="checkbox" onchange="toggleObstacle('${ob.id}', this)" ${isChecked ? 'checked' : ''} class="w-5 h-5 accent-emerald-600 shrink-0 border-2 border-black cursor-pointer">
+          <span class="text-[1.15rem] font-black select-none leading-snug">${ob.text}</span>
         `;
         listContainer.appendChild(label);
       });
@@ -1371,18 +1380,18 @@
 
       if (isChecked && count >= 3) {
         checkboxEl.checked = false;
-        showFeedbackModal("진짜 원인은 딱 3개만 고를 수 있습니다!");
+        showFeedbackModal("진짜 원인은 3개만 고를 수 있습니다!");
         return;
       }
 
       const card = checkboxEl.closest('label');
       if (isChecked) {
         state.checkedObstacles[obId] = true;
-        card.className = "flex items-center gap-3 border-2 border-blue-500 bg-[#1e3a8a] p-2.5 rounded-none cursor-pointer transition-all select-none font-bold text-blue-200 scale-[1.01] shadow-sm";
+        card.className = "flex items-center gap-4 border-3 border-black bg-[#86efac] p-3 rounded-none cursor-pointer transition-all select-none font-black text-black scale-[1.01] shadow-sm";
         synth.playCheck();
       } else {
         delete state.checkedObstacles[obId];
-        card.className = "flex items-center gap-3 border-2 border-black bg-[#1e293b] p-2.5 rounded-none cursor-pointer transition-all select-none hover:bg-slate-700 font-normal text-slate-200";
+        card.className = "flex items-center gap-4 border-3 border-black bg-[#f8fafc] p-3 rounded-none cursor-pointer transition-all select-none hover:bg-slate-200 font-extrabold text-black";
         synth.playCheck();
       }
       
@@ -1455,26 +1464,26 @@
 
       checkedObstaclesList.forEach(ob => {
         const row = document.createElement('div');
-        row.className = "flex items-center gap-3 p-2 border-2 border-black bg-[#2c3e50] rounded-none shadow-[2px_2px_0px_#000] shrink-0 text-white";
+        row.className = "flex items-center gap-4 p-2.5 border-3 border-black bg-[#2c3e50] rounded-none shadow-[3px_3px_0px_#000] shrink-0 text-white";
 
-        // 방해물 칩
+        // 방해물 칩 (글자 크기 text-[1.25rem]로 한 단계 더 확대)
         const left = document.createElement('div');
-        left.className = "w-[35%] bg-[#7f1d1d] border-2 border-red-800 p-2 rounded-none text-center shrink-0 flex flex-col justify-center items-center h-[78px] text-red-200 text-[13px] font-bold";
+        left.className = "w-[35%] bg-[#7f1d1d] border-3 border-red-800 p-2.5 rounded-none text-center shrink-0 flex flex-col justify-center items-center h-[110px] text-red-100 text-[1.25rem] font-black";
         left.innerHTML = `
-          <span class="line-clamp-3 leading-snug">${ob.text}</span>
+          <span class="line-clamp-3 leading-snug" style="font-family: 'DungGeunMo', monospace !important;">${ob.text}</span>
         `;
 
         // 3개 전략
         const right = document.createElement('div');
-        right.className = "w-[65%] flex gap-1.5";
+        right.className = "w-[65%] flex gap-2.5";
 
         const strategies = strategyMap[ob.category] || [];
 
         strategies.forEach(st => {
           const btn = document.createElement('button');
-          btn.className = "flex-1 border-2 border-black bg-[#f1f5f9] hover:bg-[#e2e8f0] rounded-none p-1 flex flex-col items-center justify-center text-center h-[78px] transition-all transform active:scale-95 text-black";
+          btn.className = "flex-1 border-3 border-black bg-[#f1f5f9] hover:bg-[#e2e8f0] rounded-none p-2 flex flex-col items-center justify-center text-center h-[110px] transition-all transform active:scale-95 text-black font-extrabold";
           btn.innerHTML = `
-            <span class="text-[12px] font-bold text-black leading-snug">${st.text}</span>
+            <span class="text-[1.15rem] font-black text-black leading-snug" style="font-family: 'DungGeunMo', monospace !important;">${st.text}</span>
           `;
           
           btn.onclick = () => {
@@ -1483,9 +1492,9 @@
             
             // 테두리 갱신
             right.querySelectorAll('button').forEach(b => {
-              b.className = "flex-1 border-2 border-black bg-[#f1f5f9] hover:bg-[#e2e8f0] rounded-none p-1 flex flex-col items-center justify-center text-center h-[78px] transition-all transform active:scale-95 text-black";
+              b.className = "flex-1 border-3 border-black bg-[#f1f5f9] hover:bg-[#e2e8f0] rounded-none p-2 flex flex-col items-center justify-center text-center h-[110px] transition-all transform active:scale-95 text-black font-extrabold";
             });
-            btn.className = "flex-1 border-3 border-black bg-[#a8ffda] hover:bg-[#7effc9] rounded-none p-1 flex flex-col items-center justify-center text-center h-[78px] transition-all transform scale-[1.03] shadow-sm font-bold text-black";
+            btn.className = "flex-1 border-3 border-black bg-[#fef08a] hover:bg-[#fde047] rounded-none p-2 flex flex-col items-center justify-center text-center h-[110px] transition-all transform scale-[1.03] shadow-sm font-black text-black";
             
             validateStep6();
           };
@@ -1493,7 +1502,7 @@
           // 이미 이전에 골라진 상태라면 하이라이트 복원
           const prevSelected = state.selectedStrategies[ob.id];
           if (prevSelected && prevSelected.id === st.id) {
-            btn.className = "flex-1 border-3 border-black bg-[#a8ffda] hover:bg-[#7effc9] rounded-none p-1 flex flex-col items-center justify-center text-center h-[78px] transition-all transform scale-[1.03] shadow-sm font-bold text-black";
+            btn.className = "flex-1 border-3 border-black bg-[#fef08a] hover:bg-[#fde047] rounded-none p-2 flex flex-col items-center justify-center text-center h-[110px] transition-all transform scale-[1.03] shadow-sm font-black text-black";
           }
 
           right.appendChild(btn);
@@ -1550,11 +1559,15 @@
       // 5개 시뮬레이션 컷 설계
       const simCuts = [];
       
-      // Slide 0: 인트로 가이드
+      // Slide 0: 인트로 가이드 (첫 번째 삽화 이미지 바인딩 및 자연스러운 수아/도윤 상황별 대사 적용 + 줄바꿈 \n 추가)
+      const introText = scenario.id === "shorts"
+        ? `다음 날 또 다시 ${scenario.character}가 짧은 동영상을 켰어.\n이번에는 장착한 극복 전략 카드들을 사용해 위기 상황들을 돌파해보자!`
+        : `다음 날 또 다시 ${scenario.character}가 게임을 시작했어.\n이번에는 장착한 극복 전략 카드들을 사용해 위기 상황들을 돌파해보자!`;
+
       simCuts.push({
         isCrisis: false,
-        emoji: scenario.characterEmoji,
-        text: `다음 날 ${scenario.character}가 행동을 개시했어. 이번에는 장착한 극복 전략 카드들을 사용해 위기 상황들을 돌파해보자!`
+        image: scenario.cuts[0].image,
+        text: introText
       });
 
       // Slides 1, 2, 3: 위기 상황들 (사용자가 체크한 3개 방해물에 매핑)
@@ -1577,7 +1590,8 @@
           isCrisis: true,
           obstacleId: ob.id,
           category: ob.category,
-          text: crisisText
+          text: crisisText,
+          image: scenario.cuts[1].image // 두 번째 삽화 이미지 연동
         });
       });
 
@@ -1619,40 +1633,58 @@
           // 해결 완료 상태
           const matchedObId = currentCut.obstacleId;
           const st = state.selectedStrategies[matchedObId];
-          simCard.className = "w-full bg-[#14532d] border-4 border-green-500 rounded-none p-4 shadow-[4px_4px_0_#000] text-white flex flex-col items-start text-left relative animate-pop-in flex-grow min-h-[170px] pt-8 justify-start w-full";
+          simCard.className = "w-full bg-[#14532d] border-4 border-green-500 rounded-none p-5 shadow-[5px_5px_0_#000] text-white flex flex-col items-center text-center relative animate-pop-in flex-grow min-h-[350px] justify-center w-full";
           simCard.innerHTML = `
-<div class="text-[12px] font-black text-green-400 uppercase tracking-wider mb-2 text-center w-full">🏆 위기 해결 성공!</div>
-<div class="text-[13px] font-bold leading-relaxed text-left mx-auto w-[90%] mb-6 text-green-100">${currentCut.text}</div>
-<div class="w-[90%] h-12 border-2 border-green-500 bg-green-900/30 flex items-center justify-center text-xs font-bold text-green-200 mx-auto text-center">적용된 전략: ${st.text}</div>
+<div class="text-[1.1rem] font-black text-green-400 uppercase tracking-wider mb-2 text-center w-full" style="font-family: 'DungGeunMo', monospace !important;">🏆 위기 해결 성공!</div>
+<div class="w-full max-w-[315px] h-[200px] bg-black border-3 border-black overflow-hidden shrink-0 select-none shadow-[3px_3px_0px_#000]" style="margin-bottom: 20px !important;">
+  <img src="${currentCut.image}" alt="위기 상황 삽화" class="w-full h-full object-contain">
+</div>
+<div class="text-[1.15rem] font-black leading-relaxed text-left mx-auto w-[90%] mb-3 text-green-100" style="font-family: 'DungGeunMo', monospace !important;">${currentCut.text}</div>
+<div class="w-[90%] h-14 border-2 border-green-500 bg-green-900/30 flex items-center justify-center text-[1.05rem] font-black text-green-200 mx-auto text-center" style="font-family: 'DungGeunMo', monospace !important;">적용된 전략: ${st.text}</div>
           `;
         } else {
           // 해결 대기 상태 (위기 발생!)
-          simCard.className = "w-full bg-[#7f1d1d] border-4 border-red-500 rounded-none p-4 shadow-[4px_4px_0_#000] text-white flex flex-col items-start text-left relative animate-fade-in-up flex-grow min-h-[170px] pt-8 justify-start w-full";
+          simCard.className = "w-full bg-[#7f1d1d] border-4 border-red-500 rounded-none p-5 shadow-[5px_5px_0_#000] text-white flex flex-col items-center text-center relative animate-fade-in-up flex-grow min-h-[350px] justify-center w-full";
           simCard.innerHTML = `
-<div class="text-[12px] font-black text-red-500 uppercase tracking-wider mb-2 text-center w-full">🚨 위기 상황 발생!</div>
-<div class="text-[13px] font-bold leading-relaxed text-left mx-auto w-[90%] mb-6 text-red-100">${currentCut.text}</div>
-<div id="sim-dropzone" class="w-[90%] h-12 border-2 border-dashed border-red-500 bg-red-950/30 flex items-center justify-center text-xs font-bold text-red-300 mx-auto text-center">오른쪽에서 알맞은 극복 전략 카드를 선택(클릭)하세요!</div>
+<div class="text-[1.1rem] font-black text-red-500 uppercase tracking-wider mb-2 text-center w-full" style="font-family: 'DungGeunMo', monospace !important;">🚨 위기 상황 발생!</div>
+<div class="w-full max-w-[315px] h-[200px] bg-black border-3 border-black overflow-hidden shrink-0 select-none shadow-[3px_3px_0px_#000]" style="margin-bottom: 20px !important;">
+  <img src="${currentCut.image}" alt="위기 상황 삽화" class="w-full h-full object-contain">
+</div>
+<div class="text-[1.15rem] font-black leading-relaxed text-left mx-auto w-[90%] mb-3 text-red-100" style="font-family: 'DungGeunMo', monospace !important;">${currentCut.text}</div>
+<div id="sim-dropzone" class="w-[90%] h-14 border-2 border-dashed border-red-500 bg-red-950/30 flex items-center justify-center text-[1.05rem] font-black text-red-300 mx-auto text-center" style="font-family: 'DungGeunMo', monospace !important;">오른쪽에서 알맞은 극복 전략 카드를 선택(클릭)하세요!</div>
           `;
         }
       } else {
         // 인트로 혹은 성공 화면
         if (idx === simCuts.length - 1) {
-          // 성공 화면 (이모지 및 소감 대사 삭제, text-base 확대, text-sm font-extrabold text-[#a8ffda] 단독 적용)
+          // 성공 화면 (미션 올클리어 성공 삽화 이미지 액자 추가 및 min-h-350px 정중앙 정렬 튜닝)
           const successText = scenario.id === "shorts"
-            ? "약속한 시간에 동영상 쇼츠 끊기 성공!"
+            ? "약속한 시간에 짧은 동영상 끊기 성공!"
             : "친구와의 우정도 지키고 매너 플레이어로 칭찬받음!";
 
-          simCard.className = "w-full bg-[#2c3e50] border-4 border-black rounded-none p-4 shadow-[4px_4px_0_#000] text-white flex flex-col justify-center items-center relative animate-fade-in-up flex-grow min-h-[170px]";
+          simCard.className = "w-full bg-[#2c3e50] border-4 border-black rounded-none p-5 shadow-[5px_5px_0_#000] text-white flex flex-col justify-center items-center relative animate-fade-in-up flex-grow min-h-[350px]";
+          
+          // 올클리어 전용 신규 성공 삽화 이미지 바인딩 (수아: shorts_sua_success.jpg)
+          const successImgSrc = scenario.id === "shorts"
+            ? "images/shorts_sua_success.jpg"
+            : "images/lol_doyun_success.jpg";
+
           simCard.innerHTML = `
-<div class="text-base font-black text-[#a8ffda] uppercase tracking-wider mb-2 text-center w-full animate-bounce">미션 올 클리어!</div>
-<div class="text-sm font-extrabold text-[#a8ffda] tracking-wide text-center w-full my-4">${successText}</div>
+<div class="text-[1.4rem] font-black text-[#a8ffda] uppercase tracking-wider mb-2 text-center w-full animate-bounce" style="font-family: 'DungGeunMo', monospace !important;">미션 올 클리어!</div>
+<!-- 성공/해피엔딩 삽화 이미지 박스 (동일 315x200 규격 및 하단 20px 마진 지정) -->
+<div class="w-full max-w-[315px] h-[200px] bg-black border-3 border-black overflow-hidden shrink-0 select-none shadow-[3px_3px_0px_#000]" style="margin-bottom: 20px !important;">
+  <img src="${successImgSrc}" alt="미션 성공 삽화" class="w-full h-full object-contain">
+</div>
+<div class="text-[1.25rem] font-black text-[#a8ffda] tracking-wide text-center w-full my-3" style="font-family: 'DungGeunMo', monospace !important;">${successText}</div>
           `;
         } else {
-          // 인트로 화면
-          simCard.className = "w-full bg-[#2c3e50] border-4 border-black rounded-none p-4 shadow-[4px_4px_0_#000] text-white flex flex-col justify-center items-center relative animate-fade-in-up flex-grow min-h-[200px]";
+          // 인트로 화면 (이모티콘 제거, 대신 첫 번째 삽화 이미지 바인딩 및 세련된 픽처 프레임 적용 - 크기 상향 및 줄바꿈 whitespace-pre-wrap 반영)
+          simCard.className = "w-full bg-[#2c3e50] border-4 border-black rounded-none p-5 shadow-[5px_5px_0_#000] text-white flex flex-col justify-center items-center relative animate-fade-in-up flex-grow min-h-[230px]";
           simCard.innerHTML = `
-<div class="text-5xl mb-4 animate-bounce">${currentCut.emoji}</div>
-<p class="text-[13px] font-bold leading-relaxed text-center max-w-sm text-slate-200">${currentCut.text}</p>
+<div class="w-full max-w-[315px] h-[200px] bg-black border-3 border-black overflow-hidden shrink-0 select-none shadow-[3px_3px_0px_#000]" style="margin-bottom: 24px !important;">
+  <img src="${currentCut.image}" alt="이야기 첫 번째 삽화" class="w-full h-full object-contain">
+</div>
+<p class="text-[1.2rem] font-black leading-relaxed text-center max-w-md text-slate-200 whitespace-pre-wrap" style="font-family: 'DungGeunMo', monospace !important;">${currentCut.text}</p>
           `;
         }
       }
@@ -1670,17 +1702,28 @@
         dotsContainer.appendChild(dot);
       });
 
-      // 좌우 버튼 조율
-      document.getElementById('btn-sim-prev').disabled = idx === 0;
+      // 좌우 버튼 조율 (크기 px-5 py-2 및 폰트체 통일성 확보)
+      const prevBtn = document.getElementById('btn-sim-prev');
+      prevBtn.disabled = idx === 0;
+      if (idx === 0) {
+        prevBtn.className = "px-5 py-2 bg-slate-900 border-3 border-slate-850 text-slate-600 font-bold rounded-none cursor-not-allowed shadow-none";
+      } else {
+        prevBtn.className = "px-5 py-2 bg-slate-800 border-3 border-slate-650 text-slate-200 font-bold rounded-none hover:bg-slate-750 cursor-pointer shadow-[2px_2px_0px_#000] active:translate-y-0.5";
+      }
       
-      // 위기가 해결되지 않았다면 다음 버튼을 잠금
+      // 위기가 해결되지 않았다면 다음 버튼을 잠금 / 해결 시 노란색으로 반짝깜빡(animate-pulse) 유도
       const nextBtn = document.getElementById('btn-sim-next');
       if (isResolved) {
         nextBtn.disabled = idx === simCuts.length - 1;
-        nextBtn.className = "px-3 py-1.5 bg-slate-800 border-2 border-slate-600 rounded-none text-xs hover:bg-slate-700 text-slate-200 cursor-pointer";
+        if (idx === simCuts.length - 1) {
+          nextBtn.className = "px-5 py-2 bg-slate-900 border-3 border-slate-850 text-slate-600 font-bold rounded-none cursor-not-allowed shadow-none";
+        } else {
+          // 활성화 시 산뜻한 노란색 및 반짝반짝(animate-pulse) 효과 강제 바인딩
+          nextBtn.className = "px-5 py-2 bg-yellow-300 hover:bg-yellow-400 text-black font-black rounded-none cursor-pointer shadow-[3px_3px_0px_#000] active:translate-y-0.5 animate-pulse border-3 border-black";
+        }
       } else {
         nextBtn.disabled = true;
-        nextBtn.className = "px-3 py-1.5 bg-slate-900 border-2 border-slate-800 rounded-none text-xs text-slate-600 cursor-not-allowed";
+        nextBtn.className = "px-5 py-2 bg-slate-900 border-3 border-slate-850 text-slate-600 font-bold rounded-none cursor-not-allowed shadow-none";
       }
 
       // 마지막 성공 컷 도달 시 피드백 및 질문 노출
@@ -1690,7 +1733,7 @@
         // 다음 이야기 / 완료 버튼 셋업
         const toStep8Btn = document.getElementById('btn-to-step8');
         if (state.currentScenarioIdx === scenarios.length - 1) {
-          toStep8Btn.innerText = "최종 완료 리포트 ▶";
+          toStep8Btn.innerText = "활동 완료 ▶";
         } else {
           toStep8Btn.innerText = "다음 이야기 ▶";
         }
@@ -1717,7 +1760,8 @@
         if (!st) return;
 
         const card = document.createElement('div');
-        card.className = "strategy-click-card border-2 border-black bg-[#f1f5f9] hover:bg-[#e2e8f0] active:scale-95 text-black rounded-none p-3 text-center text-sm font-extrabold shadow-[2px_2px_0px_#000] cursor-pointer flex items-center justify-center min-h-[60px] transition-all select-none";
+        card.className = "strategy-click-card border-3 border-black bg-[#f1f5f9] hover:bg-[#e2e8f0] active:scale-95 text-black rounded-none p-4 text-center text-[1.1rem] font-black shadow-[3px_3px_0px_#000] cursor-pointer flex items-center justify-center min-h-[85px] transition-all select-none";
+        card.style.fontFamily = "'DungGeunMo', monospace";
         card.innerText = st.text;
 
         // 클릭 선택 이벤트 장착
