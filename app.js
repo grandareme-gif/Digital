@@ -2058,3 +2058,99 @@ window.submitResetPassword = async function() {
     window.closeFindAccountModal();
   }
 };
+
+// ==========================================
+// [우상단 플로팅 컨트롤 (음소거 및 전체화면) 기능]
+// ==========================================
+
+// 1. 전체화면 토글 함수
+window.toggleFullscreen = function() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(err => {
+      console.warn(`전체화면 활성화 실패: ${err.message}`);
+    });
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }
+};
+
+// 2. 음소거 토글 함수
+window.toggleMute = function() {
+  const isMuted = localStorage.getItem('app_audio_muted') === 'true';
+  const newMuted = !isMuted;
+  localStorage.setItem('app_audio_muted', newMuted);
+  window.updateMuteButton(newMuted);
+};
+
+// 3. 음소거 버튼 UI 업데이트
+window.updateMuteButton = function(isMuted) {
+  const btn = document.getElementById('btn-toggle-mute');
+  if (btn) {
+    btn.innerText = isMuted ? '🔇' : '🔊';
+    btn.style.backgroundColor = isMuted ? '#555' : '#2a2a2a';
+    btn.title = isMuted ? '음소거 해제' : '음소거 하기';
+  }
+};
+
+// 4. AudioContext 몽키패칭 (부모 및 iframe 공통)
+// destination으로 가는 연결을 차단하여 무음 처리
+function patchAudioNode(win) {
+  try {
+    if (!win) return;
+    const OriginalAudioContext = win.AudioContext || win.webkitAudioContext;
+    if (OriginalAudioContext && !win.AudioNode.prototype.__patched) {
+      const originalConnect = win.AudioNode.prototype.connect;
+      win.AudioNode.prototype.connect = function(destination) {
+        const isMuted = localStorage.getItem('app_audio_muted') === 'true';
+        if (isMuted && destination && (destination === this.context.destination)) {
+          // destination에 연결하지 않음으로써 음소거
+          return destination;
+        }
+        return originalConnect.apply(this, arguments);
+      };
+      win.AudioNode.prototype.__patched = true;
+    }
+  } catch (e) {
+    console.warn("AudioContext 패치 적용 중 오류:", e);
+  }
+}
+
+// 부모 창 패치 적용
+patchAudioNode(window);
+
+// 5. 초기화 및 이벤트 리스너 설정
+document.addEventListener('DOMContentLoaded', () => {
+  // 초기 음소거 상태 반영
+  const isMuted = localStorage.getItem('app_audio_muted') === 'true';
+  window.updateMuteButton(isMuted);
+
+  // 전체화면 상태 변경 감지 및 버튼 UI 동기화
+  document.addEventListener('fullscreenchange', () => {
+    const btn = document.getElementById('btn-toggle-fullscreen');
+    if (btn) {
+      if (document.fullscreenElement) {
+        btn.innerText = '🗗';
+        btn.title = '전체화면 종료';
+      } else {
+        btn.innerText = '⛶';
+        btn.title = '전체화면 하기';
+      }
+    }
+  });
+
+  // iframe 로드 시 자식 창에 패치 적용
+  const iframe = document.getElementById('task-iframe');
+  if (iframe) {
+    iframe.addEventListener('load', () => {
+      try {
+        if (iframe.contentWindow) {
+          patchAudioNode(iframe.contentWindow);
+        }
+      } catch (e) {
+        console.warn("자식 iframe 패치 적용 실패 (도메인 제한 등):", e);
+      }
+    });
+  }
+});

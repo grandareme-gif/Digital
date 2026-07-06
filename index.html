@@ -11,6 +11,12 @@
 
   <div id="app-container">
     
+    <!-- 우상단 플로팅 컨트롤 바 (음소거, 전체화면) -->
+    <div id="floating-control-bar" style="position: absolute; top: 15px; right: 15px; z-index: 10000; display: flex; gap: 10px; pointer-events: auto;">
+      <button id="btn-toggle-mute" class="floating-circle-btn" onclick="toggleMute()" title="음소거 하기">🔊</button>
+      <button id="btn-toggle-fullscreen" class="floating-circle-btn" onclick="toggleFullscreen()" title="전체화면 하기">⛶</button>
+    </div>
+
     <!-- 1. 로그인 뷰 (리뉴얼) -->
     <div id="view-login" class="view active" style="padding: 20px; text-align: center;">
       <h1 style="color: var(--point-yellow); text-shadow: 4px 4px 0 var(--border-color); margin-bottom: 25px; animation: float 3s ease-in-out infinite; line-height: 1.3; word-break: keep-all;">

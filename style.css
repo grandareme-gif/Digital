@@ -1178,3 +1178,34 @@ body {
 #privacy-content-view::-webkit-scrollbar-thumb:hover {
   background: var(--point-yellow-dark);
 }
+
+/* =============================================
+   우상단 플로팅 컨트롤 버튼 스타일 
+   ============================================= */
+.floating-circle-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #2a2a2a;
+  border: var(--pixel-thick) solid #000;
+  color: #fff;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #000;
+  transition: all 0.1s ease;
+  outline: none;
+}
+
+.floating-circle-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #000;
+  background-color: #3a3a3a;
+}
+
+.floating-circle-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000;
+}
