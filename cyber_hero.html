@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -508,8 +508,8 @@
       background: white;
       color: #000;
       border: 3px solid var(--pure-black);
-      padding: 6px 12px;
-      font-size: 0.9rem;
+      padding: 10px 18px; /* 패딩 확장 */
+      font-size: 1.25rem; /* 기존 0.9rem에서 상향 */
       font-weight: bold;
       cursor: grab;
       transition: all 0.1s;
@@ -613,14 +613,14 @@
       background: #fff;
       border: 3px solid #000;
       border-radius: 12px;
-      padding: 6px 10px;
-      font-size: 0.7rem;
+      padding: 10px 14px;
+      font-size: 1.15rem; /* 기존 0.7rem에서 대폭 상향 */
       font-weight: bold;
       color: #000;
       box-shadow: 2px 2px 0 #000;
       text-align: center;
       width: 100%;
-      min-height: 32px !important;
+      min-height: 48px !important;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -720,9 +720,9 @@
     .chat-header {
       background: rgba(0, 0, 0, 0.15);
       border-bottom: 2px solid rgba(0,0,0,0.2);
-      padding: 4px;
-      font-size: 0.7rem;
-      font-weight: black;
+      padding: 8px 6px;
+      font-size: 1.15rem; /* 기존 0.7rem에서 대폭 상향 */
+      font-weight: 900;
       text-align: center;
       color: #000;
       margin-bottom: 6px;
@@ -765,7 +765,7 @@
     }
 
     .chat-sender {
-      font-size: 10.5px;
+      font-size: 1.05rem; /* 기존 10.5px에서 상향 */
       font-weight: bold;
       color: #333;
       margin-bottom: 1px;
@@ -775,23 +775,24 @@
       background: #fff;
       border: 2px solid #000;
       border-radius: 6px;
-      padding: 4px 8px;
-      font-size: 12px;
+      padding: 6px 12px; /* 패딩 확장 */
+      font-size: 1.25rem; /* 기존 12px에서 상향 */
       font-weight: bold;
-      line-height: 1.3;
+      line-height: 1.35;
       word-break: break-all;
       box-shadow: 1px 1px 0 #000;
       color: #000;
     }
 
     .chat-bubble.photo {
-      padding: 2.5px;
+      padding: 4px;
       background: #fff;
+      max-width: 100%;
     }
 
     .chat-bubble.photo img {
       width: 100%;
-      height: 90px;
+      height: 150px; /* 사진 크기를 150px로 시원하게 확대 */
       object-fit: cover;
       border: 1px solid #000;
       display: block;
@@ -858,8 +859,8 @@
 
     /* 픽셀 SNS 화면 */
     .sns-container {
-      width: 270px;
-      height: 360px;
+      width: 400px !important; /* 기존 340px에서 400px로 가로 추가 연장 */
+      height: 530px !important; /* 세로 길이를 하단 제어바 직전까지 530px로 대폭 연장 */
       background: #34495e;
       border: var(--pixel-thick) solid var(--pure-black);
       box-shadow: 5px 5px 0 var(--pure-black);
@@ -878,7 +879,7 @@
     }
 
     .sns-logo {
-      font-size: 1rem;
+      font-size: 1.35rem !important; /* 기존 1rem에서 추가 상향 */
       font-weight: bold;
       color: var(--point-yellow);
       text-shadow: 1px 1px 0 var(--pure-black);
@@ -923,15 +924,15 @@
     }
 
     .author-name {
-      font-size: 0.8rem;
+      font-size: 1.35rem !important; /* 폰트 추가 극대화 */
       font-weight: bold;
       color: #000;
     }
 
     .post-text {
-      font-size: 0.85rem;
+      font-size: 1.55rem !important; /* 폰트 추가 극대화 */
       font-weight: bold;
-      line-height: 1.4;
+      line-height: 1.45;
       color: #1e293b;
       word-break: keep-all;
     }
@@ -1372,8 +1373,8 @@
       color: #000000;
       border: 2px solid var(--pure-black);
       border-radius: 8px 8px 8px 0;
-      padding: 6px 10px;
-      font-size: 0.8rem;
+      padding: 8px 12px;
+      font-size: 1.4rem !important; /* 0.8rem에서 1.4rem으로 확대 */
       max-width: 85%;
       word-break: keep-all;
       box-shadow: 2px 2px 0 rgba(0,0,0,0.15);
@@ -1384,8 +1385,8 @@
       color: #000000;
       border: 2px solid var(--pure-black);
       border-radius: 8px 8px 0 8px;
-      padding: 6px 10px;
-      font-size: 0.8rem;
+      padding: 8px 12px;
+      font-size: 1.4rem !important; /* 0.8rem에서 1.4rem으로 확대 */
       max-width: 85%;
       word-break: keep-all;
       box-shadow: 2px 2px 0 rgba(0,0,0,0.15);
@@ -1396,8 +1397,8 @@
       align-self: center;
       background: rgba(0, 0, 0, 0.45);
       color: #fff;
-      font-size: 0.7rem;
-      padding: 3px 8px;
+      font-size: 1.15rem !important;
+      padding: 6px 12px;
       border-radius: 4px;
       border: 1px solid #555;
       margin: 4px 0;
@@ -1422,11 +1423,11 @@
     }
     .dial-screen {
       width: 100%;
-      height: 40px;
+      height: 50px !important; /* 기존 40px에서 50px로 상향 */
       background: #000;
       border: 3px solid #fff;
       color: var(--neon-mint);
-      font-size: 1.4rem;
+      font-size: 2.2rem !important; /* 기존 1.4rem에서 2.2rem으로 대폭 상향 */
       display: flex;
       align-items: center;
       justify-content: flex-end;
@@ -1448,7 +1449,7 @@
       color: #000;
       border: 2px solid #000;
       border-radius: 4px;
-      font-size: 1rem;
+      font-size: 1.4rem !important; /* 기존 1rem에서 1.4rem으로 확대 */
       font-weight: bold;
       display: flex;
       align-items: center;
@@ -1468,9 +1469,9 @@
     .dial-key.call-key {
       background: var(--neon-mint);
       grid-column: span 3;
-      height: 34px;
+      height: 48px !important; /* 기존 34px에서 48px로 세로 크게 연장 */
       color: #000;
-      font-size: 0.9rem;
+      font-size: 1.25rem !important; /* 기존 0.9rem에서 1.25rem으로 확대 */
     }
     .dial-key.call-key.disabled {
       background: #7f8c8d;
@@ -1499,7 +1500,7 @@
       background: #2c3e50;
       border: var(--pixel-thick) solid #000;
       border-radius: 8px;
-      padding: 12px;
+      padding: 24px !important; /* 패딩 확장 */
       width: 90%;
       text-align: center;
       color: #fff;
@@ -1527,9 +1528,9 @@
       margin: 0 auto 8px;
     }
     .block-popup-text {
-      font-size: 0.8rem;
-      line-height: 1.4;
-      margin-bottom: 10px;
+      font-size: 1.35rem !important; /* 기존 0.8rem에서 1.35rem으로 확대 */
+      line-height: 1.45;
+      margin-bottom: 15px;
       word-break: keep-all;
     }
     .block-popup-buttons {
@@ -1538,8 +1539,8 @@
       justify-content: center;
     }
     .block-popup-btn {
-      padding: 4px 12px;
-      font-size: 0.8rem;
+      padding: 8px 18px !important; /* 패딩 확대 */
+      font-size: 1.25rem !important; /* 기존 0.8rem에서 1.25rem으로 확대 */
       font-weight: bold;
       border: 2px solid #000;
       cursor: pointer;
@@ -1920,8 +1921,8 @@
       <!-- 좌측: 고유 역량 이미지 아이콘 & 역량명 -->
       <div style="display: flex; align-items: center; gap: 8px;">
         <div style="position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; overflow: visible; margin-left: -5px; margin-right: 5px; flex-shrink: 0;">
-          <!-- 4.5배율 돌출 효과 재현 (icon_violence.png) -->
-          <img src="images/icon_violence.png" alt="역량 아이콘" style="position: absolute; width: 96px; height: 96px; object-fit: contain; max-width: none; image-rendering: pixelated; transform: scale(2.4); z-index: 20; pointer-events: none; top: -28px; left: -26px;">
+          <!-- 4.5배율 돌출 효과 재현 (icon_violence.webp) -->
+          <img src="images/icon_violence.webp" alt="역량 아이콘" style="position: absolute; width: 96px; height: 96px; object-fit: contain; max-width: none; image-rendering: pixelated; transform: scale(2.4); z-index: 20; pointer-events: none; top: -28px; left: -26px;">
         </div>
         <span style="font-weight: bold; font-size: 1.15rem; letter-spacing: -0.025em; margin-left: 5px;">사이버폭력 인식</span>
       </div>
@@ -1949,7 +1950,7 @@
       <div class="std-intro-body">
         <!-- 좌측 캐릭터 영역 (더 작아짐) -->
         <div class="std-intro-char-wrapper-small">
-          <img src="images/maeumon_intro.png" alt="마음온" class="std-intro-char-img">
+          <img src="images/maeumon_intro.webp" alt="마음온" class="std-intro-char-img">
         </div>
 
         <!-- 우측 단일 통합 상자 (대사 + 활동 요약) -->
@@ -2007,86 +2008,86 @@
       <!-- 마음온 AI 공통 가이드 배너 (1단계) -->
       <div class="std-guide-banner">
         <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
-          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px !important; height: 57px !important; aspect-ratio: 1 / 1 !important; object-fit: contain !important; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
+          <img src="images/maeumon_intro.webp" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px !important; height: 57px !important; aspect-ratio: 1 / 1 !important; object-fit: contain !important; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
         </div>
         <div style="display: flex !important; flex-direction: column !important; justify-content: center !important; flex-grow: 1 !important; margin-left: 9px;">
           <span style="font-size: 14.25px !important; font-weight: 900 !important; line-height: 1.1 !important; margin-bottom: 3px !important; font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important; display: block !important;">마음온 AI 가이드</span>
           <span style="font-size: 16.5px !important; font-weight: bold !important; color: #e2e8f0 !important; line-height: 1.3 !important; font-family: 'DungGeunMo', monospace !important; display: block !important;" id="act1-guide-bubble">
-            사이버 폭력 방관자가 아닌 방어자가 되어 우리 반을 지키는 영웅이 되어줘! 🛡️
+            사이버 폭력을 목격했을때, 적극적으로 너의 의견을 표현해줘!
           </span>
         </div>
       </div>
       
-      <!-- 1단계 미션 질문 카드 (정밀화된 한줄 지시문) -->
-      <div class="mission-question-card" style="background-color: #451a03 !important; border: 4px solid #000000 !important; box-shadow: 3px 3px 0px #000000 !important; padding: 9px 18px !important; margin-bottom: 6px !important; color: #fde047 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important; max-width: 100% !important; width: 100% !important;">
-        <div style="font-size: 0.86rem !important; font-weight: bold !important; color: #fde047 !important; line-height: 1.4 !important;">
+      <!-- 1단계 미션 질문 카드 (세로길이 단축, 파스텔 노랑배경, 검정 글자 및 1.4rem 글자크기 상향) -->
+      <div class="mission-question-card" style="background-color: #fef08a !important; border: 4px solid #000000 !important; box-shadow: 3px 3px 0px #000000 !important; padding: 4px 6px !important; margin-bottom: 6px !important; color: #000000 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important; max-width: 100% !important; width: 100% !important; min-height: auto !important; height: auto !important;">
+        <div id="act1-mission-prompt" style="font-size: 1.4rem !important; font-weight: bold !important; color: #000000 !important; line-height: 1.2 !important;">
           상황 속 인물들이 느꼈을 진짜 마음(감정) 카드를 알맞게 매칭해봅시다.
         </div>
       </div>
 
       <div class="act1-content" style="display: flex !important; flex-direction: column !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; flex-grow: 1 !important; height: auto !important; overflow: hidden !important; padding: 4px 12px 50px 12px !important; margin-bottom: 0px !important;">
         
-        <!-- 상단 대화방 & 캐릭터 생각구름 & 감정 매칭 드롭 영역 -->
-        <div class="act1-interactive-area" style="display: flex; flex-direction: row; justify-content: center; align-items: flex-end; gap: 15px; width: 100%; flex-grow: 1; max-height: 250px !important; margin-top: 12px !important;">
+        <!-- 상단 대화방 & 캐릭터 생각구름 & 감정 매칭 드롭 영역 (아래로 마진을 늘려 살짝 내림) -->
+        <div class="act1-interactive-area" style="display: flex; flex-direction: row; justify-content: center; align-items: flex-end; gap: 20px; width: 100%; flex-grow: 1; max-height: 380px !important; margin-top: 30px !important;">
           
-          <!-- 준우의 방 (좌측) -->
-          <div class="character-container" id="char-container-perp" style="gap: 6px;">
+          <!-- 준우의 방 (좌측 - 1.5배 확대 및 최적화) -->
+          <div class="character-container" id="char-container-perp" style="gap: 6px; width: 170px;">
             <!-- 준우 생각구름 -->
-            <div class="thought-bubble perp-bubble" id="bubble-perp" style="min-height: 32px; font-size: 10.5px; padding: 4px 8px;">
+            <div class="thought-bubble perp-bubble" id="bubble-perp" style="min-height: 48px; font-size: 1.15rem !important; padding: 8px 12px !important;">
               이거 대박이다ㅋㅋ
             </div>
-            <!-- 캐릭터 사진 박스 -->
-            <div class="character-frame" style="border-color: var(--point-yellow); width: 120px !important; height: 120px !important; padding: 0; overflow: hidden;">
-              <img id="img-junwoo-char" src="images/cyber_junwoo.png" style="width: 100%; height: 100%; object-fit: cover;" alt="준우">
-              <div class="character-frame-label" style="background: var(--point-yellow); color: #000;">준우 👦</div>
+            <!-- 캐릭터 사진 박스 (150px로 1.5배 업스케일, 이모지 제거) -->
+            <div class="character-frame" style="border-color: var(--point-yellow); width: 150px !important; height: 150px !important; padding: 0; overflow: hidden; position: relative;">
+              <img id="img-junwoo-char" src="images/cyber_junwoo.webp" style="width: 100%; height: 100%; object-fit: cover;" alt="준우">
+              <div class="character-frame-label" style="background: var(--point-yellow); color: #000; font-size: 1.15rem !important; font-weight: bold; width: 100%; text-align: center; padding: 2px 0;">준우</div>
             </div>
-            <!-- 준우 감정 드롭 영역 (사진 바로 밑으로 이동!) -->
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 2px; width: 130px;">
-              <span style="font-size: 8px; font-weight: bold; color: var(--point-yellow);">준우 감정 드롭</span>
-              <div class="drop-zone border-2 border-dashed border-yellow-400 bg-yellow-400/5 p-1 min-h-[38px] flex flex-wrap gap-1 items-center justify-center w-full" id="drop-zone-perp" style="border-radius: 4px; box-sizing: border-box;">
-                <span class="drop-zone-placeholder text-[10px] text-yellow-400/50" id="drop-placeholder-perp">감정카드 드롭</span>
+            <!-- 준우 감정 드롭 영역 (1.5배 확대 및 문구 수정) -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 160px;">
+              <span style="font-size: 1.1rem; font-weight: bold; color: var(--point-yellow);">준우의 감정은?</span>
+              <div class="drop-zone border-2 border-dashed border-yellow-400 bg-yellow-400/5 p-1 min-h-[50px] flex flex-wrap gap-1 items-center justify-center w-full" id="drop-zone-perp" style="border-radius: 4px; box-sizing: border-box;">
+                <span class="drop-zone-placeholder text-[1.1rem] text-yellow-400/50" id="drop-placeholder-perp">감정카드 드롭</span>
               </div>
             </div>
           </div>
 
-          <!-- 중앙 학급 단체 채팅방 스마트폰 -->
-          <div class="phone-container" style="width: 260px; height: 280px; border-color: #000; shrink-0; box-shadow: 4px 4px 0 #000;">
+          <!-- 중앙 학급 단체 대화방 스마트폰 (가로 320px x 세로 380px 세로 높낮이를 대시보드 바로 위까지 길게 연장) -->
+          <div class="phone-container" style="width: 320px !important; height: 380px !important; border-color: #000; shrink-0; box-shadow: 4px 4px 0 #000;">
             <div class="chat-room-screen">
-              <div class="chat-header">학급 단체 채팅방 💬</div>
+              <div class="chat-header">우리반 단체 대화방 💬</div>
               <div class="chat-messages-container" id="chat-messages-box">
                 <!-- JS에서 애니메이션 렌더링 -->
               </div>
             </div>
           </div>
 
-          <!-- 민수의 방 (우측) -->
-          <div class="character-container" id="char-container-vic" style="gap: 6px;">
+          <!-- 민수의 방 (우측 - 1.5배 확대 및 최적화) -->
+          <div class="character-container" id="char-container-vic" style="gap: 6px; width: 170px;">
             <!-- 민수 생각구름 -->
-            <div class="thought-bubble vic-bubble" id="bubble-vic" style="min-height: 32px; font-size: 10.5px; padding: 4px 8px;">
+            <div class="thought-bubble vic-bubble" id="bubble-vic" style="min-height: 48px; font-size: 1.15rem !important; padding: 8px 12px !important;">
               다들 나를 비웃고 있어...ㅠ
             </div>
-            <!-- 캐릭터 사진 박스 -->
-            <div class="character-frame" style="border-color: var(--neon-pink); width: 120px !important; height: 120px !important; padding: 0; overflow: hidden;">
-              <img id="img-minsu-char" src="images/cyber_minsu.png" style="width: 100%; height: 100%; object-fit: cover;" alt="민수">
-              <div class="character-frame-label" style="background: var(--neon-pink); color: #fff;">민수 👦</div>
+            <!-- 캐릭터 사진 박스 (150px로 1.5배 업스케일, 이모지 제거) -->
+            <div class="character-frame" style="border-color: var(--neon-pink); width: 150px !important; height: 150px !important; padding: 0; overflow: hidden; position: relative;">
+              <img id="img-minsu-char" src="images/cyber_minsu.webp" style="width: 100%; height: 100%; object-fit: cover;" alt="민수">
+              <div class="character-frame-label" style="background: var(--neon-pink); color: #fff; font-size: 1.15rem !important; font-weight: bold; width: 100%; text-align: center; padding: 2px 0;">민수</div>
             </div>
-            <!-- 민수 감정 드롭 영역 (사진 바로 밑으로 이동!) -->
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 2px; width: 130px;">
-              <span style="font-size: 8px; font-weight: bold; color: var(--neon-pink);">민수 감정 드롭</span>
-              <div class="drop-zone border-2 border-dashed border-pink-400 bg-pink-400/5 p-1 min-h-[38px] flex flex-wrap gap-1 items-center justify-center w-full" id="drop-zone-vic" style="border-radius: 4px; box-sizing: border-box;">
-                <span class="drop-zone-placeholder text-[10px] text-pink-400/50" id="drop-placeholder-vic">감정카드 드롭</span>
+            <!-- 민수 감정 드롭 영역 (1.5배 확대 및 문구 수정) -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 160px;">
+              <span style="font-size: 1.1rem; font-weight: bold; color: var(--neon-pink);">민수의 감정은?</span>
+              <div class="drop-zone border-2 border-dashed border-pink-400 bg-pink-400/5 p-1 min-h-[50px] flex flex-wrap gap-1 items-center justify-center w-full" id="drop-zone-vic" style="border-radius: 4px; box-sizing: border-box;">
+                <span class="drop-zone-placeholder text-[1.1rem] text-pink-400/50" id="drop-placeholder-vic">감정카드 드롭</span>
               </div>
             </div>
           </div>
 
         </div>
 
-        <!-- 하단 질문 & 매칭 대시보드 (높이 110px로 상향, 레이아웃 개편) -->
-        <div class="act1-bottom-dashboard" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; height: 110px; background: rgba(0,0,0,0.5); border: 3px solid #000; box-shadow: 3px 3px 0 #000; padding: 6px 12px; box-sizing: border-box; shrink-0;">
+        <!-- 하단 질문 & 매칭 대시보드 (높이 150px로 상향, 텍스트/카드 1.5배 전면 스케일 업) -->
+        <div class="act1-bottom-dashboard" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; height: 150px; background: rgba(0,0,0,0.5); border: 3px solid #000; box-shadow: 3px 3px 0 #000; padding: 12px 18px; box-sizing: border-box; shrink-0;">
           
           <!-- 좌측: 가이드/질문 영역 -->
           <div style="display: flex; flex-direction: column; gap: 4px; width: 50%; justify-content: center; height: 100%;">
-            <div class="dashboard-guide text-[12px] font-bold leading-relaxed" id="act1-guide" style="border: none; background: transparent; padding: 0; box-shadow: none; border-left: 4px solid var(--point-yellow); padding-left: 8px; color: #fff; word-break: keep-all; transition: border-color 0.3s ease;">
+            <div class="dashboard-guide style-guide" id="act1-guide" style="border: none; background: transparent; padding: 0; box-shadow: none; border-left: 4px solid var(--point-yellow); padding-left: 8px; color: #fff; word-break: keep-all; transition: border-color 0.3s ease; font-size: 1.25rem !important; line-height: 1.5;">
               준우와 민수가 느끼는 감정을 각 캐릭터 사진 아래 드롭 영역에 매칭해 주세요.
             </div>
           </div>
@@ -2094,21 +2095,21 @@
           <!-- 우측: 감정카드 트레이 및 입력 폼 -->
           <div style="display: flex; flex-direction: column; width: 46%; justify-content: center; height: 100%; position: relative; border-left: 1px solid rgba(255,255,255,0.2); padding-left: 12px; box-sizing: border-box;">
             
-            <!-- 감정 블록 트레이 (우측 배치) -->
-            <div class="emotion-tray" id="emotion-tray" style="display: flex !important; flex-wrap: wrap; gap: 6px; padding: 6px; background: rgba(0,0,0,0.3); border: 2px solid #000; box-shadow: none; min-height: 48px; align-items: center; justify-content: center; box-sizing: border-box; width: 100%;">
+            <!-- 감정 블록 트레이 (우측 배치, 세로 높이 연장) -->
+            <div class="emotion-tray" id="emotion-tray" style="display: flex !important; flex-wrap: wrap; gap: 6px; padding: 6px; background: rgba(0,0,0,0.3); border: 2px solid #000; box-shadow: none; min-height: 64px; align-items: center; justify-content: center; box-sizing: border-box; width: 100%;">
               <!-- 자바스크립트에서 렌더링 -->
             </div>
             
-            <!-- Step 3: 올바른 대처 메시지 작성 폼 (텍스트 입력창과 전송 버튼만 우측 배치) -->
+            <!-- Step 3: 올바른 대처 메시지 작성 폼 (텍스트 입력창과 전송 버튼 1.5배 확대) -->
             <div class="prescription-form flex-col gap-1.5" id="prescription-form" style="display: none; width: 100%;">
               <div style="display: flex; flex-direction: row; gap: 6px; width: 100%; align-items: center;">
-                <input type="text" id="prescription-text" style="font-size: 11.5px; padding: 6px 10px; height: 36px; box-sizing: border-box; flex-grow: 1;" class="font-bold text-black border-2 border-black bg-white focus:outline-none" placeholder="방관하지 않고 대처할 말을 적어주세요.">
-                <button class="retro-btn" style="background: var(--neon-pink); font-size: 12px; padding: 6px 14px; height: 36px; box-shadow: 1.5px 1.5px 0 #000; shrink-0; box-sizing: border-box; display: inline-flex; align-items: center;" onclick="submitPrescription()">전송 💬</button>
+                <input type="text" id="prescription-text" style="font-size: 1.25rem !important; padding: 6px 12px; height: 48px !important; box-sizing: border-box; flex-grow: 1;" class="font-bold text-black border-2 border-black bg-white focus:outline-none" placeholder="민수를 위해 적극적으로 표현해주세요.">
+                <button class="retro-btn" style="background: var(--neon-pink); font-size: 1.25rem !important; padding: 6px 20px !important; height: 48px !important; box-shadow: 1.5px 1.5px 0 #000; shrink-0; box-sizing: border-box; display: inline-flex; align-items: center;" onclick="submitPrescription()">전송 💬</button>
               </div>
             </div>
 
             <!-- 완료 이동 버튼 -->
-            <button class="retro-btn w-full" id="btn-goto-act2" style="display: none; background: var(--neon-mint); font-size: 11.5px; padding: 8px; box-shadow: 1.5px 1.5px 0 #000;" onclick="goToActivity2()">활동 2: 4단계 대처법 실천하기 ▶</button>
+            <button class="retro-btn w-full" id="btn-goto-act2" style="display: none; background: var(--neon-mint); font-size: 1.25rem !important; padding: 12px !important; box-shadow: 1.5px 1.5px 0 #000;" onclick="goToActivity2()">활동 2: 4단계 대처법 실천하기 ▶</button>
             <button class="retro-btn w-full" id="btn-act1-next" style="display: none !important; font-size: 12px;" onclick="goNextEpisode()"></button>
           </div>
 
@@ -2140,8 +2141,8 @@
          Screen 3: [활동 2] SOS 구조대
          ========================================= -->
     <div id="view-act2" class="view" style="display: flex !important; flex-direction: column !important; height: calc(100% - 120px) !important; justify-content: space-between !important; overflow: hidden !important;">
-      <div class="header-bar">
-        <span class="header-title">🚨 활동 2: 마음온의 실전 대처 미션</span>
+      <div class="header-bar" style="background-color: #1e293b !important; border-bottom: 3px solid #000000 !important; color: #ffffff !important;">
+        <span class="header-title" style="font-size: 1.5rem !important; color: #ffffff !important;">🚨 활동 2: 마음온의 실전 대처 미션</span>
         <div style="display: flex; gap: 8px; align-items: center;">
           <button class="retro-btn" style="padding: 2px 8px; font-size: 10px; background: #e74c3c; color: white; box-shadow: 1px 1px 0 #000; cursor: pointer;" onclick="skipToOutro()">스킵 ⏭</button>
           <span class="header-progress" id="act2-progress">미션 1</span>
@@ -2151,7 +2152,7 @@
       <!-- 마음온 AI 공통 가이드 배너 (2단계) -->
       <div class="std-guide-banner" style="margin-bottom: 6px !important;">
         <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
-          <img src="images/maeumon_intro.png" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px !important; height: 57px !important; aspect-ratio: 1 / 1 !important; object-fit: contain !important; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
+          <img src="images/maeumon_intro.webp" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px !important; height: 57px !important; aspect-ratio: 1 / 1 !important; object-fit: contain !important; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
         </div>
         <div style="display: flex !important; flex-direction: column !important; justify-content: center !important; flex-grow: 1 !important; margin-left: 9px;">
           <span style="font-size: 14.25px !important; font-weight: 900 !important; line-height: 1.1 !important; margin-bottom: 3px !important; font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important; display: block !important;">마음온 AI 가이드</span>
@@ -2161,16 +2162,16 @@
         </div>
       </div>
 
-      <!-- 2단계 미션 질문 카드 (헤더 아래 가로 100% 배치로 복원) -->
-      <div class="mission-question-card" style="background-color: #451a03 !important; border: 4px solid #000000 !important; box-shadow: 3px 3px 0px #000000 !important; padding: 9px 18px !important; margin-bottom: 4px !important; color: #fde047 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important; max-width: 100% !important; width: 100% !important; flex-shrink: 0 !important;">
-        <div style="font-size: 0.86rem !important; font-weight: bold !important; color: #fde047 !important; line-height: 1.4 !important;">
+      <!-- 2단계 미션 질문 카드 (가로폭 70%로 축소, 파스텔 노랑배경, 검정 글자 및 1.6rem 글자크기 상향) -->
+      <div class="mission-question-card" style="background-color: #fef08a !important; border: 4px solid #000000 !important; box-shadow: 3px 3px 0px #000000 !important; padding: 4px 6px !important; margin-bottom: 4px !important; color: #000000 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important; max-width: 70% !important; width: 70% !important; margin-left: auto !important; margin-right: auto !important; flex-shrink: 0 !important;">
+        <div style="font-size: 1.6rem !important; font-weight: bold !important; color: #000000 !important; line-height: 1.2 !important;">
           사이버 폭력에 처한 친구를 대처 카드를 사용해 지혜롭게 도와주세요.
         </div>
       </div>
       
 
 
-      <div class="act2-content" style="display: flex !important; width: 100% !important; flex-grow: 1 !important; gap: 20px !important; align-items: stretch !important; justify-content: center !important; margin: 4px 0 !important; height: auto !important; overflow: hidden !important; padding-bottom: 50px !important; margin-bottom: 0px !important;">
+      <div class="act2-content" style="display: flex !important; width: 100% !important; flex-grow: 1 !important; gap: 45px !important; align-items: stretch !important; justify-content: center !important; margin: 4px 0 !important; height: auto !important; overflow: hidden !important; padding-bottom: 0px !important; padding-left: 50px !important; padding-right: 50px !important; margin-bottom: 0px !important;">
         <!-- 픽셀풍 SNS / 메신저 화면 -->
         <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0;">
           <div class="sns-container" id="sns-container" onclick="handlePhoneScreenClick(event)" ondragover="handlePhoneDragOver(event)" ondragleave="handlePhoneDragLeave(event)" ondrop="handlePhoneDrop(event)">
@@ -2226,23 +2227,23 @@
                 <button class="dial-key action-key" onclick="pressDialKey('#')">#</button>
                 <button class="dial-key action-key" onclick="pressDialKey('clear')" style="grid-column: span 1.5;">⌫</button>
                 <button class="dial-key action-key" onclick="pressDialKey('reset')" style="grid-column: span 1.5;">초기화</button>
-                <button class="dial-key call-key disabled" id="dial-call-btn" disabled onclick="submitSosDial()">📞 통화 연결 (1388)</button>
+                <button class="dial-key call-key disabled" id="dial-call-btn" disabled onclick="submitSosDial()">📞 통화 연결</button>
               </div>
             </div>
 
           </div>
         </div>
 
-        <!-- 우측 활동 대시보드 (설명, 가이드, 대처도구가 세로로 묶인 최적화 카드) -->
-        <div class="act1-dashboard" style="display: flex !important; flex-direction: column !important; justify-content: flex-start !important; gap: 8px !important; padding-top: 4px !important; flex-grow: 1 !important; width: 310px !important; min-width: 310px !important; height: 100% !important;">
+        <!-- 우측 활동 대시보드 (설명, 가이드, 대처도구가 세로로 묶인 최적화 카드 - 가로폭 200px로 추가 축소, 정렬 위치 하향) -->
+        <div class="act1-dashboard" style="display: flex !important; flex-direction: column !important; justify-content: flex-start !important; gap: 8px !important; padding-top: 50px !important; flex-grow: 1 !important; width: 200px !important; min-width: 200px !important; height: 100% !important;">
           
           <div>
             <!-- [이동] 마음온 AI 가이드 배너 (우측 콤팩트 핏) -->
             
 
-            <!-- 활동 가이드 미션 내용 카드 (세로폭 대폭 확장으로 가독성 보장) -->
+            <!-- 활동 가이드 미션 내용 카드 (세로폭 대폭 확장 및 가독성 1.35rem 폰트 확대) -->
             <div style="position: relative !important;">
-              <div class="dashboard-guide" id="act2-guide" style="min-height: 250px !important; max-height: 280px !important; overflow-y: auto; margin-bottom: 0px !important; padding: 10px !important; padding-bottom: 45px !important;">
+              <div class="dashboard-guide" id="act2-guide" style="min-height: 250px !important; max-height: 280px !important; overflow-y: auto; margin-bottom: 0px !important; padding: 10px !important; padding-bottom: 45px !important; font-size: 1.35rem !important; line-height: 1.5 !important;">
                 <!-- 동적 가이드 내용 로드 -->
               </div>
               
@@ -2257,22 +2258,22 @@
             </div>
           </div>
 
-          <!-- [이동] 하단 대처 도구 모음 (우측 대시보드 맨 아래로 밀착 고정!) -->
-          <div class="tool-dock" style="margin-top: auto !important; margin-bottom: 0px !important; width: 100% !important; padding: 6px !important; box-shadow: inset 2px 2px 0 rgba(255,255,255,0.1), 3px 3px 0 var(--pure-black) !important;">
-            <button class="tool-btn" id="tool-capture" style="padding: 4px 2px !important; font-size: 10px !important;" onclick="useTool('capture')">
-              <span class="tool-btn-icon" style="font-size: 14px !important; margin-bottom: 2px !important;">📸</span>
+          <!-- [이동] 하단 대처 도구 모음 (우측 대시보드 미션 안내 박스 밑으로 밀착 정렬) -->
+          <div class="tool-dock" style="margin-top: 10px !important; margin-bottom: 0px !important; width: 100% !important; padding: 6px !important; box-shadow: inset 2px 2px 0 rgba(255,255,255,0.1), 3px 3px 0 var(--pure-black) !important;">
+            <button class="tool-btn" id="tool-capture" style="padding: 14px 1px !important; font-size: 16.5px !important; height: auto !important;" onclick="useTool('capture')">
+              <span class="tool-btn-icon" style="font-size: 22px !important; margin-bottom: 4px !important;">📸</span>
               <span>화면캡처</span>
             </button>
-            <button class="tool-btn" id="tool-block" style="padding: 4px 2px !important; font-size: 10px !important;" onclick="useTool('block')">
-              <span class="tool-btn-icon" style="font-size: 14px !important; margin-bottom: 2px !important;">🚫</span>
+            <button class="tool-btn" id="tool-block" style="padding: 14px 1px !important; font-size: 16.5px !important; height: auto !important;" onclick="useTool('block')">
+              <span class="tool-btn-icon" style="font-size: 22px !important; margin-bottom: 4px !important;">🚫</span>
               <span>차단하기</span>
             </button>
-            <button class="tool-btn" id="tool-exit" style="padding: 4px 2px !important; font-size: 10px !important;" onclick="useTool('exit')">
-              <span class="tool-btn-icon" style="font-size: 14px !important; margin-bottom: 2px !important;">🚪</span>
+            <button class="tool-btn" id="tool-exit" style="padding: 14px 1px !important; font-size: 16.5px !important; height: auto !important;" onclick="useTool('exit')">
+              <span class="tool-btn-icon" style="font-size: 22px !important; margin-bottom: 4px !important;">🚪</span>
               <span>나가기</span>
             </button>
-            <button class="tool-btn" id="tool-sos" style="padding: 4px 2px !important; font-size: 10px !important;" onclick="useTool('sos')" draggable="true" ondragstart="handleSosDragStart(event)" ondragend="handleSosDragEnd(event)">
-              <span class="tool-btn-icon" style="font-size: 14px !important; margin-bottom: 2px !important;">🚨</span>
+            <button class="tool-btn" id="tool-sos" style="padding: 14px 1px !important; font-size: 16.5px !important; height: auto !important;" onclick="useTool('sos')" draggable="true" ondragstart="handleSosDragStart(event)" ondragend="handleSosDragEnd(event)">
+              <span class="tool-btn-icon" style="font-size: 22px !important; margin-bottom: 4px !important;">🚨</span>
               <span>SOS요청</span>
             </button>
           </div>
@@ -2294,7 +2295,7 @@
         
         <!-- 좌측 캐릭터 영역 (마음온 캐릭터 원래대로 복원) -->
         <div class="std-intro-char-wrapper-small">
-          <img src="images/maeumon_outro.png" alt="마음온" class="std-intro-char-img">
+          <img src="images/maeumon_outro.webp" alt="마음온" class="std-intro-char-img">
         </div>
 
         <!-- 우측 단일 통합 상자 (밝은 배경색 적용, 배지+배지제목+설명 텍스트 수직 구성) -->
@@ -2304,7 +2305,7 @@
           <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 8px; flex-shrink: 0;">
             <!-- 크기 5배 상향된 뱃지 이미지 -->
             <div style="width: 75px; height: 75px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 45px 0 15px 0; flex-shrink: 0;">
-              <img src="images/icon_violence.png" alt="폭력인식 뱃지" style="width: 240px; height: 240px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
+              <img src="images/icon_violence.webp" alt="폭력인식 뱃지" style="width: 240px; height: 240px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
             </div>
             <span style="font-size: 1.25rem; color: #1e3a8a; font-weight: bold; margin-top: 10px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [사이버폭력 인식] 배지 획득!</span>
           </div>
@@ -2358,7 +2359,7 @@
       {
         id: 1,
         situation: "친구의 엽기 표정 도촬 사진을 단체 채팅방에 올린 상황 (사이버 영상 유포)",
-        media: "images/cyber_chat.png",
+        media: "images/cyber_chat.webp",
         perpText: "이거 대박이다ㅋㅋ",
         vicText: "다들 나를 비웃고 있어...ㅠ"
       }
@@ -2596,13 +2597,13 @@
       // 민수 캐릭터 이미지 원래대로 초기화
       const minsuImg = document.getElementById('img-minsu-char');
       if (minsuImg) {
-        minsuImg.src = "images/cyber_minsu.png";
+        minsuImg.src = "images/cyber_minsu.webp";
       }
 
       // 준우 캐릭터 이미지 원래대로 초기화
       const junwooImg = document.getElementById('img-junwoo-char');
       if (junwooImg) {
-        junwooImg.src = "images/cyber_junwoo.png";
+        junwooImg.src = "images/cyber_junwoo.webp";
       }
 
       // 단체 채팅방 스크린 및 메신저함 초기화
@@ -2666,8 +2667,10 @@
       updateDropZoneUI('perp');
       updateDropZoneUI('vic');
 
-      // 가이드 문구 초기화
-      document.getElementById('act1-guide').innerHTML = "준우와 민수가 느끼는 감정을 각 캐릭터 사진 아래 드롭 영역에 매칭해 주세요.";
+      // 가이드 및 상단 미션 질문 문구 초기화
+      const initGuideText = "준우와 민수가 느끼는 감정을 각 캐릭터 사진 아래 드롭 영역에 매칭해 주세요.";
+      document.getElementById('act1-guide').innerHTML = initGuideText;
+      document.getElementById('act1-mission-prompt').innerText = initGuideText;
       document.getElementById('act1-guide').style.borderLeftColor = 'var(--point-yellow)';
       
       // 제어 컴포넌트 가리기
@@ -2827,7 +2830,9 @@
       
       document.getElementById('prescription-form').style.display = 'flex';
       document.getElementById('prescription-text').value = '';
-      document.getElementById('act1-guide').innerHTML = "이 단체 채팅방 상황에서 나는 친구들에게 어떻게 말해야 할까요?";
+      const presGuideText = "이 단체 채팅방 상황에서 나는 친구들에게 어떻게 말해야 할까요?";
+      document.getElementById('act1-guide').innerHTML = presGuideText;
+      document.getElementById('act1-mission-prompt').innerText = presGuideText;
       document.getElementById('act1-guide').style.borderLeftColor = 'var(--neon-mint)';
     }
 
@@ -2857,10 +2862,10 @@
           bubbleVic.style.borderColor = "var(--soft-yellow)";
         }
 
-        // 민수 프로필 사진 웃는 사진(images/minsu_smile.jpg)으로 변경
+        // 민수 프로필 사진 웃는 사진(images/minsu_smile.webp)으로 변경
         const minsuImg = document.getElementById('img-minsu-char');
         if (minsuImg) {
-          minsuImg.src = "images/minsu_smile.jpg";
+          minsuImg.src = "images/minsu_smile.webp";
         }
 
         // 준우 생각구름 난처한 대사로 변경
@@ -2871,10 +2876,10 @@
           bubblePerp.style.borderColor = "#cbd5e1";
         }
 
-        // 준우 프로필 사진 난처한 사진(images/junwoo_sorry.jpg)으로 변경
+        // 준우 프로필 사진 난처한 사진(images/junwoo_sorry.webp)으로 변경
         const junwooImg = document.getElementById('img-junwoo-char');
         if (junwooImg) {
-          junwooImg.src = "images/junwoo_sorry.jpg";
+          junwooImg.src = "images/junwoo_sorry.webp";
         }
 
         // 단체 채팅방 메시지에 사용자가 작성한 메시지(나) 추가 연출!
@@ -2984,7 +2989,7 @@
             <div style="display:flex; gap:6px; align-items:flex-start;">
               <div class="sns-avatar" style="cursor: pointer;" onclick="handleBullyProfileClick(event)"></div>
               <div style="display:flex; flex-direction:column; align-items:flex-start; flex-grow:1;">
-                <span style="font-size:0.65rem; color:#666; font-weight:bold; margin-left:4px;">진우</span>
+                <span style="font-size:1.15rem; color:#666; font-weight:bold; margin-left:4px;">진우</span>
                 <div class="chat-bubble-left">야 얘 프사 사진 봐봐, 좀 이상하지 않냐?</div>
               </div>
             </div>
@@ -3000,7 +3005,7 @@
             <div style="display:flex; gap:6px; align-items:flex-start;">
               <div class="sns-avatar"></div>
               <div style="display:flex; flex-direction:column; align-items:flex-start; flex-grow:1;">
-                <span style="font-size:0.65rem; color:#666; font-weight:bold; margin-left:4px;">철민</span>
+                <span style="font-size:1.15rem; color:#666; font-weight:bold; margin-left:4px;">철민</span>
                 <div class="chat-bubble-left">원래 좀 이상하더라고ㅋㅋㅋ</div>
               </div>
             </div>
@@ -3016,7 +3021,7 @@
             <div style="display:flex; gap:6px; align-items:flex-start;">
               <div class="sns-avatar"></div>
               <div style="display:flex; flex-direction:column; align-items:flex-start; flex-grow:1;">
-                <span style="font-size:0.65rem; color:#666; font-weight:bold; margin-left:4px;">건우</span>
+                <span style="font-size:1.15rem; color:#666; font-weight:bold; margin-left:4px;">건우</span>
                 <div class="chat-bubble-left">너 왜 여기 들어와 있어? 좀 나가라;</div>
               </div>
             </div>
@@ -3052,7 +3057,7 @@
               <div class="blocked-slash" id="act2-blocked-slash"></div>
             </div>
             <div style="display:flex; flex-direction:column; align-items:flex-start; flex-grow:1;">
-              <span style="font-size:0.65rem; color:#666; font-weight:bold; margin-left:4px;">진우</span>
+              <span style="font-size:1.15rem; color:#666; font-weight:bold; margin-left:4px;">진우</span>
               <div class="chat-bubble-left" id="act2-bully-msg">단체 채팅방 나가면 다 해결되는 줄 알았어? 도망칠 생각 마.</div>
             </div>
           </div>
@@ -3060,7 +3065,7 @@
         
         guide.innerHTML = `
           <strong>[미션 2]</strong><br>
-          가해자 진우가 개인 톡방까지 쫓아와 협박하고 있습니다. 무리한 대화는 피하고 차단해야 합니다.<br><br>
+          가해자 진우가 개인 채팅방까지 쫓아와 협박하고 있습니다. 무리한 대화는 피하고 차단해야 합니다.<br><br>
           
           하단의 도구 모음에서 <strong>[🚫 차단하기]</strong> 도구를 활성화한 후, 단체 채팅방 속 가해자 <strong>진우의 프로필 사진을 직접 터치/클릭</strong>하여 차단해 주세요.
         `;
@@ -3212,7 +3217,7 @@
             <div style="display:flex; gap:6px; align-items:flex-start;">
               <div class="sns-avatar" style="cursor: pointer;" onclick="handleBullyProfileClick(event)"></div>
               <div style="display:flex; flex-direction:column; align-items:flex-start; flex-grow:1;">
-                <span style="font-size:0.65rem; color:#666; font-weight:bold; margin-left:4px;">진우</span>
+                <span style="font-size:1.15rem; color:#666; font-weight:bold; margin-left:4px;">진우</span>
                 <div class="chat-bubble-left">나간다고 끝날 줄 알았냐? ㅋㅋ</div>
               </div>
             </div>
@@ -3226,7 +3231,7 @@
             <div style="display:flex; gap:6px; align-items:flex-start;">
               <div class="sns-avatar"></div>
               <div style="display:flex; flex-direction:column; align-items:flex-start; flex-grow:1;">
-                <span style="font-size:0.65rem; color:#666; font-weight:bold; margin-left:4px;">철민</span>
+                <span style="font-size:1.15rem; color:#666; font-weight:bold; margin-left:4px;">철민</span>
                 <div class="chat-bubble-left">우리가 계속 초대할 건데 어디 가냐?</div>
               </div>
             </div>
@@ -3240,7 +3245,7 @@
             <strong>[미션 1]</strong><br>
             방을 나갔지만 가해자들이 나를 다시 강제로 초대했습니다. 단순히 단체 채팅방을 나가는 것만으로는 사이버 폭력을 근본적으로 피하기 어렵습니다.<br><br>
             
-            이제 <strong>[미션 2]</strong>로 넘어갑니다. 하단의 <strong>[🚫 차단하기]</strong> 도구를 클릭해 활성화해 주세요.
+            이제 <strong>[미션 2]</strong>로 넘어갑니다.
           `;
           
           setTimeout(() => {
@@ -3456,11 +3461,11 @@
       const snsBody = document.getElementById('sns-body');
       snsBody.style.background = "#fff";
       snsBody.innerHTML = `
-        <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center; padding:15px; color:#2c3e50; gap:8px;">
+        <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center; padding:15px; color:#2c3e50; gap:12px;">
           <span style="font-size:3rem; animation:scaleBeat 1s infinite alternate steps(4);">🚨</span>
-          <strong style="font-size:0.95rem; line-height:1.4; color:var(--neon-hotpink);">1388 청소년전화 및 보호자에게 증거자료를 안전하게 전송했습니다.</strong>
-          <span style="font-size:0.75rem; color:#7f8c8d; margin-bottom: 8px;">청소년 전화상담 및 피해신고 연동 완료</span>
-          <button class="retro-btn" style="padding: 6px 12px; font-size: 0.8rem; background-color: var(--neon-mint); color: #000; cursor: pointer; border: 2px solid #000; box-shadow: 2px 2px 0 #000; font-family: 'DungGeunMo', monospace;" onclick="switchView('view-outro')">확인</button>
+          <strong style="font-size:1.15rem; line-height:1.4; color:var(--neon-hotpink); font-family: 'DungGeunMo', monospace !important;">1388 청소년전화 및 보호자에게 증거자료를 안전하게 전송했습니다.</strong>
+          <span style="font-size:0.95rem; color:#7f8c8d; margin-bottom: 4px; font-family: 'DungGeunMo', monospace !important;">청소년 전화상담 및 피해신고 연동 완료</span>
+          <span style="font-size:1.15rem; color:#1e293b; font-weight:bold; font-family: 'DungGeunMo', monospace !important; border: 2px dashed #000; padding: 6px 12px; background-color: #fef08a;">우측 하단의 [활동 완료 ➔] 버튼을 눌러 미션을 완료하세요!</span>
         </div>
       `;
 
@@ -3529,13 +3534,14 @@
       toast.style.background = 'var(--pure-black)';
       toast.style.color = 'var(--point-yellow)';
       toast.style.border = '3px solid var(--point-yellow)';
-      toast.style.padding = '10px 16px';
+      toast.style.padding = '12px 20px';
       toast.style.width = '85%';
       toast.style.maxWidth = '500px';
       toast.style.textAlign = 'center';
       toast.style.whiteSpace = 'normal';
       toast.style.wordBreak = 'keep-all';
-      toast.style.fontSize = '0.85rem';
+      toast.style.fontSize = '1.3rem'; // 기존 0.85rem에서 1.3rem으로 대폭 상향
+      toast.style.fontFamily = "'DungGeunMo', monospace"; // 둥근모 폰트 적용
       toast.style.fontWeight = 'bold';
       toast.style.zIndex = '999';
       toast.style.transition = 'all 0.25s ease';
