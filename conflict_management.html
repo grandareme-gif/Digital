@@ -806,8 +806,6 @@
            Step 2-4: 활동1 - 신호등 (시나리오 1~3 공용)
            ========================================== -->
       <div id="view-conflict1" class="absolute inset-0 hidden flex flex-col px-6 py-4 bg-[#1a1c23] text-white">
-        <!-- 임시 스킵 단추 -->
-        <button class="temp-skip-btn" onclick="skipStep()" style="position: absolute; top: 10px; right: 10px; z-index: 100; font-size: 0.75rem; padding: 4px 8px; background: #e67e22; color: #fff; border: 2px solid #000; cursor: pointer; font-family: 'DungGeunMo', monospace;">스킵 ⏭️</button>
 
         <!-- 마음온 AI 가이드 배너 -->
         <div class="std-guide-banner mb-2">
@@ -1057,8 +1055,7 @@
            Step 6-8: 활동2 - 신호등 갈등 해결 (시나리오 1~3 공용)
            ========================================= -->
       <div id="view-conflict2" class="absolute inset-0 hidden flex flex-col p-4 bg-[#1a1c23] text-white">
-        <!-- 임시 스킵 단추 -->
-        <button class="temp-skip-btn" onclick="skipStep()" style="position: absolute; top: 10px; right: 10px; z-index: 100; font-size: 0.75rem; padding: 4px 8px; background: #e67e22; color: #fff; border: 2px solid #000; cursor: pointer; font-family: 'DungGeunMo', monospace;">스킵 ⏭️</button>
+
 
         <!-- 마음온 AI 가이드 배너 -->
         <div class="std-guide-banner mb-2">
@@ -1737,26 +1734,7 @@
       }
     }
 
-    function skipStep() {
-      try { synth.playSelect(); } catch(e) {}
-      if (state.currentStep === 2 || state.currentStep === 3) {
-        const idx = state.act1ScenarioIdx;
-        state.completedPromises[idx] = act1Scenarios[idx].greenLight.factExample + "\n" + 
-                                       act1Scenarios[idx].greenLight.feelingExampleTemplate.replace("○○", "속상") + "\n" + 
-                                       act1Scenarios[idx].greenLight.requestExample;
-        if (state.currentStep === 2) {
-          goToStep(3);
-        } else {
-          goToStep(5); // 스킵 시에도 요약창(Step 4)을 건너뛰고 바로 활동2(Step 5) 진입
-        }
-      } else if (state.currentStep === 5 || state.currentStep === 6) {
-        goToStep(state.currentStep === 5 ? 6 : 8);
-      } else if (state.currentStep < 8) {
-        goToStep(state.currentStep + 1);
-      } else {
-        goToStep(8);
-      }
-    }
+
 
     function updateProgressBarDots(stepNum) {
       const dot1 = document.getElementById('dot-act1');

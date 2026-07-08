@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -192,26 +192,7 @@
       50% { transform: translateY(-6px); }
     }
 
-    /* 임시 스킵 버튼 스타일 */
-    .temp-skip-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: rgba(0, 0, 0, 0.4);
-      color: rgba(255, 255, 255, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 6px;
-      padding: 6px 10px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      z-index: 9999;
-      transition: all 0.2s ease;
-    }
-    .temp-skip-btn:hover {
-      background: rgba(255, 71, 87, 0.3);
-      color: #ffffff;
-      border-color: var(--point-red);
-    }
+
 
     /* =========================================
        Screen 1: 인트로
@@ -321,122 +302,455 @@
       transition: width 0.3s ease;
     }
     
-    /* 돋보기 게임 판 */
-    .detective-playground {
+    .sorting-container {
+      display: flex;
       width: 100%;
+      gap: 16px;
+      flex-grow: 1;
+      margin-top: 6px;
+      align-items: stretch;
+      justify-content: center;
+      min-height: 400px;
+    }
+    
+    .sort-zone {
+      flex: 1;
+      border: 4px dashed #4b5563;
+      border-radius: 8px;
+      padding: 12px;
+      background-color: #1e293b;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      transition: all 0.25s ease;
+      min-height: 380px;
+      max-height: 480px;
+      box-shadow: inset 0 4px 10px rgba(0,0,0,0.3);
+    }
+    
+    .sort-zone.zone-left {
+      border-color: #ef4444;
+      background-color: #1c0a0a;
+    }
+    
+    .sort-zone.zone-right {
+      border-color: #10b981;
+      background-color: #061f14;
+    }
+    
+    .sort-zone-title {
+      font-size: 1.15rem;
+      font-weight: 950;
+      text-align: center;
+      padding-bottom: 8px;
+      border-bottom: 2px solid rgba(255,255,255,0.15);
+      font-family: 'DungGeunMo', monospace;
+    }
+    
+    .sort-zone.zone-left .sort-zone-title {
+      color: #fca5a5;
+    }
+    
+    .sort-zone.zone-right .sort-zone-title {
+      color: #a7f3d0;
+    }
+    
+    .card-deck {
+      flex: 1.4;
+      background-color: #0f172a;
+      border: 4px solid #000;
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      overflow-y: auto;
+      max-height: 480px;
+      box-shadow: 4px 4px 0 #000;
+    }
+    
+    .card-deck-title {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--point-yellow);
+      font-family: 'DungGeunMo', monospace;
+      text-align: center;
+      border-bottom: 2px dashed rgba(255,255,255,0.2);
+      width: 100%;
+      padding-bottom: 6px;
+    }
+    
+    /* 대화 말풍선 카드 */
+    .bubble-card {
+      background-color: #ffffff;
+      color: #000000;
+      border: 3px solid #000000;
+      border-radius: 8px;
+      padding: 8px 10px;
+      box-shadow: 3px 3px 0 #000000;
+      cursor: grab;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .bubble-card:active {
+      cursor: grabbing;
+      transform: scale(0.98);
+    }
+
+    .bubble-card-content {
       flex-grow: 1;
       display: flex;
       flex-direction: column;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .card-side-btn {
+      width: 30px;
+      height: 30px;
+      display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
+      background-color: #f1f5f9;
+      color: #000000;
+      border: 2px solid #000000;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: bold;
+      transition: all 0.1s ease;
+      box-shadow: 2px 2px 0 #000000;
+      flex-shrink: 0;
+      padding: 0;
+      font-family: 'DungGeunMo', monospace;
+    }
+    .card-side-btn:hover {
+      background-color: var(--point-yellow);
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 #000000;
+    }
+    .card-side-btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 #000000;
+    }
+
+    /* 활성화된 (맨 위 정렬 대상) 대화 카드 */
+    .bubble-card.active-sort-card {
+      background-color: #fef08a !important; /* 연한 노란색 바탕 */
+      border-color: #eab308 !important; /* 노란색 계열 테두리 */
+      box-shadow: 0 0 12px rgba(234, 179, 8, 0.4), 3px 3px 0 #000000;
+      animation: pulse-border 1.5s infinite alternate;
     }
     
-    .image-wrapper {
-      position: relative;
-      width: 100%;
-      max-width: 560px;
-      height: auto;
-      border: var(--pixel-thick) solid var(--border-color);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-      background-color: #000;
+    @keyframes pulse-border {
+      0% {
+        border-color: #eab308 !important;
+      }
+      100% {
+        border-color: #ca8a04 !important;
+        box-shadow: 0 0 16px rgba(234, 179, 8, 0.6), 3px 3px 0 #000000;
+      }
     }
     
-    /* 활동 1 하단 제어 버튼 영역 스타일 */
-    .act1-btn-container {
+    /* 대기 중인 대화 카드 (맨 위 카드가 끝날 때까지 비활성화) */
+    .bubble-card.disabled-sort-card {
+      opacity: 0.45;
+      cursor: not-allowed;
+      pointer-events: none; /* 클릭/드래그 차단 */
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+
+    .card-side-btn.btn-left {
+      background-color: #ef4444 !important;
+      color: #ffffff !important;
+    }
+    .card-side-btn.btn-right {
+      background-color: #10b981 !important;
+      color: #ffffff !important;
+    }
+    
+    .bubble-card-header {
       display: flex;
-      gap: 16px;
-      margin-top: 4px;
-      width: 100%;
-      max-width: 560px;
-      justify-content: center;
-      z-index: 10;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.92rem;
+      font-weight: bold;
+      color: #4b5563;
+      border-bottom: 1px dashed #cbd5e1;
+      padding-bottom: 4px;
     }
-    .act1-btn-container button {
-      background-color: #1A252F;
-      color: #FFD700;
+    
+    .bubble-card-author {
+      font-weight: 900;
+      color: #2563eb;
+    }
+    
+    .bubble-card-body {
+      font-size: 1.02rem;
+      font-weight: bold;
+      line-height: 1.4;
+      word-break: keep-all;
+    }
+    
+    .bubble-card-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    
+    .card-btn {
+      flex: 1;
+      font-family: 'DungGeunMo', monospace;
+      font-size: 0.72rem;
+      font-weight: bold;
+      padding: 4px 6px;
       border: 2px solid #000;
-      padding: 8px 16px;
-      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 1px 1px 0 #000;
+      transition: all 0.1s ease;
+    }
+    
+    .card-btn.btn-left {
+      background-color: #fca5a5;
+      color: #7f1d1d;
+    }
+    
+    .card-btn.btn-right {
+      background-color: #a7f3d0;
+      color: #064e3b;
+    }
+    
+    .card-btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: none;
+    }
+    
+    /* 2단계: 고쳐쓰기 관련 */
+    .card-edit-area {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+      border-top: 2px dashed #000;
+      padding-top: 6px;
+    }
+    
+    .card-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 6px;
+      font-size: 0.82rem;
+      border: 2px solid #000;
+      border-radius: 4px;
+      outline: none;
       font-family: inherit;
       font-weight: bold;
+      background-color: #f8fafc;
+      color: #000;
+    }
+    
+    .card-submit-btn {
+      background-color: #3b82f6;
+      color: #fff;
+      border: 2px solid #000;
+      padding: 5px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      font-family: 'DungGeunMo', monospace;
       cursor: pointer;
       box-shadow: 2px 2px 0 #000;
       transition: all 0.1s ease;
+      text-align: center;
     }
-    .act1-btn-container button:hover {
-      background-color: #2C3E50;
+    
+    .card-submit-btn:hover {
+      background-color: #2563eb;
     }
-    .act1-btn-container button:active {
+    
+    .card-submit-btn:active {
       transform: translate(1px, 1px);
-      box-shadow: 1px 1px 0 #000;
+      box-shadow: none;
     }
     
-    .image-wrapper img {
-      width: 100%;
-      height: auto;
-      object-fit: contain;
-      display: block;
-    }
-    
-    /* 투명 핫스팟 */
-    .hotspot {
+    .card-status-badge {
       position: absolute;
-      border: 2px solid transparent;
-      cursor: pointer;
-      z-index: 10;
-      transition: all 0.2s ease;
-    }
-    .hotspot:hover {
-      background-color: rgba(255, 215, 0, 0.15);
-      border-color: rgba(255, 215, 0, 0.5);
-    }
-    .hotspot.found {
-      border: 4px solid var(--point-red);
-      background-color: rgba(255, 71, 87, 0.25);
-      pointer-events: none;
-      animation: pulseBorder 1.5s infinite;
-    }
-    
-    @keyframes pulseBorder {
-      0%, 100% { border-color: var(--point-red); }
-      50% { border-color: #ff6b81; }
-    }
-    
-    .found-badge {
-      position: absolute;
-      background: var(--point-red);
-      color: white;
-      font-size: 0.8rem;
-      font-weight: bold;
-      padding: 2px 6px;
+      top: -8px;
+      right: -8px;
+      background-color: #10b981;
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 900;
+      border: 2px solid #000;
       border-radius: 4px;
-      top: -25px;
-      left: 50%;
-      transform: translateX(-50%);
-      white-space: nowrap;
-      pointer-events: none;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-      display: none;
+      padding: 2px 6px;
+      box-shadow: 1px 1px 0 #000;
+      transform: rotate(5deg);
+      z-index: 10;
     }
-    .hotspot.found .found-badge {
-      display: block;
-    }
-
-    .feedback-bubble {
-      margin-top: 15px;
-      background: #23273a;
-      border-left: 5px solid var(--point-yellow);
-      border-radius: 8px;
-      padding: 12px 16px;
-      font-size: 1.05rem;
-      line-height: 1.5;
-      color: #cbd5e1;
+    
+    /* 3단계: 채팅방 복원 */
+    .chat-restore-container {
       width: 100%;
-      max-width: 560px;
+      max-width: 380px;
+      height: 480px;
+      background-color: #0f172a;
+      border: 5px solid #000;
+      border-radius: 16px;
+      box-shadow: 6px 6px 0 #000;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      margin: 10px auto;
+    }
+    
+    .phone-header {
+      background-color: #1e293b;
+      border-bottom: 4px solid #000;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    
+    .phone-title {
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #fff;
+      font-family: 'DungGeunMo', monospace;
+    }
+    
+    .phone-body {
+      flex-grow: 1;
+      background-color: #bacdbe;
+      padding: 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .chat-msg {
+      display: flex;
+      flex-direction: column;
+      max-width: 80%;
+      animation: slideUpFade 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28) both;
+    }
+    
+    @keyframes slideUpFade {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .chat-msg.left {
+      align-self: flex-start;
+    }
+    
+    .chat-msg.right {
+      align-self: flex-end;
+    }
+    
+    .chat-msg-sender {
+      font-size: 0.72rem;
+      font-weight: bold;
+      color: #4b5563;
+      margin-bottom: 2px;
+    }
+    
+    .chat-msg.right .chat-msg-sender {
+      text-align: right;
+    }
+    
+    .chat-msg-bubble {
+      background-color: #ffffff;
+      color: #000000;
+      border: 2px solid #000000;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      box-shadow: 2px 2px 0 #000000;
+      position: relative;
       word-break: keep-all;
+      line-height: 1.4;
+    }
+    
+    .chat-msg.right .chat-msg-bubble {
+      background-color: #fef08a;
+    }
+    
+    .chat-msg-badge {
+      font-size: 0.65rem;
+      color: #10b981;
+      font-weight: 900;
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    
+    .success-banner {
+      background-color: #10b981;
+      color: #fff;
+      border: 4px solid #000;
+      border-radius: 8px;
+      padding: 10px;
+      font-family: 'DungGeunMo', monospace;
+      font-weight: bold;
+      text-align: center;
+      box-shadow: 4px 4px 0 #000;
+      margin-top: 10px;
+      font-size: 0.95rem;
+      animation: popUp 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28) both;
+    }
+    
+    @keyframes popUp {
+      from {
+        transform: scale(0.85);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    .shake-card {
+      animation: shakeAnim 0.4s ease;
+    }
+    
+    @keyframes shakeAnim {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+    
+    .act-controls {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      flex-shrink: 0;
+    }d-break: keep-all;
       min-height: 50px;
       display: flex;
       align-items: center;
@@ -980,6 +1294,95 @@
       }
     }
 
+    /* 활동 2: 디지털 발자국 탐정단 스타일 */
+    .detective-playground {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .image-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      aspect-ratio: 4 / 3;
+      border: 4px solid #000;
+      border-radius: 8px;
+      overflow: hidden;
+      background-color: #000;
+      box-shadow: 4px 4px 0 #000;
+    }
+    .image-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .hotspot {
+      position: absolute;
+      border: 2px dashed rgba(255, 255, 255, 0.4);
+      background-color: rgba(255, 255, 255, 0.05);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .hotspot:hover {
+      border-color: #f1c40f;
+      background-color: rgba(241, 196, 15, 0.15);
+    }
+    .hotspot.found {
+      border: 2px solid #2ecc71;
+      background-color: rgba(46, 204, 113, 0.2);
+      cursor: default;
+    }
+    .found-badge {
+      display: none;
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #2ecc71;
+      color: #000;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 2px solid #000;
+      white-space: nowrap;
+      box-shadow: 2px 2px 0 #000;
+    }
+    .hotspot.found .found-badge {
+      display: block;
+    }
+    .act1-btn-container {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      width: 100%;
+    }
+    .act1-btn-container button {
+      padding: 8px 16px;
+      font-family: 'DungGeunMo', monospace;
+      font-size: 0.9rem;
+      font-weight: bold;
+      background-color: #475569;
+      color: #fff;
+      border: 2px solid #000;
+      border-radius: 4px;
+      box-shadow: 3px 3px 0 #000;
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+    .act1-btn-container button:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0 #000;
+    }
+    .act1-btn-container button:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 #000;
+    }
+
     /* 마음온 픽셀 요정 스타일 추가 */
     .pixel-fairy-container {
       position: relative;
@@ -1332,13 +1735,282 @@
       font-size: 14.25px !important;
     }
     .std-guide-banner span:last-of-type {
-      font-size: 16.5px !important;
+      font-size: 18.5px !important;
     }
     
     @keyframes bounceFairy {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-4px); }
     }
+
+    /* =========================================
+       활동 2: 초상권 존중 4단계 실천하기 개편 스타일
+       ========================================= */
+    .act2-container {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      gap: 20px;
+      align-items: stretch;
+      justify-content: space-between;
+      box-sizing: border-box;
+    }
+    
+    .act2-left-display {
+      flex: 6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: #0f172a;
+      border: 4px solid #000;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 4px 4px 0 #000;
+      padding: 10px;
+      box-sizing: border-box;
+      height: 480px;
+    }
+    
+    .act2-photo-wrapper {
+      position: relative;
+      width: 100%;
+      height: calc(100% - 48px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .act2-main-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border: 2px solid #000;
+      border-radius: 4px;
+      transition: opacity 0.5s ease;
+    }
+    
+    .act2-arrow-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      background-color: var(--point-yellow);
+      color: #000;
+      border: 3px solid #000;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 3px 3px 0 #000;
+      z-index: 30;
+      font-family: 'DungGeunMo', monospace;
+      user-select: none;
+    }
+    .act2-arrow-btn:hover {
+      background-color: #ffe44d;
+    }
+    .act2-arrow-btn:active {
+      transform: translateY(-50%) translate(2px, 2px);
+      box-shadow: 1px 1px 0 #000;
+    }
+    .act2-arrow-btn.btn-prev {
+      left: 15px;
+    }
+    .act2-arrow-btn.btn-next {
+      right: 15px;
+    }
+
+    .act2-photo-label {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(15, 23, 42, 0.95);
+      color: #fff;
+      border: 2px solid #000;
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      font-family: 'DungGeunMo', monospace;
+      z-index: 25;
+      box-shadow: 3px 3px 0 #000;
+      pointer-events: none;
+      display: none;
+    }
+
+    .act2-pedestrian-hotspot {
+      position: absolute;
+      border: 2px dashed transparent;
+      background-color: transparent;
+      cursor: pointer;
+      border-radius: 50%;
+      display: none;
+      z-index: 20;
+      transform: translate(-50%, -50%);
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+    .act2-pedestrian-hotspot:hover {
+      border-color: rgba(255, 255, 255, 0.6);
+      background-color: rgba(128, 128, 128, 0.45);
+    }
+
+    .act2-pedestrian-mosaic {
+      position: absolute;
+      display: none;
+      z-index: 19;
+      background-color: rgba(71, 85, 105, 0.4);
+      border: none;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .act2-pedestrian-tooltip {
+      position: absolute;
+      background-color: #ef4444;
+      color: #fff;
+      border: 2px solid #000;
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      font-weight: bold;
+      font-family: 'DungGeunMo', monospace;
+      border-radius: 6px;
+      box-shadow: 3px 3px 0 #000;
+      z-index: 35;
+      display: none;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .act2-right-panel {
+      flex: 4;
+      background-color: #1e293b;
+      border: 4px solid #000;
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 4px 4px 0 #000;
+      box-sizing: border-box;
+      overflow-y: auto;
+      height: 480px;
+    }
+
+    .act2-mission-step {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .act2-mission-step.active {
+      display: flex;
+    }
+
+    .act2-step-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--point-yellow);
+      border-bottom: 2px dashed rgba(255,255,255,0.15);
+      padding-bottom: 8px;
+      font-family: 'DungGeunMo', monospace;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .act2-question-box {
+      font-size: 1.02rem;
+      line-height: 1.5;
+      color: #000000 !important;
+      background-color: #fef9c3 !important;
+      border: 2.5px solid #000000 !important;
+      padding: 10px 14px !important;
+      border-radius: 6px !important;
+      box-shadow: 3px 3px 0 #000000 !important;
+      font-family: 'DungGeunMo', monospace;
+      word-break: keep-all;
+      box-sizing: border-box;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .act2-step-desc {
+      font-size: 1.02rem;
+      line-height: 1.5;
+      color: #cbd5e1;
+      word-break: keep-all;
+    }
+
+    .act2-btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .act2-option-btn {
+      width: 100%;
+      padding: 10px 14px;
+      background-color: #334155;
+      color: #fff;
+      border: 2px solid #000;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'DungGeunMo', monospace;
+      font-size: 1.02rem;
+      text-align: left;
+      transition: all 0.15s ease;
+      box-shadow: 2px 2px 0 #000;
+    }
+    .act2-option-btn:hover {
+      background-color: #475569;
+    }
+    .act2-option-btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 #000;
+    }
+    .act2-option-btn.opt-a {
+      background-color: #7c2d12 !important;
+    }
+    .act2-option-btn.opt-a:hover {
+      background-color: #9a3412 !important;
+    }
+    .act2-option-btn.opt-b {
+      background-color: #065f46 !important;
+    }
+    .act2-option-btn.opt-b:hover {
+      background-color: #047857 !important;
+    }
+
+    .act2-success-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      text-align: center;
+      padding: 20px;
+      background-color: #fef9c3;
+      color: #000;
+      border: 4px solid #000;
+      border-radius: 8px;
+      box-shadow: 4px 4px 0 #000;
+      animation: bounceFairy 2.5s infinite ease-in-out;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
   </style>
 </head>
 <body style="margin: 0; padding: 0;">
@@ -1365,8 +2037,6 @@
       </div>
     </div>
 
-    <!-- 임시 테스트 스킵 버튼 -->
-    <button class="temp-skip-btn" onclick="skipToNextSection()">⏩ 스킵</button>
 
     <!-- =========================================
          Screen 1: 인트로 (안내 화면)
@@ -1387,18 +2057,18 @@
         <!-- 우측 단일 통합 상자 (대사 + 활동 요약) -->
         <div class="std-intro-unified-box">
           <!-- 대사 (텍스트 직접 노출) -->
-          <div id="intro-typing-text" class="std-intro-dialog-inner">온라인에서는 무심코 올린 사진이나 남의 글을 함부로 쓰면 큰 문제가 생길 수 있어. 그래서 내 정보를 지키고 다른 사람의 권리를 존중하는 태도가 필요해.</div>
+          <div id="intro-typing-text" class="std-intro-dialog-inner">온라인에서는 무심코 내뱉은 말 한마디나 함부로 올린 사진 한 장 때문에 친구가 큰 상처를 받을 수 있어. 그래서 화면 너머에 있는 친구의 마음을 헤아리고, 타인의 권리를 소중하게 '존중'하는 태도가 꼭 필요하단다. 지금부터 우리가 매일 사용하는 채팅방과 SNS에서 서로를 존중하는 올바른 방법을 함께 알아보자!</div>
           <!-- 구분선 -->
           <div class="std-intro-divider"></div>
           <!-- 활동 요약 목록 -->
           <div class="std-intro-activities-inner">
             <div class="std-activity-row">
               <span class="std-activity-badge">활동 1</span>
-              <span class="std-activity-text">일상 사진 속에 숨겨진 개인정보를 찾고 안전하게 가리기</span>
+              <span class="std-activity-text">대화 속 표현을 분류하고 친구를 존중하는 따뜻한 말로 고쳐 쓰기</span>
             </div>
             <div class="std-activity-row">
               <span class="std-activity-badge">활동 2</span>
-              <span class="std-activity-text">저작권(CCL) 규칙에 맞추어 안전한 자료로 영상 완성하기</span>
+              <span class="std-activity-text">인터넷에 사진을 올리기 전 타인을 존중하는 4단계 실천하기</span>
             </div>
           </div>
         </div>
@@ -1412,8 +2082,9 @@
           <button onclick="startEthicsActivities()" class="std-footer-btn-right">활동 시작하기 ▶</button>
         </div>
       </div>
+    </div>
 
-      <script>
+    <script>
         function exitToMap() {
           try {
             if (window.parent && window.parent !== window) {
@@ -1456,7 +2127,7 @@
         const nextBtn = document.getElementById("btn-next");
 
         // 이전 단계 비활성 제어 (첫 번째 스테이지)
-        let isFirstStep = (viewId === 'view-act1' && currentStage === 1);
+        let isFirstStep = (viewId === 'view-act1');
         if (isFirstStep) {
           if (prevBtn) {
             prevBtn.style.opacity = "0.5";
@@ -1475,20 +2146,19 @@
         let isTaskCompleted = false;
 
         if (viewId === 'view-act1') {
-          // 활동 1 완료 조건: 현재 스테이지의 침해 요소를 다 찾았는지
-          const stageData = act1Stages[currentStage];
-          if (foundHotspots && stageData && foundHotspots.size === stageData.hotspots.length) {
+          // 활동 1 완료 조건: 채팅방 복원 단계가 끝났는지
+          if (typeof act1State !== 'undefined' && act1State.completed) {
             isTaskCompleted = true;
           }
-          if (titleText) titleText.innerText = "활동 1: 일상 사진 속에 숨겨진 개인정보를 찾고 안전하게 가리기";
+          if (titleText) titleText.innerText = "활동 1: 대화 속 표현 분류 및 고쳐 쓰기";
           if (dot1) dot1.style = activeDotStyle;
+          if (dot2) dot2.style = inactiveDotStyle;
         } else if (viewId === 'view-act2') {
-          // 활동 2 완료 조건: 최종 제작완료 finish 버튼이 활성화되었는지
-          const act2FinishBtn = document.getElementById("btn-act2-finish");
-          if (act2FinishBtn && act2FinishBtn.style.display !== "none") {
+          // 활동 2 완료 조건: 4단계 시뮬레이션 완료 단계에 진입했는지
+          if (typeof act2State !== 'undefined' && act2State.completed) {
             isTaskCompleted = true;
           }
-          if (titleText) titleText.innerText = "활동 2: 저작권(CCL) 규칙에 맞추어 안전한 자료로 영상 완성하기";
+          if (titleText) titleText.innerText = "활동 2: 인터넷에 사진을 올리기 전 타인을 존중하는 4단계 실천하기";
           if (dot1) dot1.style = completedDotStyle;
           if (dot2) dot2.style = activeDotStyle;
         }
@@ -1508,7 +2178,7 @@
         }
 
         if (nextBtn) {
-          if (viewId === 'view-act2') {
+          if (viewId === 'view-act2' && typeof act2State !== 'undefined' && act2State.currentStep === 5) {
             nextBtn.innerText = "활동 완료 ➔";
           } else {
             nextBtn.innerText = "다음 단계 ▶";
@@ -1517,7 +2187,6 @@
       }
     }
 
-    // 이전/다음 단계 클릭 리디렉션
     function prevStep() {
       const prevBtn = document.getElementById("btn-prev");
       if (prevBtn && prevBtn.classList.contains('disabled')) {
@@ -1530,16 +2199,23 @@
       const activeView = document.querySelector('.view.active');
       const viewId = activeView ? activeView.id : '';
 
-      if (viewId === 'view-act2') {
-        // 활동 2 -> 활동 1 마지막 스테이지로 복귀
-        currentStage = maxStages;
-        loadStage(currentStage);
-        switchView('view-act1');
-      } else if (viewId === 'view-act1' && currentStage > 1) {
-        // 활동 1 스테이지 2 -> 스테이지 1로 복귀
-        currentStage--;
-        loadStage(currentStage);
-        updateFrameUI('view-act1');
+      if (viewId === 'view-act1') {
+        if (act1State && act1State.currentStep > 1) {
+          if (act1State.currentStep === 2) {
+            act1State.currentStep = 1;
+            initCardGame();
+          } else if (act1State.currentStep === 3) {
+            act1State.currentStep = 2;
+            startEditingStep();
+          }
+        }
+      } else if (viewId === 'view-act2') {
+        if (typeof act2State !== 'undefined' && act2State.currentStep > 1 && act2State.currentStep < 5) {
+          act2State.currentStep--;
+          loadAct2Step(act2State.currentStep);
+        } else {
+          switchView('view-act1');
+        }
       }
     }
 
@@ -1553,9 +2229,15 @@
         const viewId = activeView ? activeView.id : '';
 
         if (viewId === 'view-act1') {
-          alert("이 화면에서 다른 사람의 권리를 침해하고 있는 숨겨진 요소들을 마우스로 클릭하여 모두 찾아내야 합니다!");
-        } else {
-          alert("왼쪽의 재료 상자에서 알맞은 배경음악, 이미지, 글꼴을 각각 한 개씩 선택하여 너만의 멋진 카드를 전송(등록)해 주세요!");
+          if (act1State.currentStep === 1) {
+            alert("지윤이네 조원들의 대화 카드를 알맞은 구역으로 드래그하거나 버튼을 눌러 먼저 분류해 주세요!");
+          } else if (act1State.currentStep === 2) {
+            alert("건우와 태양이의 배려 없는 말풍선을 상대방을 존중하는 다정한 말로 수정해 주세요!");
+          } else if (act1State.currentStep === 3) {
+            alert("하단의 [존중의 채팅창으로 복원하기] 버튼을 누르고 채팅이 다 복원될 때까지 기다려 주세요!");
+          }
+        } else if (viewId === 'view-act2') {
+          alert("우측 패널의 단계별 초상권 존중 미션을 지시에 따라 수행해 주세요!");
         }
         return;
       }
@@ -1565,352 +2247,217 @@
       const viewId = activeView ? activeView.id : '';
 
       if (viewId === 'view-act1') {
-        // 활동 1 완료 ➔ 다음 스테이지 혹은 활동 2로 진행
         progressAct1Stage();
       } else if (viewId === 'view-act2') {
-        // 활동 2 완료 ➔ 아웃트로 화면으로 전환
-        switchView('view-outro');
+        progressAct2Stage();
       }
     }
-      </script>
+
+  </script>
+
+  <!-- =========================================
+       Screen 2: 활동 2 (대화 표현 분류 및 고쳐 쓰기)
+       ========================================= -->
+  <div id="view-act1" class="view">
+    <div class="progress-header hidden">
+      <span style="font-weight: bold; color: var(--point-yellow);">활동 2: 대화 속 표현 분류 및 고쳐 쓰기</span>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span id="stage-text">분류하기 (1단계)</span>
+        <div class="stage-bar-container">
+          <div id="stage-bar-fill" class="stage-bar-fill" style="width: 33.3%;"></div>
+        </div>
+      </div>
     </div>
 
+    <!-- 마음온 AI 공통 가이드 배너 -->
+    <div class="std-guide-banner" style="margin-bottom: 6px !important;">
+      <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
+        <img src="images/maeumon_intro.webp" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px !important; height: 57px !important; aspect-ratio: 1 / 1 !important; object-fit: contain !important; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
+      </div>
+      <div style="display: flex !important; flex-direction: column !important; justify-content: center !important; flex-grow: 1 !important; margin-left: 9px;">
+        <span style="font-size: 14.25px !important; font-weight: 900 !important; line-height: 1.1 !important; margin-bottom: 3px !important; font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important; display: block !important;">마음온 AI 가이드</span>
+        <span style="font-size: 18.5px !important; font-weight: bold !important; color: #e2e8f0 !important; line-height: 1.3 !important; font-family: 'DungGeunMo', monospace !important; display: block !important;" id="act1-guide-bubble">
+          단체 대화방을 잘 읽고 친구들의 말에서 존중하는 모습을 찾아봅시다.
+        </span>
+      </div>
+    </div>
+    
+    <!-- 미션 질문 카드 -->
+    <div class="mission-question-card" style="background-color: #fef9c3 !important; border: 4px solid #000000 !important; box-shadow: 3px 3px 0px #000000 !important; padding: 9px 18px !important; margin-bottom: 6px !important; color: #000000 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important; max-width: 100% !important; width: 100% !important;">
+      <div style="font-size: 0.98rem !important; font-weight: bold !important; color: #000000 !important; line-height: 1.4 !important;" id="act1-mission-prompt">
+        채팅을 읽고 친구를 존중하는 말인지, 존중하지 않는 말인지 구분해보세요.
+      </div>
+    </div>
+
+    <!-- 1~2단계: 정렬 & 고쳐쓰기 구역 -->
+    <div id="act1-sorting-area" class="sorting-container">
+      <!-- 좌측 드롭존: 존중 X -->
+      <div id="zone-left" class="sort-zone zone-left" ondragover="allowCardDrop(event)" ondrop="handleCardDrop(event, 'left')">
+        <div class="sort-zone-title">🛠️ 친구를 존중하지 않는 말</div>
+        <div id="zone-left-list" class="flex flex-col gap-2.5 w-full"></div>
+      </div>
+      
+      <!-- 중앙 카드 덱 -->
+      <div id="center-deck" class="card-deck">
+        <div class="card-deck-title">대화 카드 목록</div>
+        <div id="center-deck-list" class="flex flex-col gap-2.5 w-full"></div>
+        <!-- 2단계 완료 후 출현할 복원하기 버튼 -->
+        <button id="btn-restore-chat" class="retro-btn" style="display: none; background-color: var(--point-green); color: #fff; width: 90%; padding: 15px 10px; font-size: 0.95rem; font-family: 'DungGeunMo', monospace; text-align: center; border: 4px solid #000; box-shadow: 4px 4px 0 #000; animation: bounceFairy 2.5s infinite ease-in-out; margin-top: auto; margin-bottom: auto;" onclick="restoreChatroom()">
+          ✨ 존중의 채팅창으로<br>복원하기
+        </button>
+      </div>
+      
+      <!-- 우측 드롭존: 존중 O -->
+      <div id="zone-right" class="sort-zone zone-right" ondragover="allowCardDrop(event)" ondrop="handleCardDrop(event, 'right')">
+        <div class="sort-zone-title">💚 친구를 존중하는 말</div>
+        <div id="zone-right-list" class="flex flex-col gap-2.5 w-full"></div>
+      </div>
+    </div>
+
+    <!-- 3단계: 채팅방 복원 구역 -->
+    <div id="act1-restore-area" style="display: none; width: 100%;">
+      <div class="chat-restore-container">
+        <div class="phone-header">
+          <span class="phone-title">💬 모둠 숙제 대화방</span>
+        </div>
+        <div id="restore-chat-body" class="phone-body">
+          <!-- 복원되는 말풍선들이 순서대로 동적 렌더링됩니다 -->
+        </div>
+      </div>
+      <div id="restore-success-banner" class="success-banner" style="display: none;">
+        🎉 성공! 서로를 존중하는 단체 채팅방이 완성되었어요!
+      </div>
+    </div>
+
+    <div class="act-controls">
+
+      <!-- 3단계 완료 후 하단 다음단계 연동 지원용 히든 완료 버튼 -->
+      <button id="btn-act1-next" class="retro-btn" style="display: none;" onclick="progressAct1Stage()">다음으로 ➔</button>
+    </div>
+  </div>
+
     <!-- =========================================
-         Screen 2: 활동 1 (디지털 발자국 탐정단)
+         Screen 3: 활동 2 (초상권 존중 4단계 실천하기)
          ========================================= -->
-    <div id="view-act1" class="view">
-      <div class="progress-header hidden">
-        <span style="font-weight: bold; color: var(--point-yellow);">활동 1: 디지털 발자국 탐정단</span>
+    <div id="view-act2" class="view" style="display: none;">
+      <!-- 상단 프레임 헤더 영역 -->
+      <div class="progress-header">
+        <span style="font-weight: bold; color: var(--point-yellow);">활동 2: 인터넷에 사진을 올리기 전 타인을 존중하는 4단계 실천하기</span>
         <div style="display: flex; align-items: center; gap: 8px;">
-          <span id="stage-text">스테이지 1/3</span>
+          <span id="stage-text-act2">1단계: 동의 구하기</span>
           <div class="stage-bar-container">
-            <div id="stage-bar-fill" class="stage-bar-fill"></div>
+            <div id="stage-bar-fill-act2" class="stage-bar-fill" style="width: 25%;"></div>
           </div>
         </div>
       </div>
 
-      <!-- 마음온 AI 공통 가이드 배너 (1단계) -->
+      <!-- 마음온 AI 공통 가이드 배너 -->
       <div class="std-guide-banner" style="margin-bottom: 6px !important;">
         <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
           <img src="images/maeumon_intro.webp" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px !important; height: 57px !important; aspect-ratio: 1 / 1 !important; object-fit: contain !important; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
         </div>
         <div style="display: flex !important; flex-direction: column !important; justify-content: center !important; flex-grow: 1 !important; margin-left: 9px;">
           <span style="font-size: 14.25px !important; font-weight: 900 !important; line-height: 1.1 !important; margin-bottom: 3px !important; font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important; display: block !important;">마음온 AI 가이드</span>
-          <span style="font-size: 16.5px !important; font-weight: bold !important; color: #e2e8f0 !important; line-height: 1.3 !important; font-family: 'DungGeunMo', monospace !important; display: block !important;" id="act1-guide-bubble">
-            인터넷에 올린 무심한 사진 한 장이 소중한 사생활을 유출시키는 단서가 될 수 있어! (남은 흔적: <span id="act1-remaining-count">0</span>개) 👣
+          <span style="font-size: 18.5px !important; font-weight: bold !important; color: #e2e8f0 !important; line-height: 1.3 !important; font-family: 'DungGeunMo', monospace !important; display: block !important;" id="act2-guide-bubble-text">
+            친구와 함께 찍은 사진을 SNS에 올리기 전에 꼭 거쳐야 하는 존중의 4단계를 함께 실천해 봐요!
           </span>
         </div>
       </div>
-      
-      <!-- 1단계 미션 질문 카드 (세로 스크롤 방지 한줄화 튠업) -->
-      <div class="mission-question-card" style="background-color: #451a03 !important; border: 4px solid #000000 !important; box-shadow: 3px 3px 0px #000000 !important; padding: 9px 18px !important; margin-bottom: 6px !important; color: #fde047 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important; max-width: 100% !important; width: 100% !important;">
-        <div style="font-size: 0.86rem !important; font-weight: bold !important; color: #fde047 !important; line-height: 1.4 !important;" id="act1-mission-prompt">
-          사진 속에 숨겨진 개인정보(디지털 발자국)를 구석구석 클릭하여 모두 찾아내어봅시다.
-        </div>
-      </div>
 
-      <!-- 탐정단 플레이그라운드 -->
-      <div class="detective-playground">
-        <div id="image-wrapper" class="image-wrapper">
-          <!-- 메인 스테이지 사진 (실제 이미지 교체 위치) -->
-          <img id="stage-main-image" src="" alt="스테이지 배경">
-          
-          <!-- 동적 핫스팟 박스들이 여기에 렌더링됩니다 -->
-          <div id="hotspots-container"></div>
-        </div>
-        
-        <!-- 활동 1 제어 버튼 영역 (사진 아래로 배치) -->
-        <div class="act1-btn-container">
-          <button id="btn-hint-image" type="button" onclick="showAct1Hint(event)">
-            💡 힌트 보기
-          </button>
-          <button id="btn-zoom-image" type="button" onclick="openZoomModal(event)">
-            🔍 크게 보기
-          </button>
-        </div>
-      </div>
-
-
-      
-      <div class="act-controls">
-        <button id="btn-act1-next" class="retro-btn" style="display: none;" onclick="progressAct1Stage()">다음으로 ➔</button>
-      </div>
-    </div>
-
-    <!-- =========================================
-         Screen 3: 활동 2 (안심 크리에이터 도전 - 저작권 시뮬레이터)
-         ========================================= -->
-    <div id="view-act2" class="view">
-      
-      <!-- 사전 학습 및 퀴즈 모달창 -->
-      <div id="learn-modal" class="modal-overlay">
-        <div id="modal-content-ccl" class="modal-content" style="max-width: 820px !important; width: 100% !important; padding: 18px 20px !important;">
-          <div class="modal-title mb-4">저작물 정보 학습: CCL 마크란?</div>
-          
-          <div class="ccl-grid" style="display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 10px 15px !important; text-align: left !important; margin-bottom: 12px !important;">
-            <div class="ccl-item" style="padding: 8px 12px !important; gap: 12px !important;">
-              <img class="ccl-icon-img" src="images/ccl_by.webp" alt="출처 표시" style="width: 50px !important; height: 50px !important; padding: 3px !important; flex-shrink: 0 !important;">
-              <div class="ccl-desc">
-                <span class="ccl-name" style="font-size: 0.96rem !important; color: #fde047 !important; font-weight: bold !important; font-family: 'DungGeunMo', monospace !important;">1. 저작자 표시 (Attribution)</span>
-                <span class="ccl-meaning" style="font-size: 0.82rem !important; color: #ffffff !important; font-family: 'DungGeunMo', monospace !important; line-height: 1.35 !important;">자료를 학교 숙제 등에 쓸 때 원작자의 출처를 밝혀야 해요.</span>
-              </div>
-            </div>
+      <!-- 2단 레이아웃 메인 구역 -->
+      <div class="act2-container">
+        <!-- 좌측 사진 디스플레이 영역 -->
+        <div class="act2-left-display">
+          <div class="act2-photo-wrapper">
+            <!-- 2단계 좌우 선택 화살표 -->
+            <button id="act2-arrow-prev" class="act2-arrow-btn btn-prev" onclick="selectPhoto(-1)">◀</button>
+            <button id="act2-arrow-next" class="act2-arrow-btn btn-next" onclick="selectPhoto(1)">▶</button>
             
-            <div class="ccl-item" style="padding: 8px 12px !important; gap: 12px !important;">
-              <img class="ccl-icon-img" src="images/ccl_nc.webp" alt="상업적 이용금지" style="width: 50px !important; height: 50px !important; padding: 3px !important; flex-shrink: 0 !important;">
-              <div class="ccl-desc">
-                <span class="ccl-name" style="font-size: 0.96rem !important; color: #fde047 !important; font-weight: bold !important; font-family: 'DungGeunMo', monospace !important;">2. 비영리 (Non-Commercial)</span>
-                <span class="ccl-meaning" style="font-size: 0.82rem !important; color: #ffffff !important; font-family: 'DungGeunMo', monospace !important; line-height: 1.35 !important;">물건을 팔거나 돈을 버는 일(상업적 목적)에는 쓸 수 없어요.</span>
-              </div>
-            </div>
+            <!-- 메인 사진 엘리먼트 -->
+            <img id="act2-main-photo" class="act2-main-photo" src="images/ethics_act2_photo2.webp" alt="시뮬레이션 사진">
             
-            <div class="ccl-item" style="padding: 8px 12px !important; gap: 12px !important;">
-              <img class="ccl-icon-img" src="images/ccl_nd.webp" alt="변경 금지" style="width: 50px !important; height: 50px !important; padding: 3px !important; flex-shrink: 0 !important;">
-              <div class="ccl-desc">
-                <span class="ccl-name" style="font-size: 0.96rem !important; color: #fde047 !important; font-weight: bold !important; font-family: 'DungGeunMo', monospace !important;">3. 변경 금지 (No Derivatives)</span>
-                <span class="ccl-meaning" style="font-size: 0.82rem !important; color: #ffffff !important; font-family: 'DungGeunMo', monospace !important; line-height: 1.35 !important;">원작물의 내용을 가공하거나 편집해서 쓰면 안 돼요.</span>
-              </div>
-            </div>
+
+            <!-- 3단계 행인 핫스팟 (얼굴 부근 배치, 기본 top: 40%, left: 66%, width: 45px, height: 45px) -->
+            <div id="act2-pedestrian" class="act2-pedestrian-hotspot" style="top: 18.1%; left: 33.6%; width: 50px; height: 50px;" onclick="clickPedestrian()"></div>
             
-            <div class="ccl-item" style="padding: 8px 12px !important; gap: 12px !important;">
-              <img class="ccl-icon-img" src="images/ccl_copyright.webp" alt="저작권 보호" style="width: 50px !important; height: 50px !important; padding: 3px !important; flex-shrink: 0 !important;">
-              <div class="ccl-desc">
-                <span class="ccl-name" style="font-size: 0.96rem !important; color: #fde047 !important; font-weight: bold !important; font-family: 'DungGeunMo', monospace !important;">4. 저작권 보호 (Copyright, ©)</span>
-                <span class="ccl-meaning" style="font-size: 0.82rem !important; color: #ffffff !important; font-family: 'DungGeunMo', monospace !important; line-height: 1.35 !important;">원작자가 권리를 갖고 있어 허락 없이 함부로 쓰면 안 돼요.</span>
-              </div>
-            </div>
+            <!-- 3단계 모자이크 필터 오버레이 (행인 얼굴 덮개) -->
+            <div id="act2-pedestrian-mosaic" class="act2-pedestrian-mosaic" style="top: 18.1%; left: 33.6%; width: 50px; height: 50px;"></div>
+
+            <!-- 3단계 경고 툴팁 -->
+            
           </div>
           
-          <button class="retro-btn" style="margin-top: 10px !important; padding: 5px 20px !important; font-size: 0.8rem !important; width: fit-content !important; margin-left: auto !important; margin-right: auto !important; display: block !important; font-family: 'DungGeunMo', monospace !important;" onclick="startAct2Quiz()">OX 퀴즈 풀고 영상 만들기 ➔</button>
-        </div>
-
-        <!-- OX 퀴즈 영역 (세로 비율 확대, 내부 정렬 튠업 및 다시공부하기 링크 우측하단 정렬) -->
-        <div id="modal-content-quiz" class="modal-content" style="display: none; max-width: 440px !important; min-height: 330px !important; padding: 22px 22px 34px 22px !important; display: flex !important; flex-direction: column !important; justify-content: space-between !important; position: relative !important;">
-          <div>
-            <div class="modal-title text-[#3498db] text-md font-bold mb-2" style="font-family: 'DungGeunMo', monospace !important;">저작권 OX 퀴즈</div>
-            <div id="quiz-q-num" class="font-bold text-white text-md mb-3 border-b border-gray-700 pb-2" style="font-family: 'DungGeunMo', monospace !important;">Q1. 저작자 표시</div>
-            
-            <div id="quiz-q-text" class="bg-black/30 p-4 border border-gray-800 min-h-[140px] flex items-center justify-center text-center" style="border-radius: 8px; margin-bottom: 15px;">
-              질문 텍스트
-            </div>
-          </div>
-
-          <div>
-            <div class="flex gap-6 justify-center mb-3">
-              <button class="retro-btn bg-[#2ecc71] hover:bg-[#27ae60] text-black w-14 h-14 text-xl font-bold flex items-center justify-center shadow-[3px_3px_0_#000] border-2 border-black" style="font-family: 'DungGeunMo', monospace !important;" onclick="submitQuizAnswer('O')">O</button>
-              <button class="retro-btn bg-[#ff4757] hover:bg-[#ff2e44] text-black w-14 h-14 text-xl font-bold flex items-center justify-center shadow-[3px_3px_0_#000] border-2 border-black" style="font-family: 'DungGeunMo', monospace !important;" onclick="submitQuizAnswer('X')">X</button>
-            </div>
-
-            <!-- 다시 공부하기 절대위치 지정하여 최하단 우측 구석에 찰싹 밀착 -->
-            <div style="position: absolute !important; right: 16px !important; bottom: 8px !important; text-align: right !important;">
-              <button class="text-[10px] underline" style="color: #ffffff !important; font-family: 'DungGeunMo', monospace !important; background: none !important; border: none !important; cursor: pointer !important;" onclick="showCCLStudyFromQuiz()">[저작물 정보 다시 공부하기]</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 퀴즈 결과 해설 팝업 (정렬 구조 튠업, 타이틀 내림, 가운데 정렬, 하단 버튼 밀착으로 폭 일정화) -->
-        <div id="modal-content-quiz-result" class="modal-content" style="display: none; max-width: 440px !important; min-height: 190px !important; padding: 12px 16px 8px 16px !important; display: flex !important; flex-direction: column !important; justify-content: flex-start !important; border-color: #ff4757; position: relative !important;">
-          <div style="width: 100% !important; display: flex !important; flex-direction: column !important; flex-grow: 1 !important;">
-            <!-- 타이틀을 모달 상단선에서 살짝 내림 -->
-            <div id="quiz-result-title" class="modal-title text-md font-bold" style="margin-top: 2px !important; margin-bottom: 2px !important; font-family: 'DungGeunMo', monospace !important; text-align: center !important;">정답입니다!</div>
-            
-            <!-- 해설 박스 위에 margin-top: 14px을 추가하여 세로폭 기준 정중앙으로 내려오게 함 -->
-            <div id="quiz-result-feedback" class="bg-black/30 border border-gray-800 whitespace-pre-line" style="font-size: 0.88rem !important; color: #ffffff !important; line-height: 1.45 !important; text-align: center !important; border-radius: 8px; padding: 8px 12px !important; margin-top: 8px !important; margin-bottom: 8px !important; font-family: 'DungGeunMo', monospace !important; flex-grow: 1 !important; display: flex !important; align-items: center !important; justify-content: center !important;">
-              해설 내용
-            </div>
-          </div>
-          
-          <!-- 버튼을 모달 맨 하단으로 완전히 밀어붙임 -->
-          <div style="display: flex !important; flex-direction: column !important; gap: 8px !important; width: 100% !important; align-items: center !important; margin-top: auto !important; padding-top: 0px !important; margin-bottom: 0px !important;">
-            <button id="btn-quiz-next" class="retro-btn" style="background-color: #3498db !important; color: #ffffff !important; border: 2px solid #000000 !important; box-shadow: 3px 3px 0px #000000 !important; padding: 5px 20px !important; font-size: 0.78rem !important; font-weight: bold !important; width: fit-content !important; font-family: 'DungGeunMo', monospace !important;" onclick="nextQuizStep()">
-              다음 문제로 ➔
+          <!-- 제어 버튼 영역 (복원) -->
+          <div id="act2-btn-container" class="act1-btn-container" style="margin-top: 10px; display: none; gap: 12px; justify-content: center; width: 100%; flex-shrink: 0;">
+            <button id="btn-hint-image" type="button" onclick="showAct2Hint(event)" style="padding: 6px 16px; background-color: #475569; color: #fff; border: 2px solid #000; border-radius: 4px; box-shadow: 2px 2px 0 #000; cursor: pointer; font-family: 'DungGeunMo', monospace; font-size: 0.85rem;">
+              💡 힌트 보기
             </button>
-            <button id="btn-quiz-retry-study" class="retro-btn" style="display: none; background-color: #e74c3c !important; color: #ffffff !important; border: 2px solid #000000 !important; box-shadow: 3px 3px 0px #000000 !important; padding: 5px 20px !important; font-size: 0.78rem !important; font-weight: bold !important; width: fit-content !important; font-family: 'DungGeunMo', monospace !important;" onclick="showCCLStudyFromQuiz()">
-              [저작물 정보 다시 학습하기]
+            <button id="btn-zoom-image" type="button" onclick="openZoomModal(event)" style="padding: 6px 16px; background-color: #475569; color: #fff; border: 2px solid #000; border-radius: 4px; box-shadow: 2px 2px 0 #000; cursor: pointer; font-family: 'DungGeunMo', monospace; font-size: 0.85rem;">
+              🔍 크게 보기
             </button>
           </div>
         </div>
-      </div>
 
-      <!-- 세부정보 레이어 팝업 모달 -->
-      <div id="ccl-info-modal" class="info-modal-overlay" onclick="closeInfoModal()">
-        <div class="info-modal-content" onclick="event.stopPropagation()">
-          <div id="info-modal-title" class="info-modal-header">자료 상세 정보</div>
-          
-          <!-- 개선된 CCL/저작권 뱃지 영역 -->
-          <div id="info-modal-ccl-badges" class="info-modal-ccl-badges">
-            <!-- 동적으로 배운 마크 이미지와 조건명이 렌더링됩니다 -->
-          </div>
-          
-          <div id="info-modal-desc" class="info-modal-desc">
-            세부 설명 영역
-          </div>
-          
-          <button class="retro-btn secondary" style="font-size:1.05rem; padding:8px 16px;" onclick="closeInfoModal()">닫기</button>
-        </div>
-      </div>
-
-      <!-- 마음온 AI 공통 가이드 배너 (2단계) -->
-      <div class="std-guide-banner" style="margin-bottom: 6px !important;">
-        <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
-          <img src="images/maeumon_intro.webp" alt="마음온" class="absolute object-contain max-w-none" style="width: 57px !important; height: 57px !important; aspect-ratio: 1 / 1 !important; object-fit: contain !important; image-rendering: pixelated; animation: bounceFairy 2.5s ease-in-out infinite; z-index: 10; top: -7px; left: -4px;">
-        </div>
-        <div style="display: flex !important; flex-direction: column !important; justify-content: center !important; flex-grow: 1 !important; margin-left: 9px;">
-          <span style="font-size: 14.25px !important; font-weight: 900 !important; line-height: 1.1 !important; margin-bottom: 3px !important; font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important; display: block !important;">마음온 AI 가이드</span>
-          <span style="font-size: 16.5px !important; font-weight: bold !important; color: #e2e8f0 !important; line-height: 1.3 !important; font-family: 'DungGeunMo', monospace !important; display: block !important;" id="act2-guide-bubble">
-            인터넷 자료를 올릴 때는 저작권자의 허락(CCL 마크)을 받거나 상업용 무료 소스를 써야 해! ⚖️
-          </span>
-        </div>
-      </div>
-      
-      <!-- 2단계 미션 질문 카드 (세로 스크롤 방지 한줄화 튠업) -->
-      <div class="mission-question-card" style="grid-column: span 2 !important; background-color: #451a03 !important; border: 4px solid #000000 !important; box-shadow: 3px 3px 0px #000000 !important; padding: 9px 18px !important; margin-bottom: 6px !important; color: #fde047 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important; max-width: 100% !important; width: 100% !important;">
-        <div style="font-size: 0.86rem !important; font-weight: bold !important; color: #fde047 !important; line-height: 1.4 !important;">
-          저작권에 걸리지 않게 안전한 배경음악(BGM), 이미지, 폰트를 골라 카드뉴스를 완성해봅시다.
-        </div>
-      </div>
-
-      <!-- 시뮬레이션 메인 워크스페이스 -->
-      <div class="editor-container">
-        
-        <!-- 좌측: 타임라인 및 영상 업로드 영역 -->
-        <div class="editor-preview-panel">
-          <div class="editor-panel-title">학교 과제 영상 편집기</div>
-          
-          <!-- 저작권 침해 경고 (Copyright Strike) 오버레이 -->
-          <div id="copyright-strike-stamp" class="copyright-strike-stamp">
-            <div class="strike-stamp-box">
-              ⚠️ 저작권 침해 경고!<br>
-              (Copyright Strike)
+        <!-- 우측 미션 패널 영역 -->
+        <div class="act2-right-panel">
+          <!-- 1단계 미션 -->
+          <div id="act2-step1" class="act2-mission-step active">
+            <span class="act2-step-title">📍 1단계: 동의 구하기</span>
+            <div class="act2-question-box">친구와 공원에서 사진을 함께 찍었습니다. 이 사진을 내 개인 SNS에 올리려면 가장 먼저 어떻게 해야 할까요?</div>
+            <div class="act2-btn-group">
+              <button class="act2-option-btn opt-a" onclick="chooseStep1('A')">[A] 예쁘게 잘 나왔으니까 말하지 않고 그냥 올린다.</button>
+              <button class="act2-option-btn opt-b" onclick="chooseStep1('B')">[B] 사진을 올려도 되는지 친구에게 물어보고 동의를 구한다.</button>
             </div>
-          </div>
-          
-          <div class="timeline-slots">
-            <!-- BGM 슬롯 -->
-            <div id="slot-bgm" class="timeline-slot">
-              <span class="slot-badge">🎵 BGM</span>
-              <span id="slot-bgm-text" class="slot-content-text">배경음악을 선택해주세요</span>
-            </div>
-
-            <!-- 이미지 슬롯 -->
-            <div id="slot-image" class="timeline-slot">
-              <span class="slot-badge">🖼 이미지</span>
-              <span id="slot-image-text" class="slot-content-text">이미지를 선택해주세요</span>
-            </div>
-
-            <!-- 폰트 슬롯 -->
-            <div id="slot-font" class="timeline-slot">
-              <span class="slot-badge">🔤 폰트</span>
-              <span id="slot-font-text" class="slot-content-text">폰트를 선택해주세요</span>
+            
+            <!-- 1-2단계 주관식 입력창 -->
+            <div id="act2-step1-2" style="display: none; flex-direction: column; gap: 10px; margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 15px;">
+              <span class="act2-step-desc" style="color: var(--point-yellow); font-weight: bold;">🗣️ 친구에게 올리기 전 동의를 구하는 정중한 말을 직접 작성해 보세요!</span>
+              <input id="act2-step1-input" type="text" class="card-input" style="width: 100%; box-sizing: border-box; background-color: #0f172a; color: #fff; border: 2px solid #000; padding: 10px; border-radius: 6px; font-family: 'DungGeunMo', monospace;" placeholder="예: '지윤아, 아까 찍은 사진 너무 예쁜데 SNS에 올려도 될까?'">
+              <button class="retro-btn" style="width: 100%; font-size: 0.95rem; padding: 8px;" onclick="confirmStep1_2()">✏️ 전송 및 확인</button>
             </div>
           </div>
 
-          <div style="margin-top: 15px; display:flex; justify-content:center;">
-            <button id="btn-upload-video" class="retro-btn" style="width:100%;" onclick="uploadVideoSimulation()" disabled>영상 업로드하기 🎬</button>
-          </div>
-        </div>
-
-        <!-- 우측: 탭 리소스 선택 영역 -->
-        <div class="editor-resources-panel">
-          <!-- 리소스 탭 메뉴 -->
-          <div class="resource-tabs">
-            <button id="tab-btn-bgm" class="tab-btn active" onclick="switchResourceTab('bgm')">BGM</button>
-            <button id="tab-btn-image" class="tab-btn" onclick="switchResourceTab('image')">이미지</button>
-            <button id="tab-btn-font" class="tab-btn" onclick="switchResourceTab('font')">폰트</button>
+          <!-- 2단계 미션 -->
+          <div id="act2-step2" class="act2-mission-step">
+            <span class="act2-step-title">📍 2단계: 내용의 존중</span>
+            <div class="act2-question-box">올릴 사진을 고르는 단계입니다. 나와 친구 모두가 잘 나오고 마음에 들어하는 사진인가요? 좌측 사진의 <b>[ ◀ ] [ ▶ ]</b> 화살표를 눌러가며 가장 아름답게 웃고 있는 사진을 선택해 보세요.</div>
+            <button class="retro-btn" style="background-color: var(--point-green); color: #fff; width: 100%; font-size: 1rem; margin-top: auto;" onclick="confirmStep2()">
+              ✨ 이 사진으로 결정!
+            </button>
           </div>
 
-          <!-- BGM 탭 콘텐츠 -->
-          <div id="tab-content-bgm" class="tab-content active">
-            <div class="resource-card" onclick="selectResource('bgm', 1)" data-id="bgm-1">
-              <div class="card-thumb">🎵</div>
-              <div class="card-info">
-                <span class="card-name">최신 유행 아이돌 노래</span>
-                <span class="card-sub">현재 가장 인기 있는 가요 음원</span>
-              </div>
-              <button class="info-btn" onclick="openResourceInfo('bgm', 1, event)">i</button>
-            </div>
-            <div class="resource-card" onclick="selectResource('bgm', 2)" data-id="bgm-2">
-              <div class="card-thumb">🎹</div>
-              <div class="card-info">
-                <span class="card-name">크리에이터의 신나는 피아노</span>
-                <span class="card-sub">크리에이터가 작곡한 창작 BGM</span>
-              </div>
-              <button class="info-btn" onclick="openResourceInfo('bgm', 2, event)">i</button>
-            </div>
-            <div class="resource-card" onclick="selectResource('bgm', 3)" data-id="bgm-3">
-              <div class="card-thumb">🎬</div>
-              <div class="card-info">
-                <span class="card-name">유명 블록버스터 영화 OST</span>
-                <span class="card-sub">영화 메인 테마 곡</span>
-              </div>
-              <button class="info-btn" onclick="openResourceInfo('bgm', 3, event)">i</button>
+          <!-- 3단계 미션 -->
+          <div id="act2-step3" class="act2-mission-step">
+            <span class="act2-step-title">📍 3단계: 초상권 존중</span>
+            <div class="act2-question-box">사진 속에 나와 친구 외에 다른 사람이 찍히진 않았나요? 사진 배경 속 '다른 사람'을 찾아서 클릭해 봅시다.</div>
+            
+            <div id="act2-step3-action" style="display: none; flex-direction: column; gap: 10px; margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 15px;">
+              <span class="act2-step-desc" style="color: #ef4444; font-weight: bold;">⚠️ 배경 속 모르는 사람의 얼굴이 발견되었습니다! 타인의 초상권을 존중해 주어야 합니다.</span>
+              <button class="retro-btn" style="background-color: #3498db; color: #fff; width: 100%; font-size: 1rem;" onclick="coverPedestrian()">
+                🛡️ 모자이크로 가리기
+              </button>
             </div>
           </div>
 
-          <!-- 이미지 탭 콘텐츠 -->
-          <div id="tab-content-image" class="tab-content">
-            <div class="resource-card" onclick="selectResource('image', 1)" data-id="image-1">
-              <div class="card-thumb">📸</div>
-              <div class="card-info">
-                <span class="card-name">워터마크 유료 사진</span>
-                <span class="card-sub">스톡 이미지 사이트 유료 자료</span>
-              </div>
-              <button class="info-btn" onclick="openResourceInfo('image', 1, event)">i</button>
-            </div>
-            <div class="resource-card" onclick="selectResource('image', 2)" data-id="image-2">
-              <!-- 실제 무료 배포 일러스트 썸네일 이미지 교체 가능 -->
-              <div class="card-thumb">🎨</div>
-              <div class="card-info">
-                <span class="card-name">무료 배포 일러스트</span>
-                <span class="card-sub">인터넷 무료 배포 그림</span>
-              </div>
-              <button class="info-btn" onclick="openResourceInfo('image', 2, event)">i</button>
-            </div>
-            <div class="resource-card" onclick="selectResource('image', 3)" data-id="image-3">
-              <div class="card-thumb">🐱</div>
-              <div class="card-info">
-                <span class="card-name">유명 만화 캐릭터 그림</span>
-                <span class="card-sub">TV 방영 인기 애니메이션 컷</span>
-              </div>
-              <button class="info-btn" onclick="openResourceInfo('image', 3, event)">i</button>
+          <!-- 4단계 미션 -->
+          <div id="act2-step4" class="act2-mission-step">
+            <span class="act2-step-title">📍 4단계: 잊힐 권리 존중</span>
+            <div class="act2-question-box">사진을 올린 다음 날, 친구가 어제 올린 사진이 조금 부끄럽다며 지워달라고 메신저로 부탁했습니다. 어떻게 답변해야 할까요?</div>
+            <div class="act2-btn-group">
+              <button class="act2-option-btn opt-a" onclick="chooseStep4('A')">[A] "이미 좋아요와 댓글을 많이 받아서 지금 지우기는 좀 곤란해."</button>
+              <button class="act2-option-btn opt-b" onclick="chooseStep4('B')">[B] "당연하지! 네가 불편하다면 지금 당장 바로 지워줄게!"</button>
             </div>
           </div>
 
-          <!-- 폰트 탭 콘텐츠 -->
-          <div id="tab-content-font" class="tab-content">
-            <div class="resource-card" onclick="selectResource('font', 1)" data-id="font-1">
-              <div class="card-thumb">🔤</div>
-              <div class="card-info">
-                <span class="card-name">개인 제작 예쁜 유료 폰트</span>
-                <span class="card-sub">개인 디자이너 판매 글꼴</span>
-              </div>
-              <button class="info-btn" onclick="openResourceInfo('font', 1, event)">i</button>
-            </div>
-            <div class="resource-card" onclick="selectResource('font', 2)" data-id="font-2">
-              <div class="card-thumb">🏛️</div>
-              <div class="card-info">
-                <span class="card-name">공공기관 배포 안심 글꼴</span>
-                <span class="card-sub">누구나 무료로 쓰도록 배포된 글꼴</span>
-              </div>
-              <button class="info-btn" onclick="openResourceInfo('font', 2, event)">i</button>
-            </div>
-            <div class="resource-card" onclick="selectResource('font', 3)" data-id="font-3">
-              <div class="card-thumb">⚠️</div>
-              <div class="card-info">
-                <span class="card-name">출처 불명 변형 폰트</span>
-                <span class="card-sub">블로그 무단 2차 공유 폰트 파일</span>
-              </div>
-              <button class="info-btn" onclick="openResourceInfo('font', 3, event)">i</button>
+          <!-- 완료 연출 구역 -->
+          <div id="act2-success" class="act2-mission-step">
+            <div class="act2-success-card">
+              <span style="font-size: 1.5rem;">🎉 미션 완료! 🏆</span>
+              <span style="font-size: 0.95rem; line-height: 1.6; font-weight: bold;">성공! 친구와 타인의 권리를 존중하는 당신은 인터넷 윤리의식을 함양하였습니다.</span>
             </div>
           </div>
         </div>
-
       </div>
-
-      <div class="act-controls">
-        <button id="btn-act2-finish" class="retro-btn" style="display: none;" onclick="switchView('view-outro')">활동 완료하기 ➔</button>
-      </div>
-
     </div>
 
     <!-- ==========================================================
@@ -1943,7 +2490,7 @@
           </div>
 
           <!-- 하단: 코멘트/설명 텍스트 (줄바꿈/들여쓰기 제거, 검정 폰트색상 적용) -->
-          <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.25rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">내 사진이나 개인정보가 노출되지 않도록 가려 인터넷 정보를 스스로 보호하고, 다른 사람의 글, 사진, 음악을 사용할 때 저작권 규정(CCL)을 철저히 존중하는 법을 멋지게 터득했구나! 너의 성숙하고 올바른 인터넷 사용 습관이 안전하고 행복한 디지털 교실을 만들 거란다.</div>
+          <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.25rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">채팅방에서 친구를 존중하는 따뜻한 말로 대화하고, 인터넷에 사진을 올리기 전 친구의 동의를 구하며 개인정보를 안전하게 가려주는 법을 멋지게 터득했구나! 너의 성숙하고 타인을 먼저 생각하는 '존중'의 습관이 안전하고 행복한 디지털 교실을 만들 거란다. 정말 수고 많았어!</div>
         </div>
 
       </div>
@@ -1953,27 +2500,6 @@
         <button onclick="finishInternetEthics()" class="std-footer-btn-right" style="width: 380px; box-shadow: 4px 4px 0 #000; font-size: 1.1rem; height: 48px;">활동완료 & 대시보드로 돌아가기 ➔</button>
       </div>
     </div>
-
-
-  <!-- 핫스팟 피드백 및 조치 팝업 모달 (이모지 삭제, 안심 스티커 삭제, 소제목 구분 및 콤팩트 모자이크 적용) -->
-  <div id="hotspot-feedback-modal" class="modal-overlay" style="display: none; z-index: 150;">
-    <div class="modal-content max-w-[340px] border-4 border-[#2ecc71] bg-[#1e2130] p-5 shadow-[6px_6px_0_#000] text-center">
-      <div class="modal-title text-[#2ecc71] text-md font-bold mb-3" style="font-family: 'DungGeunMo', monospace !important;">개인정보(디지털 발자국) 발견!</div>
-      
-      <!-- 소제목 & 내용 분리 카드 박스 -->
-      <div style="background-color: rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: left;">
-        <div id="hotspot-modal-name" style="font-size: 0.95rem; font-weight: bold; color: #fde047; margin-bottom: 6px; font-family: 'DungGeunMo', monospace !important;">항목명</div>
-        <div id="hotspot-modal-desc" style="font-size: 0.76rem; color: #cbd5e1; line-height: 1.45; word-break: keep-all; font-family: 'DungGeunMo', monospace !important;">설명글</div>
-      </div>
-      
-      <!-- 콤팩트 모자이크 단독 조치 버튼 -->
-      <div style="width: 100%; display: flex; justify-content: center;">
-        <button type="button" class="retro-btn" style="background-color: #3498db !important; color: #ffffff !important; border: 2px solid #000000 !important; box-shadow: 3px 3px 0px #000000 !important; padding: 5px 16px !important; font-size: 0.78rem !important; font-weight: bold !important; width: fit-content !important; font-family: 'DungGeunMo', monospace !important;" onclick="applyStickerToHotspot('mosaic')">
-          모자이크 가리기
-        </button>
-      </div>
-    </div>
-  </div>
 
     <!-- 공통 표준 하단 푸터바 (순수 CSS) -->
     <div id="control-bar" style="display: none;">
@@ -1992,20 +2518,40 @@
         다음 단계 ▶
       </button>
     </div>
-  </div>
 
   <script>
     // =========================================
     // 전역 관리 변수 & 상태 설정
     // =========================================
-    const INTRO_TEXT = "온라인에서는 무심코 올린 사진이나 남의 글을 함부로 쓰면 큰 문제가 생길 수 있어. 그래서 내 정보를 지키고 다른 사람의 권리를 존중하는 태도가 필요해.";
+    const INTRO_TEXT = "온라인에서는 무심코 내뱉은 말 한마디나 함부로 올린 사진 한 장 때문에 친구가 큰 상처를 받을 수 있어. 그래서 화면 너머에 있는 친구의 마음을 헤아리고, 타인의 권리를 소중하게 '존중'하는 태도가 꼭 필요하단다. 지금부터 우리가 매일 사용하는 채팅방과 SNS에서 서로를 존중하는 올바른 방법을 함께 알아보자!";
     const selectedResources = {
       bgm: null,
       image: null,
       font: null
     };
 
-    
+    // Toast Notification Helper
+    function showToast(message) {
+      let toast = document.getElementById("std-toast");
+      if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "std-toast";
+        toast.style = "position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background-color: #fef9c3; color: #000000; padding: 10px 20px; border-radius: 8px; border: 2px solid #000; box-shadow: 4px 4px 0 #000; font-family: 'DungGeunMo', monospace; font-size: 0.95rem; z-index: 1000; transition: opacity 0.3s ease; opacity: 0; pointer-events: none;";
+        document.body.appendChild(toast);
+      }
+      
+      toast.innerText = message;
+      toast.style.opacity = "1";
+      
+      // Clear any existing timeout
+      if (window.toastTimeout) clearTimeout(window.toastTimeout);
+      
+      window.toastTimeout = setTimeout(() => {
+        toast.style.opacity = "0";
+      }, 2500);
+    }
+
+
     // Switch View
     function switchView(viewId) {
       document.querySelectorAll('.view').forEach(el => {
@@ -2062,9 +2608,7 @@
       }
     }
 
-    // =========================================
-    // Screen 1: 인트로 로직 (Typing Effect)
-    // =========================================
+    // Screen 1: 인트로 로직
     document.addEventListener("DOMContentLoaded", () => {
       const target = document.getElementById("intro-typing-text");
       const btnContainer = document.getElementById("intro-btn-container");
@@ -2073,6 +2617,24 @@
         btnContainer.style.visibility = "visible";
         btnContainer.style.opacity = "1";
       }
+
+      // [개발 편의 기능] 사진 영역 클릭 시 실시간 좌표 추출 도우미
+      const wrapper = document.querySelector(".act2-photo-wrapper");
+      if (wrapper) {
+        wrapper.addEventListener("click", (e) => {
+          // 좌우 전환 화살표 버튼이나 핫스팟 클릭 시 좌표 안내 무시
+          if (e.target.classList.contains('act2-arrow-btn') || e.target.id === 'act2-pedestrian') return;
+          
+          const rect = wrapper.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const leftPercent = ((x / rect.width) * 100).toFixed(1);
+          const topPercent = ((y / rect.height) * 100).toFixed(1);
+          
+          showToast(`클릭 좌표 ➔ top: ${topPercent}%, left: ${leftPercent}%`);
+          console.log(`[좌표 도우미] top: ${topPercent}%, left: ${leftPercent}%`);
+        });
+      }
     });
 
     function startEthicsActivities() {
@@ -2080,190 +2642,629 @@
       switchView('view-act1');
     }
 
+    // =========================================
+    // Screen 2: 활동 2 (대화 표현 분류 및 고쳐 쓰기)
+    // =========================================
+    const act1Scenarios = [
+      { id: 1, author: "지윤", text: "얘들아! 우리 모둠 숙제 역할 어떻게 나눌지 정해보자~", isCorrectZone: "right", avatar: "👤", defaultZone: "center" },
+      { id: 2, author: "건우", text: "아 귀찮게 왜 주말에 연락을 해 ㅡㅡ 걍 대충 아무렇게나 나눠.", isCorrectZone: "left", avatar: "👤", defaultZone: "center" },
+      { id: 3, author: "수진", text: "나는 도서관에서 자료 조사를 먼저 해볼게. 발표자료는 누가 할래?", isCorrectZone: "right", avatar: "👤", defaultZone: "center" },
+      { id: 4, author: "태양", text: "야 민수 넌 발표자료 진짜 못 만드니까 걍 가만히 있어라 ㅋㅋ", isCorrectZone: "left", avatar: "👤", defaultZone: "center" },
+      { id: 5, author: "지윤", text: "민수는 그림 그리는 걸 엄청 잘하니까, 발표 자료에 들어갈 그림을 그려주면 어때?", isCorrectZone: "right", avatar: "👤", defaultZone: "center" },
+      { id: 6, author: "건우", text: "그럼 나보고 발표하라고? 난 발표 절대 안 할 거니까 니들끼리 알아서 해 ㅡㅡ", isCorrectZone: "left", avatar: "👤", defaultZone: "center" }
+    ];
 
-    // =========================================
-    // Screen 2: 활동 1 (디지털 발자국 탐정단)
-    // =========================================
-    let currentStage = 1;
-    const maxStages = 2;
-    
-    // 스테이지 데이터 정의
-    const act1Stages = {
-      1: {
-        title: "스테이지 1: 집 (장난감 언박싱 사진)",
-        imgUrl: "images/ethics_act1_stage1.webp",
-        hotspots: [
-          { id: "h1-1", name: "게임 비밀번호", top: "9.3%", left: "23.7%", width: "4.8%", height: "9.2%", feedback: "메모장에 게임 비밀번호를 그대로 적어두면 다른 사람이 내 계정을 빼앗거나 개인정보를 훔칠 위험이 있습니다. 비밀번호는 외우거나 아주 안전한 곳에 보관해야 해요!" },
-          { id: "h1-2", name: "학교와 이름", top: "15.0%", left: "55.1%", width: "8.8%", height: "9.8%", feedback: "사진 속에 학교 이름과 내 본명이 그대로 나오면 온라인상의 낯선 사람이 나를 찾아오거나 신상을 털 수 있어 위험합니다. 올리기 전 꼭 가려야 해요!" },
-          { id: "h1-3", name: "택배송장 주소", top: "69.6%", left: "34.6%", width: "8.8%", height: "9.8%", feedback: "택배 박스의 송장 스티커에는 나의 이름, 전화번호, 상세한 주소가 노출되어 있습니다. 사진을 찍기 전에 지우거나 보이지 않게 조치해야 합니다!" },
-          { id: "h1-4", name: "가족여행 날짜", top: "80.3%", left: "82.6%", width: "9.1%", height: "11.3%", feedback: "가족여행 날짜를 공개하면 집이 완전히 비는 날짜를 범죄자에게 알려주는 셈이 되어 범죄 피해를 입을 수 있어 아주 조심해야 합니다!" }
-        ]
-      },
-      2: {
-        title: "스테이지 2: 일상 (카페에서 찍은 사진)",
-        imgUrl: "images/ethics_act1_stage2.webp",
-        hotspots: [
-          { id: "h2-1", name: "아파트 건물", top: "12.3%", left: "0.7%", width: "6.3%", height: "12.8%", feedback: "창밖으로 노출된 아파트 건물이나 주변 전경을 통해 거주하는 위치가 유출될 수 있습니다." },
-          { id: "h2-2", name: "영수증 시간, 위치", top: "89.8%", left: "20.1%", width: "8.9%", height: "9.0%", feedback: "영수증의 가맹점 주소, 이용 시간 등을 통해 개인의 위치 동선이 추적되어 사생활 침해나 범죄의 위험이 발생할 수 있습니다." },
-          { id: "h2-3", name: "카드번호", top: "78.9%", left: "84.0%", width: "12.1%", height: "12.3%", feedback: "카드번호나 유효기간 등이 직접 노출되면 무단 도용 결제 등 중대한 금융 피해를 입을 수 있습니다." },
-          { id: "h2-4", name: "타인의 초상권", top: "29.3%", left: "88.5%", width: "10.9%", height: "18.1%", feedback: "동의 없이 촬영된 제3자의 얼굴을 그대로 노출하면 초상권 및 개인정보 침해에 해당하므로 스티커나 블러로 가려야 합니다." }
-        ]
-      }
-        };
-    
-    let foundHotspots = new Set();
-    
+    const act1State = {
+      currentStep: 1, // 1: 분류하기, 2: 고쳐 쓰기, 3: 채팅방 복원
+      cards: [],
+      editedTexts: {},
+      completed: false
+    };
+
     function initAct1() {
-      currentStage = 1;
-      loadStage(currentStage);
+      initCardGame();
     }
-    
-    function loadStage(stageNum) {
-      foundHotspots.clear();
-      document.getElementById("btn-act1-next").style.display = "none";
+
+    function initCardGame() {
+      act1State.currentStep = 1;
+      act1State.completed = false;
+      act1State.editedTexts = {
+        2: "",
+        4: "",
+        6: ""
+      };
       
-      const stageData = act1Stages[stageNum];
-      document.getElementById("stage-text").innerText = `스테이지 ${stageNum}/${maxStages}`;
-      document.getElementById("stage-bar-fill").style.width = `${(stageNum / maxStages) * 100}%`;
+      // 카드 데이터 초기화 (복사 및 셔플)
+      act1State.cards = JSON.parse(JSON.stringify(act1Scenarios));
+      // shuffleArray(act1State.cards);
       
-      // 메인 이미지 로딩
-      const mainImg = document.getElementById("stage-main-image");
-      mainImg.src = stageData.imgUrl;
+      // UI 요소 리셋
+      document.getElementById("stage-text").innerText = "분류하기 (1단계)";
+      document.getElementById("stage-bar-fill").style.width = "33.3%";
+      document.getElementById("act1-mission-prompt").innerText = "채팅을 읽고 친구를 존중하는 말인지, 존중하지 않는 말인지 구분해보세요.";
+      document.getElementById("act1-guide-bubble").innerText = "단체 대화방을 잘 읽고 친구들의 말에서 존중하는 모습을 찾아봅시다.";
       
-      // 가이드 버블 초기화
-      updateAct1RemainingText(stageData.hotspots.length);
+      document.getElementById("act1-sorting-area").style.display = "flex";
+      document.getElementById("act1-restore-area").style.display = "none";
+      document.getElementById("btn-restore-chat").style.display = "none";
+      document.getElementById("restore-success-banner").style.display = "none";
+      document.getElementById("restore-chat-body").innerHTML = "";
       
-      // 피드백 안내 영역 초기화
-      const feedbackEl = document.getElementById("act1-feedback-bubble");
-      if (feedbackEl) {
-        feedbackEl.innerText = "화면의 이미지 중 개인정보 유출을 방지하기 위해 가리거나 감춰야 할 항목을 터치해 보세요.";
-        feedbackEl.style.borderLeftColor = "var(--point-yellow)";
+      renderCardDeck();
+      updateFrameUI('view-act1');
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
       }
+    }
+
+    function renderCardDeck() {
+      const centerList = document.getElementById("center-deck-list");
+      const leftList = document.getElementById("zone-left-list");
+      const rightList = document.getElementById("zone-right-list");
       
-      // 핫스팟 렌더링
-      const container = document.getElementById("hotspots-container");
-      container.innerHTML = "";
+      centerList.innerHTML = "";
+      leftList.innerHTML = "";
+      rightList.innerHTML = "";
       
-      stageData.hotspots.forEach(hs => {
-        const box = document.createElement("div");
-        box.className = "hotspot";
-        box.style.top = hs.top;
-        box.style.left = hs.left;
-        box.style.width = hs.width;
-        box.style.height = hs.height;
-        box.dataset.id = hs.id;
+      act1State.cards.forEach(card => {
+        const cardEl = createCardElement(card);
         
-        // 정답 배지 생성
-        const badge = document.createElement("div");
-        badge.className = "found-badge";
-        badge.innerText = `🔍 ${hs.name}`;
-        box.appendChild(badge);
-        
-        // 클릭/터치 이벤트
-        box.onclick = (e) => {
-          e.stopPropagation();
-          clickHotspot(hs, box);
-        };
-        
-        container.appendChild(box);
+        if (card.defaultZone === "center") {
+          centerList.appendChild(cardEl);
+        } else if (card.defaultZone === "left") {
+          leftList.appendChild(cardEl);
+        } else if (card.defaultZone === "right") {
+          rightList.appendChild(cardEl);
+        }
       });
     }
-    
-    function updateAct1RemainingText(total) {
-      const remaining = total - foundHotspots.size;
-      const bubble = document.getElementById("act1-guide-bubble");
-      if (remaining > 0) {
-        bubble.innerHTML = `인터넷에 올린 무심한 사진 한 장이 소중한 사생활을 유출시키는 단서가 될 수 있어! (남은 흔적: <span id="act1-remaining-count" style="color:var(--point-yellow); font-weight:bold;">${remaining}</span>개) 👣`;
+
+        function createCardElement(card) {
+      const cardEl = document.createElement("div");
+      cardEl.className = "bubble-card";
+      cardEl.id = `card-${card.id}`;
+      
+      // Find the first unsorted card (topmost card in center deck)
+      const activeSortCard = act1State.cards.find(c => c.defaultZone === "center");
+      const isActiveCard = (activeSortCard && card.id === activeSortCard.id);
+      
+      if (card.defaultZone === "center") {
+        if (isActiveCard) {
+          cardEl.classList.add("active-sort-card");
+          cardEl.draggable = (act1State.currentStep === 1);
+        } else {
+          cardEl.classList.add("disabled-sort-card");
+          cardEl.draggable = false;
+        }
       } else {
-        bubble.innerHTML = `<span>모두 안전하게 조치 완료! 디지털 세상에 흔적을 남길 때는 늘 신중해야 해! 🕊️</span>`;
+        cardEl.draggable = false;
+      }
+      
+      if (cardEl.draggable) {
+        cardEl.addEventListener("dragstart", (e) => {
+          e.dataTransfer.setData("text/plain", card.id);
+        });
+      }
+      
+      // Left side button (◀) - only for active card in center deck
+      if (act1State.currentStep === 1 && card.defaultZone === "center" && isActiveCard) {
+        const btnLeft = document.createElement("button");
+        btnLeft.className = "card-side-btn btn-left";
+        btnLeft.innerHTML = "◀";
+        btnLeft.onclick = (e) => {
+          e.stopPropagation();
+          moveCard(card.id, "left");
+        };
+        cardEl.appendChild(btnLeft);
+      }
+      
+      // Middle content container
+      const contentEl = document.createElement("div");
+      contentEl.className = "bubble-card-content";
+      
+      const header = document.createElement("div");
+      header.className = "bubble-card-header";
+      header.innerHTML = `<span class="bubble-card-author">${card.avatar} ${card.author}</span>`;
+      
+      if (act1State.currentStep === 2) {
+        if (card.isCorrectZone === "right") {
+          const badge = document.createElement("span");
+          badge.className = "card-status-badge";
+          badge.innerText = "잠금 🔒";
+          badge.style.backgroundColor = "#64748b";
+          contentEl.appendChild(badge);
+        } else if (act1State.editedTexts[card.id]) {
+          const badge = document.createElement("span");
+          badge.className = "card-status-badge";
+          badge.innerText = "완료 ✔";
+          badge.style.backgroundColor = "#10b981";
+          contentEl.appendChild(badge);
+        }
+      }
+      
+      contentEl.appendChild(header);
+      
+      const body = document.createElement("div");
+      body.className = "bubble-card-body";
+      
+      if (act1State.currentStep === 2 && act1State.editedTexts[card.id]) {
+        body.innerHTML = `<span style="text-decoration: line-through; color: #94a3b8; font-size: 0.8rem; display:block;">"${card.text}"</span>
+                          <span style="color: #047857;">👉 ${act1State.editedTexts[card.id]}</span>`;
+      } else {
+        body.innerText = card.text;
+      }
+      contentEl.appendChild(body);
+      
+      if (act1State.currentStep === 2 && card.isCorrectZone === "left" && !act1State.editedTexts[card.id]) {
+        const editArea = document.createElement("div");
+        editArea.className = "card-edit-area";
+        
+        const input = document.createElement("input");
+        input.className = "card-input";
+        input.type = "text";
+        input.placeholder = "존중하는 다정한 말로 수정...";
+        input.id = `input-${card.id}`;
+        
+        input.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            submitCardCorrection(card.id);
+          }
+        });
+        
+        const submitBtn = document.createElement("button");
+        submitBtn.className = "card-submit-btn";
+        submitBtn.innerText = "✏️ 고치기";
+        submitBtn.onclick = () => submitCardCorrection(card.id);
+        
+        editArea.appendChild(input);
+        editArea.appendChild(submitBtn);
+        contentEl.appendChild(editArea);
+      }
+      
+      cardEl.appendChild(contentEl);
+      
+      // Right side button (▶) - only for active card in center deck
+      if (act1State.currentStep === 1 && card.defaultZone === "center" && isActiveCard) {
+        const btnRight = document.createElement("button");
+        btnRight.className = "card-side-btn btn-right";
+        btnRight.innerHTML = "▶";
+        btnRight.onclick = (e) => {
+          e.stopPropagation();
+          moveCard(card.id, "right");
+        };
+        cardEl.appendChild(btnRight);
+      }
+      
+      return cardEl;
+    }
+
+    function allowCardDrop(e) {
+      e.preventDefault();
+    }
+
+    function handleCardDrop(e, zone) {
+      e.preventDefault();
+      const cardIdStr = e.dataTransfer.getData("text/plain");
+      const cardId = parseInt(cardIdStr);
+      if (!isNaN(cardId)) {
+        moveCard(cardId, zone);
+      }
+    }
+
+    function moveCard(cardId, targetZone) {
+      if (act1State.currentStep !== 1) return;
+      
+      const card = act1State.cards.find(c => c.id === cardId);
+      if (!card || card.defaultZone !== "center") return;
+      
+      if (card.isCorrectZone !== targetZone) {
+        playBeepSound("fail");
+        const el = document.getElementById(`card-${cardId}`);
+        if (el) {
+          el.classList.add("shake-card");
+          setTimeout(() => el.classList.remove("shake-card"), 400);
+        }
+        showToast("다시 생각해 볼까요? 상대방을 존중하는 말인지 대화의 뜻을 읽어보세요!");
+        return;
+      }
+      
+      playBeepSound("success");
+      card.defaultZone = targetZone;
+      renderCardDeck();
+      checkSortingComplete();
+    }
+
+    function checkSortingComplete() {
+      const allSorted = act1State.cards.every(c => c.defaultZone !== "center");
+      if (allSorted) {
+        setTimeout(() => {
+          showToast("👍 훌륭해요! 대화 내용 구분을 완료했습니다. 고쳐 쓰기를 시작합니다!");
+          startEditingStep();
+        }, 500);
+      }
+    }
+
+    function startEditingStep() {
+      act1State.currentStep = 2;
+      
+      document.getElementById("stage-text").innerText = "고쳐 쓰기 (2단계)";
+      document.getElementById("stage-bar-fill").style.width = "66.6%";
+      document.getElementById("act1-mission-prompt").innerText = "[2단계 고쳐 쓰기] 존중하지 않는 대화 카드에 따뜻한 대안을 적어 고쳐보세요.";
+      document.getElementById("act1-guide-bubble").innerText = "건우와 태양이의 배려 없는 말풍선을 상대방을 존중하는 다정한 말로 수정해 주세요!";
+      
+      renderCardDeck();
+      document.getElementById("btn-restore-chat").style.display = "none";
+      updateFrameUI('view-act1');
+    }
+
+    function submitCardCorrection(cardId) {
+      const inputEl = document.getElementById(`input-${cardId}`);
+      if (!inputEl) return;
+      
+      const txt = inputEl.value.trim();
+      if (txt.length < 5) {
+        playBeepSound("fail");
+        alert("친구에게 따뜻한 진심이 전해지도록 최소 5글자 이상 작성해 주세요!");
+        return;
+      }
+      
+      playBeepSound("success");
+      act1State.editedTexts[cardId] = txt;
+      
+      renderCardDeck();
+      
+      const allEdited = act1Scenarios
+        .filter(c => c.isCorrectZone === "left")
+        .every(c => act1State.editedTexts[c.id] && act1State.editedTexts[c.id].length >= 5);
+        
+      if (allEdited) {
+        playBeepSound("success");
+        showToast("✨ 완벽해요! 모든 대안 작성을 마쳤습니다! 채팅방을 복원해보세요!");
+        document.getElementById("btn-restore-chat").style.display = "block";
       }
       updateFrameUI('view-act1');
     }
-    
-    let tempActiveHs = null;
-    let tempActiveEl = null;
 
-    function clickHotspot(hs, element) {
-      if (foundHotspots.has(hs.id)) return;
+    function restoreChatroom() {
+      act1State.currentStep = 3;
       
-      tempActiveHs = hs;
-      tempActiveEl = element;
+      document.getElementById("stage-text").innerText = "채팅방 복원 (3단계)";
+      document.getElementById("stage-bar-fill").style.width = "100%";
+      document.getElementById("act1-mission-prompt").innerText = "[3단계 복원] 존중하는 채팅방으로 복원되는 대화 과정을 살펴보세요.";
+      document.getElementById("act1-guide-bubble").innerText = "서로를 존중하는 따뜻한 대화방이 완성되는 중입니다!";
       
-      // 팝업 데이터 설정 및 노출
-      document.getElementById("hotspot-modal-name").innerText = hs.name;
-      document.getElementById("hotspot-modal-desc").innerText = hs.feedback;
-      document.getElementById("hotspot-feedback-modal").style.display = "flex";
+      document.getElementById("act1-sorting-area").style.display = "none";
+      document.getElementById("btn-restore-chat").style.display = "none";
+      document.getElementById("act1-restore-area").style.display = "block";
+      
+      const chatBody = document.getElementById("restore-chat-body");
+      chatBody.innerHTML = "";
+      
+      let index = 0;
+      
+      function renderNextBubble() {
+        if (index >= act1Scenarios.length) {
+          document.getElementById("restore-success-banner").style.display = "block";
+          document.getElementById("act1-guide-bubble").innerText = "성공! 서로를 존중하는 단체 채팅방이 완성되었어요!";
+          act1State.completed = true;
+          updateFrameUI('view-act1');
+          return;
+        }
+        
+        const scenario = act1Scenarios[index];
+        const align = (scenario.isCorrectZone === "right") ? "right" : "left";
+        const bubbleEl = document.createElement("div");
+        bubbleEl.className = `chat-msg ${align}`;
+        
+        const sender = document.createElement("span");
+        sender.className = "chat-msg-sender";
+        sender.innerText = `${scenario.avatar} ${scenario.author}`;
+        bubbleEl.appendChild(sender);
+        
+        const textWrapper = document.createElement("div");
+        textWrapper.className = "chat-msg-bubble";
+        
+        if (scenario.isCorrectZone === "left") {
+          textWrapper.innerText = act1State.editedTexts[scenario.id];
+        } else {
+          textWrapper.innerText = scenario.text;
+        }
+        
+        bubbleEl.appendChild(textWrapper);
+        chatBody.appendChild(bubbleEl);
+        
+        chatBody.scrollTop = chatBody.scrollHeight;
+        playBeepSound("click");
+        
+        index++;
+        setTimeout(renderNextBubble, 1000);
+      }
+      
+      renderNextBubble();
+    }
+
+    function progressAct1Stage() {
       playBeepSound("click");
+      switchView('view-act2');
     }
 
-    function applyStickerToHotspot(actionType) {
-      if (!tempActiveHs || !tempActiveEl) return;
-      
-      const hs = tempActiveHs;
-      const element = tempActiveEl;
-      
-      foundHotspots.add(hs.id);
-      element.classList.add("found");
-      playBeepSound("success");
-      
-      // 반투명한 블러 모자이크 가리기 시각 연출 (뒷배경이 뽀얗게 보이도록 처리)
-      if (actionType === 'mosaic') {
-        element.style.backdropFilter = "blur(10px)";
-        element.style.webkitBackdropFilter = "blur(10px)";
-        element.style.backgroundColor = "rgba(255, 255, 255, 0.25)";
-        element.style.border = "2px solid rgba(255, 255, 255, 0.4)";
-        element.style.boxShadow = "inset 0 0 10px rgba(255, 255, 255, 0.1)";
-        element.innerHTML = ""; // 텍스트 없이 깔끔하게 모자이크 블러만 표현
-      } else {
-        // 안심 스티커 연출
-        element.style.backgroundColor = "rgba(46, 204, 113, 0.4)";
-        element.style.border = "3px dashed #2ecc71";
-        element.style.boxShadow = "0 0 8px rgba(46, 204, 113, 0.5)";
-      }
-      
-      // 하단 안내창 피드백 업데이트 (엘리먼트가 존재할 때만 실행)
-      const feedback = document.getElementById("act1-feedback-bubble");
-      if (feedback) {
-        feedback.innerText = `[${hs.name} 조치완료] ${hs.feedback}`;
-        feedback.style.borderLeftColor = '#3498db';
-      }
-      
-      const stageData = act1Stages[currentStage];
-      updateAct1RemainingText(stageData.hotspots.length);
-      
-      // 팝업 닫기 및 초기화
-      document.getElementById("hotspot-feedback-modal").style.display = "none";
-      tempActiveHs = null;
-      tempActiveEl = null;
-      
-      // 모두 찾았는지 확인
-      if (foundHotspots.size === stageData.hotspots.length) {
-        showStageClearButton();
+    function finishInternetEthics() {
+      playBeepSound('success');
+      try {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ 
+            type: 'TASK_COMPLETE', 
+            category: '인터넷 윤리의식 및 활용',
+            answers: {
+              act1: typeof act1State !== 'undefined' ? act1State.editedTexts : {},
+              act2: typeof act2State !== 'undefined' ? { step1Input: document.getElementById("act2-step1-input").value } : {}
+            }
+          }, '*');
+        } else {
+          window.location.href = 'index.html';
+        }
+      } catch (e) {
+        window.location.href = 'index.html';
       }
     }
-    
-    function showStageClearButton() {
-      const nextBtn = document.getElementById("btn-act1-next");
-      nextBtn.style.display = "inline-flex";
-      if (currentStage === maxStages) {
-        nextBtn.innerText = "활동 2로 가기 ➔";
-      } else {
-        nextBtn.innerText = "다음 스테이지로 ➔";
+
+
+
+    // =========================================
+    // Screen 3: 활동 2 (초상권 존중 4단계 실천하기)
+    // =========================================
+    const act2State = {
+      currentStep: 1, // 1: 동의 구하기, 2: 내용의 배려, 3: 초상권 보호, 4: 잊힐 권리, 5: 성공 완료
+      selectedPhotoIdx: 2, // 1: 친구 눈감음, 2: 둘 다 웃음, 3: 나 이상함
+      pedestrianClicked: false,
+      pedestrianCovered: false,
+      completed: false
+    };
+
+    const act2PhotoMeta = {
+      1: { label: "친구가 눈을 감아버린 사진 🙈", url: "images/ethics_act2_photo1.webp" },
+      2: { label: "우리 둘 다 예쁘게 웃고 있는 사진 😊", url: "images/ethics_act2_photo2.webp" },
+      3: { label: "나의 표정이 이상하게 나온 사진 🤪", url: "images/ethics_act2_photo3.webp" }
+    };
+
+    function initAct2() {
+      act2State.currentStep = 1;
+      act2State.selectedPhotoIdx = 2;
+      act2State.pedestrianClicked = false;
+      act2State.pedestrianCovered = false;
+      act2State.completed = false;
+      
+      // UI 리셋
+      const inputEl = document.getElementById("act2-step1-input");
+      if (inputVal = inputEl) inputVal.value = "";
+      document.getElementById("act2-step1-2").style.display = "none";
+      document.getElementById("act2-step3-action").style.display = "none";
+      document.getElementById("act2-pedestrian-mosaic").style.display = "none";
+
+      
+      document.getElementById("act2-arrow-prev").style.display = "none";
+      document.getElementById("act2-arrow-next").style.display = "none";
+      const labelEl = document.getElementById("act2-photo-label");
+      if (labelEl) labelEl.style.display = "none";
+      document.getElementById("act2-pedestrian").style.display = "none";
+      const btnContainer = document.getElementById("act2-btn-container");
+      if (btnContainer) btnContainer.style.setProperty("display", "none", "important");
+      
+      const photoEl = document.getElementById("act2-main-photo");
+      if (photoEl) {
+        photoEl.src = act2PhotoMeta[2].url;
+        photoEl.style.opacity = "1";
       }
-      updateFrameUI('view-act1'); // 다음 단계 활성화 트리거
+      
+      const mosaicEl = document.getElementById("act2-pedestrian-mosaic");
+      if (mosaicEl) {
+        mosaicEl.style.opacity = "1";
+      }
+      
+      loadAct2Step(1);
+      updateFrameUI('view-act2');
     }
-    
-    // 크게보기 창 & 돋보기 렌즈 효과
+
+    function loadAct2Step(stepNum) {
+      document.querySelectorAll(".act2-mission-step").forEach(el => {
+        el.classList.remove("active");
+      });
+      
+      const fillBar = document.getElementById("stage-bar-fill-act2");
+      const stageText = document.getElementById("stage-text-act2");
+      const guideText = document.getElementById("act2-guide-bubble-text");
+      
+      if (stepNum === 1) {
+        document.getElementById("act2-step1").classList.add("active");
+        if (fillBar) fillBar.style.width = "25%";
+        if (stageText) stageText.innerText = "1단계: 동의 구하기";
+        if (guideText) guideText.innerText = "친구와 함께 찍은 사진을 SNS에 올리기 전에 꼭 거쳐야 하는 존중의 4단계를 함께 실천해 봐요!";
+        
+        document.getElementById("act2-arrow-prev").style.display = "none";
+        document.getElementById("act2-arrow-next").style.display = "none";
+        document.getElementById("act2-pedestrian").style.display = "none";
+        const photoEl = document.getElementById("act2-main-photo");
+        if (photoEl) photoEl.src = act2PhotoMeta[2].url;
+      } else if (stepNum === 2) {
+        document.getElementById("act2-step2").classList.add("active");
+        if (fillBar) fillBar.style.width = "50%";
+        if (stageText) stageText.innerText = "2단계: 내용의 존중";
+        if (guideText) guideText.innerText = "나와 친구가 모두 예쁘게 나와서 만족스러워할 만한 사진으로 골라봅시다.";
+        
+        document.getElementById("act2-arrow-prev").style.display = "flex";
+        document.getElementById("act2-arrow-next").style.display = "flex";
+        const labelEl = document.getElementById("act2-photo-label");
+      if (labelEl) labelEl.style.display = "block";
+        document.getElementById("act2-pedestrian").style.display = "none";
+        updateAct2PhotoView();
+      } else if (stepNum === 3) {
+        document.getElementById("act2-step3").classList.add("active");
+        if (fillBar) fillBar.style.width = "75%";
+        if (stageText) stageText.innerText = "3단계: 초상권 존중";
+        if (guideText) guideText.innerText = "우리 뒤에 찍힌 모르는 보행자(행인)의 초상권도 소중하게 존중하고 숨겨 줍시다!";
+        
+        document.getElementById("act2-arrow-prev").style.display = "none";
+        document.getElementById("act2-arrow-next").style.display = "none";
+        document.getElementById("act2-pedestrian").style.display = "block";
+        const photoEl = document.getElementById("act2-main-photo");
+        if (photoEl) photoEl.src = act2PhotoMeta[2].url;
+      } else if (stepNum === 4) {
+        document.getElementById("act2-step4").classList.add("active");
+        if (fillBar) fillBar.style.width = "90%";
+        if (stageText) stageText.innerText = "4단계: 잊힐 권리 존중";
+        if (guideText) guideText.innerText = "마지막 단계! 이미 업로드했더라도 친구가 사진 삭제를 요청한다면 존중해 줄 수 있어야 해요.";
+        
+        document.getElementById("act2-arrow-prev").style.display = "none";
+        document.getElementById("act2-arrow-next").style.display = "none";
+        document.getElementById("act2-pedestrian").style.display = "none";
+      } else if (stepNum === 5) {
+        document.getElementById("act2-success").classList.add("active");
+        if (fillBar) fillBar.style.width = "100%";
+        if (stageText) stageText.innerText = "체험 완료!";
+        if (guideText) guideText.innerText = "대단해요! 초상권을 완벽히 배려하여 존중과 어울림을 실천했군요!";
+        
+        act2State.completed = true;
+        updateFrameUI('view-act2');
+      }
+
+      // 3단계일 때만 힌트보기/크게보기 버튼 보이고 나머지는 숨김
+      const btnContainer = document.getElementById("act2-btn-container");
+      if (btnContainer) {
+        if (stepNum === 3) {
+          btnContainer.style.setProperty("display", "flex", "important");
+        } else {
+          btnContainer.style.setProperty("display", "none", "important");
+        }
+      }
+    }
+
+    function chooseStep1(option) {
+      if (option === 'A') {
+        playBeepSound('fail');
+        showToast("친구가 당황하거나 속상해할 수 있어요! 꼭 미리 물어봐서 동의를 받아야 합니다.");
+      } else if (option === 'B') {
+        playBeepSound('success');
+        showToast("정답! 친구의 동의를 구하는 것이 가장 첫걸음이에요. 아래의 메시지를 마저 적어보세요.");
+        document.getElementById("act2-step1-2").style.display = "flex";
+      }
+    }
+
+    function confirmStep1_2() {
+      const inputEl = document.getElementById("act2-step1-input");
+      const inputVal = inputEl ? inputEl.value.trim() : "";
+      if (inputVal.length < 5) {
+        playBeepSound('fail');
+        alert("지문 속 상황에 맞추어 친구에게 양해를 구하는 말을 최소 5글자 이상 정성껏 입력해 주세요!");
+        return;
+      }
+      
+      playBeepSound('success');
+      showToast("훌륭합니다! 다정하게 동의를 구하고 배려했으니 이제 다음 단계로 넘어갑니다.");
+      
+      act2State.currentStep = 2;
+      loadAct2Step(2);
+    }
+
+    function selectPhoto(direction) {
+      playBeepSound('click');
+      let idx = act2State.selectedPhotoIdx + direction;
+      if (idx < 1) idx = 3;
+      if (idx > 3) idx = 1;
+      act2State.selectedPhotoIdx = idx;
+      updateAct2PhotoView();
+    }
+
+    function updateAct2PhotoView() {
+      const meta = act2PhotoMeta[act2State.selectedPhotoIdx];
+      const photoEl = document.getElementById("act2-main-photo");
+      const labelEl = document.getElementById("act2-photo-label");
+      if (photoEl) photoEl.src = meta.url;
+      if (labelEl) labelEl.innerText = meta.label;
+    }
+
+    function confirmStep2() {
+      if (act2State.selectedPhotoIdx !== 2) {
+        playBeepSound('fail');
+        showToast("친구가 눈을 감았거나 내가 이상한 얼굴이면 서로 만족스럽지 않아요. 다시 좋은 사진을 골라보세요!");
+        return;
+      }
+      
+      playBeepSound('success');
+      showToast("멋져요! 서로가 모두 만족할 수 있는 잘 나온 사진으로 완벽하게 골랐습니다!");
+      
+      act2State.currentStep = 3;
+      loadAct2Step(3);
+    }
+
+    function clickPedestrian() {
+      if (act2State.pedestrianClicked) return;
+      
+      playBeepSound('click');
+      act2State.pedestrianClicked = true;
+      
+
+      document.getElementById("act2-step3-action").style.display = "flex";
+    }
+
+    function coverPedestrian() {
+      playBeepSound('success');
+      act2State.pedestrianCovered = true;
+      
+      document.getElementById("act2-pedestrian-mosaic").style.display = "block";
+      document.getElementById("act2-pedestrian").style.display = "none";
+      
+      showToast("완벽해요! 행인의 초상권까지 정성껏 모자이크 처리하여 타인의 권리를 보호했습니다!");
+      
+      setTimeout(() => {
+        act2State.currentStep = 4;
+        loadAct2Step(4);
+      }, 2000);
+    }
+
+    function chooseStep4(option) {
+      if (option === 'A') {
+        playBeepSound('fail');
+        showToast("내가 올린 사진이라도 주인공인 친구가 불편해하거나 지우길 원한다면 무조건 내려야 해요!");
+        
+        const panel = document.querySelector(".act2-right-panel");
+        if (panel) {
+          panel.classList.add("shake-card");
+          setTimeout(() => panel.classList.remove("shake-card"), 500);
+        }
+      } else if (option === 'B') {
+        playBeepSound('success');
+        
+        const photoEl = document.getElementById("act2-main-photo");
+        const mosaicEl = document.getElementById("act2-pedestrian-mosaic");
+        if (photoEl) photoEl.style.opacity = "0";
+        if (mosaicEl) mosaicEl.style.opacity = "0";
+        
+        showToast("훌륭합니다! 친구의 잊힐 권리를 바로 존중해 주었습니다. 사진 삭제 처리 완료!");
+        
+        setTimeout(() => {
+          act2State.currentStep = 5;
+          loadAct2Step(5);
+        }, 2000);
+      }
+    }
+
+    function progressAct2Stage() {
+      playBeepSound("click");
+      switchView('view-outro');
+    }
+
     function openZoomModal(event) {
       if (event) {
         event.preventDefault();
         event.stopPropagation();
       }
-      const currentImgUrl = act1Stages[currentStage].imgUrl;
-      document.getElementById("zoomed-stage-image").src = currentImgUrl;
+      const currentPhotoUrl = act2PhotoMeta[act2State.selectedPhotoIdx].url;
+      document.getElementById("zoomed-stage-image").src = currentPhotoUrl;
       document.getElementById("image-zoom-modal").style.display = "flex";
-      
-      // 이미지 렌더링 완료 시점에 돋보기 효과 바인딩
       setTimeout(initMagnifier, 80);
     }
     
@@ -2282,7 +3283,6 @@
 
       function moveLens(e) {
         const rect = container.getBoundingClientRect();
-        
         let clientX = e.clientX;
         let clientY = e.clientY;
         if (e.touches && e.touches.length > 0) {
@@ -2299,7 +3299,6 @@
         }
         
         lens.style.display = "block";
-        
         const lensW = lens.offsetWidth;
         const lensH = lens.offsetHeight;
         
@@ -2312,7 +3311,6 @@
         
         const bgX = (x * zoom) - (lensW / 2);
         const bgY = (y * zoom) - (lensH / 2);
-        
         lens.style.backgroundPosition = `-${bgX}px -${bgY}px`;
       }
       
@@ -2322,516 +3320,40 @@
 
       container.onmousemove = moveLens;
       container.onmouseleave = hideLens;
-      
-      container.ontouchstart = (e) => {
-        e.preventDefault();
-        moveLens(e);
-      };
-      container.ontouchmove = (e) => {
-        e.preventDefault();
-        moveLens(e);
-      };
+      container.ontouchstart = (e) => { e.preventDefault(); moveLens(e); };
+      container.ontouchmove = (e) => { e.preventDefault(); moveLens(e); };
       container.ontouchend = hideLens;
     }
 
-    // 힌트 보기 제어 함수
-    function showAct1Hint(event) {
+    function showAct2Hint(event) {
       if (event) {
         event.preventDefault();
         event.stopPropagation();
       }
       playBeepSound('click');
-      
-      const remainingHotspots = [];
-      const stageData = act1Stages[currentStage];
-      
-      stageData.hotspots.forEach(hs => {
-        if (!foundHotspots.has(hs.id)) {
-          remainingHotspots.push(hs.id);
+      if (act2State.currentStep === 3) {
+        const targetEl = document.getElementById("act2-pedestrian");
+        if (targetEl) {
+          targetEl.style.borderColor = "#f1c40f";
+          targetEl.style.backgroundColor = "rgba(241, 196, 15, 0.45)";
+          showToast("저기 노랗게 표시된 다른 사람의 얼굴을 찾아 클릭해 보세요!");
+          setTimeout(() => {
+            targetEl.style.borderColor = "transparent";
+            targetEl.style.backgroundColor = "transparent";
+          }, 3000);
         }
-      });
-      
-      if (remainingHotspots.length === 0) {
-        alert("모든 개인정보를 이미 찾으셨습니다!");
-        return;
-      }
-      
-      const randomId = remainingHotspots[Math.floor(Math.random() * remainingHotspots.length)];
-      const targetEl = document.querySelector(`.hotspot[data-id="${randomId}"]`);
-      
-      if (targetEl) {
-        targetEl.classList.add("hint-active");
-        setTimeout(() => {
-          targetEl.classList.remove("hint-active");
-        }, 3000);
-      }
-    }
-
-    function progressAct1Stage() {
-      playBeepSound("click");
-      if (currentStage < maxStages) {
-        currentStage++;
-        loadStage(currentStage);
+      } else if (act2State.currentStep === 1) {
+        showToast("동의를 받기 위해 먼저 B 옵션을 선택해 보세요!");
+      } else if (act2State.currentStep === 2) {
+        showToast("좌우 화살표를 눌러 둘 다 활짝 웃는 예쁜 사진을 골라보세요!");
+      } else if (act2State.currentStep === 4) {
+        showToast("친구가 사진 삭제를 원한다면 바로 들어주는 B 옵션이 맞겠죠?");
       } else {
-        // 활동 2로 화면 전환
-        switchView('view-act2');
+        showToast("이미 모든 단계가 완료되었습니다!");
       }
     }
 
-    // CCL 마크 마스터 데이터 정의
-    const cclMasterData = {
-      by: {
-        name: "저작자 표시 (Attribution)",
-        img: "images/ccl_by.webp"
-      },
-      nc: {
-        name: "비영리 (Non-Commercial)",
-        img: "images/ccl_nc.webp"
-      },
-      nd: {
-        name: "변경 금지 (No Derivatives)",
-        img: "images/ccl_nd.webp"
-      },
-      copyright: {
-        name: "저작권 보호 (Copyright)",
-        img: "images/ccl_copyright.webp"
-      }
-    };
 
-    // 상세 정보 데이터 정의
-    const resourcesDetailData = {
-      bgm: {
-        1: {
-          name: "최신 유행 아이돌 노래",
-          cclTypes: ["copyright"],
-          desc: "저작권법의 보호를 받는 가요 음원입니다. 원작자의 허락 없이 무단으로 학교 홍보 영상 BGM 등으로 사용하는 행위는 저작권 침해에 해당합니다.",
-          isCorrect: false
-        },
-        2: {
-          name: "크리에이터의 신나는 피아노 연주",
-          cclTypes: ["by", "nc"],
-          desc: "출처를 밝히면 비영리 목적으로 자유롭게 사용 가능합니다. 학교 홍보 목적의 영상은 수익을 창출하는 상업적 활동이 아니므로 안심하고 사용 가능합니다.",
-          isCorrect: true
-        },
-        3: {
-          name: "유명 블록버스터 영화 OST",
-          cclTypes: ["copyright"],
-          desc: "영화 배급사 및 원작자에 모든 독점적 권리가 있습니다. 무단 인용 및 변형 시 저작권 경고(Copyright Strike)를 받게 됩니다.",
-          isCorrect: false
-        }
-      },
-      image: {
-        1: {
-          name: "워터마크 유료 사진",
-          cclTypes: ["copyright"],
-          desc: "유료 이미지 플랫폼의 보호를 받는 사진입니다. 워터마크가 노출된 이미지의 무단 사용 및 워터마크 강제 제거 후 업로드는 심각한 저작권 침해입니다.",
-          isCorrect: false
-        },
-        2: {
-          name: "무료 배포 일러스트",
-          cclTypes: ["by"],
-          desc: "원작 창작자가 무료로 공유한 일러스트입니다. 원작자의 출처(이름, 플랫폼 등)만 영상 정보란이나 화면 구석에 표기해주면 자유롭게 사용할 수 있습니다.",
-          isCorrect: true
-        },
-        3: {
-          name: "유명 만화 캐릭터 그림",
-          cclTypes: ["copyright", "nd"],
-          desc: "원저작사의 지식재산권(IP) 보호를 받는 유명 캐릭터 그림입니다. 공식 협약이나 사전 이용 허가를 얻지 않고 게시하면 초상권 및 저작권 위반이 됩니다.",
-          isCorrect: false
-        }
-      },
-      font: {
-        1: {
-          name: "개인 제작 예쁜 유료 폰트",
-          cclTypes: ["copyright"],
-          desc: "폰트 디자이너가 판매하는 유료 서체입니다. 정식 구매한 라이선스가 없는 기기나 환경에서 해당 서체로 자막을 만들어 업로드하는 행위는 제한됩니다.",
-          isCorrect: false
-        },
-        2: {
-          name: "공공기관 배포 안심 글꼴",
-          cclTypes: ["by"],
-          desc: "안심하고 자유롭게 서체를 다운로드하여 문서나 미디어에 사용할 수 있도록 제공된 글꼴입니다. 저작권 문제없이 상업적/비상업적 용도 모두 사용 가능합니다.",
-          isCorrect: true
-        },
-        3: {
-          name: "출처 불명 변형 폰트",
-          cclTypes: ["copyright"],
-          desc: "출처를 증빙하기 어렵고 폰트 파일이 무단 수정되어 배포되는 파일입니다. 폰트 프로그램 무단 사용에 따른 법적 경고를 받을 우려가 큽니다.",
-          isCorrect: false
-        }
-      }
-    };
-
-    function initAct2() {
-      // 모달 초기화
-      document.getElementById("learn-modal").style.display = "flex";
-      document.getElementById("modal-content-ccl").style.display = "block";
-      document.getElementById("modal-content-quiz").style.display = "none";
-      document.getElementById("modal-content-quiz-result").style.display = "none";
-      document.getElementById("copyright-strike-stamp").style.display = "none";
-      document.getElementById("btn-act2-finish").style.display = "none";
-      document.getElementById("btn-upload-video").style.display = "inline-flex";
-      document.getElementById("btn-upload-video").disabled = true;
-      document.getElementById("act2-guide-bubble").innerText = "인터넷 자료를 올릴 때는 저작권자의 허락(CCL 마크)을 받거나 상업용 무료 소스를 써야 해! ⚖️";
-      
-      // 슬롯 텍스트 초기화
-      document.getElementById("slot-bgm-text").innerText = "배경음악을 선택해주세요";
-      document.getElementById("slot-image-text").innerText = "이미지를 선택해주세요";
-      document.getElementById("slot-font-text").innerText = "폰트를 선택해주세요";
-      
-      // 스타일 초기화
-      document.querySelectorAll(".timeline-slot").forEach(slot => {
-        slot.classList.remove("filled", "correct-style");
-      });
-      
-      // 카드 선택 해제
-      document.querySelectorAll(".resource-card").forEach(card => {
-        card.classList.remove("selected");
-      });
-
-      selectedResources.bgm = null;
-      selectedResources.image = null;
-      selectedResources.font = null;
-
-      switchResourceTab('bgm');
-    }
-
-    // 모달창 제어 (추가)
-    function closeLearnModal() {
-      playBeepSound("click");
-      const modal = document.getElementById("learn-modal");
-      modal.style.display = "none";
-    }
-
-    // OX 퀴즈 데이터 및 로직
-    const quizQuestions = [
-      {
-        id: 1,
-        category: "Q1. 저작자 표시",
-        text: "인터넷에서 무료로 다운받은 예쁜 폰트(글씨체)나 음악은 출처를 안 밝히고 내 마음대로 써도 된다?",
-        answer: "X",
-        explanation: "무료라도 만든 사람을 꼭 밝혀야 하는 '저작자 표시(사람 모양)' 마크가 있는지 잘 확인해야 해!"
-      },
-      {
-        id: 2,
-        category: "Q2. 비영리",
-        text: "돈에 'X'가 쳐진 '비영리' 마크가 있는 음악은 학교 숙제 영상의 배경음악으로 쓸 수 있다?",
-        answer: "O",
-        explanation: "맞아! 학교 숙제는 돈을 버는 목적이 아니기 때문에 비영리 마크가 있는 재료도 안전하게 쓸 수 있어."
-      },
-      {
-        id: 3,
-        category: "Q3. 변경 금지",
-        text: "'변경 금지(=)' 마크가 있는 사진은 영상 길이에 맞춰 마음대로 자르거나 그 위에 글씨를 써서 넣어도 된다?",
-        answer: "X",
-        explanation: "절대 안 돼! 영상을 만들며 사진을 자르거나 꾸미는 것도 '변경'에 해당하니까, 변경 금지 마크가 있는 건 그대로 감상만 해야 해."
-      }
-    ];
-
-    let currentQuizIndex = 0;
-    let lastAnswerIsCorrect = false;
-
-    function startAct2Quiz() {
-      playBeepSound("click");
-      currentQuizIndex = 0;
-      document.getElementById("modal-content-ccl").style.display = "none";
-      document.getElementById("modal-content-quiz-result").style.display = "none";
-      document.getElementById("modal-content-quiz").style.display = "block";
-      loadQuizQuestion();
-    }
-
-    function loadQuizQuestion() {
-      const q = quizQuestions[currentQuizIndex];
-      document.getElementById("quiz-q-num").innerText = q.category;
-      
-      let imgPath = "";
-      if (currentQuizIndex === 0) imgPath = "images/ccl_by.webp";
-      else if (currentQuizIndex === 1) imgPath = "images/ccl_nc.webp";
-      else if (currentQuizIndex === 2) imgPath = "images/ccl_nd.webp";
-      
-      const imgHtml = imgPath ? `<img src="${imgPath}" style="width: 50px !important; height: 50px !important; margin-bottom: 10px !important; border-radius: 6px !important; border: 2px solid rgba(255,255,255,0.15) !important; background-color: #2b2e3d !important; padding: 4px !important; display: block !important; margin-left: auto !important; margin-right: auto !important; image-rendering: pixelated !important; flex-shrink: 0 !important;">` : "";
-      
-      document.getElementById("quiz-q-text").innerHTML = `
-        <div style="display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; width: 100% !important; text-align: center !important;">
-          ${imgHtml}
-          <div style="font-size: 0.98rem !important; color: #ffffff !important; line-height: 1.5 !important; font-family: 'DungGeunMo', monospace !important; word-break: keep-all !important; font-weight: bold !important; text-shadow: 1px 1px 0px #000;">${q.text}</div>
-        </div>
-      `;
-    }
-
-    function submitQuizAnswer(userAns) {
-      playBeepSound("click");
-      const q = quizQuestions[currentQuizIndex];
-      const resultPanel = document.getElementById("modal-content-quiz-result");
-      const quizPanel = document.getElementById("modal-content-quiz");
-      const nextBtn = document.getElementById("btn-quiz-next");
-      const retryStudyBtn = document.getElementById("btn-quiz-retry-study");
-      
-      quizPanel.style.display = "none";
-      resultPanel.style.display = "block";
-      
-      if (userAns === q.answer) {
-        lastAnswerIsCorrect = true;
-        playBeepSound("success");
-        document.getElementById("quiz-result-title").innerText = "정답입니다!";
-        document.getElementById("quiz-result-title").style.color = "var(--point-green)";
-        resultPanel.style.borderColor = "var(--point-green)";
-        document.getElementById("quiz-result-feedback").innerText = q.explanation;
-        
-        if (currentQuizIndex === 2) {
-          nextBtn.innerText = "영상 편집 시작하기";
-        } else {
-          nextBtn.innerText = "다음 문제로 ➔";
-        }
-        retryStudyBtn.style.display = "none";
-      } else {
-        lastAnswerIsCorrect = false;
-        playBeepSound("fail");
-        document.getElementById("quiz-result-title").innerText = "아쉽게도 틀렸습니다!";
-        document.getElementById("quiz-result-title").style.color = "var(--point-red)";
-        resultPanel.style.borderColor = "var(--point-red)";
-        document.getElementById("quiz-result-feedback").innerText = q.explanation + "\n\n(오답으로 인해 처음부터 다시 도전해야 합니다.)";
-        
-        nextBtn.innerText = "처음부터 다시 풀기 ➔";
-        retryStudyBtn.style.display = "block";
-      }
-    }
-
-    function nextQuizStep() {
-      playBeepSound("click");
-      if (lastAnswerIsCorrect) {
-        if (currentQuizIndex < 2) {
-          currentQuizIndex++;
-          document.getElementById("modal-content-quiz-result").style.display = "none";
-          document.getElementById("modal-content-quiz").style.display = "block";
-          loadQuizQuestion();
-        } else {
-          closeLearnModal();
-        }
-      } else {
-        startAct2Quiz();
-      }
-    }
-
-    function showCCLStudyFromQuiz() {
-      playBeepSound("click");
-      document.getElementById("modal-content-quiz").style.display = "none";
-      document.getElementById("modal-content-quiz-result").style.display = "none";
-      document.getElementById("modal-content-ccl").style.display = "block";
-    }
-
-    // 탭 전환 로직
-    function switchResourceTab(tabType) {
-      playBeepSound('click');
-      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
-      document.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
-      
-      document.getElementById(`tab-btn-${tabType}`).classList.add("active");
-      document.getElementById(`tab-content-${tabType}`).classList.add("active");
-    }
-
-    // 리소스 선택 처리
-    function selectResource(type, optionNum) {
-      // 신규 선택 시 저작권 경고 스탬프 숨기기 및 피드백 문구 초기화
-      document.getElementById("copyright-strike-stamp").style.display = "none";
-      document.getElementById("act2-guide-bubble").innerHTML = '자료가 변경되었습니다. 슬롯이 모두 채워지면 아래 <span style="color:var(--point-yellow); font-weight:bold;">[영상 업로드하기]</span>를 눌러 다시 검증해보세요!';
-
-      playBeepSound('click');
-      const data = resourcesDetailData[type][optionNum];
-      
-      // 상태 저장
-      selectedResources[type] = {
-        id: optionNum,
-        name: data.name,
-        isCorrect: data.isCorrect
-      };
-
-      // 탭 내 카드 선택 스타일 연동
-      const cardsInTab = document.querySelectorAll(`#tab-content-${type} .resource-card`);
-      cardsInTab.forEach(card => card.classList.remove("selected"));
-      
-      const targetCard = document.querySelector(`[data-id="${type}-${optionNum}"]`);
-      if (targetCard) {
-        targetCard.classList.add("selected");
-      }
-
-      // 좌측 타임라인 슬롯 연동
-      const slot = document.getElementById(`slot-${type}`);
-      const slotText = document.getElementById(`slot-${type}-text`);
-      
-      slot.classList.add("filled");
-      slotText.innerText = data.name;
-
-      // 모든 슬롯이 다 찼는지 확인하여 업로드 버튼 활성화
-      checkUploadReady();
-    }
-
-    function checkUploadReady() {
-      if (selectedResources.bgm && selectedResources.image && selectedResources.font) {
-        document.getElementById("btn-upload-video").disabled = false;
-      }
-    }
-
-    // 상세 정보 모달 제어
-    function openResourceInfo(type, optionNum, event) {
-      event.stopPropagation(); // 카드 선택 이벤트 방지
-      playBeepSound('click');
-
-      const data = resourcesDetailData[type][optionNum];
-      
-      // 제목에 컨텐츠 명과 라이선스 정보가 줄바꿈되어 나오도록 처리
-      document.getElementById("info-modal-title").innerHTML = `[${data.name}]<br>라이선스 정보`;
-      
-      // CCL 뱃지 영역 초기화 및 동적 렌더링
-      const badgesContainer = document.getElementById("info-modal-ccl-badges");
-      badgesContainer.innerHTML = "";
-      
-      if (data.cclTypes && data.cclTypes.length > 0) {
-        data.cclTypes.forEach(cclKey => {
-          const cclInfo = cclMasterData[cclKey];
-          if (!cclInfo) return;
-          
-          const badgeItem = document.createElement("div");
-          badgeItem.className = "info-modal-ccl-badge-item";
-          
-          const badgeImg = document.createElement("img");
-          badgeImg.className = "info-modal-ccl-badge-img";
-          badgeImg.src = cclInfo.img;
-          badgeImg.alt = cclInfo.name;
-          
-          const badgeText = document.createElement("span");
-          badgeText.className = "info-modal-ccl-badge-text";
-          badgeText.innerText = cclInfo.name;
-          
-          badgeItem.appendChild(badgeImg);
-          badgeItem.appendChild(badgeText);
-          
-          badgesContainer.appendChild(badgeItem);
-        });
-      }
-      
-      // 설명 글씨는 기존 데이터 그대로 유지
-      document.getElementById("info-modal-desc").innerText = data.desc;
-
-      document.getElementById("ccl-info-modal").style.display = "flex";
-    }
-
-    function closeInfoModal() {
-      document.getElementById("ccl-info-modal").style.display = "none";
-    }
-
-    // 영상 업로드 검증 시뮬레이션
-    function uploadVideoSimulation() {
-      const isBgmOk = selectedResources.bgm.isCorrect;
-      const isImgOk = selectedResources.image.isCorrect;
-      const isFontOk = selectedResources.font.isCorrect;
-
-      // 이전 경고 감추기
-      document.getElementById("copyright-strike-stamp").style.display = "none";
-
-      if (isBgmOk && isImgOk && isFontOk) {
-        // 업로드 성공!
-        playBeepSound("success");
-        
-        // 슬롯 초록빛 스타일링
-        document.querySelectorAll(".timeline-slot").forEach(slot => {
-          slot.classList.add("correct-style");
-        });
-
-        document.getElementById("act2-guide-bubble").innerHTML = `<span style="color:var(--point-green); font-weight:bold;">🎉 업로드 성공! 창작자의 권리를 존중하며 안전하고 멋진 과제 영상을 완성했어요!</span>`;
-        document.getElementById("btn-upload-video").style.display = "none";
-        document.getElementById("btn-act2-finish").style.display = "inline-flex";
-        updateFrameUI('view-act2');
-      } else {
-        // 실패 처리
-        playBeepSound("fail");
-        
-        // 저작권 스트라이크 스탬프 활성화
-        document.getElementById("copyright-strike-stamp").style.display = "flex";
-
-        // 틀린 항목 색출
-        let incorrectName = "";
-        if (!isBgmOk) {
-          incorrectName = selectedResources.bgm.name;
-        } else if (!isImgOk) {
-          incorrectName = selectedResources.image.name;
-        } else if (!isFontOk) {
-          incorrectName = selectedResources.font.name;
-        }
-
-        document.getElementById("act2-guide-bubble").innerHTML = `<span style="color:var(--point-red); font-weight:bold;">앗! [${incorrectName}]은 저작권자의 허락 없이 사용하면 안 됩니다. 다시 골라보아요!</span>`;
-      }
-    }
-
-    // 최종 윤리의식 활동 완료 로직
-    function finishInternetEthics() {
-      playBeepSound('click');
-      alert("인터넷 윤리의식 및 활용 활동의 모든 단계를 성공적으로 이수했습니다! 대시보드로 돌아갑니다.");
-      
-      let inIframe = false;
-      try {
-        inIframe = (window.self !== window.top);
-      } catch (e) {
-        inIframe = true; // iframe에 갇혀 접근이 제한됨
-      }
-
-      if (inIframe) {
-        try {
-          window.parent.postMessage({ type: 'TASK_COMPLETE', category: '인터넷 윤리의식 및 활용' }, '*');
-          return;
-        } catch (err) {
-          console.error("postMessage 전송 실패:", err);
-        }
-      }
-      
-      // 로컬 디렉토리 테스트 등 외부 실행 시 폴백
-      location.reload();
-    }
-
-    // 임시 테스트용 순차적 스킵 기능
-    function skipToNextSection() {
-      playBeepSound('click');
-      
-      const introView = document.getElementById('view-intro');
-      const act1View = document.getElementById('view-act1');
-      const act2View = document.getElementById('view-act2');
-      
-      if (introView.classList.contains('active')) {
-        // 인트로 -> 활동 1 스테이지 1
-        switchView('view-act1');
-      } else if (act1View.classList.contains('active')) {
-        if (currentStage < maxStages) {
-          // 활동 1 다음 스테이지로 스킵
-          currentStage++;
-          loadStage(currentStage);
-        } else {
-          // 활동 1 스테이지 3 -> 활동 2
-          switchView('view-act2');
-        }
-      } else if (act2View.classList.contains('active')) {
-        const modal = document.getElementById("learn-modal");
-        if (modal && modal.style.display !== 'none') {
-          // 사전학습 모달 닫기
-          closeLearnModal();
-        } else {
-          // 활동 2 메인 시뮬레이터
-          const isBgmOk = selectedResources.bgm && selectedResources.bgm.isCorrect;
-          const isImgOk = selectedResources.image && selectedResources.image.isCorrect;
-          const isFontOk = selectedResources.font && selectedResources.font.isCorrect;
-          
-          if (isBgmOk && isImgOk && isFontOk) {
-            // 정답이 채워진 상태에서 한 번 더 누르면 완료 -> 아웃트로로 이동
-            switchView('view-outro');
-          } else {
-            // 디버그용 정답 자동 로딩
-            selectResource('bgm', 2);
-            selectResource('image', 2);
-            selectResource('font', 2);
-            document.getElementById("act2-guide-bubble").innerText = "[스킵 가이드] 저작권 준수 정답 조합이 로드되었습니다. 영상 업로드하기 또는 스킵을 한 번 더 누르세요.";
-          }
-        }
-      }
-    }
   </script>
 
   <!-- 이미지 확대 모달 -->

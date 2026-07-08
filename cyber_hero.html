@@ -2025,10 +2025,10 @@
         </div>
       </div>
 
-      <div class="act1-content" style="display: flex !important; flex-direction: column !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; flex-grow: 1 !important; height: auto !important; overflow: hidden !important; padding: 4px 12px 50px 12px !important; margin-bottom: 0px !important;">
+      <div class="act1-content" style="display: flex !important; flex-direction: column !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; flex-grow: 1 !important; height: auto !important; overflow: hidden !important; padding: 4px 12px 12px 12px !important; margin-bottom: 0px !important;">
         
-        <!-- 상단 대화방 & 캐릭터 생각구름 & 감정 매칭 드롭 영역 (아래로 마진을 늘려 살짝 내림) -->
-        <div class="act1-interactive-area" style="display: flex; flex-direction: row; justify-content: center; align-items: flex-end; gap: 20px; width: 100%; flex-grow: 1; max-height: 380px !important; margin-top: 30px !important;">
+        <!-- 상단 대화방 & 캐릭터 생각구름 & 감정 매칭 드롭 영역 (위로 올려 최적화) -->
+        <div class="act1-interactive-area" style="display: flex; flex-direction: row; justify-content: center; align-items: flex-end; gap: 20px; width: 100%; flex-grow: 1; max-height: 380px !important; margin-top: 6px !important;">
           
           <!-- 준우의 방 (좌측 - 1.5배 확대 및 최적화) -->
           <div class="character-container" id="char-container-perp" style="gap: 6px; width: 170px;">
@@ -2450,9 +2450,8 @@
             isTaskCompleted = true;
           }
         } else if (viewId === 'view-act2') {
-          // SOS 도구가 발동되었거나, Block Stamp가 찍혔거나, sns-body 내부 텍스트로 판단
-          const stamp = document.getElementById('blocked-stamp');
-          if (stamp && stamp.style.display !== 'none') {
+          // SOS 전화 걸기까지 최종 완료(sosCompleted)되었을 때만 활동 2 완료로 판정
+          if (typeof sosCompleted !== 'undefined' && sosCompleted) {
             isTaskCompleted = true;
           }
         }
@@ -2921,12 +2920,14 @@
     let act2Step = 1;
     let safeCount = 0;
     let sosToolActive = false;
+    let sosCompleted = false; // SOS 전화 걸기 완료 여부
     
     function initActivity2() {
       act2Mission = 1;
       act2Step = 1;
       safeCount = 0;
       sosToolActive = false;
+      sosCompleted = false;
       
       document.getElementById('safe-badge').innerText = safeCount;
       document.getElementById('blocked-stamp').style.display = 'none';
@@ -2948,6 +2949,7 @@
       act2Step = 1;
       sosToolActive = false;
       blockToolActive = false;
+      sosCompleted = false;
       
       const snsLogo = document.getElementById('sns-logo-text');
       const snsBody = document.getElementById('sns-body');
@@ -3449,6 +3451,7 @@
     }
 
     function triggerSOS() {
+      sosCompleted = true;
       playBlockStampSound();
       updateFrameUI('view-act2');
       

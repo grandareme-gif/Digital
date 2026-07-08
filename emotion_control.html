@@ -221,25 +221,7 @@
       50% { transform: translateY(-5px); }
     }
 
-    .temp-skip-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: rgba(0, 0, 0, 0.4);
-      color: rgba(255, 255, 255, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 6px;
-      padding: 6px 10px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      z-index: 9999;
-      transition: all 0.2s ease;
-    }
-    .temp-skip-btn:hover {
-      background: rgba(255, 71, 87, 0.3);
-      color: #ffffff;
-      border-color: var(--point-red);
-    }
+
 
     .shake {
       animation: shakeContainer 0.4s ease-in-out;
@@ -1375,8 +1357,6 @@
       </div>
     </div>
 
-    <!-- 임시 테스트용 스킵 버튼 -->
-    <button class="temp-skip-btn" onclick="skipToNextStep()">⏩ 스킵</button>
 
     <!-- =========================================
          Screen 0: 인트로 마음온 브리핑 화면
@@ -1738,9 +1718,9 @@
         title: "상황 2: 소통의 단절",
         avatar: "💬",
         senderName: "지수",
-        angryMsg: "내일 준비물 뭐야? (읽씹)",
+        angryMsg: "내일 준비물 뭐야? (읽고도 무시)",
         emotions: ["답답함", "무안함", "존중받지 못함"],
-        desc: "\"내일 준비물 뭐야?\" 물어봤는데 내 톡은 '읽씹'하고, 단톡방에서 내 질문은 무시한 채 친구들끼리 대화가 이어짐.",
+        desc: "\"내일 준비물 뭐야?\" 물어봤는데 내 톡은 '읽고도 무시'하고, 단톡방에서 내 질문은 무시한 채 친구들끼리 대화가 이어짐.",
         hints: {
           fact: "예시: 내 톡은 읽고 답장이 없는데 SNS에 영상을 올린 걸 봤을 때",
           emotion: "예시: 내가 무시당하는 기분이 들어서 답답하고 무안했어.",
@@ -2843,45 +2823,7 @@
     // =========================================
     // 임시 테스트용 순차적 스킵 기능
     // =========================================
-    function skipToNextStep() {
-      playAudioTone('click');
 
-      const mainMenu = document.getElementById("view-main-menu");
-      const sitSelect = document.getElementById("view-situation-select");
-      const act1View = document.getElementById("view-act1");
-      const act2View = document.getElementById("view-act2");
-
-      if (mainMenu.classList.contains('active')) {
-        Object.keys(clearedMissions).forEach(k => {
-          clearedMissions[k] = true;
-        });
-        renderMainMenu();
-      } else if (sitSelect.classList.contains('active')) {
-        for (let sId = 1; sId <= 2; sId++) {
-          clearedMissions[`act1_sit${sId}`] = true;
-          clearedMissions[`act2_sit${sId}`] = true;
-        }
-        renderSituationSelect();
-      } else if (act1View.classList.contains('active')) {
-        const dragDrop = document.getElementById("drag-drop-area");
-        if (dragDrop.style.display !== "none") {
-          const data = SCENARIOS[activeSituationId];
-          selectEmotion(data.emotions[0]);
-        } else {
-          // 5초 누르기 스킵
-          act1HoldTime = 5000;
-          isAct1HoldActive = true;
-          completeAct1Breathing();
-        }
-      } else if (act2View.classList.contains('active')) {
-        const data = SCENARIOS[activeSituationId];
-        document.getElementById("act2-input-fact").value = data.hints.fact.replace("예시: ", "");
-        document.getElementById("act2-input-emotion").value = data.hints.emotion.replace("예시: ", "");
-        document.getElementById("act2-input-request").value = data.hints.request.replace("예시: ", "");
-        
-        validateAndTranslate();
-      }
-    }
 
     function startTraining() {
       playAudioTone('success');

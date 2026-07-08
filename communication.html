@@ -1279,16 +1279,20 @@
     <!-- 공통 표준 상단 헤더바 -->
     <div id="standard-header" class="w-full bg-[#1e293b] border-b-4 border-black px-6 py-2.5 flex justify-between items-center z-10 shrink-0 text-white select-none" style="height: 52px; font-family: 'DungGeunMo', monospace;">
       <!-- 좌측: 고유 역량 이미지 아이콘 & 역량명 -->
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2" style="width: 30%; justify-content: flex-start;">
         <div class="relative w-10 h-10 flex items-center justify-center overflow-visible" style="margin-left: -5px; margin-right: 5px;">
           <img src="images/icon_comm.webp" alt="역량 아이콘" class="absolute w-24 h-24 object-contain max-w-none" id="header-logo-icon" style="image-rendering: pixelated; transform: scale(2.4); z-index: 20; pointer-events: none; top: -28px; left: -26px;">
         </div>
-        <span class="font-bold text-[1.15rem] tracking-tight" id="header-competency-name" style="margin-left: 5px;">사이버 의사소통</span>
+        <span class="font-bold text-[1.15rem] tracking-tight" id="header-competency-name" style="margin-left: 5px; white-space: nowrap;">사이버 의사소통</span>
       </div>
       
-      <!-- 가운데: 활동명 및 진행 상태 (도트) -->
-      <div class="flex items-center gap-4">
-        <span class="text-xs font-bold text-slate-300" id="stage-title-text">사이버 의사소통 : 활동 안내</span>
+      <!-- 가운데: 활동명 및 진행 상태 -->
+      <div style="width: 40%; text-align: center; display: flex; justify-content: center; align-items: center;">
+        <span class="font-bold" id="stage-title-text" style="color: var(--point-yellow); font-size: 1.05rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); white-space: nowrap;">사이버 의사소통 : 활동 안내</span>
+      </div>
+      
+      <!-- 우측: 진행 상태 (도트) -->
+      <div style="width: 30%; display: flex; justify-content: flex-end; align-items: center;">
         <div class="flex items-center gap-1.5" id="header-progress-dots">
           <span class="w-3 h-3 rounded-full border-2 border-black bg-slate-500 stage-dot active" id="dot-1">1</span>
           <span class="w-3 h-3 rounded-full border-2 border-black bg-slate-500 stage-dot" id="dot-2">2</span>

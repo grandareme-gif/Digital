@@ -1123,12 +1123,12 @@ function renderScene() {
   
   const talkNum = window.appState.currentSceneIndex + 1;
   let bgImg = "";
-  if (talkNum >= 1 && talkNum <= 2) bgImg = "images/story_bg1.png";
-  else if (talkNum >= 3 && talkNum <= 7) bgImg = "images/story_bg2.png";
-  else if (talkNum >= 8 && talkNum <= 10) bgImg = "images/story_bg3.png";
-  else if (talkNum >= 11 && talkNum <= 15) bgImg = "images/story_bg4.png";
-  else if (talkNum === 16) bgImg = "images/story_bg5.png";
-  else if (talkNum >= 17 && talkNum <= 24) bgImg = "images/story_bg6.png";
+  if (talkNum >= 1 && talkNum <= 2) bgImg = "images/story_bg1.webp";
+  else if (talkNum >= 3 && talkNum <= 7) bgImg = "images/story_bg2.webp";
+  else if (talkNum >= 8 && talkNum <= 10) bgImg = "images/story_bg3.webp";
+  else if (talkNum >= 11 && talkNum <= 15) bgImg = "images/story_bg4.webp";
+  else if (talkNum === 16) bgImg = "images/story_bg5.webp";
+  else if (talkNum >= 17 && talkNum <= 24) bgImg = "images/story_bg6.webp";
 
   if (bgImg) {
     sceneContainer.style.backgroundImage = `url('${bgImg}')`;
@@ -1309,7 +1309,7 @@ window.renderMap = function() {
   if (window.appState.isClassMode) {
     recommenderBar.innerHTML = `
       <div style="display: flex; align-items: center; gap: 10px; width: 100%; padding: 0;">
-        <div style="width: 50px; height: 50px; flex-shrink: 0; background: url('images/maeumon.png') no-repeat center/contain; animation: miniFloat 2s ease-in-out infinite;"></div>
+        <div style="width: 50px; height: 50px; flex-shrink: 0; background: url('images/maeumon.webp') no-repeat center/contain; animation: miniFloat 2s ease-in-out infinite;"></div>
         <div style="font-size: 0.95rem; color: #01fcfa; font-weight: bold; flex-grow: 1; text-align: left; line-height: 1.3; word-break: keep-all; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);">
           친구들과 사이버 어울림 역량을 기르며, 마음 웹을 따뜻하게 녹여줘!
         </div>
@@ -1317,18 +1317,29 @@ window.renderMap = function() {
     `;
   } else {
     recommenderBar.innerHTML = `
-      <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; width: 100%;">
-        <span id="recommender-title" style="font-weight: bold;">🎯 추천 순서:</span>
-        <div id="recommender-list"></div>
+      <div style="display: flex; flex-direction: column; gap: 8px; font-size: 1.15rem; width: 100%; border: 3px solid #000; background-color: #161920; padding: 12px 16px; border-radius: 8px; box-shadow: 4px 4px 0 #000; box-sizing: border-box;">
+        <span id="recommender-title" style="font-weight: bold; font-size: 1.25rem; color: var(--point-yellow);">🎯 추천 순서:</span>
+        <div id="recommender-list" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; line-height: 1.6; margin-top: 4px;"></div>
       </div>
     `;
     const recList = document.getElementById('recommender-list');
     const route = window.appState.recommendedRoute;
+    const firstUncompIdx = route.findIndex(cat => !compTasks.includes(cat));
+    
     route.forEach((cat, idx) => {
       const isComp = compTasks.includes(cat);
-      const text = isComp ? `<span style="color:#0f0">[✓] ${cat}</span>` : `<span>${cat}</span>`;
+      let text = '';
+      if (isComp) {
+        text = `<span style="color: #2ed573; font-weight: bold; text-shadow: 0 0 4px rgba(46,213,115,0.4);">[✓] ${cat}</span>`;
+      } else if (idx === firstUncompIdx) {
+        text = `<span class="active-recomm-glow">👉 ${cat}</span>`;
+      } else {
+        text = `<span style="color: #8a9ba8;">${cat}</span>`;
+      }
       recList.innerHTML += text;
-      if (idx < route.length - 1) recList.innerHTML += " ➔ ";
+      if (idx < route.length - 1) {
+        recList.innerHTML += ` <span style="color: #4a5568; font-weight: bold; margin: 0 4px;">➔</span> `;
+      }
     });
   }
     
@@ -1443,14 +1454,14 @@ const categoryPages = {
 };
 
 const categoryIcons = {
-  '사이버 공감': 'images/icon_empathy.png',
-  '사이버 의사소통': 'images/icon_comm.png',
-  '사이버폭력 인식': 'images/icon_violence.png',
-  '사이버 자기조절': 'images/icon_selfcontrol.png',
-  '사이버 감정조절': 'images/icon_emotion.png',
-  '인터넷 윤리의식 및 활용': 'images/icon_ethics.png',
-  '사이버 자기존중감': 'images/icon_esteem.png',
-  '사이버 갈등관리 및 문제해결': 'images/icon_conflict.png'
+  '사이버 공감': 'images/icon_empathy.webp',
+  '사이버 의사소통': 'images/icon_comm.webp',
+  '사이버폭력 인식': 'images/icon_violence.webp',
+  '사이버 자기조절': 'images/icon_selfcontrol.webp',
+  '사이버 감정조절': 'images/icon_emotion.webp',
+  '인터넷 윤리의식 및 활용': 'images/icon_ethics.webp',
+  '사이버 자기존중감': 'images/icon_esteem.webp',
+  '사이버 갈등관리 및 문제해결': 'images/icon_conflict.webp'
 };
 
 window.enterTask = function(category) {
@@ -1518,7 +1529,7 @@ window.addEventListener('DOMContentLoaded', () => {
 const outroScenes = [
   {
     bgName: "마음웹",
-    bgImg: "images/story_bg7.jpg",
+    bgImg: "images/story_bg7.webp",
     speaker: "마음 온(ON)",
     text: "이것 봐! 네가 기른 ‘사이버 어울림 역량’ 덕분에 꽁꽁 얼어붙었던 우리 반 마음 웹이 따뜻하게 녹았어!",
     showFairy: true,
@@ -1526,7 +1537,7 @@ const outroScenes = [
   },
   {
     bgName: "마음웹",
-    bgImg: "images/story_bg7.jpg",
+    bgImg: "images/story_bg7.webp",
     speaker: "나",
     text: "정말이네.. 차갑게 얼어있던 선들이 따스한 빛을 내며 다시 부드럽게 이어졌어!",
     showFairy: true,
@@ -1534,7 +1545,7 @@ const outroScenes = [
   },
   {
     bgName: "마음웹",
-    bgImg: "images/story_bg7.jpg",
+    bgImg: "images/story_bg7.webp",
     speaker: "마음 온(ON)",
     text: "이제 넌 온라인에서 생긴 오해와 상처를 스스로 치유할 수 있는 멋진 힘을 가지게 된 거야! 현실 교실로 돌아가서도 이 따뜻한 마음 온도를 꼭 유지해 줘. 약속할 수 있지?",
     showFairy: true,
@@ -1542,7 +1553,7 @@ const outroScenes = [
   },
   {
     bgName: "교실",
-    bgImg: "images/story_bg3.png",
+    bgImg: "images/story_bg3.webp",
     speaker: "나",
     text: "어...? 다시 교실이다. 앗, 태블릿 화면도 원래대로 돌아왔네.",
     showFairy: false,
@@ -1550,7 +1561,7 @@ const outroScenes = [
   },
   {
     bgName: "교실",
-    bgImg: "images/story_bg3.png",
+    bgImg: "images/story_bg3.webp",
     speaker: "나",
     text: "신기하다. 아침까지만 해도 마음이 엄청 무겁고 콕콕 찔렀는데, 지금은 마음이 후련해.",
     showFairy: false,
@@ -1558,7 +1569,7 @@ const outroScenes = [
   },
   {
     bgName: "교실",
-    bgImg: "images/story_bg3.png",
+    bgImg: "images/story_bg3.webp",
     speaker: "나",
     text: "좋아! 어제 일은 내가 먼저 다가가서 솔직하게 내 마음을 이야기해 봐야겠다. 로그아웃 한다고 끝나는 게 아니니까!",
     showFairy: false,
@@ -1566,7 +1577,7 @@ const outroScenes = [
   },
   {
     bgName: "교실",
-    bgImg: "images/ending_friends.jpg",
+    bgImg: "images/ending_friends.webp",
     speaker: "나",
     text: "얘들아! 어제 있었던 일......",
     showFairy: false,
@@ -1619,7 +1630,7 @@ function renderOutroScene() {
     if (scene.bgName === "마음웹") {
       fairyEl.classList.add('top-left');
       // 아웃트로 전용 마음온 요정 캐릭터 이미지 적용
-      fairyEl.style.backgroundImage = `url('images/maeumon_outro.png?v=${new Date().getTime()}')`;
+      fairyEl.style.backgroundImage = `url('images/maeumon_outro.webp?v=${new Date().getTime()}')`;
     } else {
       fairyEl.classList.remove('top-left');
     }
@@ -1712,29 +1723,7 @@ function runEndingCreditSequence() {
   }, 5500);
 }
 
-// 테스트용 전체 완료 치트 함수
-window.cheatCompleteAll = function() {
-  const allCategories = [
-    '사이버 공감',
-    '사이버 의사소통',
-    '사이버폭력 인식',
-    '사이버 자기조절',
-    '사이버 감정조절',
-    '인터넷 윤리의식 및 활용',
-    '사이버 자기존중감',
-    '사이버 갈등관리 및 문제해결'
-  ];
-  
-  window.appState.completedTasks = [...allCategories];
-  saveLocalState();
-  renderMap();
-  
-  if (typeof synth !== 'undefined' && synth.playSuccess) {
-    try { synth.playSuccess(); } catch(e) {}
-  }
-  
-  alert("치트 적용: 8개 사이버 어울림 활동이 모두 완료되었습니다! 중앙의 붉게 켜진 하트를 클릭하여 아웃트로를 확인해 보세요. ❤️");
-};
+
 
 // ==========================================
 // [개인정보처리방침 모달 제어 기능]

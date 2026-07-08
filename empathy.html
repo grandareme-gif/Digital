@@ -840,8 +840,6 @@
          스테이지 1: 마음 포션 제조기 (좌우 2분할 레이아웃)
          ========================================================== -->
     <div id="view-stage1" class="view hidden flex-grow p-5 pb-28 flex flex-col gap-3 overflow-y-auto">
-      <!-- 임시 스킵 단추 -->
-      <button class="temp-skip-btn" onclick="skipStage()" style="position: absolute; top: 10px; right: 10px; z-index: 100; font-size: 0.75rem; padding: 4px 8px; background: #e67e22; color: #fff; border: 2px solid #000; cursor: pointer; font-family: 'DungGeunMo', monospace;">스킵 ⏭️</button>
 
       <!-- 마음온 AI 가이드 배너 -->
       <div class="std-guide-banner mb-2">
@@ -943,8 +941,7 @@
          스테이지 2: 카카오톡 스타일 메신저 감정/블록 조합 (완전 개편)
          ========================================================== -->
     <div id="view-stage2" class="view hidden flex-grow p-4 flex flex-col gap-3 overflow-y-auto w-full pb-24 relative">
-      <!-- 임시 스킵 단추 -->
-      <button class="temp-skip-btn" onclick="skipStage()" style="position: absolute; top: 10px; right: 10px; z-index: 100; font-size: 0.75rem; padding: 4px 8px; background: #e67e22; color: #fff; border: 2px solid #000; cursor: pointer; font-family: 'DungGeunMo', monospace;">스킵 ⏭️</button>
+
 
       <!-- 마음온 AI 가이드 배너 -->
       <div class="std-guide-banner mb-2">
@@ -1478,11 +1475,7 @@
       }
     }
 
-    function skipStage() {
-      state.stageCompleted[state.currentStage] = true;
-      showToast(`테스트 모드: ${state.currentStage}단계를 스킵했습니다!`);
-      updateStageUI();
-    }
+
 
     function showToast(message, isWarning = false) {
       let toast = document.getElementById('success-toast');
@@ -1564,7 +1557,7 @@
               </div>
               <!-- SNS 이미지 영역 -->
               <div class="bg-[#f8f9fa] border-2 border-black h-60 flex flex-col items-center justify-center font-bold text-[1.15rem] text-orange-950 shadow-[inset_2px_2px_0_rgba(0,0,0,0.1)] overflow-hidden relative" style="height: 240px !important;">
-                <img src="images/tteokbokki.jpg" alt="친구들의 떡볶이 모임 캡처 사진" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <img src="images/tteokbokki.webp" alt="친구들의 떡볶이 모임 캡처 사진" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                 <div class="absolute inset-0 flex flex-col items-center justify-center bg-[#f8f9fa]" style="display: none;">
                   <span>🍲 [친구들의 떡볶이 모임 캡처 사진]</span>
                   <span class="text-[0.95rem] text-orange-850/80 font-normal mt-0.5">#떡볶이 #나만빼고 #섭섭해</span>
@@ -2466,43 +2459,11 @@
           });
         }
 
-        // [4] 마음 분석하기 버튼
-        const analyzeBtn = document.getElementById('btn-analyze-potion');
-        if (analyzeBtn) {
-          analyzeBtn.addEventListener('click', () => {
-            try { startStage1Reflection(); } catch (e) { console.error(e); }
-          });
-        }
-
-        // [5] 성찰 제출 버튼
-        const submitOpinionBtn = document.getElementById('btn-submit-opinion');
-        if (submitOpinionBtn) {
-          submitOpinionBtn.addEventListener('click', () => {
-            try { submitStage1Opinion(); } catch (e) { console.error(e); }
-          });
-        }
-
-        // [6] 하단바 이전 버튼
-        const prevBtn = document.getElementById('btn-prev');
-        if (prevBtn) {
-          prevBtn.addEventListener('click', () => {
-            try { prevStage(); } catch (e) { console.error(e); }
-          });
-        }
-
-        // [7] 하단바 스킵 버튼
+        // [4] 하단바 스킵 버튼
         const skipBtn = document.getElementById('btn-skip');
         if (skipBtn) {
           skipBtn.addEventListener('click', () => {
             try { skipStage(); } catch (e) { console.error(e); }
-          });
-        }
-
-        // [8] 하단바 다음 버튼
-        const nextBtn = document.getElementById('btn-next');
-        if (nextBtn) {
-          nextBtn.addEventListener('click', () => {
-            try { nextStage(); } catch (e) { console.error(e); }
           });
         }
 

@@ -125,8 +125,8 @@ body {
 /* =============================================
    1. 로그인 뷰 
    ============================================= */
-#view-login {
-  background-image: url('images/login_bg.jpg');
+#view-login, #view-loading {
+  background-image: url('images/login_bg.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -245,7 +245,7 @@ body {
   display: none;
   width: 25cqw;
   height: 25cqw;
-  background: url('images/maeumon.png') no-repeat center/contain;
+  background: url('images/maeumon.webp') no-repeat center/contain;
   position: relative;
   animation: hoverFloat 2s ease-in-out infinite;
   z-index: 5;
@@ -427,8 +427,9 @@ body {
    ============================================= */
 #view-survey {
   background-color: var(--bg-dark);
-  padding: 20px;
-  justify-content: flex-start;
+  padding: 40px 20px;
+  justify-content: center;
+  box-sizing: border-box;
 }
 #survey-header {
   display: flex;
@@ -480,10 +481,16 @@ body {
 }
 .btn-answer {
   flex: 1;
-  font-size: 1.2rem;
-  padding: 15px 5px;
-  /* Break words if needed */
+  font-size: 1.25rem;
+  padding: 28px 10px;
   word-break: keep-all;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.4;
+  box-sizing: border-box;
 }
 .btn-answer:hover {
   background-color: #fff;
@@ -1208,4 +1215,36 @@ body {
 .floating-circle-btn:active {
   transform: translate(2px, 2px);
   box-shadow: 2px 2px 0 #000;
+}
+
+/* =============================================
+   비회원 추천 순서 활성 아이템 강조 효과 
+   ============================================= */
+.active-recomm-glow {
+  color: #ffffff !important;
+  font-weight: bold;
+  background-color: rgba(241, 196, 15, 0.2) !important;
+  border: 2px dashed var(--point-yellow) !important;
+  padding: 4px 10px !important;
+  border-radius: 6px !important;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 4px;
+  text-shadow: 0 0 6px var(--point-yellow);
+  animation: recommPulse 1.2s infinite alternate ease-in-out;
+  box-shadow: 2px 2px 0 #000;
+  box-sizing: border-box;
+}
+
+@keyframes recommPulse {
+  0% {
+    text-shadow: 0 0 4px var(--point-yellow), 0 0 8px var(--point-yellow);
+    box-shadow: 0 0 4px rgba(241, 196, 15, 0.3), 2px 2px 0 #000;
+    transform: scale(1);
+  }
+  100% {
+    text-shadow: 0 0 12px var(--point-yellow), 0 0 20px var(--point-yellow);
+    box-shadow: 0 0 12px rgba(241, 196, 15, 0.75), 2px 2px 0 #000;
+    transform: scale(1.03);
+  }
 }
