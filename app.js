@@ -2110,8 +2110,76 @@ function patchAudioNode(win) {
 // 부모 창 패치 적용
 patchAudioNode(window);
 
+// 이미지 백그라운드 사전 캐싱(Preload) 리스트 (총 42개 에셋)
+const imagesToPreload = [
+  'images/car_design.webp',
+  'images/cyber_chat.webp',
+  'images/cyber_healed.webp',
+  'images/cyber_junwoo.webp',
+  'images/cyber_minsu.webp',
+  'images/ending_friends.webp',
+  'images/ethics_act1_article.webp',
+  'images/ethics_act2_photo1.webp',
+  'images/ethics_act2_photo2.webp',
+  'images/ethics_act2_photo3.webp',
+  'images/game_doyun_cut1.webp',
+  'images/game_doyun_cut2.webp',
+  'images/game_doyun_cut3.webp',
+  'images/icon_comm.webp',
+  'images/icon_conflict.webp',
+  'images/icon_emotion.webp',
+  'images/icon_empathy.webp',
+  'images/icon_esteem.webp',
+  'images/icon_ethics.webp',
+  'images/icon_selfcontrol.webp',
+  'images/icon_violence.webp',
+  'images/junwoo_sorry.webp',
+  'images/login_bg.webp',
+  'images/lonely_jisu.webp',
+  'images/maeumon.webp',
+  'images/maeumon_intro.webp',
+  'images/maeumon_outro.webp',
+  'images/maratang.webp',
+  'images/minsu_smile.webp',
+  'images/sheep_farm.webp',
+  'images/shorts_sua_cut1.webp',
+  'images/shorts_sua_cut2.webp',
+  'images/shorts_sua_cut3.webp',
+  'images/shorts_sua_success.webp',
+  'images/story_bg1.webp',
+  'images/story_bg2.webp',
+  'images/story_bg3.webp',
+  'images/story_bg4.webp',
+  'images/story_bg5.webp',
+  'images/story_bg6.webp',
+  'images/story_bg7.webp',
+  'images/theme_park_jieun.webp'
+];
+
+function preloadProjectImages() {
+  // 브라우저 백그라운드 스레드에서 유휴 상태일 때 로드하여 캐싱 수행
+  if (window.requestIdleCallback) {
+    window.requestIdleCallback(() => {
+      imagesToPreload.forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
+    });
+  } else {
+    setTimeout(() => {
+      imagesToPreload.forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
+    }, 100);
+  }
+}
+
 // 5. 초기화 및 이벤트 리스너 설정
 document.addEventListener('DOMContentLoaded', () => {
+  // 이미지 사전 로드 실행
+  preloadProjectImages();
+
   // 초기 음소거 상태 반영
   const isMuted = localStorage.getItem('app_audio_muted') === 'true';
   window.updateMuteButton(isMuted);
