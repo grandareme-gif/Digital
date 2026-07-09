@@ -13,7 +13,10 @@
        ========================================= */
     @font-face {
       font-family: 'DungGeunMo';
-      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+      src: url('font/DungGeunMo.woff2') format('woff2'),
+       url('font/DungGeunMo.woff') format('woff'),
+       url('font/DungGeunMo.ttf') format('truetype'),
+       url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
       font-weight: normal;
       font-style: normal;
     }
@@ -1337,23 +1340,22 @@
   <div id="app-container">
     <!-- 공통 표준 상단 헤더바 -->
     <div id="standard-header" style="display: none;">
-      <!-- 좌측: 고유 역량 이미지 아이콘 & 역량명 (둥근 노란색 테두리 원을 제거하고 순수 이미지 돌출 스케일링) -->
-      <div style="display: flex; align-items: center; gap: 8px;">
+      <!-- 좌측: 고유 역량 이미지 아이콘 & 역량명 (30%) -->
+      <div style="display: flex; align-items: center; gap: 8px; width: 30%; justify-content: flex-start; box-sizing: border-box; color: #fff;">
         <div style="position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; overflow: visible; margin-left: -5px; margin-right: 5px; flex-shrink: 0;">
-          <!-- 4.5배율 급의 돌출 효과 재현: w-24 h-24(96px) 크기에 transform: scale(2.4) 및 정밀 오프셋 지정 -->
           <img src="images/icon_emotion.webp" alt="역량 아이콘" style="position: absolute; width: 96px; height: 96px; object-fit: contain; max-width: none; image-rendering: pixelated; transform: scale(2.4); z-index: 20; pointer-events: none; top: -28px; left: -26px;">
         </div>
-        <span style="font-weight: bold; font-size: 1.15rem; letter-spacing: -0.025em; margin-left: 5px;">사이버 감정조절</span>
+        <span style="font-weight: bold; font-size: 1.15rem; letter-spacing: -0.025em; margin-left: 5px; white-space: nowrap; color: #fff; font-family: 'DungGeunMo', monospace;">사이버 감정조절</span>
       </div>
       
-      <!-- 가운데: 활동명 및 진행 상태 (도트) -->
-      <div style="display: flex; align-items: center; gap: 16px;">
-        <!-- white-space: nowrap; 추가로 타이틀 줄바꿈 찌그러짐 원천 봉쇄 -->
-        <span id="stage-title-text" style="font-size: 0.75rem; font-weight: bold; color: #cbd5e1; white-space: nowrap;">사이버 감정조절</span>
-        <div id="header-progress-dots" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-          <span class="stage-dot" id="dot-1" style="width: 14px; height: 14px; border-radius: 9999px; border: 2px solid #000; background-color: #64748b; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 8px; color: #fff;">1</span>
-          <span class="stage-dot" id="dot-2" style="width: 14px; height: 14px; border-radius: 9999px; border: 2px solid #000; background-color: #64748b; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 8px; color: #fff;">2</span>
-        </div>
+      <!-- 가운데: 활동명 (40% - 텍스트 가로 정중앙 배치, 흰색 폰트) -->
+      <div style="width: 40%; text-align: center; display: flex; justify-content: center; align-items: center; box-sizing: border-box;">
+        <span id="stage-title-text" style="font-weight: bold; color: #ffffff !important; font-size: 1.05rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); white-space: nowrap; font-family: 'DungGeunMo', monospace;">감정 조절 : 활동 안내</span>
+      </div>
+      
+      <!-- 우측: 빈 스페이스 (30% - 레이아웃 균형을 위한 빈 열) -->
+      <div style="width: 30%; display: flex; justify-content: flex-end; align-items: center; box-sizing: border-box;">
+        <!-- 빈 공간 (가운데 요소를 완벽히 정중앙에 정렬하기 위함) -->
       </div>
     </div>
 
@@ -1482,8 +1484,8 @@
 
       <div class="act1-container">
         <!-- 1단계 미션 질문 카드 (다른 파일들과 완벽 매치 포맷) -->
-        <div class="mission-question-card" style="background-color: #451a03 !important; border: 4px solid #000000 !important; box-shadow: 3px 3px 0px #000000 !important; padding: 16px 14px !important; margin-bottom: 18px !important; color: #fde047 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important;">
-          <div style="font-size: 1.25rem !important; font-weight: bold !important; color: #fef08a !important; line-height: 1.4 !important;" id="act1-mission-prompt">
+        <div class="mission-question-card" style="background-color: #fef08a !important; border: 4px solid #000000 !important; box-shadow: 3px 3px 0px #000000 !important; padding: 16px 14px !important; margin-bottom: 18px !important; color: #000000 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important;">
+          <div style="font-size: 1.25rem !important; font-weight: bold !important; color: #000000 !important; line-height: 1.4 !important;" id="act1-mission-prompt">
             상황 속 '나'가 느꼈을 마음(감정) 배지를 찾아 선택해봅시다.
           </div>
         </div>
@@ -2193,6 +2195,9 @@
       // 상황 정보 반영
       document.getElementById("act1-header-title").innerText = `[활동 1] ${data.title}`;
 
+      // 질문박스 원복
+      document.getElementById("act1-mission-prompt").innerText = "상황 속 '나'가 느꼈을 마음(감정) 배지를 찾아 선택해봅시다.";
+
       // 상대 말에 따른 직접적인 질문 가이드라인
       document.getElementById("act1-guide-bubble").innerText = `${data.senderName}가 이렇게 말했을 때 듣는 입장에서 기분이 어떨 것 같아? 가장 알맞은 감정 배지를 선택해 봐!`;
 
@@ -2368,6 +2373,9 @@
       // 온도계 및 소화기 활성화
       document.getElementById("thermometer-extinguisher-row").style.display = "flex";
 
+      // 질문박스 변경 (소화기 동작 안내)
+      document.getElementById("act1-mission-prompt").innerText = "소화기 버튼을 누르며 5초동안 마음을 진정시켜 봅시다.";
+
       // 온도계 초기화
       document.getElementById("act1-temp-value").innerText = "100.0°C";
       document.getElementById("act1-mercury-fill").style.width = "100%";
@@ -2465,6 +2473,9 @@
       
       // 온도계 및 소화기 숨기기
       document.getElementById("thermometer-extinguisher-row").style.display = "none";
+
+      // 질문박스 완료 안내로 변경
+      document.getElementById("act1-mission-prompt").innerText = "마음이 한결 차분해졌습니다! 다음 단계를 진행해봅시다.";
 
       document.getElementById("act1-success-view").style.display = "flex";
       document.getElementById("act1-success-view").querySelector("h2").innerText = "🧯 마음 진정 완료!";

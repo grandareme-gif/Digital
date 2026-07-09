@@ -13,7 +13,10 @@
        ========================================= */
     @font-face {
       font-family: 'DungGeunMo';
-      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+      src: url('font/DungGeunMo.woff2') format('woff2'),
+       url('font/DungGeunMo.woff') format('woff'),
+       url('font/DungGeunMo.ttf') format('truetype'),
+       url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
       font-weight: normal;
       font-style: normal;
     }
@@ -672,7 +675,7 @@
     .chat-msg-sender {
       font-size: 0.72rem;
       font-weight: bold;
-      color: #4b5563;
+      color: #cbd5e1;
       margin-bottom: 2px;
     }
     
@@ -1981,16 +1984,20 @@
       box-shadow: 1px 1px 0 #000;
     }
     .act2-option-btn.opt-a {
-      background-color: #7c2d12 !important;
+      background-color: #c084fc !important;
+      color: #000000 !important;
+      text-shadow: none !important;
     }
     .act2-option-btn.opt-a:hover {
-      background-color: #9a3412 !important;
+      background-color: #d8b4fe !important;
     }
     .act2-option-btn.opt-b {
-      background-color: #065f46 !important;
+      background-color: #7dd3fc !important;
+      color: #000000 !important;
+      text-shadow: none !important;
     }
     .act2-option-btn.opt-b:hover {
-      background-color: #047857 !important;
+      background-color: #bae6fd !important;
     }
 
     .act2-success-card {
@@ -2011,6 +2018,54 @@
       margin-bottom: auto;
     }
 
+
+    /* =========================================
+       활동 1: 가짜 뉴스 팩트체크 추가 스타일
+       ========================================= */
+    .act1-hotspot {
+      position: absolute;
+      border: 3px dashed transparent;
+      background-color: transparent;
+      cursor: pointer;
+      z-index: 20;
+      transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+      border-radius: 6px;
+    }
+    .act1-hotspot:hover {
+      border-color: var(--point-yellow);
+      background-color: rgba(241, 196, 15, 0.15);
+      box-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
+    }
+    .act1-hotspot.found {
+      border-color: #2ed573 !important;
+      background-color: rgba(46, 213, 115, 0.15) !important;
+      pointer-events: none;
+    }
+    .act1-stamp {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-15deg) scale(2.5);
+      border: 6px solid #ef4444;
+      color: #ef4444;
+      font-family: 'DungGeunMo', monospace;
+      font-size: 2.5rem;
+      font-weight: bold;
+      padding: 14px 28px;
+      background-color: rgba(255,255,255,0.95);
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+      z-index: 100;
+      pointer-events: none;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border-radius: 12px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    .act1-stamp.active {
+      transform: translate(-50%, -50%) rotate(-10deg) scale(1);
+      opacity: 1;
+    }
+
   </style>
 </head>
 <body style="margin: 0; padding: 0;">
@@ -2018,25 +2073,24 @@
   <div id="app-container">
     <!-- 공통 표준 상단 헤더바 -->
     <div id="standard-header" style="display: none;">
-      <!-- 좌측: 고유 역량 이미지 아이콘 & 역량명 -->
-      <div style="display: flex; align-items: center; gap: 8px;">
+      <!-- 좌측: 고유 역량 이미지 아이콘 & 역량명 (30%) -->
+      <div style="display: flex; align-items: center; gap: 8px; width: 30%; justify-content: flex-start; box-sizing: border-box; color: #fff;">
         <div style="position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; overflow: visible; margin-left: -5px; margin-right: 5px; flex-shrink: 0;">
-          <!-- 4.5배율 돌출 효과 재현 (icon_ethics.webp) -->
           <img src="images/icon_ethics.webp" alt="역량 아이콘" style="position: absolute; width: 96px; height: 96px; object-fit: contain; max-width: none; image-rendering: pixelated; transform: scale(2.4); z-index: 20; pointer-events: none; top: -28px; left: -26px;">
         </div>
-        <span style="font-weight: bold; font-size: 1.15rem; letter-spacing: -0.025em; margin-left: 5px;">인터넷 윤리의식 및 활용</span>
+        <span style="font-weight: bold; font-size: 1.15rem; letter-spacing: -0.025em; margin-left: 5px; white-space: nowrap; color: #fff; font-family: 'DungGeunMo', monospace;">인터넷 윤리의식 및 활용</span>
       </div>
       
-      <!-- 가운데: 활동명 및 진행 상태 (도트) -->
-      <div style="display: flex; align-items: center; gap: 16px;">
-        <span id="stage-title-text" style="font-size: 0.75rem; font-weight: bold; color: #cbd5e1; white-space: nowrap;">사이버 윤리의식</span>
-        <div id="header-progress-dots" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-          <span class="stage-dot" id="dot-1" style="width: 14px; height: 14px; border-radius: 9999px; border: 2px solid #000; background-color: #64748b; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 8px; color: #fff;">1</span>
-          <span class="stage-dot" id="dot-2" style="width: 14px; height: 14px; border-radius: 9999px; border: 2px solid #000; background-color: #64748b; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 8px; color: #fff;">2</span>
-        </div>
+      <!-- 가운데: 활동명 (40% - 텍스트 가로 정중앙 배치, 흰색 폰트) -->
+      <div style="width: 40%; text-align: center; display: flex; justify-content: center; align-items: center; box-sizing: border-box;">
+        <span id="stage-title-text" style="font-weight: bold; color: #ffffff !important; font-size: 1.05rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); white-space: nowrap; font-family: 'DungGeunMo', monospace;">인터넷 윤리의식 및 활용 : 활동 안내</span>
+      </div>
+      
+      <!-- 우측: 빈 스페이스 (30% - 레이아웃 균형을 위한 빈 열) -->
+      <div style="width: 30%; display: flex; justify-content: flex-end; align-items: center; box-sizing: border-box;">
+        <!-- 빈 공간 (가운데 요소를 완벽히 정중앙에 정렬하기 위함) -->
       </div>
     </div>
-
 
     <!-- =========================================
          Screen 1: 인트로 (안내 화면)
@@ -2057,14 +2111,14 @@
         <!-- 우측 단일 통합 상자 (대사 + 활동 요약) -->
         <div class="std-intro-unified-box">
           <!-- 대사 (텍스트 직접 노출) -->
-          <div id="intro-typing-text" class="std-intro-dialog-inner">온라인에서는 무심코 내뱉은 말 한마디나 함부로 올린 사진 한 장 때문에 친구가 큰 상처를 받을 수 있어. 그래서 화면 너머에 있는 친구의 마음을 헤아리고, 타인의 권리를 소중하게 '존중'하는 태도가 꼭 필요하단다. 지금부터 우리가 매일 사용하는 채팅방과 SNS에서 서로를 존중하는 올바른 방법을 함께 알아보자!</div>
+          <div id="intro-typing-text" class="std-intro-dialog-inner">온라인에는 수많은 정보가 쏟아지기 때문에 가짜 뉴스에 속거나, 무심코 올린 사진 한 장으로 소중한 개인정보가 노출되기 쉬워. 그래서 정보를 올바르게 구별하고 타인의 권리를 존중하며 안전하게 공유하는 힘이 필요해.</div>
           <!-- 구분선 -->
           <div class="std-intro-divider"></div>
           <!-- 활동 요약 목록 -->
           <div class="std-intro-activities-inner">
             <div class="std-activity-row">
               <span class="std-activity-badge">활동 1</span>
-              <span class="std-activity-text">대화 속 표현을 분류하고 친구를 존중하는 따뜻한 말로 고쳐 쓰기</span>
+              <span class="std-activity-text">채팅방에 올라온 뉴스의 출처를 확인하고 올바른 정보 선별하기</span>
             </div>
             <div class="std-activity-row">
               <span class="std-activity-badge">활동 2</span>
@@ -2146,11 +2200,11 @@
         let isTaskCompleted = false;
 
         if (viewId === 'view-act1') {
-          // 활동 1 완료 조건: 채팅방 복원 단계가 끝났는지
+          // 활동 1 완료 조건
           if (typeof act1State !== 'undefined' && act1State.completed) {
             isTaskCompleted = true;
           }
-          if (titleText) titleText.innerText = "활동 1: 대화 속 표현 분류 및 고쳐 쓰기";
+          if (titleText) titleText.innerText = "활동 1: 채팅방에 올라온 뉴스의 출처를 확인하고 올바른 정보 선별하기";
           if (dot1) dot1.style = activeDotStyle;
           if (dot2) dot2.style = inactiveDotStyle;
         } else if (viewId === 'view-act2') {
@@ -2201,13 +2255,8 @@
 
       if (viewId === 'view-act1') {
         if (act1State && act1State.currentStep > 1) {
-          if (act1State.currentStep === 2) {
-            act1State.currentStep = 1;
-            initCardGame();
-          } else if (act1State.currentStep === 3) {
-            act1State.currentStep = 2;
-            startEditingStep();
-          }
+          act1State.currentStep--;
+          loadAct1Step(act1State.currentStep);
         }
       } else if (viewId === 'view-act2') {
         if (typeof act2State !== 'undefined' && act2State.currentStep > 1 && act2State.currentStep < 5) {
@@ -2230,11 +2279,11 @@
 
         if (viewId === 'view-act1') {
           if (act1State.currentStep === 1) {
-            alert("지윤이네 조원들의 대화 카드를 알맞은 구역으로 드래그하거나 버튼을 눌러 먼저 분류해 주세요!");
+            alert("민수가 보낸 가짜뉴스 정보에 대처하기 위해 [B] 팩트체크 버튼을 눌러주세요!");
           } else if (act1State.currentStep === 2) {
-            alert("건우와 태양이의 배려 없는 말풍선을 상대방을 존중하는 다정한 말로 수정해 주세요!");
+            alert("기사 이미지(또는 글) 속에서 가짜뉴스의 3가지 증거(작성자, 출처, 근거)를 찾아서 모두 클릭해 주세요!");
           } else if (act1State.currentStep === 3) {
-            alert("하단의 [존중의 채팅창으로 복원하기] 버튼을 누르고 채팅이 다 복원될 때까지 기다려 주세요!");
+            alert("민수에게 이 기사가 가짜뉴스인 이유(출처/기자 없음)를 작성하고 전송 버튼을 눌러주세요!");
           }
         } else if (viewId === 'view-act2') {
           alert("우측 패널의 단계별 초상권 존중 미션을 지시에 따라 수행해 주세요!");
@@ -2256,19 +2305,14 @@
   </script>
 
   <!-- =========================================
-       Screen 2: 활동 2 (대화 표현 분류 및 고쳐 쓰기)
+       Screen 2: 활동 1 (가짜 뉴스 팩트체크와 올바른 대처)
        ========================================= -->
-  <div id="view-act1" class="view">
-    <div class="progress-header hidden">
-      <span style="font-weight: bold; color: var(--point-yellow);">활동 2: 대화 속 표현 분류 및 고쳐 쓰기</span>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <span id="stage-text">분류하기 (1단계)</span>
-        <div class="stage-bar-container">
-          <div id="stage-bar-fill" class="stage-bar-fill" style="width: 33.3%;"></div>
-        </div>
-      </div>
+  <div id="view-act1" class="view" style="display: none;">
+    <!-- 상단 프레임 헤더 영역 -->
+    <div class="progress-header" style="justify-content: center !important;">
+      <span id="act1-header-title" style="font-weight: bold; color: var(--point-yellow); font-size: 1.25rem;">활동 1: 채팅방에 올라온 뉴스의 출처를 확인하고 올바른 정보 선별하기</span>
     </div>
-
+    
     <!-- 마음온 AI 공통 가이드 배너 -->
     <div class="std-guide-banner" style="margin-bottom: 6px !important;">
       <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
@@ -2276,81 +2320,151 @@
       </div>
       <div style="display: flex !important; flex-direction: column !important; justify-content: center !important; flex-grow: 1 !important; margin-left: 9px;">
         <span style="font-size: 14.25px !important; font-weight: 900 !important; line-height: 1.1 !important; margin-bottom: 3px !important; font-family: 'DungGeunMo', monospace !important; color: #05F5F6 !important; display: block !important;">마음온 AI 가이드</span>
-        <span style="font-size: 18.5px !important; font-weight: bold !important; color: #e2e8f0 !important; line-height: 1.3 !important; font-family: 'DungGeunMo', monospace !important; display: block !important;" id="act1-guide-bubble">
-          단체 대화방을 잘 읽고 친구들의 말에서 존중하는 모습을 찾아봅시다.
+        <span style="font-size: 18.5px !important; font-weight: bold !important; color: #e2e8f0 !important; line-height: 1.3 !important; font-family: 'DungGeunMo', monospace !important; display: block !important;" id="act1-guide-bubble-text">
+          단체 대화방의 뉴스를 팩트체크하고 친구들이 선동되거나 오해하지 않게 대처해 봐요!
         </span>
       </div>
     </div>
-    
-    <!-- 미션 질문 카드 -->
-    <div class="mission-question-card" style="background-color: #fef9c3 !important; border: 4px solid #000000 !important; box-shadow: 3px 3px 0px #000000 !important; padding: 9px 18px !important; margin-bottom: 6px !important; color: #000000 !important; text-align: center !important; font-family: 'DungGeunMo', monospace !important; border-radius: 6px !important; max-width: 100% !important; width: 100% !important;">
-      <div style="font-size: 0.98rem !important; font-weight: bold !important; color: #000000 !important; line-height: 1.4 !important;" id="act1-mission-prompt">
-        채팅을 읽고 친구를 존중하는 말인지, 존중하지 않는 말인지 구분해보세요.
-      </div>
-    </div>
 
-    <!-- 1~2단계: 정렬 & 고쳐쓰기 구역 -->
-    <div id="act1-sorting-area" class="sorting-container">
-      <!-- 좌측 드롭존: 존중 X -->
-      <div id="zone-left" class="sort-zone zone-left" ondragover="allowCardDrop(event)" ondrop="handleCardDrop(event, 'left')">
-        <div class="sort-zone-title">🛠️ 친구를 존중하지 않는 말</div>
-        <div id="zone-left-list" class="flex flex-col gap-2.5 w-full"></div>
-      </div>
-      
-      <!-- 중앙 카드 덱 -->
-      <div id="center-deck" class="card-deck">
-        <div class="card-deck-title">대화 카드 목록</div>
-        <div id="center-deck-list" class="flex flex-col gap-2.5 w-full"></div>
-        <!-- 2단계 완료 후 출현할 복원하기 버튼 -->
-        <button id="btn-restore-chat" class="retro-btn" style="display: none; background-color: var(--point-green); color: #fff; width: 90%; padding: 15px 10px; font-size: 0.95rem; font-family: 'DungGeunMo', monospace; text-align: center; border: 4px solid #000; box-shadow: 4px 4px 0 #000; animation: bounceFairy 2.5s infinite ease-in-out; margin-top: auto; margin-bottom: auto;" onclick="restoreChatroom()">
-          ✨ 존중의 채팅창으로<br>복원하기
-        </button>
-      </div>
-      
-      <!-- 우측 드롭존: 존중 O -->
-      <div id="zone-right" class="sort-zone zone-right" ondragover="allowCardDrop(event)" ondrop="handleCardDrop(event, 'right')">
-        <div class="sort-zone-title">💚 친구를 존중하는 말</div>
-        <div id="zone-right-list" class="flex flex-col gap-2.5 w-full"></div>
-      </div>
-    </div>
-
-    <!-- 3단계: 채팅방 복원 구역 -->
-    <div id="act1-restore-area" style="display: none; width: 100%;">
-      <div class="chat-restore-container">
-        <div class="phone-header">
-          <span class="phone-title">💬 모둠 숙제 대화방</span>
+    <!-- 2단 레이아웃 메인 구역 -->
+    <div class="act2-container">
+      <!-- 좌측 디스플레이 영역 -->
+      <div class="act2-left-display">
+        <!-- 1. 단톡방 화면 (1단계 & 3단계 공용) -->
+        <div id="act1-chat-wrapper" style="width: 100%; height: 100%; display: flex; flex-direction: column; border: 3px solid #000; border-radius: 8px; overflow: hidden; box-shadow: 4px 4px 0 #000; box-sizing: border-box;">
+          <div class="phone-header" style="background-color: #0f172a; padding: 10px; border-bottom: 3px solid #000; text-align: center; flex-shrink: 0;">
+            <span class="phone-title" style="font-weight: bold; font-family: 'DungGeunMo', monospace; color: #fff;">💬 우리반 단체 채팅방</span>
+          </div>
+          <div id="act1-chat-body" class="phone-body" style="flex-grow: 1; overflow-y: auto; padding: 15px; background-color: #1e293b; display: flex; flex-direction: column; gap: 10px; min-height: 200px;">
+            <!-- 대화 말풍선이 동적으로 채워집니다. -->
+          </div>
         </div>
-        <div id="restore-chat-body" class="phone-body">
-          <!-- 복원되는 말풍선들이 순서대로 동적 렌더링됩니다 -->
+
+        <!-- 2. 기사 화면 (2단계 전용) -->
+        <div id="act1-article-wrapper" style="display: none; position: relative; width: 100%; height: 100%; border: 3px solid #000; border-radius: 8px; overflow: hidden; background-color: #fff; box-shadow: 4px 4px 0 #000; box-sizing: border-box;">
+          <div id="act1-article-fallback" style="padding: 20px; font-family: 'DungGeunMo', monospace; color: #000; height: 100%; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
+            <div>
+              <div style="border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: bold; font-size: 1.15rem; color: #ef4444;">UBS(웃음 방송 시스템) 긴급 속보</span>
+                <span style="font-size: 0.85rem; color: #64748b;">발행일: 2041. 4. 1.</span>
+              </div>
+              <h2 style="font-size: 1.3rem; font-weight: bold; margin-bottom: 10px; line-height: 1.3;">전국 초등학교 내일 전면 휴교령! 미세먼지 수치 최악!</h2>
+              <p style="font-size: 0.95rem; line-height: 1.4; color: #334155;">
+                내일 황사 및 미세먼지 경보 발령으로 인해 전국의 모든 초등학교가 긴급 휴교에 들어갑니다. 학생들은 등교하지 말고 안전을 위해 실내에 머물러야 합니다.
+              </p>
+              
+              <!-- 신규 기사 사진 영역 (그래프 위치 대체) -->
+              <div style="margin-top: 10px; border: 2.5px solid #000; border-radius: 6px; overflow: hidden; height: 170px; display: flex; align-items: center; justify-content: center; background-color: #f1f5f9; box-shadow: 2px 2px 0 #cbd5e1; width: fit-content; max-width: 100%; margin-left: auto; margin-right: auto;">
+                <img src="images/ethics_act1_article.webp" alt="미세먼지 기사 사진" style="height: 100%; max-width: 100%; object-fit: contain; display: block;">
+              </div>
+            </div>
+            
+            <div style="border-top: 1px dashed #cbd5e1; padding-top: 10px; text-align: right; font-size: 0.85rem; color: #64748b;">
+              작성자: 학교가기싫은 1인 / 출처: 내 마음
+            </div>
+          </div>
+          
+          <!-- 2단계 기사 핫스팟 (클릭 대상) -->
+          <div id="act1-hotspot-author" class="act1-hotspot" style="top: 88%; left: 5%; width: 90%; height: 10%;" onclick="clickAct1Hotspot('author')"></div>
+          <div id="act1-hotspot-source" class="act1-hotspot" style="top: 2%; left: 2%; width: 55%; height: 10%;" onclick="clickAct1Hotspot('source')"></div>
+          <div id="act1-hotspot-date" class="act1-hotspot" style="top: 2%; left: 60%; width: 38%; height: 10%;" onclick="clickAct1Hotspot('date')"></div>
+          <div id="act1-stamp-overlay" class="act1-stamp" style="display: none;">판별 완료! 🚫</div>
         </div>
       </div>
-      <div id="restore-success-banner" class="success-banner" style="display: none;">
-        🎉 성공! 서로를 존중하는 단체 채팅방이 완성되었어요!
+
+      <!-- 우측 미션 패널 영역 -->
+      <div class="act2-right-panel">
+        <!-- 1단계 미션 패널 -->
+        <div id="act1-panel-step1" class="act2-mission-step active">
+          <span class="act2-step-title">📍 1단계: 자극적인 정보의 등장</span>
+          <div class="act2-question-box">단체 대화방에 민수가 자극적인 전국 휴교 뉴스를 보냈습니다. 어떻게 대처할까요?</div>
+          <div class="act2-btn-group">
+            <button class="act2-option-btn opt-a" onclick="chooseAct1Step1('A')">[A] 다른 단톡방에 공유하기</button>
+            <button class="act2-option-btn opt-b" onclick="chooseAct1Step1('B')">[B] 잠깐! 팩트체크(출처 확인) 하기</button>
+          </div>
+          <!-- 안내 메세지 구역 -->
+          <div id="act1-step1-url-guide" style="display: none; margin-top: 15px; padding: 12px; background-color: rgba(241, 196, 15, 0.15); border: 2.5px dashed var(--point-yellow); border-radius: 6px; font-family: 'DungGeunMo', monospace; font-size: 0.95rem; line-height: 1.4; color: #fff; animation: recommPulse 1.2s infinite alternate ease-in-out; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); box-shadow: 2px 2px 0 #000;">
+            👉 왼쪽 채팅방에서 민수가 공유한 **파란색 기사 URL 링크(http://www...)**를 마우스로 클릭하여 팩트체크를 시작하세요!
+          </div>
+        </div>
+
+        <!-- 2단계 미션 패널 -->
+        <div id="act1-panel-step2" class="act2-mission-step" style="display: none;">
+          <span class="act2-step-title">📍 2단계: 본격 팩트체크 미션</span>
+          <div class="act2-question-box">기사의 수상한 단서 3가지를 찾아 클릭하세요! (작성자 확인, 출처 확인, 날짜/근거 자료 확인)</div>
+          
+          <!-- 체크리스트 -->
+          <div style="background-color: rgba(15,23,42,0.9); padding: 12px 16px; border-radius: 6px; border: 2.5px solid #000; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; font-family: 'DungGeunMo', monospace; box-shadow: 2px 2px 0 #000;">
+            <div id="chk-author" style="color: #64748b; font-size: 1rem; font-weight: bold;">⬜ 작성자 책임 부재 (기자/연락처 확인)</div>
+            <div id="chk-source" style="color: #64748b; font-size: 1rem; font-weight: bold;">⬜ 신뢰할 수 없는 기관 (공식 언론 확인)</div>
+            <div id="chk-date" style="color: #64748b; font-size: 1rem; font-weight: bold;">⬜ 허술한 근거/과거 날짜 (통계/날짜 확인)</div>
+          </div>
+
+          <button class="retro-btn" style="background-color: #475569; color: #fff; width: 100%; font-size: 1rem; margin-top: auto;" onclick="showAct1Hint()">
+            💡 힌트 보기
+          </button>
+        </div>
+
+        <!-- 3단계 미션 패널 -->
+        <div id="act1-panel-step3" class="act2-mission-step" style="display: none;">
+          <span class="act2-step-title">📍 3단계: 단체 채팅방의 팩트체커 되기</span>
+          <div class="act2-question-box">팩트체크가 완료되었습니다. 민수에게 기사가 왜 가짜뉴스인지 지적하고, 친구들이 오해하지 않도록 기사를 지워달라는 답변을 직접 작성하여 보내세요!</div>
+          <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 10px; font-family: 'DungGeunMo', monospace;">
+            <textarea id="act1-reply-input" placeholder="답변을 입력하세요. (힌트 보기 버튼을 누르면 도움을 얻을 수 있습니다)" style="width: 100%; height: 90px; padding: 10px; border: 2.5px solid #000; border-radius: 6px; box-shadow: inset 2px 2px 0 rgba(0,0,0,0.1); font-family: 'DungGeunMo', monospace; font-size: 0.95rem; box-sizing: border-box; resize: none; color: #000; background-color: #fff;" onkeydown="handleReplyKey(event)"></textarea>
+            <button id="act1-submit-btn" class="retro-btn" style="background-color: var(--point-green); color: #fff; width: 100%; font-size: 1.1rem; padding: 10px;" onclick="submitAct1Reply()">
+              💬 답변 전송하기
+            </button>
+          </div>
+          
+          <!-- 힌트 보기 버튼 -->
+          <button id="act1-step3-hint-btn" class="retro-btn" style="background-color: #475569; color: #fff; width: 100%; font-size: 0.95rem; margin-top: 10px; padding: 8px;" onclick="showAct1Step3Hint()">
+            💡 힌트 보기
+          </button>
+          
+          <!-- 숨겨진 힌트 컨테이너 -->
+          <div id="act1-step3-hint-box" style="display: none; margin-top: 10px; padding: 12px; background-color: rgba(15,23,42,0.9); border: 2px solid #000; border-radius: 6px; font-family: 'DungGeunMo', monospace; font-size: 0.85rem; line-height: 1.5; color: #fff; box-shadow: 2px 2px 0 #000;">
+            <div style="font-weight: bold; color: var(--point-yellow); margin-bottom: 6px; font-size: 0.9rem;">🔍 작성 힌트 가이드</div>
+            <div style="margin-bottom: 8px;">🔑 **필수 포함 키워드**: 가짜뉴스, 출처, 작성자, 지워(또는 삭제)</div>
+            <div style="border-top: 1px dashed #475569; padding-top: 6px;">
+              💬 **작성 예시**: <br>
+              <span style="color: #60a5fa;">"민수야, 이 뉴스는 작성자랑 출처가 없는 가짜뉴스야. 친구들이 오해할 수 있으니 지워줄래?"</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 완료 연출 구역 -->
+        <div id="act1-success" class="act2-mission-step" style="display: none;">
+          <div class="act2-success-card">
+            <span style="font-size: 1.55rem; color: var(--point-yellow); text-shadow: 2px 2px 0 #000; margin-bottom: 8px; display: block;">🎉 활동 1 완료! 🏆</span>
+            <span style="font-size: 1.02rem; line-height: 1.6; font-weight: bold; color: #000000;">성공! 친구와 타인의 권리를 존중하는 당신은 인터넷 윤리의식을 함양하였습니다.</span>
+          </div>
+          <button class="retro-btn" style="background-color: var(--point-green); color: #fff; width: 100%; font-size: 1.15rem; margin-top: 15px; animation: bounceFairy 2.5s infinite ease-in-out;" onclick="goToActivity2()">
+            활동 2로 이동하기 ➔
+          </button>
+        </div>
+
+    <!-- 팩트체크 단서 전용 모달 레이어 -->
+    <div id="act1-fact-modal" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; border-radius: 8px;">
+      <div style="background-color: #fff; border: 4px solid #000; border-radius: 8px; width: 85%; max-width: 380px; padding: 22px; box-shadow: 6px 6px 0 #000; font-family: 'DungGeunMo', monospace; color: #000; text-align: center; display: flex; flex-direction: column; gap: 15px; box-sizing: border-box; animation: bounceFairy 0.3s ease-out;">
+        <div style="font-size: 1.25rem; font-weight: bold; color: #ef4444; border-bottom: 2px solid #000; padding-bottom: 8px;">🔍 가짜뉴스 단서 발견!</div>
+        <div id="act1-fact-modal-text" style="font-size: 0.98rem; line-height: 1.5; min-height: 50px; display: flex; align-items: center; justify-content: center; word-break: keep-all; color: #000; font-weight: bold;">설명 내용</div>
+        <button class="retro-btn" style="background-color: var(--point-yellow); color: #000; width: 100%; font-size: 1.1rem; padding: 10px; margin: 0; border: 3px solid #000; box-shadow: 3px 3px 0 #000; cursor: pointer;" onclick="closeAct1FactModal()">확인</button>
       </div>
     </div>
 
-    <div class="act-controls">
-
-      <!-- 3단계 완료 후 하단 다음단계 연동 지원용 히든 완료 버튼 -->
-      <button id="btn-act1-next" class="retro-btn" style="display: none;" onclick="progressAct1Stage()">다음으로 ➔</button>
+      </div>
     </div>
   </div>
 
-    <!-- =========================================
+      <!-- =========================================
          Screen 3: 활동 2 (초상권 존중 4단계 실천하기)
          ========================================= -->
     <div id="view-act2" class="view" style="display: none;">
       <!-- 상단 프레임 헤더 영역 -->
-      <div class="progress-header">
-        <span style="font-weight: bold; color: var(--point-yellow);">활동 2: 인터넷에 사진을 올리기 전 타인을 존중하는 4단계 실천하기</span>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span id="stage-text-act2">1단계: 동의 구하기</span>
-          <div class="stage-bar-container">
-            <div id="stage-bar-fill-act2" class="stage-bar-fill" style="width: 25%;"></div>
-          </div>
-        </div>
+      <div class="progress-header" style="justify-content: center !important;">
+        <span style="font-weight: bold; color: var(--point-yellow); font-size: 1.25rem;">활동 2: 인터넷에 사진을 올리기 전 타인을 존중하는 4단계 실천하기</span>
       </div>
-
+      
       <!-- 마음온 AI 공통 가이드 배너 -->
       <div class="std-guide-banner" style="margin-bottom: 6px !important;">
         <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-visible" style="margin-left: -6px; margin-right: -6px;">
@@ -2490,7 +2604,7 @@
           </div>
 
           <!-- 하단: 코멘트/설명 텍스트 (줄바꿈/들여쓰기 제거, 검정 폰트색상 적용) -->
-          <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.25rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">채팅방에서 친구를 존중하는 따뜻한 말로 대화하고, 인터넷에 사진을 올리기 전 친구의 동의를 구하며 개인정보를 안전하게 가려주는 법을 멋지게 터득했구나! 너의 성숙하고 타인을 먼저 생각하는 '존중'의 습관이 안전하고 행복한 디지털 교실을 만들 거란다. 정말 수고 많았어!</div>
+          <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.25rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">가짜 뉴스의 출처를 확인하고, 사진을 올리기 전 친구의 초상권을 배려하는 과정을 잘 마쳤어. 오늘 배운 올바른 정보 판별과 존중의 태도를 기억한다면, 앞으로 더 안전하고 책임감 있게 디지털 세상을 누릴 수 있을 거야.</div>
         </div>
 
       </div>
@@ -2523,7 +2637,7 @@
     // =========================================
     // 전역 관리 변수 & 상태 설정
     // =========================================
-    const INTRO_TEXT = "온라인에서는 무심코 내뱉은 말 한마디나 함부로 올린 사진 한 장 때문에 친구가 큰 상처를 받을 수 있어. 그래서 화면 너머에 있는 친구의 마음을 헤아리고, 타인의 권리를 소중하게 '존중'하는 태도가 꼭 필요하단다. 지금부터 우리가 매일 사용하는 채팅방과 SNS에서 서로를 존중하는 올바른 방법을 함께 알아보자!";
+    const INTRO_TEXT = "온라인에는 수많은 정보가 쏟아지기 때문에 가짜 뉴스에 속거나, 무심코 올린 사진 한 장으로 소중한 개인정보가 노출되기 쉬워. 그래서 정보를 올바르게 구별하고 타인의 권리를 존중하며 안전하게 공유하는 힘이 필요해.";
     const selectedResources = {
       bgm: null,
       image: null,
@@ -2643,353 +2757,450 @@
     }
 
     // =========================================
-    // Screen 2: 활동 2 (대화 표현 분류 및 고쳐 쓰기)
+    // Screen 2: 활동 1 (가짜 뉴스 팩트체크와 올바른 대처)
     // =========================================
-    const act1Scenarios = [
-      { id: 1, author: "지윤", text: "얘들아! 우리 모둠 숙제 역할 어떻게 나눌지 정해보자~", isCorrectZone: "right", avatar: "👤", defaultZone: "center" },
-      { id: 2, author: "건우", text: "아 귀찮게 왜 주말에 연락을 해 ㅡㅡ 걍 대충 아무렇게나 나눠.", isCorrectZone: "left", avatar: "👤", defaultZone: "center" },
-      { id: 3, author: "수진", text: "나는 도서관에서 자료 조사를 먼저 해볼게. 발표자료는 누가 할래?", isCorrectZone: "right", avatar: "👤", defaultZone: "center" },
-      { id: 4, author: "태양", text: "야 민수 넌 발표자료 진짜 못 만드니까 걍 가만히 있어라 ㅋㅋ", isCorrectZone: "left", avatar: "👤", defaultZone: "center" },
-      { id: 5, author: "지윤", text: "민수는 그림 그리는 걸 엄청 잘하니까, 발표 자료에 들어갈 그림을 그려주면 어때?", isCorrectZone: "right", avatar: "👤", defaultZone: "center" },
-      { id: 6, author: "건우", text: "그럼 나보고 발표하라고? 난 발표 절대 안 할 거니까 니들끼리 알아서 해 ㅡㅡ", isCorrectZone: "left", avatar: "👤", defaultZone: "center" }
-    ];
-
     const act1State = {
-      currentStep: 1, // 1: 분류하기, 2: 고쳐 쓰기, 3: 채팅방 복원
-      cards: [],
-      editedTexts: {},
-      completed: false
+      currentStep: 1, // 1: 분석, 2: 팩트체크, 3: 방어자(대처), 4: 완료
+      foundEvidence: { author: false, source: false, date: false },
+      completed: false,
+      urlClickable: false,
+      chatTimers: []
     };
 
     function initAct1() {
-      initCardGame();
-    }
+      // Clear any running timers
+      if (act1State.chatTimers) {
+        act1State.chatTimers.forEach(t => clearTimeout(t));
+      }
+      act1State.chatTimers = [];
 
-    function initCardGame() {
       act1State.currentStep = 1;
       act1State.completed = false;
-      act1State.editedTexts = {
-        2: "",
-        4: "",
-        6: ""
-      };
+      act1State.urlClickable = false;
+      act1State.foundEvidence = { author: false, source: false, date: false };
       
-      // 카드 데이터 초기화 (복사 및 셔플)
-      act1State.cards = JSON.parse(JSON.stringify(act1Scenarios));
-      // shuffleArray(act1State.cards);
+      // Hide modal initially
+      const modal = document.getElementById("act1-fact-modal");
+      if (modal) modal.style.display = "none";
       
-      // UI 요소 리셋
-      document.getElementById("stage-text").innerText = "분류하기 (1단계)";
-      document.getElementById("stage-bar-fill").style.width = "33.3%";
-      document.getElementById("act1-mission-prompt").innerText = "채팅을 읽고 친구를 존중하는 말인지, 존중하지 않는 말인지 구분해보세요.";
-      document.getElementById("act1-guide-bubble").innerText = "단체 대화방을 잘 읽고 친구들의 말에서 존중하는 모습을 찾아봅시다.";
+      // Hide guide box initially
+      const urlGuide = document.getElementById("act1-step1-url-guide");
+      if (urlGuide) urlGuide.style.display = "none";
+
+      // Reset checklist UI
+      const chkAuthor = document.getElementById("chk-author");
+      const chkSource = document.getElementById("chk-source");
+      const chkDate = document.getElementById("chk-date");
+      if (chkAuthor) {
+        chkAuthor.innerText = "⬜ 작성자 책임 부재 (기자/연락처 확인)";
+        chkAuthor.style.color = "#64748b";
+      }
+      if (chkSource) {
+        chkSource.innerText = "⬜ 신뢰할 수 없는 기관 (공식 언론 확인)";
+        chkSource.style.color = "#64748b";
+      }
+      if (chkDate) {
+        chkDate.innerText = "⬜ 허술한 근거/과거 날짜 (통계/날짜 확인)";
+        chkDate.style.color = "#64748b";
+      }
+
+      // Reset hotspots in class
+      document.querySelectorAll(".act1-hotspot").forEach(h => h.classList.remove("found"));
+
+      // Reset stamp overlay
+      const stamp = document.getElementById("act1-stamp-overlay");
+      if (stamp) {
+        stamp.style.display = "none";
+        stamp.classList.remove("active");
+      }
+
+      // Reset button states in Step 3
+      // Reset Step 3 Inputs & Hints
+      const replyInput = document.getElementById("act1-reply-input");
+      if (replyInput) {
+        replyInput.value = "";
+        replyInput.disabled = false;
+      }
+      const submitBtn = document.getElementById("act1-submit-btn");
+      if (submitBtn) submitBtn.disabled = false;
+
+      const hintBtn = document.getElementById("act1-step3-hint-btn");
+      const hintBox = document.getElementById("act1-step3-hint-box");
+      if (hintBtn) hintBtn.style.display = "block";
+      if (hintBox) hintBox.style.display = "none";
+
+      // Show Step 1 panel and chat, hide other panels/article
+      const step1Panel = document.getElementById("act1-panel-step1");
+      const step2Panel = document.getElementById("act1-panel-step2");
+      const step3Panel = document.getElementById("act1-panel-step3");
+      const successPanel = document.getElementById("act1-success");
       
-      document.getElementById("act1-sorting-area").style.display = "flex";
-      document.getElementById("act1-restore-area").style.display = "none";
-      document.getElementById("btn-restore-chat").style.display = "none";
-      document.getElementById("restore-success-banner").style.display = "none";
-      document.getElementById("restore-chat-body").innerHTML = "";
+      if (step1Panel) step1Panel.style.display = "block";
+      if (step2Panel) step2Panel.style.display = "none";
+      if (step3Panel) step3Panel.style.display = "none";
+      if (successPanel) successPanel.style.display = "none";
+
+      const chatWrapper = document.getElementById("act1-chat-wrapper");
+      const articleWrapper = document.getElementById("act1-article-wrapper");
       
-      renderCardDeck();
+      if (chatWrapper) chatWrapper.style.display = "flex";
+      if (articleWrapper) articleWrapper.style.display = "none";
+
+      // Initialize Step 1 Chatroom (messages show one by one)
+      const chatBody = document.getElementById("act1-chat-body");
+      if (chatBody) {
+        chatBody.innerHTML = "";
+        
+        // 1st Bubble (0.4s)
+        const t1 = setTimeout(() => {
+          playBeepSound('click');
+          chatBody.innerHTML += `
+            <div class="chat-msg left">
+              <span class="chat-msg-sender">👤 지윤</span>
+              <div class="chat-msg-bubble">내일 미세먼지 수치 엄청 나쁘다는데 다들 마스크 챙겼어?</div>
+            </div>
+          `;
+          chatBody.scrollTop = chatBody.scrollHeight;
+        }, 400);
+        act1State.chatTimers.push(t1);
+
+        // 2nd Bubble (1.6s)
+        const t2 = setTimeout(() => {
+          playBeepSound('click');
+          chatBody.innerHTML += `
+            <div class="chat-msg left">
+              <span class="chat-msg-sender">👤 민수</span>
+              <div class="chat-msg-bubble" style="background-color: #fef9c3; color: #000; border: 2.5px solid #000; box-shadow: 2px 2px 0 #000; margin: 4px 0; max-width: 85%;">
+                <div style="font-weight: bold; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 6px; font-size: 0.95rem; color: #ef4444; font-family: 'DungGeunMo', monospace;">🚨 [속보] 내일 전국 초등학교 전면 휴교령!</div>
+                <div style="font-size: 0.85rem; line-height: 1.4; color: #1e293b;">
+                  내일 최악의 황사 및 미세먼지 경보 발효로 인해 전국 모든 초등학교가 휴교... (아래 링크 클릭하여 출처 확인)
+                </div>
+                <div id="act1-chat-link" style="font-size: 0.8rem; color: #64748b; margin-top: 6px; text-decoration: underline; font-weight: bold; cursor: not-allowed;" onclick="clickAct1Url()">http://www.dailynews-community.com/dust-school-close-2025</div>
+              </div>
+            </div>
+          `;
+          chatBody.scrollTop = chatBody.scrollHeight;
+        }, 1600);
+        act1State.chatTimers.push(t2);
+
+        // 3rd Bubble (2.8s)
+        const t3 = setTimeout(() => {
+          playBeepSound('click');
+          chatBody.innerHTML += `
+            <div class="chat-msg left">
+              <span class="chat-msg-sender">👤 민수</span>
+              <div class="chat-msg-bubble">얘들아 대박! 내일 미세먼지 너무 심해서 전국 초등학교 휴교한대!! 대박 ㅋㅋㅋ 빨리 다른 반 애들한테도 알려야해!</div>
+            </div>
+          `;
+          chatBody.scrollTop = chatBody.scrollHeight;
+        }, 2800);
+        act1State.chatTimers.push(t3);
+      }
+      
+      loadAct1Step(1);
+    }
+
+    function clickAct1Url() {
+      if (!act1State.urlClickable) {
+        playBeepSound('fail');
+        showToast("먼저 우측 미션 패널에서 어떤 조치를 취할지 대처법 버튼을 골라주세요!");
+        return;
+      }
+      playBeepSound('success');
+      showToast("기사가 열렸습니다. 돋보기를 통해 사실 여부를 확인해 보세요!");
+      loadAct1Step(2);
+    }
+
+    function loadAct1Step(stepNum) {
+      act1State.currentStep = stepNum;
+      
+      const fillBar = document.getElementById("stage-bar-fill-act1");
+      const stageText = document.getElementById("stage-text-act1");
+      const guideText = document.getElementById("act1-guide-bubble-text");
+
+      // Hide all panels
+      const step1Panel = document.getElementById("act1-panel-step1");
+      const step2Panel = document.getElementById("act1-panel-step2");
+      const step3Panel = document.getElementById("act1-panel-step3");
+      const successPanel = document.getElementById("act1-success");
+      
+      if (step1Panel) step1Panel.style.display = "none";
+      if (step2Panel) step2Panel.style.display = "none";
+      if (step3Panel) step3Panel.style.display = "none";
+      if (successPanel) successPanel.style.display = "none";
+
+      const chatWrapper = document.getElementById("act1-chat-wrapper");
+      const articleWrapper = document.getElementById("act1-article-wrapper");
+
+      if (stepNum === 1) {
+        if (fillBar) fillBar.style.width = "33.3%";
+        if (stageText) stageText.innerText = "1단계: 정보의 분석";
+        if (guideText) guideText.innerText = "단체 대화방의 뉴스를 팩트체크하고 친구들이 선동되거나 오해하지 않게 대처해 봐요!";
+        
+        if (step1Panel) step1Panel.style.display = "block";
+        if (chatWrapper) chatWrapper.style.display = "flex";
+        if (articleWrapper) articleWrapper.style.display = "none";
+      } else if (stepNum === 2) {
+        if (fillBar) fillBar.style.width = "66.6%";
+        if (stageText) stageText.innerText = "2단계: 팩트체크 미션";
+        if (guideText) guideText.innerText = "기사 속에서 사실을 속이는 수상한 부분을 찾아 보세요.";
+        
+        if (step2Panel) step2Panel.style.display = "block";
+        if (chatWrapper) chatWrapper.style.display = "none";
+        if (articleWrapper) articleWrapper.style.display = "block";
+      } else if (stepNum === 3) {
+        if (fillBar) fillBar.style.width = "90%";
+        if (stageText) stageText.innerText = "3단계: 단체 채팅방의 팩트체커 되기";
+        if (guideText) guideText.innerText = "가짜뉴스 판별이 끝났습니다! 이제 친구들에게 팩트체크 결과를 올바르게 알리고 대화방을 보호하세요.";
+        
+        if (step3Panel) step3Panel.style.display = "block";
+        if (chatWrapper) chatWrapper.style.display = "flex";
+        if (articleWrapper) articleWrapper.style.display = "none";
+      } else if (stepNum === 4) {
+        if (fillBar) fillBar.style.width = "100%";
+        if (stageText) stageText.innerText = "체험 완료!";
+        if (guideText) guideText.innerText = "성공! 가짜뉴스에 맞서 대화방의 평화와 윤리의식을 멋지게 지켜냈습니다!";
+        
+        if (successPanel) successPanel.style.display = "block";
+        if (chatWrapper) chatWrapper.style.display = "flex";
+        if (articleWrapper) articleWrapper.style.display = "none";
+      }
+      
       updateFrameUI('view-act1');
     }
 
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-    }
-
-    function renderCardDeck() {
-      const centerList = document.getElementById("center-deck-list");
-      const leftList = document.getElementById("zone-left-list");
-      const rightList = document.getElementById("zone-right-list");
-      
-      centerList.innerHTML = "";
-      leftList.innerHTML = "";
-      rightList.innerHTML = "";
-      
-      act1State.cards.forEach(card => {
-        const cardEl = createCardElement(card);
-        
-        if (card.defaultZone === "center") {
-          centerList.appendChild(cardEl);
-        } else if (card.defaultZone === "left") {
-          leftList.appendChild(cardEl);
-        } else if (card.defaultZone === "right") {
-          rightList.appendChild(cardEl);
+    function chooseAct1Step1(option) {
+      if (option === 'A') {
+        playBeepSound('fail');
+        // trigger shake & flash
+        const flashOverlay = document.getElementById("flash-overlay");
+        const appContainer = document.getElementById("app-container");
+        if (flashOverlay) {
+          flashOverlay.classList.add("active");
+          setTimeout(() => flashOverlay.classList.remove("active"), 300);
         }
-      });
-    }
-
-        function createCardElement(card) {
-      const cardEl = document.createElement("div");
-      cardEl.className = "bubble-card";
-      cardEl.id = `card-${card.id}`;
-      
-      // Find the first unsorted card (topmost card in center deck)
-      const activeSortCard = act1State.cards.find(c => c.defaultZone === "center");
-      const isActiveCard = (activeSortCard && card.id === activeSortCard.id);
-      
-      if (card.defaultZone === "center") {
-        if (isActiveCard) {
-          cardEl.classList.add("active-sort-card");
-          cardEl.draggable = (act1State.currentStep === 1);
-        } else {
-          cardEl.classList.add("disabled-sort-card");
-          cardEl.draggable = false;
+        if (appContainer) {
+          appContainer.classList.add("shake");
+          setTimeout(() => appContainer.classList.remove("shake"), 400);
         }
-      } else {
-        cardEl.draggable = false;
-      }
-      
-      if (cardEl.draggable) {
-        cardEl.addEventListener("dragstart", (e) => {
-          e.dataTransfer.setData("text/plain", card.id);
-        });
-      }
-      
-      // Left side button (◀) - only for active card in center deck
-      if (act1State.currentStep === 1 && card.defaultZone === "center" && isActiveCard) {
-        const btnLeft = document.createElement("button");
-        btnLeft.className = "card-side-btn btn-left";
-        btnLeft.innerHTML = "◀";
-        btnLeft.onclick = (e) => {
-          e.stopPropagation();
-          moveCard(card.id, "left");
-        };
-        cardEl.appendChild(btnLeft);
-      }
-      
-      // Middle content container
-      const contentEl = document.createElement("div");
-      contentEl.className = "bubble-card-content";
-      
-      const header = document.createElement("div");
-      header.className = "bubble-card-header";
-      header.innerHTML = `<span class="bubble-card-author">${card.avatar} ${card.author}</span>`;
-      
-      if (act1State.currentStep === 2) {
-        if (card.isCorrectZone === "right") {
-          const badge = document.createElement("span");
-          badge.className = "card-status-badge";
-          badge.innerText = "잠금 🔒";
-          badge.style.backgroundColor = "#64748b";
-          contentEl.appendChild(badge);
-        } else if (act1State.editedTexts[card.id]) {
-          const badge = document.createElement("span");
-          badge.className = "card-status-badge";
-          badge.innerText = "완료 ✔";
-          badge.style.backgroundColor = "#10b981";
-          contentEl.appendChild(badge);
+        showToast("앗! 출처 없는 뉴스를 함부로 공유하면 큰 혼란을 줄 수 있어! 다시 생각해 보자!");
+      } else if (option === 'B') {
+        playBeepSound('success');
+        
+        // Show guide text below buttons
+        const urlGuide = document.getElementById("act1-step1-url-guide");
+        if (urlGuide) urlGuide.style.display = "block";
+        
+        // Make URL clickable
+        act1State.urlClickable = true;
+        
+        // Update URL style in chat
+        const link = document.getElementById("act1-chat-link");
+        if (link) {
+          link.style.color = "#3b82f6";
+          link.style.cursor = "pointer";
+          link.style.textDecoration = "underline";
         }
-      }
-      
-      contentEl.appendChild(header);
-      
-      const body = document.createElement("div");
-      body.className = "bubble-card-body";
-      
-      if (act1State.currentStep === 2 && act1State.editedTexts[card.id]) {
-        body.innerHTML = `<span style="text-decoration: line-through; color: #94a3b8; font-size: 0.8rem; display:block;">"${card.text}"</span>
-                          <span style="color: #047857;">👉 ${act1State.editedTexts[card.id]}</span>`;
-      } else {
-        body.innerText = card.text;
-      }
-      contentEl.appendChild(body);
-      
-      if (act1State.currentStep === 2 && card.isCorrectZone === "left" && !act1State.editedTexts[card.id]) {
-        const editArea = document.createElement("div");
-        editArea.className = "card-edit-area";
         
-        const input = document.createElement("input");
-        input.className = "card-input";
-        input.type = "text";
-        input.placeholder = "존중하는 다정한 말로 수정...";
-        input.id = `input-${card.id}`;
-        
-        input.addEventListener("keypress", (e) => {
-          if (e.key === "Enter") {
-            submitCardCorrection(card.id);
-          }
-        });
-        
-        const submitBtn = document.createElement("button");
-        submitBtn.className = "card-submit-btn";
-        submitBtn.innerText = "✏️ 고치기";
-        submitBtn.onclick = () => submitCardCorrection(card.id);
-        
-        editArea.appendChild(input);
-        editArea.appendChild(submitBtn);
-        contentEl.appendChild(editArea);
-      }
-      
-      cardEl.appendChild(contentEl);
-      
-      // Right side button (▶) - only for active card in center deck
-      if (act1State.currentStep === 1 && card.defaultZone === "center" && isActiveCard) {
-        const btnRight = document.createElement("button");
-        btnRight.className = "card-side-btn btn-right";
-        btnRight.innerHTML = "▶";
-        btnRight.onclick = (e) => {
-          e.stopPropagation();
-          moveCard(card.id, "right");
-        };
-        cardEl.appendChild(btnRight);
-      }
-      
-      return cardEl;
-    }
-
-    function allowCardDrop(e) {
-      e.preventDefault();
-    }
-
-    function handleCardDrop(e, zone) {
-      e.preventDefault();
-      const cardIdStr = e.dataTransfer.getData("text/plain");
-      const cardId = parseInt(cardIdStr);
-      if (!isNaN(cardId)) {
-        moveCard(cardId, zone);
+        showToast("좋은 생각이에요! 왼쪽 채팅방 속 민수의 기사 링크(http://www...)를 눌러 팩트체크를 진행하세요!");
       }
     }
 
-    function moveCard(cardId, targetZone) {
-      if (act1State.currentStep !== 1) return;
+    function clickAct1Hotspot(type) {
+      if (act1State.foundEvidence[type]) return; // already clicked
       
-      const card = act1State.cards.find(c => c.id === cardId);
-      if (!card || card.defaultZone !== "center") return;
+      act1State.foundEvidence[type] = true;
       
-      if (card.isCorrectZone !== targetZone) {
-        playBeepSound("fail");
-        const el = document.getElementById(`card-${cardId}`);
+      const hotspotEl = document.getElementById("act1-hotspot-" + type);
+      if (hotspotEl) {
+        hotspotEl.classList.add("found");
+      }
+      
+      let desc = "";
+      if (type === 'author') {
+        desc = "정식 기자가 아닌 '학교가기싫은 1인'이 장난으로 작성했고, 기사 출처 역시 '내 마음'으로 허술하기 짝이 없습니다!";
+        const el = document.getElementById("chk-author");
         if (el) {
-          el.classList.add("shake-card");
-          setTimeout(() => el.classList.remove("shake-card"), 400);
+          el.innerText = "✅ 작성자 및 출처 확인";
+          el.style.color = "#2ed573";
         }
-        showToast("다시 생각해 볼까요? 상대방을 존중하는 말인지 대화의 뜻을 읽어보세요!");
-        return;
+      } else if (type === 'source') {
+        desc = "기사의 제작 기관인 'UBS(웃음 방송 시스템)'은 공신력 있는 언론이나 공식 보도 채널이 아닙니다!";
+        const el = document.getElementById("chk-source");
+        if (el) {
+          el.innerText = "✅ 작성 기관 확인";
+          el.style.color = "#2ed573";
+        }
+      } else if (type === 'date') {
+        desc = "발행일이 미래 시점이자 만우절인 '2041년 4월 1일'로 지정되어 있어, 장난 삼아 조작되어 유포된 허위 정보입니다!";
+        const el = document.getElementById("chk-date");
+        if (el) {
+          el.innerText = "✅ 기사 날짜 확인";
+          el.style.color = "#2ed573";
+        }
       }
-      
-      playBeepSound("success");
-      card.defaultZone = targetZone;
-      renderCardDeck();
-      checkSortingComplete();
+
+      // Open centered modal with descriptions
+      playBeepSound('success');
+      const modal = document.getElementById("act1-fact-modal");
+      const modalText = document.getElementById("act1-fact-modal-text");
+      if (modal && modalText) {
+        modalText.innerText = desc;
+        modal.style.display = "flex";
+      }
     }
 
-    function checkSortingComplete() {
-      const allSorted = act1State.cards.every(c => c.defaultZone !== "center");
-      if (allSorted) {
+    function closeAct1FactModal() {
+      playBeepSound('click');
+      const modal = document.getElementById("act1-fact-modal");
+      if (modal) modal.style.display = "none";
+      
+      // Check if all evidence is found after closing the modal
+      const allFound = act1State.foundEvidence.author && act1State.foundEvidence.source && act1State.foundEvidence.date;
+      if (allFound) {
         setTimeout(() => {
-          showToast("👍 훌륭해요! 대화 내용 구분을 완료했습니다. 고쳐 쓰기를 시작합니다!");
-          startEditingStep();
+          playBeepSound('success');
+          const stamp = document.getElementById("act1-stamp-overlay");
+          if (stamp) {
+            stamp.style.display = "block";
+            setTimeout(() => {
+              stamp.classList.add("active");
+            }, 50);
+          }
+          showToast("가짜뉴스 판별 완료! 🚫 세 단서를 모두 찾았습니다. 단체 채팅방으로 돌아가 대처해 봅시다!");
+          
+          setTimeout(() => {
+            loadAct1Step(3);
+          }, 2500);
         }, 500);
       }
     }
 
-    function startEditingStep() {
-      act1State.currentStep = 2;
-      
-      document.getElementById("stage-text").innerText = "고쳐 쓰기 (2단계)";
-      document.getElementById("stage-bar-fill").style.width = "66.6%";
-      document.getElementById("act1-mission-prompt").innerText = "[2단계 고쳐 쓰기] 존중하지 않는 대화 카드에 따뜻한 대안을 적어 고쳐보세요.";
-      document.getElementById("act1-guide-bubble").innerText = "건우와 태양이의 배려 없는 말풍선을 상대방을 존중하는 다정한 말로 수정해 주세요!";
-      
-      renderCardDeck();
-      document.getElementById("btn-restore-chat").style.display = "none";
-      updateFrameUI('view-act1');
+    function showAct1Hint() {
+      playBeepSound('click');
+      showToast("힌트: 기사의 [UBS 로고(작성 기관)], [오른쪽 상단 발행일(기사 날짜)], [맨 밑 정보 영역(작성자 및 출처)]을 각각 터치해 보세요!");
     }
 
-    function submitCardCorrection(cardId) {
-      const inputEl = document.getElementById(`input-${cardId}`);
+    function escapeHtml(string) {
+      return String(string).replace(/[&<>"']/g, function (s) {
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        }[s];
+      });
+    }
+
+    function showAct1Step3Hint() {
+      playBeepSound('click');
+      const hintBtn = document.getElementById("act1-step3-hint-btn");
+      const hintBox = document.getElementById("act1-step3-hint-box");
+      if (hintBtn) hintBtn.style.display = "none";
+      if (hintBox) hintBox.style.display = "block";
+    }
+
+    function handleReplyKey(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        submitAct1Reply();
+      }
+    }
+
+    function submitAct1Reply() {
+      const inputEl = document.getElementById("act1-reply-input");
       if (!inputEl) return;
+      const text = inputEl.value.trim();
       
-      const txt = inputEl.value.trim();
-      if (txt.length < 5) {
-        playBeepSound("fail");
-        alert("친구에게 따뜻한 진심이 전해지도록 최소 5글자 이상 작성해 주세요!");
+      if (text.length === 0) {
+        playBeepSound('fail');
+        showToast("답변을 입력해 주세요!");
         return;
       }
       
-      playBeepSound("success");
-      act1State.editedTexts[cardId] = txt;
-      
-      renderCardDeck();
-      
-      const allEdited = act1Scenarios
-        .filter(c => c.isCorrectZone === "left")
-        .every(c => act1State.editedTexts[c.id] && act1State.editedTexts[c.id].length >= 5);
-        
-      if (allEdited) {
-        playBeepSound("success");
-        showToast("✨ 완벽해요! 모든 대안 작성을 마쳤습니다! 채팅방을 복원해보세요!");
-        document.getElementById("btn-restore-chat").style.display = "block";
+      if (text.length < 5) {
+        playBeepSound('fail');
+        showToast("내용이 너무 짧습니다. 친구들이 이해할 수 있게 자세히 써주세요!");
+        return;
       }
-      updateFrameUI('view-act1');
+
+      // Keywords checklist
+      const keywords = ["가짜", "허위", "출처", "작성", "기자", "지우", "삭제", "내 마음", "UBS", "근거"];
+      const hasKeyword = keywords.some(k => text.includes(k));
+      
+      if (!hasKeyword) {
+        playBeepSound('fail');
+        showToast("앗! 이 뉴스가 가짜뉴스인 이유(출처/작성자 문제)나 삭제 권유 표현이 누락되었습니다. 다시 작성해 보세요!");
+        return;
+      }
+      
+      // Correct reply sent!
+      playBeepSound('success');
+      
+      // Add my typed message to chat
+      const chatBody = document.getElementById("act1-chat-body");
+      if (chatBody) {
+        const myBubble = document.createElement("div");
+        myBubble.className = "chat-msg right";
+        myBubble.innerHTML = `
+          <span class="chat-msg-sender">👤 나</span>
+          <div class="chat-msg-bubble">${escapeHtml(text)}</div>
+        `;
+        chatBody.appendChild(myBubble);
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+      
+      // Disable input and button
+      inputEl.disabled = true;
+      const submitBtn = document.getElementById("act1-submit-btn");
+      if (submitBtn) submitBtn.disabled = true;
+
+      // Proceed with Minsu/Jiyoon sequential responses...
+      setTimeout(() => {
+        playBeepSound('click');
+        if (chatBody) {
+          const minsuBubble = document.createElement("div");
+          minsuBubble.className = "chat-msg left";
+          minsuBubble.innerHTML = `
+            <span class="chat-msg-sender">👤 민수</span>
+            <div class="chat-msg-bubble">아 진짜? 내가 가짜뉴스에 속은 거였구나... ㅠㅠ 지울게!</div>
+          `;
+          chatBody.appendChild(minsuBubble);
+          chatBody.scrollTop = chatBody.scrollHeight;
+        }
+        
+        setTimeout(() => {
+          playBeepSound('click');
+          if (chatBody) {
+            const jiyoonBubble = document.createElement("div");
+            jiyoonBubble.className = "chat-msg left";
+            jiyoonBubble.innerHTML = `
+              <span class="chat-msg-sender">👤 지윤</span>
+              <div class="chat-msg-bubble">와, 하마터면 속을 뻔했네! 고마워! 👏</div>
+            `;
+            chatBody.appendChild(jiyoonBubble);
+            chatBody.scrollTop = chatBody.scrollHeight;
+          }
+          
+          setTimeout(() => {
+            act1State.completed = true;
+            loadAct1Step(4);
+          }, 1500);
+        }, 1500);
+      }, 1500);
     }
 
-    function restoreChatroom() {
-      act1State.currentStep = 3;
-      
-      document.getElementById("stage-text").innerText = "채팅방 복원 (3단계)";
-      document.getElementById("stage-bar-fill").style.width = "100%";
-      document.getElementById("act1-mission-prompt").innerText = "[3단계 복원] 존중하는 채팅방으로 복원되는 대화 과정을 살펴보세요.";
-      document.getElementById("act1-guide-bubble").innerText = "서로를 존중하는 따뜻한 대화방이 완성되는 중입니다!";
-      
-      document.getElementById("act1-sorting-area").style.display = "none";
-      document.getElementById("btn-restore-chat").style.display = "none";
-      document.getElementById("act1-restore-area").style.display = "block";
-      
-      const chatBody = document.getElementById("restore-chat-body");
-      chatBody.innerHTML = "";
-      
-      let index = 0;
-      
-      function renderNextBubble() {
-        if (index >= act1Scenarios.length) {
-          document.getElementById("restore-success-banner").style.display = "block";
-          document.getElementById("act1-guide-bubble").innerText = "성공! 서로를 존중하는 단체 채팅방이 완성되었어요!";
-          act1State.completed = true;
-          updateFrameUI('view-act1');
-          return;
-        }
-        
-        const scenario = act1Scenarios[index];
-        const align = (scenario.isCorrectZone === "right") ? "right" : "left";
-        const bubbleEl = document.createElement("div");
-        bubbleEl.className = `chat-msg ${align}`;
-        
-        const sender = document.createElement("span");
-        sender.className = "chat-msg-sender";
-        sender.innerText = `${scenario.avatar} ${scenario.author}`;
-        bubbleEl.appendChild(sender);
-        
-        const textWrapper = document.createElement("div");
-        textWrapper.className = "chat-msg-bubble";
-        
-        if (scenario.isCorrectZone === "left") {
-          textWrapper.innerText = act1State.editedTexts[scenario.id];
-        } else {
-          textWrapper.innerText = scenario.text;
-        }
-        
-        bubbleEl.appendChild(textWrapper);
-        chatBody.appendChild(bubbleEl);
-        
-        chatBody.scrollTop = chatBody.scrollHeight;
-        playBeepSound("click");
-        
-        index++;
-        setTimeout(renderNextBubble, 1000);
-      }
-      
-      renderNextBubble();
+    function goToActivity2() {
+      playBeepSound('success');
+      switchView('view-act2');
+      initAct2();
     }
 
     function progressAct1Stage() {
       playBeepSound("click");
       switchView('view-act2');
+      initAct2();
     }
 
     function finishInternetEthics() {

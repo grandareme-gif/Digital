@@ -119,22 +119,22 @@ window.appState = {
 };
 
 const questions = [
-  { id: 1, category: "사이버 공감", text: "친구가 올린 글을 볼 때, 그 친구가 어떤 기분일지 먼저 생각해 보나요?", isReverse: false },
-  { id: 2, category: "사이버 공감", text: "온라인에서 속상해하는 친구를 보면 위로하는 댓글을 남기고 싶나요?", isReverse: false },
-  { id: 3, category: "사이버 의사소통", text: "온라인 채팅을 할 때 나도 모르게 욕설이나 거친 표현을 사용한 적이 있나요?", isReverse: true },
-  { id: 4, category: "사이버 의사소통", text: "문자나 메신저를 보낼 때 상대방이 오해하지 않도록 신중하게 단어를 고르나요?", isReverse: false },
-  { id: 5, category: "사이버 자기조절", text: "디지털 미디어(스마트폰, 게임 등) 사용으로 인해 해야 할 일(숙제 등)을 미룬 적이 있나요?", isReverse: true },
-  { id: 6, category: "사이버 자기조절", text: "스마트폰을 사용하지 않으면 불안하거나 진동이 울리는 것 같은 착각이 드나요?", isReverse: true },
-  { id: 7, category: "사이버 감정조절", text: "온라인 게임이나 채팅 중 화가 나면 참지 못하고 주먹이 쥐어지거나 화면을 거칠게 다루나요?", isReverse: true },
-  { id: 8, category: "사이버 감정조절", text: "기분 나쁜 메시지를 받았을 때, 즉시 맞대응하기보다 마음을 가라앉히려고 노력하나요?", isReverse: false },
-  { id: 9, category: "인터넷 윤리의식 및 활용", text: "딥페이크 영상이나 가짜 뉴스를 보면 그것이 진짜인지 의심하고 신고해야 한다고 생각하나요?", isReverse: false },
-  { id: 10, category: "인터넷 윤리의식 및 활용", text: "저작권이 있는 사진이나 글을 허락 없이 내 SNS에 올리는 것이 잘못임을 알고 있나요?", isReverse: false },
-  { id: 11, category: "사이버 갈등관리 및 문제해결", text: "단톡방에서 친구와 다툼이 생겼을 때, 화를 내기보다 대화로 오해를 풀려고 노력하나요?", isReverse: false },
-  { id: 12, category: "사이버 갈등관리 및 문제해결", text: "친구가 나를 비난할 때, '너 때문에 기분이 나빠'라고 솔직하고 차분하게 말할 수 있나요?", isReverse: false },
-  { id: 13, category: "사이버폭력 인식", text: "단체 채팅방에서 한 친구를 내보내지 못하게 하고 괴롭히는 것이 폭력임을 알고 있나요?", isReverse: false },
-  { id: 14, category: "사이버폭력 인식", text: "사이버폭력을 목격하면 화면을 캡처하여 선생님이나 부모님께 알릴 용기가 있나요?", isReverse: false },
-  { id: 15, category: "사이버 자기존중감", text: "비방하는 댓글을 보더라도 '나는 소중한 사람이야'라고 스스로를 다독일 수 있나요?", isReverse: false },
-  { id: 16, category: "사이버 자기존중감", text: "온라인 세상에서도 나의 장점을 당당하게 표현하고 자부심을 느끼나요?", isReverse: false }
+  { id: 1, category: "사이버 공감", text: "나는 가끔 친구의 입장에서 친구가 어떻게 느끼고 있을지 생각하며 친구를 더 잘 이해하려고 노력한다.", isReverse: false },
+  { id: 2, category: "사이버 공감", text: "나는 불행한 사람들을 보면 불쌍하다고 느낀다.", isReverse: false },
+  { id: 3, category: "사이버 의사소통", text: "나는 내 생각을 말로 잘 표현할 수 있다.", isReverse: false },
+  { id: 4, category: "사이버 의사소통", text: "나는 친구와 이야기 할 때, 이야기에 집중한다.", isReverse: false },
+  { id: 5, category: "사이버 자기조절", text: "나는 나만의 인터넷(스마트 폰) 사용 규칙이 있다.", isReverse: false },
+  { id: 6, category: "사이버 자기조절", text: "나는 사이버 상에서 스스로 행동을 관리할 수 있다.", isReverse: false },
+  { id: 7, category: "사이버 감정조절", text: "나는 내가 느끼는 감정을 말할 수 있다. (예: 기분 나쁘다, 기분 좋다, 화났다, 부끄럽다 등)", isReverse: false },
+  { id: 8, category: "사이버 감정조절", text: "나는 화가 날 때, 화가 난 감정을 해결하는 나만의 방법이 있다.", isReverse: false },
+  { id: 9, category: "인터넷 윤리의식 및 활용", text: "나는 사이버 상에서 근거 없는 정보를 구별한다.", isReverse: false },
+  { id: 10, category: "인터넷 윤리의식 및 활용", text: "나는 개인정보가 중요하다고 생각한다.", isReverse: false },
+  { id: 11, category: "사이버 갈등관리 및 문제해결", text: "나와 친구의 생각이 다를 때, 서로의 생각에 대해 솔직하게 이야기 한다.", isReverse: false },
+  { id: 12, category: "사이버 갈등관리 및 문제해결", text: "나와 친구 사이에 문제가 생기면, 문제의 원인이 무엇인지 생각해본다.", isReverse: false },
+  { id: 13, category: "사이버폭력 인식", text: "학교에서 같은 반 친구가 놀림을 당하면, 나는 그 아이 편이 되어 도와줄 것이다.", isReverse: false },
+  { id: 14, category: "사이버폭력 인식", text: "나는 사이버 폭력 발생 시 신고하는 곳을 알고 있다.", isReverse: false },
+  { id: 15, category: "사이버 자기존중감", text: "나는 나 자신에 대해 만족한다.", isReverse: false },
+  { id: 16, category: "사이버 자기존중감", text: "나는 내 자신을 소중하게 생각한다.", isReverse: false }
 ];
 
 // 마인드 웹 노드 정보 (위치 x, y 비율)
@@ -420,11 +420,6 @@ window.submitSignup = async function() {
   } else {
     if (!id || !pw || !school || !name || !email) {
       alert("모든 빈칸을 채워주세요!");
-      return;
-    }
-    // 교사 이메일 제한 재검사
-    if (!/@(korea\.kr|goedu\.kr)$/i.test(email)) {
-      alert("교사 회원가입은 @korea.kr 또는 @goedu.kr 메일로만 가능합니다!");
       return;
     }
   }
@@ -1259,12 +1254,10 @@ window.skipSurvey = function() {
   for (let k in window.appState.surveyScores) {
     window.appState.surveyScores[k] = Math.floor(Math.random() * 6) + 5;
   }
-  finishSurvey();
+  finishSurvey(true);
 }
 
-function finishSurvey() {
-  switchView('view-loading');
-  
+function finishSurvey(isSkipped = false) {
   const scoresArr = Object.keys(window.appState.surveyScores).map(key => ({
     category: key,
     score: window.appState.surveyScores[key]
@@ -1282,11 +1275,19 @@ function finishSurvey() {
       lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
   }
-  
-  setTimeout(() => {
+
+  if (isSkipped) {
+    // 스킵 시에는 분석 로딩 화면을 우회하여 즉시 맵으로 이동
     switchView('view-map');
     renderMap();
-  }, 2000);
+  } else {
+    // 정상 완료 시에는 2초 동안 분석 로딩 화면 노출
+    switchView('view-loading');
+    setTimeout(() => {
+      switchView('view-map');
+      renderMap();
+    }, 2000);
+  }
 }
 
 window.renderMap = function() {
@@ -2114,6 +2115,51 @@ document.addEventListener('DOMContentLoaded', () => {
   // 초기 음소거 상태 반영
   const isMuted = localStorage.getItem('app_audio_muted') === 'true';
   window.updateMuteButton(isMuted);
+
+  // 계속하려면 아무 키나 누르십시오 (PRESS ANY BUTTON) 처리
+  const handlePressAnyKey = (e) => {
+    // 스페이스바 누를 시 스크롤 방지
+    if (e && e.key === ' ') e.preventDefault();
+
+    document.removeEventListener('keydown', handlePressAnyKey);
+    document.removeEventListener('click', handlePressAnyKey);
+
+    const pressAny = document.getElementById('login-press-anykey');
+    const loginSelect = document.getElementById('login-mode-select');
+    const loginFooter = document.getElementById('login-footer');
+
+    if (pressAny) pressAny.style.display = 'none';
+    if (loginSelect) loginSelect.style.display = 'flex';
+    if (loginFooter) loginFooter.style.display = 'block';
+
+    // 레트로 오디오 효과음 재생
+    try {
+      const currentMuteState = localStorage.getItem('app_audio_muted') === 'true';
+      if (!currentMuteState) {
+        const OriginalAudioContext = window.AudioContext || window.webkitAudioContext;
+        if (OriginalAudioContext) {
+          const ctx = new OriginalAudioContext();
+          const now = ctx.currentTime;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now); // C5
+          osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.12); // G5
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.12);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.12);
+        }
+      }
+    } catch (err) {
+      console.warn("오디오 효과음 재생 실패:", err);
+    }
+  };
+
+  document.addEventListener('keydown', handlePressAnyKey);
+  document.addEventListener('click', handlePressAnyKey);
 
   // 전체화면 상태 변경 감지 및 버튼 UI 동기화
   document.addEventListener('fullscreenchange', () => {
