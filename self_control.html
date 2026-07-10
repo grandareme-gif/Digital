@@ -473,7 +473,7 @@
       <!-- 좌측: 고유 역량 이미지 아이콘 & 역량명 (30%) -->
       <div style="display: flex; align-items: center; gap: 8px; width: 30%; justify-content: flex-start; box-sizing: border-box; color: #fff;">
         <div style="position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; overflow: visible; margin-left: -5px; margin-right: 5px; flex-shrink: 0;">
-          <img src="images/icon_selfcontrol.webp" alt="역량 아이콘" style="position: absolute; width: 96px; height: 96px; object-fit: contain; max-width: none; image-rendering: pixelated; transform: scale(2.4); z-index: 20; pointer-events: none; top: -28px; left: -26px;">
+          <img src="images/icon_selfcontrol.webp" alt="역량 아이콘" style="position: absolute; width: 40px; height: 40px; object-fit: contain; max-width: none; image-rendering: pixelated; z-index: 20; pointer-events: none; top: 0; left: 0;">
         </div>
         <span style="font-weight: bold; font-size: 1.15rem; letter-spacing: -0.025em; margin-left: 5px; white-space: nowrap; color: #fff; font-family: 'DungGeunMo', monospace;">사이버 자기조절</span>
       </div>
@@ -737,7 +737,7 @@
           <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 8px; flex-shrink: 0;">
             <!-- 크기 5배 상향된 뱃지 이미지 -->
             <div style="width: 75px; height: 75px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 45px 0 15px 0; flex-shrink: 0;">
-              <img src="images/icon_selfcontrol.webp" alt="자기조절 뱃지" style="width: 240px; height: 240px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
+              <img src="images/icon_selfcontrol.webp" alt="자기조절 뱃지" style="width: 100px; height: 100px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
             </div>
             <span style="font-size: 1.25rem; color: #1e3a8a; font-weight: bold; margin-top: 10px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [사이버 자기조절] 배지 획득!</span>
           </div>
@@ -1170,13 +1170,13 @@
       if (nextBtn && nextBtn.classList.contains('disabled')) {
         synth.playSelect();
         if (state.currentStep === 2) {
-          alert("수아의 컷만화 이야기를 [다음 컷 ▶] 버튼을 눌러 마지막 장까지 정독한 후 이동할 수 있습니다!");
+          alert("수아의 컷만화 이야기를 마지막 컷까지 다 읽어주세요! 📖");
         } else if (state.currentStep === 3) {
-          alert("수아의 행동을 방해한 진짜 원인 3가지를 체크박스에서 모두 골라 주세요!");
+          alert("행동을 방해한 진짜 원인 3가지를 모두 골라주세요! 🔍");
         } else if (state.currentStep === 4) {
-          alert("네가 선택한 모든 진짜 원인에 알맞은 극복 전략 후보들을 매칭 박스에서 하나씩 골라 주세요!");
+          alert("선택한 원인에 맞는 극복 전략을 매칭해 주세요! 🧩");
         } else if (state.currentStep === 5) {
-          alert("모든 전략 카드를 드래그 슬롯에 꽂고, 하단의 마무리 성찰 질문에 답변해 주세요!");
+          alert("전략 카드를 꽂고 성찰 질문에 답변해 주세요! 💬");
         }
         return;
       }
@@ -1905,7 +1905,7 @@
     }
 
     function finishStage() {
-      alert("사이버 자기조절 활동의 모든 단계를 성공적으로 이수했습니다! 대시보드로 돌아갑니다.");
+      alert("[사이버 자기조절] 역량 배지를 획득하였습니다. 대시보드로 돌아갑니다. 🏆");
 
       let inIframe = false;
       try {

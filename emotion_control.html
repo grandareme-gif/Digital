@@ -1343,7 +1343,7 @@
       <!-- 좌측: 고유 역량 이미지 아이콘 & 역량명 (30%) -->
       <div style="display: flex; align-items: center; gap: 8px; width: 30%; justify-content: flex-start; box-sizing: border-box; color: #fff;">
         <div style="position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; overflow: visible; margin-left: -5px; margin-right: 5px; flex-shrink: 0;">
-          <img src="images/icon_emotion.webp" alt="역량 아이콘" style="position: absolute; width: 96px; height: 96px; object-fit: contain; max-width: none; image-rendering: pixelated; transform: scale(2.4); z-index: 20; pointer-events: none; top: -28px; left: -26px;">
+          <img src="images/icon_emotion.webp" alt="역량 아이콘" style="position: absolute; width: 40px; height: 40px; object-fit: contain; max-width: none; image-rendering: pixelated; z-index: 20; pointer-events: none; top: 0; left: 0;">
         </div>
         <span style="font-weight: bold; font-size: 1.15rem; letter-spacing: -0.025em; margin-left: 5px; white-space: nowrap; color: #fff; font-family: 'DungGeunMo', monospace;">사이버 감정조절</span>
       </div>
@@ -1660,7 +1660,7 @@
           <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 8px; flex-shrink: 0;">
             <!-- 크기 5배 상향된 뱃지 이미지 -->
             <div style="width: 75px; height: 75px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 45px 0 15px 0; flex-shrink: 0;">
-              <img src="images/icon_emotion.webp" alt="감정조절 뱃지" style="width: 240px; height: 240px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
+              <img src="images/icon_emotion.webp" alt="감정조절 뱃지" style="width: 100px; height: 100px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
             </div>
             <span style="font-size: 1.25rem; color: #1e3a8a; font-weight: bold; margin-top: 10px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [사이버 감정조절] 배지 획득!</span>
           </div>
@@ -2098,9 +2098,9 @@
       if (nextBtn && nextBtn.classList.contains('disabled')) {
         playAudioTone('click');
         if (activeActivityId === 1) {
-          alert("가장 알맞은 감정 배지를 선택하고, 우측의 [소화기] 버튼을 5초 동안 꾹 누르고 있어 주세요!");
+          alert("감정 배지를 선택하고 소화기 버튼을 5초간 꾹 눌러주세요! 🧯");
         } else {
-          alert("사실-감정-부탁 3단계에 맞게 3개의 입력창을 모두 채우고 [올바른 표현 전송]을 눌러 완료해 주세요!");
+          alert("사실-감정-부탁 3단계를 작성하고 전송해 주세요! 💬");
         }
         return;
       }
@@ -2800,7 +2800,7 @@
     function finishCenterMission() {
       playAudioTone('success');
       clearChatAnimationTimers();
-      alert("사이버 감정조절 활동의 모든 단계를 성공적으로 이수했습니다! 대시보드로 돌아갑니다.");
+      alert("[사이버 감정조절] 역량 배지를 획득하였습니다. 대시보드로 돌아갑니다. 🏆");
       
       let inIframe = false;
       try {

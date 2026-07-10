@@ -279,7 +279,14 @@ body {
   flex-direction: column;
   box-shadow: 1cqw 1cqw 0 var(--border-color) !important;
 }
-#speaker-name, #outro-speaker {
+#speaker-name {
+  color: var(--point-yellow);
+  font-size: 2.5cqw !important;
+  margin-bottom: 0.8cqw !important;
+  text-shadow: 0.25cqw 0.25cqw 0 var(--border-color) !important;
+  padding-left: 10cqw;
+}
+#outro-speaker {
   color: var(--point-yellow);
   font-size: 2.5cqw !important;
   margin-bottom: 0.8cqw !important;
@@ -287,10 +294,11 @@ body {
 }
 #dialog-text, #outro-text {
   color: #fff;
-  font-size: 2.0cqw !important;
+  font-size: 2.2cqw !important;
   line-height: 1.5;
   flex-grow: 1;
   padding-bottom: 0.5cqw;
+  padding-left: 10cqw;
   padding-right: 10cqw;
 }
 #next-btn, #outro-dialog-next {
@@ -299,6 +307,20 @@ body {
   right: 2.2cqw !important;
   font-size: 1.6cqw !important;
   padding: 0.5cqw 1.2cqw !important;
+}
+#prev-btn {
+  position: absolute;
+  bottom: 1.8cqw !important;
+  left: 2.2cqw !important;
+  font-size: 1.6cqw !important;
+  padding: 0.5cqw 1.2cqw !important;
+  background-color: #475569 !important;
+  color: #ffffff !important;
+  cursor: pointer;
+  z-index: 15;
+}
+#prev-btn:hover {
+  background-color: #64748b !important;
 }
 
 #outro-scene-label {
@@ -1250,4 +1272,10 @@ body {
     box-shadow: 0 0 12px rgba(241, 196, 15, 0.75), 2px 2px 0 #000;
     transform: scale(1.03);
   }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0); opacity: 0; }
+  70% { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
 }

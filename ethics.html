@@ -2076,7 +2076,7 @@
       <!-- 좌측: 고유 역량 이미지 아이콘 & 역량명 (30%) -->
       <div style="display: flex; align-items: center; gap: 8px; width: 30%; justify-content: flex-start; box-sizing: border-box; color: #fff;">
         <div style="position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; overflow: visible; margin-left: -5px; margin-right: 5px; flex-shrink: 0;">
-          <img src="images/icon_ethics.webp" alt="역량 아이콘" style="position: absolute; width: 96px; height: 96px; object-fit: contain; max-width: none; image-rendering: pixelated; transform: scale(2.4); z-index: 20; pointer-events: none; top: -28px; left: -26px;">
+          <img src="images/icon_ethics.webp" alt="역량 아이콘" style="position: absolute; width: 40px; height: 40px; object-fit: contain; max-width: none; image-rendering: pixelated; z-index: 20; pointer-events: none; top: 0; left: 0;">
         </div>
         <span style="font-weight: bold; font-size: 1.15rem; letter-spacing: -0.025em; margin-left: 5px; white-space: nowrap; color: #fff; font-family: 'DungGeunMo', monospace;">인터넷 윤리의식 및 활용</span>
       </div>
@@ -2279,14 +2279,14 @@
 
         if (viewId === 'view-act1') {
           if (act1State.currentStep === 1) {
-            alert("민수가 보낸 가짜뉴스 정보에 대처하기 위해 [B] 팩트체크 버튼을 눌러주세요!");
+            alert("가짜뉴스에 대처하기 위해 팩트체크 버튼을 눌러주세요! 🔍");
           } else if (act1State.currentStep === 2) {
-            alert("기사 이미지(또는 글) 속에서 가짜뉴스의 3가지 증거(작성자, 출처, 근거)를 찾아서 모두 클릭해 주세요!");
+            alert("가짜뉴스의 3가지 증거(작성자, 출처, 근거)를 찾아 클릭해 주세요! 🕵️");
           } else if (act1State.currentStep === 3) {
-            alert("민수에게 이 기사가 가짜뉴스인 이유(출처/기자 없음)를 작성하고 전송 버튼을 눌러주세요!");
+            alert("가짜뉴스인 이유를 작성하고 전송해 주세요! 💬");
           }
         } else if (viewId === 'view-act2') {
-          alert("우측 패널의 단계별 초상권 존중 미션을 지시에 따라 수행해 주세요!");
+          alert("초상권 존중 미션을 수행해 주세요! 📸");
         }
         return;
       }
@@ -2598,7 +2598,7 @@
           <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 8px; flex-shrink: 0;">
             <!-- 크기 5배 상향된 뱃지 이미지 -->
             <div style="width: 75px; height: 75px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 45px 0 15px 0; flex-shrink: 0;">
-              <img src="images/icon_ethics.webp" alt="윤리 뱃지" style="width: 240px; height: 240px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
+              <img src="images/icon_ethics.webp" alt="윤리 뱃지" style="width: 100px; height: 100px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
             </div>
             <span style="font-size: 1.25rem; color: #1e3a8a; font-weight: bold; margin-top: 10px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [인터넷 윤리] 배지 획득!</span>
           </div>

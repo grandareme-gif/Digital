@@ -111,7 +111,7 @@ window.appState = {
   surveyIndex: 0,
   surveyScores: {
     "사이버 공감": 0, "사이버 의사소통": 0, "사이버 자기조절": 0, "사이버 감정조절": 0,
-    "인터넷 윤리의식 및 활용": 0, "사이버 갈등관리 및 문제해결": 0, "사이버폭력 인식": 0, "사이버 자기존중감": 0
+    "인터넷 윤리의식 및 활용": 0, "사이버 갈등관리 및 문제해결": 0, "사이버 폭력인식 및 대처": 0, "사이버 자기존중감": 0
   },
   completedTasks: [], // 완료한 카테고리명 배열
   recommendedRoute: [], // 추천 루트
@@ -123,7 +123,7 @@ const questions = [
   { id: 2, category: "사이버 공감", text: "나는 불행한 사람들을 보면 불쌍하다고 느낀다.", isReverse: false },
   { id: 3, category: "사이버 의사소통", text: "나는 내 생각을 말로 잘 표현할 수 있다.", isReverse: false },
   { id: 4, category: "사이버 의사소통", text: "나는 친구와 이야기 할 때, 이야기에 집중한다.", isReverse: false },
-  { id: 5, category: "사이버 자기조절", text: "나는 나만의 인터넷(스마트 폰) 사용 규칙이 있다.", isReverse: false },
+  { id: 5, category: "사이버 자기조절", text: "나는 나만의 인터넷(스마트폰) 사용 규칙이 있다.", isReverse: false },
   { id: 6, category: "사이버 자기조절", text: "나는 사이버 상에서 스스로 행동을 관리할 수 있다.", isReverse: false },
   { id: 7, category: "사이버 감정조절", text: "나는 내가 느끼는 감정을 말할 수 있다. (예: 기분 나쁘다, 기분 좋다, 화났다, 부끄럽다 등)", isReverse: false },
   { id: 8, category: "사이버 감정조절", text: "나는 화가 날 때, 화가 난 감정을 해결하는 나만의 방법이 있다.", isReverse: false },
@@ -131,8 +131,8 @@ const questions = [
   { id: 10, category: "인터넷 윤리의식 및 활용", text: "나는 개인정보가 중요하다고 생각한다.", isReverse: false },
   { id: 11, category: "사이버 갈등관리 및 문제해결", text: "나와 친구의 생각이 다를 때, 서로의 생각에 대해 솔직하게 이야기 한다.", isReverse: false },
   { id: 12, category: "사이버 갈등관리 및 문제해결", text: "나와 친구 사이에 문제가 생기면, 문제의 원인이 무엇인지 생각해본다.", isReverse: false },
-  { id: 13, category: "사이버폭력 인식", text: "학교에서 같은 반 친구가 놀림을 당하면, 나는 그 아이 편이 되어 도와줄 것이다.", isReverse: false },
-  { id: 14, category: "사이버폭력 인식", text: "나는 사이버 폭력 발생 시 신고하는 곳을 알고 있다.", isReverse: false },
+  { id: 13, category: "사이버 폭력인식 및 대처", text: "학교에서 같은 반 친구가 놀림을 당하면, 나는 그 아이 편이 되어 도와줄 것이다.", isReverse: false },
+  { id: 14, category: "사이버 폭력인식 및 대처", text: "나는 사이버 폭력 발생 시 신고하는 곳을 알고 있다.", isReverse: false },
   { id: 15, category: "사이버 자기존중감", text: "나는 나 자신에 대해 만족한다.", isReverse: false },
   { id: 16, category: "사이버 자기존중감", text: "나는 내 자신을 소중하게 생각한다.", isReverse: false }
 ];
@@ -145,7 +145,7 @@ const mapNodes = [
   { id: "node-4", category: "사이버 감정조절", x: 74, y: 76 },            // 4시 반 방향
   { id: "node-5", category: "인터넷 윤리의식 및 활용", x: 50, y: 84 },      // 6시 방향
   { id: "node-6", category: "사이버 갈등관리 및 문제해결", x: 16, y: 50 },  // 9시 방향 (좌측 외곽)
-  { id: "node-7", category: "사이버폭력 인식", x: 26, y: 76 },            // 7시 반 방향
+  { id: "node-7", category: "사이버 폭력인식 및 대처", x: 26, y: 76 },            // 7시 반 방향
   { id: "node-8", category: "사이버 자기존중감", x: 74, y: 24 }             // 1시 반 방향
 ];
 
@@ -269,7 +269,7 @@ window.logout = function() {
     surveyIndex: 0,
     surveyScores: {
       "사이버 공감": 0, "사이버 의사소통": 0, "사이버 자기조절": 0, "사이버 감정조절": 0,
-      "인터넷 윤리의식 및 활용": 0, "사이버 갈등관리 및 문제해결": 0, "사이버폭력 인식": 0, "사이버 자기존중감": 0
+      "인터넷 윤리의식 및 활용": 0, "사이버 갈등관리 및 문제해결": 0, "사이버 폭력인식 및 대처": 0, "사이버 자기존중감": 0
     },
     completedTasks: [],
     recommendedRoute: [],
@@ -1071,6 +1071,17 @@ window.performSync = async function(classCode, studentId) {
 // ==========================================
 // [1. 프롤로그 엔진]
 // ==========================================
+const competencyBoxes = [
+  { id: "box-empathy", name: "사이버 공감", img: "images/icon_empathy.webp", left: "24%", top: "8%" },
+  { id: "box-comm", name: "사이버 의사소통", img: "images/icon_comm.webp", left: "42%", top: "8%" },
+  { id: "box-emotion", name: "사이버 감정조절", img: "images/icon_emotion.webp", left: "60%", top: "8%" },
+  { id: "box-selfcontrol", name: "사이버 자기조절", img: "images/icon_selfcontrol.webp", left: "78%", top: "8%" },
+  { id: "box-violence", name: "사이버폭력 인식 및 대처", img: "images/icon_violence.webp", left: "24%", top: "36%" },
+  { id: "box-conflict", name: "사이버 갈등관리 및 문제해결", img: "images/icon_conflict.webp", left: "42%", top: "36%" },
+  { id: "box-esteem", name: "사이버 자기존중감", img: "images/icon_esteem.webp", left: "60%", top: "36%" },
+  { id: "box-ethics", name: "인터넷 윤리의식 및 활용", img: "images/icon_ethics.webp", left: "78%", top: "36%" }
+];
+
 const scenes = [
   { bgName: "교실", bgColor: "#3b4d45", effect: "", speaker: "나", text: "휴.. 태블릿 활용 수업 끝났다. 패드 정리해서 충전함에 넣어야지..." },
   { bgName: "교실", bgColor: "#3b4d45", effect: "", speaker: "나", text: "(멈칫하며) 하아... 그런데 어제 일때문에 오늘 하루종일 집중이 안되네.. 계속 생각나..." },
@@ -1078,23 +1089,35 @@ const scenes = [
   { bgName: "어제 저녁, 방 안", bgColor: "#111", effect: "effect-blur", speaker: "민호(채팅)", text: "야!! 너 때문에 졌잖아! 진짜 못하네, 짜증 나니까 그냥 나가라;;" },
   { bgName: "어제 저녁, 방 안", bgColor: "#111", effect: "effect-blur", speaker: "지수(채팅)", text: "인정 ㅋㅋㅋ" },
   { bgName: "어제 저녁, 방 안", bgColor: "#111", effect: "effect-blur", speaker: "나", text: "어쩌라고!!! 나 게임 안해!!!" },
-  { bgName: "어제 저녁, 방 안", bgColor: "#000", effect: "effect-power-off", speaker: "나", text: "지수까지 같이 웃는 걸 보고 너무 속상해서 그냥 게임을 꺼버렸는데...\n밤새 마음이 안 좋았어." },
+  { bgName: "어제 저녁, 방 안", bgColor: "#000", effect: "effect-power-off", speaker: "나", text: "지수까지 같이 웃는 걸 보고 너무 속상해서 그냥 게임을 꺼버렸는데... 밤새 마음이 안 좋았어." },
   { bgName: "교실", bgColor: "#3b4d45", effect: "effect-zoom", speaker: "민호", text: "[교실 저편에서 들리는 민호의 큰 웃음소리] 하하하! 대박! 진짜 웃겨!" },
   { bgName: "교실", bgColor: "#3b4d45", effect: "effect-zoom", speaker: "나", text: "(깜짝 놀라며) 헉...! 민호랑 지수는 아무 일도 없었다는 듯이 저렇게 잘 놀고 있네..." },
-  { bgName: "교실", bgColor: "#3b4d45", effect: "effect-zoom", speaker: "나", text: "게임에서 있었던 일이니까 로그아웃하면 끝인 줄 알았는데... 막상 교실에서 얼굴을 보니까 왜 이렇게 마음이 무겁고 콕콕 찌르는 것 같지?" },
+  { bgName: "교실", bgColor: "#3b4d45", effect: "effect-zoom", speaker: "나", text: "게임 속 일이라 <span style='color: #ff79c6;'>로그아웃하면 끝인 줄 알았는데...</span> 막상 교실에서 얼굴을 보니 왜 이렇게 <span style='color: #ffeb3b;'>마음이 무겁고 콕콕 찌를까?</span>" },
   { bgName: "교실", bgColor: "#222", effect: "effect-glitch", speaker: "나", text: "어? 뭐야? 패드 화면이 왜 이래? 고장 났나?" },
-  { bgName: "교실", bgColor: "#2c2400", effect: "effect-glow", speaker: "마음 온(ON)", text: "치익- 치익- 마침내 연결 성공! 안녕? 난 디지털 세상의 마음 에너지를 연구하는 AI, '마음 온(ON)'이야!", showFairy: true },
+  { bgName: "교실", bgColor: "#2c2400", effect: "effect-glow", speaker: "마음 온(ON)", text: "치익- 치익- 마침내 연결 성공! 안녕? 난 디지털 세상의 마음 에너지를 연구하는 AI, '<span style='color: #00ffff;'>마음 온(ON)</span>'이야!", showFairy: true },
   { bgName: "교실", bgColor: "#2c2400", effect: "effect-glow", speaker: "나", text: "(소곤거리며) 으악, 깜짝이야! 너... 정체가 뭐야? 내 패드에 이런 앱 없었는데?", showFairy: true },
-  { bgName: "교실", bgColor: "#2c2400", effect: "effect-glow", speaker: "마음 온(ON)", text: "난 고장 난 게 아니야! 난 이 패드를 통해 '디지털 세상의 속상함 때문에 진짜 교실에서 마음 온도가 뚝 떨어진 사람'을 찾고 있었어. 바로 너처럼 말이지!", showFairy: true },
+  { bgName: "교실", bgColor: "#2c2400", effect: "effect-glow", speaker: "마음 온(ON)", text: "난 고장 난 게 아니야! <span style='color: #ff79c6;'>디지털 세상의 상처</span>로 진짜 교실의 <span style='color: #00ff88;'>마음 온도</span>가 뚝 떨어진 친구를 찾고 있었어. 바로 너처럼!", showFairy: true },
   { bgName: "교실", bgColor: "#091223", effect: "", speaker: "나", text: "마음 온도...? 그게 무슨 소리야?", showFairy: true },
   { bgName: "교실", bgColor: "#091223", effect: "effect-portal", speaker: "마음 온(ON)", text: "자! 나를 따라와!", showFairy: true },
-  { bgName: "마음웹", bgColor: "#091223", effect: "", speaker: "마음 온(ON)", text: "이것 봐! 이게 바로 너와 친구들의 마음이 촘촘하게 연결된 '마음웹(Mind-Web)'이야!", showFairy: true, fairyPosition: "top-left" },
-  { bgName: "마음웹", bgColor: "#050a14", effect: "effect-frozen", speaker: "마음 온(ON)", text: "어제 너희가 게임에서 거친 말을 쓰고 상처를 입은 바람에, 너희를 연결하던 마음웹이 꽁꽁 얼어붙어 버렸어!", showFairy: true, fairyPosition: "top-left" },
-  { bgName: "마음웹", bgColor: "#050a14", effect: "effect-frozen", speaker: "마음 온(ON)", text: "네가 오늘 아침부터 느꼈던 그 '마음이 무겁고 콕콕 찌르는 기분'이 바로 이 마음웹이 보낸 신호야. 디지털 공간과 현실의 마음은 하나로 이어져 있거든.", showFairy: true, fairyPosition: "top-left" },
+  { bgName: "마음웹", bgColor: "#091223", effect: "", speaker: "마음 온(ON)", text: "이것 봐! 게 바로 너와 친구들의 마음이 촘촘하게 연결된 '<span style='color: #00ffff;'>마음웹(Mind-Web)</span>'이야!", showFairy: true, fairyPosition: "top-left" },
+  { bgName: "마음웹", bgColor: "#050a14", effect: "effect-frozen", speaker: "마음 온(ON)", text: "어제 너희가 게임에서 거친 말을 쓰고 상처를 입은 바람에, 너희를 연결하던 마음웹이 <span style='color: #ffeb3b;'>꽁꽁 얼어붙어 버렸어!</span>", showFairy: true, fairyPosition: "top-left" },
+  { bgName: "마음웹", bgColor: "#050a14", effect: "effect-frozen", speaker: "마음 온(ON)", text: "네가 오늘 아침부터 느꼈던 그 '마음이 무겁고 콕콕 찌르는 기분'이 바로 이 마음웹이 보낸 신호야.", showFairy: true, fairyPosition: "top-left" },
+  { bgName: "마음웹", bgColor: "#050a14", effect: "effect-frozen", speaker: "마음 온(ON)", text: "<span style='color: #00ff88;'>디지털 공간과 현실의 마음은 하나로 이어져 있거든.</span>", showFairy: true, fairyPosition: "top-left" },
   { bgName: "마음웹", bgColor: "#050a14", effect: "effect-frozen", speaker: "나", text: "내 마음이 불편했던 이유가... 진짜 이것 때문이라고? 그럼 어떻게 해야 해?", showFairy: true, fairyPosition: "top-left" },
   { bgName: "마음웹", bgColor: "#111", effect: "", speaker: "마음 온(ON)", text: "우리 반 마음웹을 다시 따뜻하게 녹일 수 있는 사람은 어제의 일을 후회하고 바꾸고 싶어 하는 너뿐이야!", showFairy: true, fairyPosition: "top-left" },
-  { bgName: "마음웹", bgColor: "#111", effect: "", speaker: "나", text: "내가... 마음웹을 고칠 수 있다고? 어떻게 해야 하는데?", showFairy: true, fairyPosition: "top-left" },
-  { bgName: "마음웹", bgColor: "#111", effect: "", speaker: "마음 온(ON)", text: "지금 네 마음 배터리가 어떤 상태인지 분석하기 위해 [마음웹 스캐닝]을 시작할게! 나와 대화하듯 솔직하게 대답해 줘!", showFairy: true, fairyPosition: "top-left", isLast: true }
+  { bgName: "마음웹", bgColor: "#111", effect: "", speaker: "나", text: "내가... 마음웹을 고칠 수 있다고? 어떻게 해야 하는데?", showFairy: true, fairyPosition: "top-left", competencyShowCount: 0 },
+  { bgName: "마음웹", bgColor: "#111", effect: "", speaker: "마음 온(ON)", text: "바로 <span style='color: #00ff88;'>사이버 어울림</span> 역량을 기르는 거지!", showFairy: true, fairyPosition: "top-left", competencyShowCount: 0 },
+  { bgName: "마음웹", bgColor: "#111", effect: "", speaker: "나", text: "사이버 어울림 역량? 그게 뭔데?", showFairy: true, fairyPosition: "top-left", competencyShowCount: 0 },
+  { bgName: "마음웹", bgColor: "#111", effect: "", speaker: "마음 온(ON)", text: "사이버 어울림 역량은 <span style='color: #00ff88;'>디지털 세상에서 나를 안전하게 지키고</span>, 친구들과 <span style='color: #ffeb3b;'>오해 없이 소통</span>하기 위해 꼭 갖춰야 할 <span style='color: #00ffff;'>8가지 필수 역량</span>이야!", showFairy: true, fairyPosition: "top-left", competencyShowCount: 0, showCyberHand: true },
+  { bgName: "마음웹", bgColor: "#111", effect: "", speaker: "마음 온(ON)", text: "화면 너머에 있는 친구의 상황을 나의 일처럼 이해하고 진짜 기분을 파악하는 <span style='color: #00ff88;'>사이버 공감</span> 역량!", showFairy: true, fairyPosition: "top-left", competencyShowCount: 1 },
+  { bgName: "마음웹", bgColor: "#111", effect: "", speaker: "마음 온(ON)", text: "서로 얼굴이 보이지 않는 온라인에서도 내 생각과 감정을 오해 없이 바르게 전달하는 <span style='color: #00ff88;'>사이버 의사소통</span> 역량!", showFairy: true, fairyPosition: "top-left", competencyShowCount: 2 },
+  { bgName: "마음웹", bgColor: "#111", effect: "", speaker: "마음 온(ON)", text: "불쾌하거나 화가 나는 상황이 생겼을 때, 충동적으로 반응하지 않고 내 감정을 차분하게 가라앉히는 <span style='color: #00ff88;'>사이버 감정조절</span> 역량!", showFairy: true, fairyPosition: "top-left", competencyShowCount: 3 },
+  { bgName: "마음웹", bgColor: "#111", effect: "", speaker: "마음 온(ON)", text: "스마트폰이나 게임을 더 하고 싶은 충동적인 유혹을 이겨내고, 스스로 사용 시간을 멈출 수 있는 <span style='color: #00ff88;'>사이버 자기조절</span> 역량!", showFairy: true, fairyPosition: "top-left", competencyShowCount: 4 },
+  { bgName: "마음웹", bgColor: "#111", effect: "", speaker: "마음 온(ON)", text: "단순한 장난과 진짜 폭력의 차이를 구분하고, 위험한 일이 생겼을 때 나와 친구를 안전하게 보호하는 <span style='color: #00ff88;'>사이버폭력 인식 및 대처</span> 역량!", showFairy: true, fairyPosition: "top-left", competencyShowCount: 5 },
+  { bgName: "마음웹", bgColor: "#111", effect: "", speaker: "마음 온(ON)", text: "온라인 갈등이나 오해를 피하지 않고, 지혜롭게 해결해 관계를 회복하는 <span style='color: #00ff88;'>사이버 갈등관리 및 문제해결</span> 역량!", showFairy: true, fairyPosition: "top-left", competencyShowCount: 6 },
+  { bgName: "마음웹", bgColor: "#111", effect: "", speaker: "마음 온(ON)", text: "SNS 속 다른 사람의 모습과 나를 비교하지 않고, 나의 있는 그대로의 모습을 인정하고 존중하는 <span style='color: #00ff88;'>사이버 자기존중감</span> 역량!", showFairy: true, fairyPosition: "top-left", competencyShowCount: 7 },
+  { bgName: "마음웹", bgColor: "#111", effect: "", speaker: "마음 온(ON)", text: "내 소중한 개인정보를 보호하고, 인터넷을 사용하며 진짜 정보를 판별하는 <span style='color: #00ff88;'>인터넷 윤리의식 및 활용</span> 역량!", showFairy: true, fairyPosition: "top-left", competencyShowCount: 8 },
+  { bgName: "마음웹", bgColor: "#111", effect: "", speaker: "마음 온(ON)", text: "지금 네 마음 배터리가 어떤 상태인지 분석하기 위해 [<span style='color: #00ffff;'>마음웹 스캐닝</span>]을 시작할게! 나와 대화하듯 솔직하게 대답해 줘!", showFairy: true, fairyPosition: "top-left", competencyShowCount: 8, isLast: true }
 ];
 
 window.skipPrologue = function() {
@@ -1123,7 +1146,7 @@ function renderScene() {
   else if (talkNum >= 8 && talkNum <= 10) bgImg = "images/story_bg3.webp";
   else if (talkNum >= 11 && talkNum <= 15) bgImg = "images/story_bg4.webp";
   else if (talkNum === 16) bgImg = "images/story_bg5.webp";
-  else if (talkNum >= 17 && talkNum <= 24) bgImg = "images/story_bg6.webp";
+  else if (talkNum >= 17) bgImg = "images/story_bg6.webp";
 
   if (bgImg) {
     sceneContainer.style.backgroundImage = `url('${bgImg}')`;
@@ -1151,6 +1174,11 @@ function renderScene() {
   } else {
     fairyEl.classList.remove('top-left');
   }
+  if (typeof scene.competencyShowCount === 'number' && scene.competencyShowCount >= 1) {
+    fairyEl.style.backgroundImage = "url('images/maeumon_intro.webp')";
+  } else {
+    fairyEl.style.backgroundImage = "";
+  }
   const speakerEl = document.getElementById('speaker-name');
   speakerEl.innerText = scene.speaker;
   
@@ -1174,40 +1202,152 @@ function renderScene() {
   
   if (scene.isLast) {
     if (window.appState.isClassMode) {
-      document.getElementById('dialog-text').innerText = "자, 나랑 같이 사이버 어울림 역량을 기워서 얼어붙은 마음웹을 다시 따뜻하게 녹여볼까?";
+      document.getElementById('dialog-text').innerHTML = "자, 나랑 같이 사이버 어울림 역량을 길러 얼어붙은 마음웹을 다시 따뜻하게 녹여볼까?";
     } else {
-      document.getElementById('dialog-text').innerText = "내가 네 마음을 따뜻하게 녹여줄게! 먼저 지금 네 마음 상태가 어떤지 '마음 스캐닝'으로 진단해 볼까?";
+      document.getElementById('dialog-text').innerHTML = "역량을 기르기 전에 너의 사이버 어울림 역량 상태는 어떤지 먼저 진단해볼까?";
     }
   } else {
-    document.getElementById('dialog-text').innerText = scene.text;
+    document.getElementById('dialog-text').innerHTML = scene.text;
+  }
+
+  // 8대 역량 상자 동적 렌더링 제어
+  const compContainer = document.getElementById('competency-box-container');
+  if (compContainer) {
+    compContainer.innerHTML = ""; // 기존 상자 초기화
+    if (typeof scene.competencyShowCount === 'number' && scene.competencyShowCount > 0) {
+      for (let i = 0; i < scene.competencyShowCount; i++) {
+        const box = competencyBoxes[i];
+        const boxEl = document.createElement('div');
+        boxEl.id = box.id;
+        boxEl.style.position = "absolute";
+        boxEl.style.left = box.left;
+        boxEl.style.top = box.top;
+        boxEl.style.width = "13cqw";
+        boxEl.style.height = "14cqw";
+        boxEl.style.backgroundColor = "#ffffff";
+        boxEl.style.border = "0.2cqw solid #000000";
+        boxEl.style.boxShadow = "0.3cqw 0.3cqw 0 #000000";
+        boxEl.style.display = "flex";
+        boxEl.style.flexDirection = "column";
+        boxEl.style.alignItems = "center";
+        boxEl.style.justifyContent = "center";
+        boxEl.style.padding = "0.4cqw";
+        boxEl.style.boxSizing = "border-box";
+        boxEl.style.animation = "popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards";
+        
+        // 이미지
+        const imgEl = document.createElement('img');
+        imgEl.src = box.img;
+        imgEl.alt = box.name;
+        imgEl.style.width = "6.5cqw";
+        imgEl.style.height = "6.5cqw";
+        imgEl.style.objectFit = "contain";
+        imgEl.style.imageRendering = "pixelated";
+        imgEl.style.marginBottom = "0.5cqw";
+        
+        // 텍스트
+        const textEl = document.createElement('div');
+        textEl.innerText = box.name;
+        textEl.style.fontFamily = "'DungGeunMo', monospace";
+        textEl.style.fontSize = "1.15cqw";
+        textEl.style.fontWeight = "bold";
+        textEl.style.color = "#000000";
+        textEl.style.textAlign = "center";
+        textEl.style.wordBreak = "keep-all";
+        
+        boxEl.appendChild(imgEl);
+        boxEl.appendChild(textEl);
+        compContainer.appendChild(boxEl);
+      }
+    }
+  }
+
+  // cyber_hand 팝업 연출 제어
+  const handPopup = document.getElementById('cyber-hand-popup');
+  if (handPopup) {
+    if (scene.showCyberHand) {
+      handPopup.style.display = 'block';
+      setTimeout(() => {
+        handPopup.style.transform = 'translate(-50%, -50%) scale(1)';
+        handPopup.style.opacity = '1';
+      }, 20);
+    } else {
+      handPopup.style.transform = 'translate(-50%, -50%) scale(0)';
+      handPopup.style.opacity = '0';
+      setTimeout(() => {
+        const currentScene = scenes[window.appState.currentSceneIndex];
+        if (currentScene && !currentScene.showCyberHand) {
+          handPopup.style.display = 'none';
+        }
+      }, 350);
+    }
   }
 
   const nextBtn = document.getElementById('next-btn');
   if (scene.isLast) {
     if (window.appState.isClassMode) {
-      nextBtn.innerText = "마음 웹으로 이동 ▶";
+      nextBtn.innerHTML = "마음<br>웹으로<br>이동 ▶";
       nextBtn.onclick = function() {
         switchView('view-map');
         renderMap();
       };
     } else {
-      nextBtn.innerText = "마음 스캐닝 시작 ▶";
+      nextBtn.innerHTML = "역량<br>진단<br>시작 ▶";
       nextBtn.onclick = function() {
         switchView('view-survey');
         window.startSurvey();
       };
     }
     nextBtn.style.backgroundColor = "var(--point-yellow)";
+    nextBtn.style.width = "8.5cqw";
+    nextBtn.style.height = "10.4cqw";
+    nextBtn.style.top = "1.8cqw";
+    nextBtn.style.bottom = "1.8cqw";
+    nextBtn.style.display = "flex";
+    nextBtn.style.alignItems = "center";
+    nextBtn.style.justifyContent = "center";
+    nextBtn.style.textAlign = "center";
+    nextBtn.style.fontSize = "1.3cqw";
+    nextBtn.style.lineHeight = "1.2";
+    nextBtn.style.padding = "0.5cqw 0.5cqw";
   } else {
-    nextBtn.innerText = "다음 ▼";
+    nextBtn.innerHTML = "다음 ▼";
     nextBtn.style.backgroundColor = "var(--point-yellow)";
     nextBtn.onclick = window.nextScene;
+    nextBtn.style.width = "";
+    nextBtn.style.height = "";
+    nextBtn.style.top = "";
+    nextBtn.style.bottom = "";
+    nextBtn.style.display = "";
+    nextBtn.style.alignItems = "";
+    nextBtn.style.justifyContent = "";
+    nextBtn.style.textAlign = "";
+    nextBtn.style.fontSize = "";
+    nextBtn.style.lineHeight = "";
+    nextBtn.style.padding = "";
+  }
+
+  // 이전 버튼 노출 여부 결정
+  const prevBtn = document.getElementById('prev-btn');
+  if (prevBtn) {
+    if (window.appState.currentSceneIndex === 0) {
+      prevBtn.style.display = 'none';
+    } else {
+      prevBtn.style.display = 'block';
+    }
   }
 }
 
 window.nextScene = function() {
   if (window.appState.currentSceneIndex < scenes.length - 1) {
     window.appState.currentSceneIndex++;
+    renderScene();
+  }
+}
+
+window.prevScene = function() {
+  if (window.appState.currentSceneIndex > 0) {
+    window.appState.currentSceneIndex--;
     renderScene();
   }
 }
@@ -1277,18 +1417,73 @@ function finishSurvey(isSkipped = false) {
   }
 
   if (isSkipped) {
-    // 스킵 시에는 분석 로딩 화면을 우회하여 즉시 맵으로 이동
     switchView('view-map');
     renderMap();
   } else {
-    // 정상 완료 시에는 2초 동안 분석 로딩 화면 노출
     switchView('view-loading');
-    setTimeout(() => {
-      switchView('view-map');
-      renderMap();
-    }, 2000);
+
+    const resultPanel = document.getElementById('loading-result-panel');
+    const subText = document.getElementById('loading-sub-text');
+    const loadingFairy = document.getElementById('loading-fairy');
+    const loadingTitle = document.getElementById('loading-title');
+    const recommList = document.getElementById('loading-recomm-list');
+
+    if (loadingFairy) {
+      loadingFairy.style.backgroundImage = "url('images/maeumon_intro.webp')";
+    }
+
+    if (!window.appState.isClassMode) {
+      if (loadingTitle) loadingTitle.innerText = "진단 완료!";
+      if (subText) subText.style.display = 'none';
+      if (resultPanel) resultPanel.style.display = 'flex';
+
+      if (recommList) {
+        recommList.innerHTML = "";
+        window.appState.recommendedRoute.forEach((cat, index) => {
+          const item = document.createElement('div');
+          item.style.display = 'flex';
+          item.style.alignItems = 'center';
+          item.style.fontSize = '0.95cqw';
+          item.style.color = '#fff';
+          item.style.marginBottom = '0.3cqw';
+          
+          const badge = document.createElement('span');
+          badge.innerText = `${index + 1}순위`;
+          badge.style.backgroundColor = index === 0 ? 'var(--point-yellow)' : '#475569';
+          badge.style.color = index === 0 ? '#000' : '#fff';
+          badge.style.padding = '0.1cqw 0.6cqw';
+          badge.style.marginRight = '1cqw';
+          badge.style.fontWeight = 'bold';
+          badge.style.fontFamily = "'DungGeunMo', monospace";
+
+          const name = document.createElement('span');
+          name.innerText = cat;
+          name.style.fontFamily = "'DungGeunMo', monospace";
+          name.style.fontWeight = index === 0 ? 'bold' : 'normal';
+          if (index === 0) name.style.color = 'var(--point-yellow)';
+
+          item.appendChild(badge);
+          item.appendChild(name);
+          recommList.appendChild(item);
+        });
+      }
+    } else {
+      if (loadingTitle) loadingTitle.innerHTML = "진단 완료!<br>마음웹 데이터를 분석 중...";
+      if (subText) subText.style.display = 'block';
+      if (resultPanel) resultPanel.style.display = 'none';
+
+      setTimeout(() => {
+        switchView('view-map');
+        renderMap();
+      }, 2000);
+    }
   }
 }
+
+window.loadingConfirm = function() {
+  switchView('view-map');
+  renderMap();
+};
 
 window.renderMap = function() {
   const container = document.getElementById('map-nodes-container');
@@ -1358,7 +1553,7 @@ window.renderMap = function() {
     
     const iconFile = categoryIcons[node.category] || '';
     if (iconFile) {
-      div.innerHTML = `<img src="${iconFile}" alt="${node.category}" style="width: 294px; height: 294px; object-fit: contain; filter: ${isComp ? 'none' : 'grayscale(100%) brightness(0.6)'}; transition: filter 0.5s ease; pointer-events: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;">`;
+      div.innerHTML = `<img src="${iconFile}" alt="${node.category}" style="width: 90px; height: 90px; object-fit: contain; filter: ${isComp ? 'none' : 'grayscale(100%) brightness(0.6)'}; transition: filter 0.5s ease; pointer-events: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;">`;
     } else {
       div.innerHTML = `<span style="font-size: 3rem;">${isComp ? '🌟' : '❄️'}</span>`;
     }
@@ -1446,7 +1641,7 @@ window.currentTaskCategory = "";
 const categoryPages = {
   '사이버 공감': 'empathy.html',
   '사이버 의사소통': 'communication.html',
-  '사이버폭력 인식': 'cyber_hero.html',
+  '사이버 폭력인식 및 대처': 'cyber_hero.html',
   '사이버 자기조절': 'self_control.html',
   '사이버 감정조절': 'emotion_control.html',
   '인터넷 윤리의식 및 활용': 'ethics.html',
@@ -1457,7 +1652,7 @@ const categoryPages = {
 const categoryIcons = {
   '사이버 공감': 'images/icon_empathy.webp',
   '사이버 의사소통': 'images/icon_comm.webp',
-  '사이버폭력 인식': 'images/icon_violence.webp',
+  '사이버 폭력인식 및 대처': 'images/icon_violence.webp',
   '사이버 자기조절': 'images/icon_selfcontrol.webp',
   '사이버 감정조절': 'images/icon_emotion.webp',
   '인터넷 윤리의식 및 활용': 'images/icon_ethics.webp',
@@ -1501,7 +1696,8 @@ window.completeTask = function(category, answers) {
   saveLocalState();
   
   if (targetCategory) {
-    alert(`[${targetCategory}] 과제를 완료하여 마음 에너지가 채워졌습니다!`);
+    const icon = categoryIcons[targetCategory] || '';
+    alert(`[${targetCategory}] 역량 배지를 획득하였습니다.\n마음 에너지가 채워졌습니다! ❤️`, null, icon);
   }
   
   window.returnToMap();
@@ -1532,7 +1728,7 @@ const outroScenes = [
     bgName: "마음웹",
     bgImg: "images/story_bg7.webp",
     speaker: "마음 온(ON)",
-    text: "이것 봐! 네가 기른 ‘사이버 어울림 역량’ 덕분에 꽁꽁 얼어붙었던 우리 반 마음 웹이 따뜻하게 녹았어!",
+    text: "이것 봐! 네가 기른 '<span style='color: #00ff88;'>사이버 어울림 역량</span>' 덕분에 꽁꽁 얼어붙었던 우리 반 마음 웹이 <span style='color: #00ff88;'>따뜻하게 녹았어!</span>",
     showFairy: true,
     isPromiseScene: false
   },
@@ -1548,7 +1744,7 @@ const outroScenes = [
     bgName: "마음웹",
     bgImg: "images/story_bg7.webp",
     speaker: "마음 온(ON)",
-    text: "이제 넌 온라인에서 생긴 오해와 상처를 스스로 치유할 수 있는 멋진 힘을 가지게 된 거야! 현실 교실로 돌아가서도 이 따뜻한 마음 온도를 꼭 유지해 줘. 약속할 수 있지?",
+    text: "이제 넌 온라인에서 생긴 오해와 상처를 스스로 치유할 수 있는 멋진 힘을 가지게 된 거야! <span style='color: #00ff88;'>현실 교실</span>로 돌아가서도 이 따뜻한 마음 온도를 꼭 유지해 줘. 약속할 수 있지?",
     showFairy: true,
     isPromiseScene: true
   },
@@ -1572,7 +1768,7 @@ const outroScenes = [
     bgName: "교실",
     bgImg: "images/story_bg3.webp",
     speaker: "나",
-    text: "좋아! 어제 일은 내가 먼저 다가가서 솔직하게 내 마음을 이야기해 봐야겠다. 로그아웃 한다고 끝나는 게 아니니까!",
+    text: "좋아! 어제 일은 내가 <span style='color: #ffeb3b;'>먼저 다가가서 솔직하게 내 마음을 이야기</span>해 봐야겠다. <span style='color: #ffeb3b;'>로그아웃 한다고 끝나는 게 아니니까!</span>",
     showFairy: false,
     isPromiseScene: false
   },
@@ -1630,7 +1826,6 @@ function renderOutroScene() {
     fairyEl.style.display = scene.showFairy ? 'block' : 'none';
     if (scene.bgName === "마음웹") {
       fairyEl.classList.add('top-left');
-      // 아웃트로 전용 마음온 요정 캐릭터 이미지 적용
       fairyEl.style.backgroundImage = `url('images/maeumon_outro.webp?v=${new Date().getTime()}')`;
     } else {
       fairyEl.classList.remove('top-left');
@@ -1640,7 +1835,7 @@ function renderOutroScene() {
   const speakerEl = document.getElementById('outro-speaker');
   const textEl = document.getElementById('outro-text');
   speakerEl.innerText = scene.speaker;
-  textEl.innerText = scene.text;
+  textEl.innerHTML = scene.text;
   
   if (scene.speaker === "마음 온(ON)") {
     speakerEl.style.color = "#01fcfa";
@@ -1664,6 +1859,15 @@ function renderOutroScene() {
       nextBtn.innerText = "다음 ▼";
     }
   }
+
+  const prevBtn = document.getElementById('outro-dialog-prev');
+  if (prevBtn) {
+    if (currentOutroIndex === 0 || scene.isPromiseScene) {
+      prevBtn.style.display = 'none';
+    } else {
+      prevBtn.style.display = 'block';
+    }
+  }
 }
 
 window.nextOutroScene = function() {
@@ -1675,6 +1879,13 @@ window.nextOutroScene = function() {
   
   currentOutroIndex++;
   renderOutroScene();
+}
+
+window.prevOutroScene = function() {
+  if (currentOutroIndex > 0) {
+    currentOutroIndex--;
+    renderOutroScene();
+  }
 }
 
 window.promiseAndContinue = function() {
@@ -2110,6 +2321,87 @@ function patchAudioNode(win) {
 // 부모 창 패치 적용
 patchAudioNode(window);
 
+// =========================================
+// [커스텀 알림(Alert) 모달 및 큐 관리]
+// =========================================
+const alertQueue = [];
+let isAlertActive = false;
+
+// 오리지널 alert 백업
+window.originalAlert = window.originalAlert || window.alert;
+
+window.alert = function(message, callback, imageSrc) {
+  alertQueue.push({ message, callback, imageSrc });
+  processAlertQueue();
+};
+
+function processAlertQueue() {
+  if (isAlertActive || alertQueue.length === 0) return;
+  isAlertActive = true;
+  
+  const current = alertQueue.shift();
+  const modal = document.getElementById('custom-alert-modal');
+  const msgEl = document.getElementById('custom-alert-message');
+  const okBtn = document.getElementById('custom-alert-ok-btn');
+  const badgeContainer = document.getElementById('custom-alert-badge-container');
+  const badgeImg = document.getElementById('custom-alert-badge-img');
+  
+  if (modal && msgEl && okBtn) {
+    msgEl.innerText = current.message;
+    
+    // 뱃지 이미지 처리
+    if (badgeContainer && badgeImg && current.imageSrc) {
+      badgeImg.src = current.imageSrc;
+      badgeContainer.style.display = 'flex';
+    } else if (badgeContainer) {
+      badgeContainer.style.display = 'none';
+      badgeImg.src = '';
+    }
+    
+    modal.style.display = 'flex';
+    
+    okBtn.onclick = function() {
+      modal.style.display = 'none';
+      isAlertActive = false;
+      if (current.callback) {
+        try { current.callback(); } catch (e) { console.error("Alert callback error:", e); }
+      }
+      processAlertQueue();
+    };
+  } else {
+    console.warn("Custom alert modal element not found. Fallback to native alert.");
+    if (window.originalAlert) {
+      window.originalAlert(current.message);
+    } else {
+      console.log("ALERT:", current.message);
+    }
+    isAlertActive = false;
+    if (current.callback) {
+      try { current.callback(); } catch (e) { console.error("Alert callback error:", e); }
+    }
+    processAlertQueue();
+  }
+}
+
+// iframe 내부의 alert 호출 가로채기 패치
+function patchAlertNode(win) {
+  if (!win) return;
+  try {
+    win.alert = function(message, callback) {
+      // 자식 창의 종료 알림(대시보드로 돌아가기)은 띄우지 않고 부모 창에서 일괄 처리
+      if (message && message.includes("대시보드로")) {
+        if (callback) {
+          try { callback(); } catch (e) {}
+        }
+        return;
+      }
+      window.alert(message, callback);
+    };
+  } catch (e) {
+    console.warn("Failed to patch alert in iframe window:", e);
+  }
+}
+
 // 이미지 백그라운드 사전 캐싱(Preload) 리스트 (총 42개 에셋)
 const imagesToPreload = [
   'images/car_design.webp',
@@ -2250,10 +2542,51 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         if (iframe.contentWindow) {
           patchAudioNode(iframe.contentWindow);
+          patchAlertNode(iframe.contentWindow);
         }
       } catch (e) {
         console.warn("자식 iframe 패치 적용 실패 (도메인 제한 등):", e);
       }
     });
+  }
+});
+
+// 전역 키보드 제어 (방향키 및 스페이스바/엔터키로 인트로/아웃트로 대사 진행 및 이전 이동)
+window.addEventListener('keydown', (e) => {
+  const viewPrologue = document.getElementById('view-prologue');
+  const viewOutro = document.getElementById('view-outro');
+
+  if (viewPrologue && viewPrologue.classList.contains('active')) {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+      const nextBtn = document.getElementById('next-btn');
+      if (nextBtn && nextBtn.style.display !== 'none') {
+        e.preventDefault();
+        nextBtn.click();
+      }
+    } else if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+      const prevBtn = document.getElementById('prev-btn');
+      if (prevBtn && prevBtn.style.display !== 'none') {
+        e.preventDefault();
+        prevBtn.click();
+      }
+    }
+  } else if (viewOutro && viewOutro.classList.contains('active')) {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+      const nextBtn = document.getElementById('outro-dialog-next');
+      const promiseBtn = document.getElementById('outro-promise-btn');
+      if (nextBtn && nextBtn.style.display !== 'none') {
+        e.preventDefault();
+        nextBtn.click();
+      } else if (promiseBtn && promiseBtn.style.display !== 'none') {
+        e.preventDefault();
+        promiseBtn.click();
+      }
+    } else if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+      const prevBtn = document.getElementById('outro-dialog-prev');
+      if (prevBtn && prevBtn.style.display !== 'none') {
+        e.preventDefault();
+        prevBtn.click();
+      }
+    }
   }
 });

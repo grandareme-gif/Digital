@@ -379,8 +379,8 @@
     }
 
     .answer-card {
-      background-color: #334155 !important; /* 어두운 카드 배경 */
-      color: #ffffff !important; /* 글씨는 무조건 흰색 */
+      background-color: #ffffff !important; /* 밝은 카드 배경 */
+      color: #1e293b !important; /* 어두운 글자색 */
       border: 3px solid #000000 !important;
       border-radius: 0 !important;
       padding: 15px;
@@ -388,8 +388,13 @@
       font-size: 1.25rem !important;
       text-align: left;
       box-shadow: 3px 3px 0 #000000;
-      transition: transform 0.1s;
+      transition: transform 0.1s, background-color 0.2s, color 0.2s;
       font-weight: bold;
+    }
+
+    .answer-card:hover:not(.disabled) {
+      background-color: #f1f5f9 !important; /* 호버 시 약간 어두운 밝은 회색 */
+      color: #000000 !important;
     }
 
     .answer-card:active:not(.disabled) {
@@ -1284,7 +1289,7 @@
       <!-- 좌측: 고유 역량 이미지 아이콘 & 역량명 (30%) -->
       <div style="display: flex; align-items: center; gap: 8px; width: 30%; justify-content: flex-start; box-sizing: border-box; color: #fff;">
         <div style="position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; overflow: visible; margin-left: -5px; margin-right: 5px; flex-shrink: 0;">
-          <img src="images/icon_comm.webp" alt="역량 아이콘" style="position: absolute; width: 96px; height: 96px; object-fit: contain; max-width: none; image-rendering: pixelated; transform: scale(2.4); z-index: 20; pointer-events: none; top: -28px; left: -26px;">
+          <img src="images/icon_comm.webp" alt="역량 아이콘" style="position: absolute; width: 40px; height: 40px; object-fit: contain; max-width: none; image-rendering: pixelated; z-index: 20; pointer-events: none; top: 0; left: 0;">
         </div>
         <span style="font-weight: bold; font-size: 1.15rem; letter-spacing: -0.025em; margin-left: 5px; white-space: nowrap; color: #fff; font-family: 'DungGeunMo', monospace;">사이버 의사소통</span>
       </div>
@@ -1432,8 +1437,6 @@
          스테이지 2: 마음 온 AI 대화 시뮬레이터 뷰
          ========================================================== -->
     <div id="view-stage2" class="view">
-      <!-- 임시 스킵 단추 (나중에 CSS로 한 번에 숨김 가능) -->
-      <button class="temp-skip-btn" onclick="skipStage()" style="position: absolute; top: 10px; right: 10px; z-index: 100; font-size: 0.75rem; padding: 4px 8px; background: #e67e22; color: #fff; border: 2px solid #000; cursor: pointer; font-family: 'DungGeunMo', monospace;">스킵 ⏭️</button>
       
       <!-- 마음온 AI 가이드 배너 (2단계) -->
       <div class="std-guide-banner mb-2">
@@ -1533,7 +1536,7 @@
           <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 12px; flex-shrink: 0;">
             <!-- 크기 5배 상향된 뱃지 이미지 -->
             <div style="width: 75px; height: 75px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 45px 0 15px 0; flex-shrink: 0;">
-              <img src="images/icon_comm.webp" alt="의사소통 뱃지" style="width: 240px; height: 240px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
+              <img src="images/icon_comm.webp" alt="의사소통 뱃지" style="width: 100px; height: 100px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
             </div>
             <span style="font-size: 1.85rem; color: #1e3a8a; font-weight: bold; margin-top: 15px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [사이버 의사소통] 배지 획득!</span>
           </div>
@@ -1808,7 +1811,7 @@
           updateStageUI();
         } else {
           playFailSound();
-          alert("마음 온도 100°C 조합 미션을 아직 완료하지 않았습니다! 속상해하는 친구의 마음에 알맞은 공감 답변 카드 조각들을 정확하게 조합하여 마음 온도를 100°C로 끌어올린 뒤 대화방 전송을 완료해 주세요!");
+          alert("지은이와의 대화 온도를 100°C로 올려 미션을 완료해 주세요! 🌡️");
         }
         return;
       }
@@ -1818,7 +1821,7 @@
       if (!state.stageCompleted[state.currentStage] || isDisabled) {
         playFailSound();
         if (state.currentStage === 1) {
-          alert("감정 비율 분석 미션을 아직 완료하지 않았습니다! 좌측에서 분석할 시나리오 탭을 선택하고 메신저 친구의 대화 속 복합적인 감정 비율을 조율한 뒤 성찰 텍스트(5자 이상)를 작성해 '의견 저장 및 다음 상황'을 클릭해 3개 상황을 모두 완료해 주세요!");
+          alert("3가지 사연의 감정 파악과 답장 선택 미션을 모두 완료해 주세요! 📩");
         }
         return;
       }
@@ -2056,6 +2059,12 @@
           document.getElementById(`tab-${state.stage1.activeScenario}`).classList.add('completed');
         }
 
+        // 타이틀 비우기
+        const interactionTitle = document.getElementById('interaction-title-text');
+        if (interactionTitle) {
+          interactionTitle.innerText = "";
+        }
+
         // 진짜 친구의 긍정적인 답장 메시지 말풍선 생성
         setTimeout(() => {
           const scenario = scenarios[state.stage1.activeScenario];
@@ -2084,6 +2093,26 @@
               screen.scrollTop = screen.scrollHeight;
               playRetroChime();
             }, 1000);
+          } else {
+            // 다음 사연으로 이동 버튼 노출
+            const remainingScenarios = ['A', 'B', 'C'].filter(id => !state.stage1.completedScenarios.includes(id));
+            if (remainingScenarios.length > 0) {
+              const answerArea = document.getElementById('answer-cards-area');
+              if (answerArea) {
+                answerArea.innerHTML = '';
+                const nextSceBtn = document.createElement('button');
+                nextSceBtn.className = "answer-card";
+                nextSceBtn.innerText = "다음 사연으로 이동 ▶";
+                nextSceBtn.style.setProperty('background-color', '#ffcc00', 'important');
+                nextSceBtn.style.setProperty('color', '#000000', 'important');
+                nextSceBtn.style.border = "3px solid #000";
+                nextSceBtn.style.fontWeight = "bold";
+                nextSceBtn.onclick = () => {
+                  selectScenario(remainingScenarios[0]);
+                };
+                answerArea.appendChild(nextSceBtn);
+              }
+            }
           }
         }, 800);
 
@@ -2635,7 +2664,7 @@
     }
 
     function finishStage() {
-      alert("사이버 의사소통 활동의 모든 단계를 성공적으로 마스터했습니다! 대시보드로 돌아갑니다.");
+      alert("[사이버 의사소통] 역량 배지를 획득하였습니다. 대시보드로 돌아갑니다. 🏆");
       
       let inIframe = false;
       try {

@@ -193,9 +193,12 @@
       <div id="scene-label">장소</div>
       <div id="scene-container">
         <div id="fairy-char" class="pixel-fairy"></div>
+        <div id="competency-box-container" style="position: absolute; inset: 0; pointer-events: none; z-index: 5;"></div>
+        <img id="cyber-hand-popup" src="images/cyber_hand.webp" style="display: none; position: absolute; left: 50%; top: 40%; transform: translate(-50%, -50%) scale(0); width: 24cqw; height: 24cqw; object-fit: contain; pointer-events: none; z-index: 6; transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s; opacity: 0;">
       </div>
       
       <div id="dialog-box">
+        <button id="prev-btn" class="retro-btn" onclick="prevScene()" style="display: none;">◀ 이전</button>
         <div id="speaker-name">화자</div>
         <div id="dialog-text">대사 내용</div>
         <button id="next-btn" class="retro-btn" onclick="nextScene()">다음 ▼</button>
@@ -206,7 +209,7 @@
     <div id="view-survey" class="view">
       <div id="survey-header">
         <div id="survey-fairy" class="pixel-fairy" style="display:block; animation: hoverFloat 2s ease-in-out infinite; width: 80px; height: 80px;"></div>
-        <div id="survey-progress-text">마음 스캐닝 진행률: <span id="survey-current">1</span> / 16</div>
+        <div id="survey-progress-text">사이버 어울림 역량 진단 진행률: <span id="survey-current">1</span> / 16</div>
         <button class="retro-btn" onclick="skipSurvey()" style="background-color: #f39c12; font-size: 0.9rem; padding: 5px 10px; border-color: #e67e22; box-shadow: 2px 2px 0 #000; margin-left: auto; border-radius: 0;">스킵 ⏭️</button>
       </div>
       <div id="survey-bar-container">
@@ -222,10 +225,30 @@
       </div>
     </div>
 
-    <!-- 5. 로딩 뷰 -->
-    <div id="view-loading" class="view">
-      <div class="pixel-fairy" style="display:block; margin-bottom: 20px;"></div>
-      <h1 style="color:var(--point-yellow); animation: glitch 0.8s infinite; font-size: 2rem;">스캐닝 완료!<br>마음웹 데이터를 분석 중...</h1>
+    <!-- 5. 로딩 및 진단 결과 뷰 -->
+    <div id="view-loading" class="view" style="flex-direction: row; justify-content: center; align-items: center; gap: 40px; padding: 40px; box-sizing: border-box; background-color: #050a14;">
+      <div id="loading-left-panel" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+        <div id="loading-fairy" class="pixel-fairy" style="display:block; animation: hoverFloat 2s ease-in-out infinite; width: 180px; height: 180px; background-size: contain;"></div>
+        <h1 id="loading-title" style="color:var(--point-yellow); animation: glitch 0.8s infinite; font-size: 2.2rem; margin-top: 15px; text-shadow: 2px 2px 0 #000;">진단 완료!</h1>
+        <p id="loading-sub-text" style="color: #fff; font-size: 1.1rem; margin-top: 5px; text-shadow: 1px 1px 0 #000;">마음웹 데이터를 분석 중...</p>
+      </div>
+
+      <div id="loading-result-panel" style="display: none; flex-direction: column; width: 50%; max-width: 600px; background-color: rgba(0, 0, 0, 0.85); border: 4px solid #fff; box-shadow: 6px 6px 0 #000; padding: 25px; box-sizing: border-box; text-align: left;">
+        <h2 style="color: #00ffff; font-size: 1.4rem; margin-top: 0; margin-bottom: 15px; border-bottom: 2px dashed #00ffff; padding-bottom: 8px; font-family: 'DungGeunMo', monospace;">📊 나의 역량 분석 결과</h2>
+        
+        <div style="font-size: 1.1rem; color: #fff; line-height: 1.5; margin-bottom: 20px;">
+          <span style="font-weight: bold; color: var(--point-yellow); font-family: 'DungGeunMo', monospace;">🎯 추천 학습 순서:</span>
+          <div id="loading-recomm-list" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1);">
+            <!-- 동적으로 순위 나열됨 -->
+          </div>
+        </div>
+
+        <p style="color: #00ff88; font-size: 1.15rem; font-weight: bold; line-height: 1.6; margin-top: 0; margin-bottom: 25px; text-shadow: 1px 1px 0 #000; word-break: keep-all; font-family: 'DungGeunMo', monospace;">
+          "이 순서대로 사이버 어울림 역량을 기른다면 마음웹이 더 효과적으로 따뜻하게 녹을거야!"
+        </p>
+
+        <button id="loading-confirm-btn" class="retro-btn" onclick="loadingConfirm()" style="background-color: var(--point-yellow); font-size: 1.2rem; padding: 10px 20px; align-self: flex-end; border-color: #f39c12; box-shadow: 3px 3px 0 #000; border-radius: 0; font-family: 'DungGeunMo', monospace;">마음웹으로 이동 ▶</button>
+      </div>
     </div>
 
     <!-- 6. 과제 선택 맵 (Mind-Web) 뷰 -->
@@ -276,8 +299,9 @@
 
       <!-- 대화 상자 -->
       <div id="outro-dialog-box" style="position: absolute; bottom: 20px; left: 20px; right: 20px; height: 150px; background-color: rgba(0, 0, 0, 0.85); border: var(--pixel-thick) solid var(--text-main); padding: 20px; z-index: 10; display: flex; flex-direction: column; box-shadow: 8px 8px 0 var(--border-color);">
-        <div id="outro-speaker" style="color: var(--point-yellow); font-size: 1.5rem; margin-bottom: 10px; text-shadow: 2px 2px 0 var(--border-color);">마음 온(ON)</div>
-        <div id="outro-text" style="color: #fff; font-size: 1.2rem; line-height: 1.5; flex-grow: 1; padding-bottom: 5px; word-break: keep-all;"></div>
+        <button id="outro-dialog-prev" class="retro-btn" onclick="prevOutroScene()" style="display: none; position: absolute; bottom: 4px; left: 12px; font-size: 1rem; padding: 3px 10px; background-color: #475569; color: #fff;">◀ 이전</button>
+        <div id="outro-speaker" style="color: var(--point-yellow); font-size: 1.5rem; margin-bottom: 10px; text-shadow: 2px 2px 0 var(--border-color); padding-left: 80px;">마음 온(ON)</div>
+        <div id="outro-text" style="color: #fff; font-size: 1.4rem; line-height: 1.5; flex-grow: 1; padding-bottom: 5px; padding-left: 80px; padding-right: 80px; word-break: keep-all;"></div>
         
         <!-- 일반 다음 버튼 -->
         <button id="outro-dialog-next" class="retro-btn" onclick="nextOutroScene()" style="position: absolute; bottom: 4px; right: 12px; font-size: 1rem; padding: 3px 10px;">다음 ▼</button>
@@ -426,6 +450,23 @@
           <button class="retro-btn" onclick="closeWithdrawModal()" style="flex: 1; font-size: 1rem; padding: 8px; background: #555; color: #fff; box-shadow: 2px 2px 0 #000;">취소</button>
           <button class="retro-btn" onclick="submitWithdrawal()" style="flex: 2; font-size: 1rem; padding: 8px; background: #ff5252; color: #fff; box-shadow: 2px 2px 0 #000;">탈퇴 완료</button>
         </div>
+      </div>
+    </div>
+
+    <!-- 12. 커스텀 알림 모달 -->
+    <div id="custom-alert-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; align-items: center; justify-content: center; padding: 20px; font-family: 'DungGeunMo', monospace;">
+      <div style="background: #2c3e50; border: var(--pixel-thick) solid #000; padding: 25px; width: 95%; max-width: 480px; box-shadow: 8px 8px 0 #000; display: flex; flex-direction: column; gap: 15px; position: relative; align-items: center;">
+        <h2 style="color: var(--point-yellow); font-size: 1.4rem; margin-bottom: 5px; text-shadow: 2px 2px 0 #000; display: flex; align-items: center; gap: 8px; justify-content: center; width: 100%;">
+          <span>🔔</span> 알림
+        </h2>
+        <!-- 뱃지 이미지 표시 영역 -->
+        <div id="custom-alert-badge-container" style="display: none; width: 110px; height: 110px; background: #ffffff; border: var(--pixel-thick) solid #000; border-radius: 50%; align-items: center; justify-content: center; box-shadow: 4px 4px 0 #000; margin: 10px 0; overflow: visible; position: relative;">
+          <img id="custom-alert-badge-img" src="" alt="뱃지" style="width: 100px; height: 100px; object-fit: contain; position: absolute; max-width: none;">
+        </div>
+        <div id="custom-alert-message" style="color: #fff; font-size: 1.15rem; line-height: 1.6; text-align: center; word-break: keep-all; white-space: pre-wrap; padding: 5px 5px; width: 100%;">
+          메시지 내용
+        </div>
+        <button class="retro-btn" id="custom-alert-ok-btn" style="font-size: 1.1rem; padding: 8px 24px; background-color: var(--point-yellow); color: #000; box-shadow: 3px 3px 0 #000; align-self: center; font-family: 'DungGeunMo', monospace; font-weight: bold; border-radius: 0;">확인</button>
       </div>
     </div>
 
