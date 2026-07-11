@@ -1274,6 +1274,37 @@
       margin-top: 8px !important;
       display: flex !important;
     }
+
+    /* 평가 제출 버튼을 위한 레트로 버튼 스타일 정의 */
+    .retro-btn {
+      font-family: 'DungGeunMo', monospace;
+      background-color: #fde047; /* 밝은 노란색 */
+      color: #000000;
+      font-weight: bold;
+      border: 4px solid #000000;
+      box-shadow: 3px 3px 0px #000000;
+      cursor: pointer;
+      transition: all 0.1s;
+      text-align: center;
+      display: inline-block;
+      box-sizing: border-box;
+    }
+    .retro-btn:hover {
+      background-color: #facc15;
+    }
+    .retro-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #000000;
+    }
+    .retro-btn.disabled, .retro-btn:disabled {
+      background-color: #cbd5e1 !important;
+      color: #475569 !important;
+      border-color: #475569 !important;
+      box-shadow: none !important;
+      cursor: not-allowed !important;
+      transform: none !important;
+      opacity: 0.6;
+    }
   </style>
 </head>
 <body>
@@ -1477,9 +1508,20 @@
 
           <!-- 입력박스 (대화창과 가로가 완벽히 같도록 100% 설정) -->
           <div id="chat-input-area" style="display: flex; flex-direction: column; gap: 8px; width: 100%; flex-shrink: 0; margin-top: 5px;">
-            <label id="chat-input-label" style="font-size: 1.5rem !important; font-weight: bold; color: #fde047; margin-bottom: 2px;">지은에게 답장해 보세요.</label>
+            <label id="chat-input-label" style="font-size: 1.5rem !important; font-weight: bold; color: #fde047; margin-bottom: 2px;">지은이에게 답장해보세요.</label>
             <textarea id="chat-textarea" placeholder="여기에 따뜻한 말을 적어보세요. (예: 괜찮아, 내가 도와줄게, 힘내!)" oninput="onTyping()" style="height: 100px;"></textarea>
-            <button class="retro-btn disabled" id="btn-submit-message" onclick="submitMessage()" style="align-self: flex-end; margin-top: 5px; min-width: 180px; background-color: #eab308 !important; color: #000000 !important; font-weight: 900 !important; font-size: 1.15rem !important; border-radius: 0 !important; border: 3px solid #000000 !important; box-shadow: 3px 3px 0 #000;">대답 보내기 💬</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 5px;">
+              <button id="btn-toggle-hint" class="retro-btn" style="display: none; background-color: #475569 !important; color: #ffffff !important; border: 3px solid #000 !important; font-size: 1.1rem !important; padding: 6px 12px; box-shadow: 2px 2px 0 #000;" onclick="toggleStage2Hint()">💡 힌트 보기</button>
+              <button class="retro-btn disabled" id="btn-submit-message" onclick="submitMessage()" style="min-width: 180px; background-color: #eab308 !important; color: #000000 !important; font-weight: 900 !important; font-size: 1.15rem !important; border-radius: 0 !important; border: 3px solid #000000 !important; box-shadow: 3px 3px 0 #000;">대답 보내기 💬</button>
+            </div>
+            <div id="stage2-hint-box" style="display: none; padding: 12px; background-color: rgba(15,23,42,0.95); border: 2px solid #000; border-radius: 6px; font-family: 'DungGeunMo', monospace; font-size: 0.95rem; line-height: 1.5; color: #fff; box-shadow: 2px 2px 0 #000; text-align: left; width: 100%;">
+              <div style="font-weight: bold; color: #fde047; margin-bottom: 6px;">🔍 위로의 말 작성 힌트</div>
+              <div style="margin-bottom: 8px;">🔑 **필수 단어 (아래 중 1개 이상 포함)**: 열심히, 속상, 최고, 칭찬, 함께</div>
+              <div style="border-top: 1px dashed #475569; padding-top: 6px;">
+                💬 **작성 예시**: <br>
+                <span style="color: #60a5fa;">"네가 이 과제를 얼마나 열심히 준비했는지 내가 잘 알아. 그 댓글 때문에 많이 속상했지? 너무 마음에 담아두지 마."</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1530,28 +1572,46 @@
         </div>
 
         <!-- 우측 단일 통합 상자 -->
-        <div class="std-intro-unified-box" style="flex-grow: 1; height: auto; min-height: 290px; display: flex; flex-direction: column; align-items: stretch; padding: 18px 30px 24px 30px !important; box-shadow: 6px 6px 0 #000000; border: 4px solid #000000; background-color: #f8fafc; color: #000000; margin: 0; max-width: 660px; gap: 12px;">
+        <div id="outro-dialog-box" class="std-intro-unified-box" style="flex-grow: 1; height: auto; min-height: 290px; display: flex; flex-direction: column; align-items: stretch; padding: 20px 25px !important; box-shadow: 6px 6px 0 #000000; border: 4px solid #000000; background-color: #f8fafc; color: #000000; margin: 0; max-width: 660px; gap: 10px;">
           
-          <!-- 상단: 배지 아이콘 + 배지 타이틀 (경계선 구분) -->
-          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 12px; flex-shrink: 0;">
-            <!-- 크기 5배 상향된 뱃지 이미지 -->
-            <div style="width: 75px; height: 75px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 45px 0 15px 0; flex-shrink: 0;">
-              <img src="images/icon_comm.webp" alt="의사소통 뱃지" style="width: 100px; height: 100px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
+          <!-- [NEW] 1. 자기평가 컨테이너 (처음에 활성화) -->
+          <div id="eval-container" style="display: flex; flex-direction: column; gap: 6px; width: 100%;">
+            <!-- 역량 질문 -->
+            <div id="eval-question-text" style="font-size: 1.25rem; font-weight: bold; color: #1e293b; line-height: 1.6; word-break: keep-all; font-family: 'DungGeunMo', monospace;">
+              "온라인에서 다른 사람과 대화할 때, 얼굴이 보이지 않아도 상대방의 감정을 배려하며 따뜻하게 말할 수 있나요?"
             </div>
-            <span style="font-size: 1.85rem; color: #1e3a8a; font-weight: bold; margin-top: 15px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [사이버 의사소통] 배지 획득!</span>
+            
+            <!-- 별점 버튼 UI (1~5점) -->
+            <div style="display: flex; justify-content: center; gap: 12px; margin: 4px 0;">
+              <button type="button" onclick="rateStar(1)" onmouseover="hoverStar(1)" onmouseout="resetStar()" class="star-btn text-5xl focus:outline-none transition-all transform hover:scale-110" style="font-family: 'DungGeunMo', monospace; cursor: pointer; color: #cbd5e1; font-size: 3.5rem; background: transparent; border: none; outline: none; box-shadow: none;">★</button>
+              <button type="button" onclick="rateStar(2)" onmouseover="hoverStar(2)" onmouseout="resetStar()" class="star-btn text-5xl focus:outline-none transition-all transform hover:scale-110" style="font-family: 'DungGeunMo', monospace; cursor: pointer; color: #cbd5e1; font-size: 3.5rem; background: transparent; border: none; outline: none; box-shadow: none;">★</button>
+              <button type="button" onclick="rateStar(3)" onmouseover="hoverStar(3)" onmouseout="resetStar()" class="star-btn text-5xl focus:outline-none transition-all transform hover:scale-110" style="font-family: 'DungGeunMo', monospace; cursor: pointer; color: #cbd5e1; font-size: 3.5rem; background: transparent; border: none; outline: none; box-shadow: none;">★</button>
+              <button type="button" onclick="rateStar(4)" onmouseover="hoverStar(4)" onmouseout="resetStar()" class="star-btn text-5xl focus:outline-none transition-all transform hover:scale-110" style="font-family: 'DungGeunMo', monospace; cursor: pointer; color: #cbd5e1; font-size: 3.5rem; background: transparent; border: none; outline: none; box-shadow: none;">★</button>
+              <button type="button" onclick="rateStar(5)" onmouseover="hoverStar(5)" onmouseout="resetStar()" class="star-btn text-5xl focus:outline-none transition-all transform hover:scale-110" style="font-family: 'DungGeunMo', monospace; cursor: pointer; color: #cbd5e1; font-size: 3.5rem; background: transparent; border: none; outline: none; box-shadow: none;">★</button>
+            </div>
+            
+            <!-- 별점 피드백 텍스트 영역 -->
+            <div id="eval-feedback-text" style="text-align: center; font-size: 1.15rem; font-weight: bold; color: #475569; min-height: 28px; font-family: 'DungGeunMo', monospace;">
+              평가를 위해 별점을 선택해주세요.
+            </div>
+            
+            <!-- 평가 제출 버튼 -->
+            <button id="btn-eval-submit" type="button" onclick="submitEvaluation()" disabled class="retro-btn disabled w-full py-2" style="font-size: 1.15rem; padding: 8px 16px;">
+              평가 완료 ✔
+            </button>
           </div>
 
-          <!-- 하단: 코멘트/설명 텍스트 -->
-          <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.25rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">
-            온라인 공간에서 보이지 않는 친구들의 진짜 감정을 헤아리고, 상처받은 마음이 따뜻하게 녹아내릴 수 있도록 예쁜 마음의 온도를 나누어 주었구나! 앞으로도 사이버 세상 속에서 타인의 마음을 늘 먼저 배려하며 따뜻하게 소통하는 어린이가 되기를 바란단다.
+          <!-- [NEW] 2. 마음온 훈화 코멘트 컨테이너 (초기 hidden) -->
+          <div id="commentary-container" class="hidden" style="display: none; flex-direction: column; width: 100%;">
+            <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.25rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">온라인 공간에서 보이지 않는 친구들의 진짜 감정을 헤아리고, 상처받은 마음이 따뜻하게 녹아내릴 수 있도록 예쁜 마음의 온도를 나누어 주었구나! 앞으로도 사이버 세상 속에서 타인의 마음을 늘 먼저 배려하며 따뜻하게 소통하는 어린이가 되기를 바란단다.</div>
           </div>
         </div>
 
       </div>
 
-      <!-- 하단 버튼 영역 -->
+      <!-- 하단 버튼 영역 (오른쪽 정렬 및 가로 넓이 확장, 초기 비활성화) -->
       <div class="std-intro-footer" style="justify-content: flex-end !important; padding: 16px 40px !important;">
-        <button onclick="finishStage()" class="std-footer-btn-right" style="width: 570px; box-shadow: 4px 4px 0 #000; font-size: 1.65rem; height: 72px;">활동완료 & 대시보드로 돌아가기 ➔</button>
+        <button id="btn-finish-outro" onclick="finishStage()" disabled class="std-footer-btn-right" style="width: 570px; box-shadow: 4px 4px 0 #000; font-size: 1.65rem; height: 72px; opacity: 0.5; cursor: not-allowed; background-color: #cbd5e1; color: #475569;">활동완료 & 대시보드로 돌아가기 ➔</button>
       </div>
     </div>
 
@@ -1764,6 +1824,9 @@
 
       if (state.currentStage === 0 || state.currentStage === 3) {
         controlBar.classList.add('hidden');
+        if (state.currentStage === 3) {
+          initOutroEvaluation();
+        }
       } else {
         controlBar.classList.remove('hidden');
       }
@@ -2170,10 +2233,34 @@
     // ==========================================================
     // [스테이지 2: AI 대화 시뮬레이터 로직]
     // ==========================================================
+    function toggleStage2Hint() {
+      playBeepSound();
+      const hintBox = document.getElementById('stage2-hint-box');
+      const hintBtn = document.getElementById('btn-toggle-hint');
+      if (hintBox && hintBtn) {
+        if (hintBox.style.display === 'none') {
+          hintBox.style.display = 'block';
+          hintBtn.innerText = '💡 힌트 접기';
+        } else {
+          hintBox.style.display = 'none';
+          hintBtn.innerText = '💡 힌트 보기';
+        }
+      }
+    }
+
     function analyzeComfortScore(text) {
       if (!text || text.trim() === '') return 0;
       
       const len = text.trim().length;
+      if (state.stage2.step === 2) {
+        const requiredWords = ["열심히", "속상", "최고", "칭찬", "함께"];
+        const hasWord = requiredWords.some(w => text.includes(w));
+        if (!hasWord) {
+          if (len >= 5) return 1;
+          return 0;
+        }
+      }
+
       if (len >= 10) {
         return 2;
       } else if (len >= 5) {
@@ -2185,6 +2272,11 @@
     function initStage2Chat() {
       if (state.stage2.completed) return;
       
+      const hintBtn = document.getElementById('btn-toggle-hint');
+      const hintBox = document.getElementById('stage2-hint-box');
+      if (hintBtn) hintBtn.style.display = 'none';
+      if (hintBox) hintBox.style.display = 'none';
+
       const chatWin = document.getElementById('stage2-chat-window');
       if (chatWin && chatWin.children.length === 0) {
         // 지은이의 첫 말풍선 추가
@@ -2198,7 +2290,7 @@
       const textarea = document.getElementById('chat-textarea');
       if (textarea && textarea.value === '' && state.stage2.step === 1) {
         textarea.disabled = false;
-        textarea.placeholder = "지은에게 답장해 보세요. (예: 무슨 일 있어? / 뭔데?)";
+        textarea.placeholder = "지은이에게 답장해보세요. (예: 무슨 일 있어? / 뭔데?)";
       }
       
       // 전송 버튼 초기 상태
@@ -2218,7 +2310,7 @@
       // 입력창 라벨 텍스트 초기화
       const inputLabel = document.getElementById('chat-input-label');
       if (inputLabel) {
-        inputLabel.innerText = "지은에게 답장해 보세요.";
+        inputLabel.innerText = "지은이에게 답장해보세요.";
       }
       
       // 온도계 텍스트 초기화
@@ -2363,15 +2455,18 @@
           chatWin.scrollTop = chatWin.scrollHeight;
           
           textarea.disabled = false;
-          textarea.placeholder = "속상한 지은에게 위로의 말을 건네보세요.";
+          textarea.placeholder = "속상한 지은이에게 위로의 말을 건네보세요.";
           submitBtn.innerText = "위로 전하기 💌";
           
           // 라벨 텍스트 변경
           const inputLabel = document.getElementById('chat-input-label');
           if (inputLabel) {
-            inputLabel.innerText = "속상해하는 지은에게 위로와 격려의 말을 건네보세요!";
+            inputLabel.innerText = "속상해하는 지은이에게 위로와 격려의 말을 건네보세요!";
           }
           
+          const hintBtn = document.getElementById('btn-toggle-hint');
+          if (hintBtn) hintBtn.style.display = 'block';
+
           state.stage2.step = 2;
           onTyping();
         }, 1200);
@@ -2396,6 +2491,11 @@
         submitBtn.classList.add('disabled');
         submitBtn.classList.remove('blink-btn');
         
+        const hintBtn = document.getElementById('btn-toggle-hint');
+        const hintBox = document.getElementById('stage2-hint-box');
+        if (hintBtn) hintBtn.style.display = 'none';
+        if (hintBox) hintBox.style.display = 'none';
+
         // 지은이의 마지막 감동 반응
         setTimeout(() => {
           playMessagePopSound();
@@ -2433,10 +2533,13 @@
           setTimeout(() => clearInterval(interval), 1500);
 
           setTimeout(() => {
-            alert("💌 지은에게 따뜻한 진심과 위로가 전해졌습니다! 마음 온도가 100°C가 되었습니다.");
+            alert("💌 지은이에게 따뜻한 진심과 위로가 전해졌습니다! 마음 온도가 100°C가 되었습니다.");
             updateStageUI();
           }, 1200);
         }, 1200);
+      } else {
+        playFailSound();
+        alert("앗! 지은이의 마음 온도를 100°C까지 채울 수 있는 따뜻한 위로의 말을 작성해 주세요!\n(💡 힌트 보기 버튼을 누르면 작성에 도움이 되는 필수 단어와 예시를 볼 수 있습니다)");
       }
     }
 
@@ -2694,6 +2797,160 @@
 
     // 초기 실행
     updateStageUI();
+
+    // ==========================================
+    // [NEW] 아웃트로 자기평가 제어 모듈
+    // ==========================================
+    let selectedRating = 0;
+    const ratingFeedbacks = {
+      1: "⭐ (1점): 아직은 노력이 더 필요해요.",
+      2: "⭐⭐ (2점): 할 수 있지만, 가끔 헷갈려요.",
+      3: "⭐⭐⭐ (3점): 보통이에요! 어느 정도 할 수 있어요.",
+      4: "⭐⭐⭐⭐ (4점): 꽤 잘할 수 있어요!",
+      5: "⭐⭐⭐⭐⭐ (5점): 완벽해요! 자신 있게 실천할 수 있어요!"
+    };
+
+    // 1. 아웃트로 진입(렌더링) 시 초기화 연출
+    function initOutroEvaluation() {
+      selectedRating = 0;
+      
+      // 컨테이너 초기 상태 세팅
+      const evalContainer = document.getElementById('eval-container');
+      const commContainer = document.getElementById('commentary-container');
+      if (evalContainer) evalContainer.style.setProperty('display', 'flex', 'important');
+      if (commContainer) {
+        commContainer.style.setProperty('display', 'none', 'important');
+        commContainer.classList.add('hidden');
+      }
+
+      // 별점 색상 회색으로 초기화
+      resetStarUI();
+      
+      const feedbackText = document.getElementById('eval-feedback-text');
+      if (feedbackText) {
+        feedbackText.innerText = "평가를 위해 별점을 선택해주세요.";
+        feedbackText.style.color = "#475569";
+      }
+
+      // 제출 버튼 비활성화
+      const submitBtn = document.getElementById('btn-eval-submit');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.className = "retro-btn disabled w-full py-2";
+        submitBtn.style.boxShadow = "";
+      }
+
+      // 하단 최종 이동 버튼 잠금
+      const finishBtn = document.getElementById('btn-finish-outro') || document.querySelector('.std-intro-footer .std-footer-btn-right');
+      if (finishBtn) {
+        finishBtn.disabled = true;
+        finishBtn.style.opacity = "0.5";
+        finishBtn.style.cursor = "not-allowed";
+        finishBtn.style.backgroundColor = "#cbd5e1";
+        finishBtn.style.color = "#475569";
+      }
+      
+      // 미션 완료 효과음 트리거
+      if (typeof playRetroChime === 'function') {
+        playRetroChime();
+      }
+    }
+
+    // 2. 별점 호버 효과
+    function hoverStar(rating) {
+      const starButtons = document.querySelectorAll('.star-btn');
+      starButtons.forEach((btn, idx) => {
+        btn.style.color = (idx < rating) ? "#fbbf24" : "#cbd5e1";
+      });
+      
+      const feedbackText = document.getElementById('eval-feedback-text');
+      if (feedbackText) {
+        feedbackText.innerText = ratingFeedbacks[rating];
+        feedbackText.style.color = "#b45309";
+      }
+    }
+
+    // 3. 마우스 이탈 시 선택된 평점 상태로 롤백
+    function resetStar() {
+      const starButtons = document.querySelectorAll('.star-btn');
+      starButtons.forEach((btn, idx) => {
+        btn.style.color = (idx < selectedRating) ? "#fbbf24" : "#cbd5e1";
+      });
+      
+      const feedbackText = document.getElementById('eval-feedback-text');
+      if (feedbackText) {
+        if (selectedRating > 0) {
+          feedbackText.innerText = ratingFeedbacks[selectedRating];
+          feedbackText.style.color = "#b45309";
+        } else {
+          feedbackText.innerText = "평가를 위해 별점을 선택해주세요.";
+          feedbackText.style.color = "#475569";
+        }
+      }
+    }
+
+    function resetStarUI() {
+      const starButtons = document.querySelectorAll('.star-btn');
+      starButtons.forEach((btn) => {
+        btn.style.color = "#cbd5e1";
+      });
+    }
+
+    // 4. 별점 클릭 평점 결정
+    function rateStar(rating) {
+      selectedRating = rating;
+      resetStar(); // UI 상태 확정
+      
+      // 평가 제출 버튼 잠금 해제
+      const submitBtn = document.getElementById('btn-eval-submit');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.className = "retro-btn w-full py-2";
+        submitBtn.style.boxShadow = "";
+      }
+
+      if (typeof playMessagePopSound === 'function') {
+        playMessagePopSound();
+      }
+    }
+
+    // 5. 평가 완료 제출 처리
+    function submitEvaluation() {
+      if (selectedRating === 0) return;
+
+      // 자기평가 영역 숨김
+      const evalContainer = document.getElementById('eval-container');
+      if (evalContainer) evalContainer.style.setProperty('display', 'none', 'important');
+
+      // 마음온 훈화 멘트 노출
+      const commContainer = document.getElementById('commentary-container');
+      if (commContainer) {
+        commContainer.classList.remove('hidden');
+        commContainer.style.setProperty('display', 'flex', 'important');
+      }
+
+      // 하단 최종 이동 버튼 활성화 및 스타일 원복
+      const finishBtn = document.getElementById('btn-finish-outro') || document.querySelector('.std-intro-footer .std-footer-btn-right');
+      if (finishBtn) {
+        finishBtn.disabled = false;
+        finishBtn.style.opacity = "1";
+        finishBtn.style.cursor = "pointer";
+        finishBtn.style.backgroundColor = "#fde047"; // 본래 포인트 옐로우
+        finishBtn.style.color = "#000000";
+      }
+
+      // 완료 전용 긍정적인 피드백 사운드
+      if (typeof playRetroChime === 'function') {
+        playRetroChime();
+      }
+    }
+
+    // 전역 스코프 바인딩
+    window.initOutroEvaluation = initOutroEvaluation;
+    window.hoverStar = hoverStar;
+    window.resetStar = resetStar;
+    window.rateStar = rateStar;
+    window.submitEvaluation = submitEvaluation;
   </script>
 </body>
 </html>

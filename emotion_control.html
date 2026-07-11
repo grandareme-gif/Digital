@@ -1654,26 +1654,46 @@
         </div>
 
         <!-- 우측 단일 통합 상자 (밝은 배경색 적용, 배지+배지제목+설명 텍스트 수직 구성) -->
-        <div class="std-intro-unified-box" style="flex-grow: 1; height: auto; min-height: 240px; display: flex; flex-direction: column; align-items: stretch; padding: 15px 25px 20px 25px !important; box-shadow: 6px 6px 0 #000000; border: 4px solid #000000; background-color: #f8fafc; color: #000000; margin: 0; max-width: 550px; gap: 10px;">
+        <div id="outro-dialog-box" class="std-intro-unified-box" style="flex-grow: 1; height: auto; min-height: 240px; display: flex; flex-direction: column; align-items: stretch; padding: 20px 25px !important; box-shadow: 6px 6px 0 #000000; border: 4px solid #000000; background-color: #f8fafc; color: #000000; margin: 0; max-width: 550px; gap: 10px;">
           
-          <!-- 상단: 배지 아이콘 + 배지 타이틀 (경계선 구분) -->
-          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 8px; flex-shrink: 0;">
-            <!-- 크기 5배 상향된 뱃지 이미지 -->
-            <div style="width: 75px; height: 75px; background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 3px 3px 0 #000000; animation: bounceFairy 2.5s infinite ease-in-out; position: relative; margin: 45px 0 15px 0; flex-shrink: 0;">
-              <img src="images/icon_emotion.webp" alt="감정조절 뱃지" style="width: 100px; height: 100px; object-fit: contain; position: absolute; max-width: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); z-index: 10;">
+          <!-- [NEW] 1. 자기평가 컨테이너 (처음에 활성화) -->
+          <div id="eval-container" style="display: flex; flex-direction: column; gap: 6px; width: 100%;">
+            <!-- 역량 질문 -->
+            <div id="eval-question-text" style="font-size: 1.25rem; font-weight: bold; color: #1e293b; line-height: 1.6; word-break: keep-all; font-family: 'DungGeunMo', monospace;">
+              "기분 나쁜 메시지를 받거나 화가 날 때, 즉시 맞받아치지 않고 내 마음을 차분하게 가라앉힐 수 있나요?"
             </div>
-            <span style="font-size: 1.25rem; color: #1e3a8a; font-weight: bold; margin-top: 10px; font-family: 'DungGeunMo', monospace; text-align: center;">🏆 [사이버 감정조절] 배지 획득!</span>
+            
+            <!-- 별점 버튼 UI (1~5점) -->
+            <div style="display: flex; justify-content: center; gap: 12px; margin: 4px 0;">
+              <button type="button" onclick="rateStar(1)" onmouseover="hoverStar(1)" onmouseout="resetStar()" class="star-btn text-5xl focus:outline-none transition-all transform hover:scale-110" style="font-family: 'DungGeunMo', monospace; cursor: pointer; color: #cbd5e1; font-size: 3.5rem; background: transparent; border: none; outline: none; box-shadow: none;">★</button>
+              <button type="button" onclick="rateStar(2)" onmouseover="hoverStar(2)" onmouseout="resetStar()" class="star-btn text-5xl focus:outline-none transition-all transform hover:scale-110" style="font-family: 'DungGeunMo', monospace; cursor: pointer; color: #cbd5e1; font-size: 3.5rem; background: transparent; border: none; outline: none; box-shadow: none;">★</button>
+              <button type="button" onclick="rateStar(3)" onmouseover="hoverStar(3)" onmouseout="resetStar()" class="star-btn text-5xl focus:outline-none transition-all transform hover:scale-110" style="font-family: 'DungGeunMo', monospace; cursor: pointer; color: #cbd5e1; font-size: 3.5rem; background: transparent; border: none; outline: none; box-shadow: none;">★</button>
+              <button type="button" onclick="rateStar(4)" onmouseover="hoverStar(4)" onmouseout="resetStar()" class="star-btn text-5xl focus:outline-none transition-all transform hover:scale-110" style="font-family: 'DungGeunMo', monospace; cursor: pointer; color: #cbd5e1; font-size: 3.5rem; background: transparent; border: none; outline: none; box-shadow: none;">★</button>
+              <button type="button" onclick="rateStar(5)" onmouseover="hoverStar(5)" onmouseout="resetStar()" class="star-btn text-5xl focus:outline-none transition-all transform hover:scale-110" style="font-family: 'DungGeunMo', monospace; cursor: pointer; color: #cbd5e1; font-size: 3.5rem; background: transparent; border: none; outline: none; box-shadow: none;">★</button>
+            </div>
+            
+            <!-- 별점 피드백 텍스트 영역 -->
+            <div id="eval-feedback-text" style="text-align: center; font-size: 1.15rem; font-weight: bold; color: #475569; min-height: 28px; font-family: 'DungGeunMo', monospace;">
+              평가를 위해 별점을 선택해주세요.
+            </div>
+            
+            <!-- 평가 제출 버튼 -->
+            <button id="btn-eval-submit" type="button" onclick="submitEvaluation()" disabled class="retro-btn disabled w-full py-2" style="font-size: 1.15rem; padding: 8px 16px;">
+              평가 완료 ✔
+            </button>
           </div>
 
-          <!-- 하단: 코멘트/설명 텍스트 (줄바꿈/들여쓰기 제거, 검정 폰트색상 적용) -->
-          <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.25rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">갑작스러운 비난이나 화가 나는 상황 속에서도 즉각적으로 화를 내기보다, 객관적인 사실과 너의 감정을 헤아려 '나-전달법'으로 지혜롭게 표현하는 방법을 익혔구나! 너의 차분하고 따뜻한 소통 방식이 스스로의 소중한 감정을 안전하게 지켜줄 거란다.</div>
+          <!-- [NEW] 2. 마음온 훈화 코멘트 컨테이너 (초기 hidden) -->
+          <div id="commentary-container" class="hidden" style="display: none; flex-direction: column; width: 100%;">
+            <div class="std-intro-dialog-inner" style="line-height: 1.8; font-size: 1.25rem; color: #0f172a; font-family: 'DungGeunMo', monospace; word-break: keep-all; text-align: left; padding: 0; margin: 0; width: 100%;">갑작스러운 비난이나 화가 나는 상황 속에서도 즉각적으로 화를 내기보다, 객관적인 사실과 너의 감정을 헤아려 '나-전달법'으로 지혜롭게 표현하는 방법을 익혔구나! 너의 차분하고 따뜻한 소통 방식이 스스로의 소중한 감정을 안전하게 지켜줄 거란다.</div>
+          </div>
         </div>
 
       </div>
 
-      <!-- 하단 버튼 영역 (오른쪽 정렬 및 가로 넓이 확장) -->
+      <!-- 하단 버튼 영역 (오른쪽 정렬 및 가로 넓이 확장, 초기 비활성화) -->
       <div class="std-intro-footer" style="justify-content: flex-end !important; padding: 16px 40px !important;">
-        <button onclick="finishCenterMission()" class="std-footer-btn-right" style="width: 380px; box-shadow: 4px 4px 0 #000; font-size: 1.1rem; height: 48px;">활동완료 & 대시보드로 돌아가기 ➔</button>
+        <button id="btn-finish-outro" onclick="finishCenterMission()" disabled class="std-footer-btn-right" style="width: 380px; box-shadow: 4px 4px 0 #000; font-size: 1.1rem; height: 48px; opacity: 0.5; cursor: not-allowed; background-color: #cbd5e1; color: #475569;">활동완료 & 대시보드로 돌아가기 ➔</button>
       </div>
     </div>
 
@@ -1771,6 +1791,8 @@
         renderMainMenu();
       } else if (viewId === 'view-situation-select') {
         renderSituationSelect();
+      } else if (viewId === 'view-outro') {
+        initOutroEvaluation();
       }
     }
 
@@ -2842,6 +2864,153 @@
       activeActivityId = 1;
       activeSituationId = 1;
       switchViewAct1();
+    }
+
+    // ==========================================
+    // [NEW] 아웃트로 자기평가 제어 모듈
+    // ==========================================
+    let selectedRating = 0;
+    const ratingFeedbacks = {
+      1: "⭐ (1점): 아직은 노력이 더 필요해요.",
+      2: "⭐⭐ (2점): 할 수 있지만, 가끔 헷갈려요.",
+      3: "⭐⭐⭐ (3점): 보통이에요! 어느 정도 할 수 있어요.",
+      4: "⭐⭐⭐⭐ (4점): 꽤 잘할 수 있어요!",
+      5: "⭐⭐⭐⭐⭐ (5점): 완벽해요! 자신 있게 실천할 수 있어요!"
+    };
+
+    // 1. 아웃트로 진입(렌더링) 시 초기화 연출
+    function initOutroEvaluation() {
+      selectedRating = 0;
+      
+      // 컨테이너 초기 상태 세팅
+      const evalContainer = document.getElementById('eval-container');
+      const commContainer = document.getElementById('commentary-container');
+      if (evalContainer) evalContainer.style.setProperty('display', 'flex', 'important');
+      if (commContainer) {
+        commContainer.style.setProperty('display', 'none', 'important');
+        commContainer.classList.add('hidden');
+      }
+
+      // 별점 색상 회색으로 초기화
+      resetStarUI();
+      
+      const feedbackText = document.getElementById('eval-feedback-text');
+      if (feedbackText) {
+        feedbackText.innerText = "평가를 위해 별점을 선택해주세요.";
+        feedbackText.style.color = "#475569";
+      }
+
+      // 제출 버튼 비활성화
+      const submitBtn = document.getElementById('btn-eval-submit');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.className = "retro-btn disabled w-full py-2";
+        submitBtn.style.boxShadow = "";
+      }
+
+      // 하단 최종 이동 버튼 잠금
+      const finishBtn = document.getElementById('btn-finish-outro') || document.querySelector('.std-intro-footer .std-footer-btn-right');
+      if (finishBtn) {
+        finishBtn.disabled = true;
+        finishBtn.style.opacity = "0.5";
+        finishBtn.style.cursor = "not-allowed";
+        finishBtn.style.backgroundColor = "#cbd5e1";
+        finishBtn.style.color = "#475569";
+      }
+      
+      // 미션 완료 효과음 트리거
+      if (typeof playAudioTone === 'function') {
+        playAudioTone('success');
+      }
+    }
+
+    // 2. 별점 호버 효과
+    function hoverStar(rating) {
+      const starButtons = document.querySelectorAll('.star-btn');
+      starButtons.forEach((btn, idx) => {
+        btn.style.color = (idx < rating) ? "#fbbf24" : "#cbd5e1";
+      });
+      
+      const feedbackText = document.getElementById('eval-feedback-text');
+      if (feedbackText) {
+        feedbackText.innerText = ratingFeedbacks[rating];
+        feedbackText.style.color = "#b45309";
+      }
+    }
+
+    // 3. 마우스 이탈 시 선택된 평점 상태로 롤백
+    function resetStar() {
+      const starButtons = document.querySelectorAll('.star-btn');
+      starButtons.forEach((btn, idx) => {
+        btn.style.color = (idx < selectedRating) ? "#fbbf24" : "#cbd5e1";
+      });
+      
+      const feedbackText = document.getElementById('eval-feedback-text');
+      if (feedbackText) {
+        if (selectedRating > 0) {
+          feedbackText.innerText = ratingFeedbacks[selectedRating];
+          feedbackText.style.color = "#b45309";
+        } else {
+          feedbackText.innerText = "평가를 위해 별점을 선택해주세요.";
+          feedbackText.style.color = "#475569";
+        }
+      }
+    }
+
+    function resetStarUI() {
+      const starButtons = document.querySelectorAll('.star-btn');
+      starButtons.forEach((btn) => {
+        btn.style.color = "#cbd5e1";
+      });
+    }
+
+    // 4. 별점 클릭 평점 결정
+    function rateStar(rating) {
+      selectedRating = rating;
+      resetStar(); // UI 상태 확정
+      
+      // 평가 제출 버튼 잠금 해제
+      const submitBtn = document.getElementById('btn-eval-submit');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.className = "retro-btn w-full py-2";
+        submitBtn.style.boxShadow = "";
+      }
+
+      if (typeof playAudioTone === 'function') {
+        playAudioTone('click');
+      }
+    }
+
+    // 5. 평가 완료 제출 처리
+    function submitEvaluation() {
+      if (selectedRating === 0) return;
+
+      // 자기평가 영역 숨김
+      const evalContainer = document.getElementById('eval-container');
+      if (evalContainer) evalContainer.style.setProperty('display', 'none', 'important');
+
+      // 마음온 훈화 멘트 노출
+      const commContainer = document.getElementById('commentary-container');
+      if (commContainer) {
+        commContainer.classList.remove('hidden');
+        commContainer.style.setProperty('display', 'flex', 'important');
+      }
+
+      // 하단 최종 이동 버튼 활성화 및 스타일 원복
+      const finishBtn = document.getElementById('btn-finish-outro') || document.querySelector('.std-intro-footer .std-footer-btn-right');
+      if (finishBtn) {
+        finishBtn.disabled = false;
+        finishBtn.style.opacity = "1";
+        finishBtn.style.cursor = "pointer";
+        finishBtn.style.backgroundColor = "#fde047"; // 본래 포인트 옐로우
+        finishBtn.style.color = "#000000";
+      }
+
+      // 완료 전용 긍정적인 피드백 사운드
+      if (typeof playAudioTone === 'function') {
+        playAudioTone('success');
+      }
     }
   </script>
 </body>
