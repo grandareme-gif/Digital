@@ -908,9 +908,49 @@ window.showStudentDetailAnswers = function(docId, targetTask) {
     const taskAns = answers[targetTask];
     if (taskAns && typeof taskAns === 'object' && Object.keys(taskAns).length > 0) {
       for (const [qText, aText] of Object.entries(taskAns)) {
+        const qMap = {
+          // 사이버 갈등관리 및 문제해결
+          "game_chat": "활동 1 - 온라인 게임 갈등 상황 답변",
+          "project_conflict": "활동 1 - 모둠 협업 문서 갈등 상황 답변",
+          "scenario_reply_target_oo": "활동 2 - 동윤의 'ㅇㅇ' 단답 교정",
+          "scenario_reply_target1": "활동 2 - 동윤의 'ㄴㄴ 귀찮' 대답 교정",
+          "scenario_night_target1": "활동 2 - 준서의 늦은 시간 수학 숙제 질문 교정",
+          "scenario_night_target2": "활동 2 - 지호의 짜증나는 밤 대답 교정",
+          "갈등 원인 분석": "최종 정리 - 갈등의 진짜 원인 분석",
+          "갈등 태도 조율": "최종 정리 - 갈등을 대하는 평화 태도",
+          "실천 서약 약속": "최종 정리 - 나만의 평화 다짐 약속",
+          "갈등관리 평화 약속": "최종 정리 - 갈등관리 평화 약속",
+
+          // 사이버 의사소통
+          "위로 대화 메시지": "사이버 의사소통 - 위로 대화 메시지",
+
+          // 사이버 공감
+          "성찰 일기": "사이버 공감 - 나의 감정 성찰 일기",
+
+          // 사이버 폭력인식 및 대처
+          "사이버 폭력 예방 처방전": "사이버 폭력대처 - 예방 처방전",
+          "대응 대화 메시지": "사이버 폭력대처 - 긴급 신고 접수",
+
+          // 사이버 감정조절
+          "나 전달법 - 사실": "사이버 감정조절 - 나 전달법 사실 쓰기",
+          "나 전달법 - 감정": "사이버 감정조절 - 나 전달법 감정 쓰기",
+          "나 전달법 - 부탁": "사이버 감정조절 - 나 전달법 부탁 쓰기",
+
+          // 사이버 자기존중감
+          "질문 1 (지은 분석)": "사이버 자기존중감 - 지은이 상황 분석",
+          "질문 2 (행복 내용)": "사이버 자기존중감 - 나의 행복한 대화",
+          "질문 2 (해시태그)": "사이버 자기존중감 - 행복 해시태그",
+          "질문 2 (스티커 이름)": "사이버 자기존중감 - 선택한 마음 스티커",
+          "친구 칭찬 댓글": "사이버 자기존중감 - 친구 칭찬 댓글",
+
+          // 인터넷 윤리의식 및 활용
+          "가짜뉴스 대응 메시지": "인터넷 윤리의식 - 가짜뉴스 대응 메시지",
+          "나만의 선플 약속": "인터넷 윤리의식 - 나만의 선플 약속"
+        };
+        const friendlyQText = qMap[qText] || qText;
         taskContentHtml += `
           <div style="margin-bottom: 8px;">
-            <span style="color: #a8ffda; font-weight: bold; font-size: 0.85rem; display: block; margin-bottom: 2px;">💬 ${qText}</span>
+            <span style="color: #a8ffda; font-weight: bold; font-size: 0.85rem; display: block; margin-bottom: 2px;">💬 ${friendlyQText}</span>
             <span style="font-size: 0.95rem; word-break: break-all; color: #fff; background: #000; padding: 6px 10px; display: block; border: 1px solid #333; line-height: 1.45;">${aText}</span>
           </div>
         `;
@@ -946,9 +986,49 @@ window.showStudentDetailAnswers = function(docId, targetTask) {
         const taskAns = answers[task];
         if (taskAns && typeof taskAns === 'object' && Object.keys(taskAns).length > 0) {
           for (const [qText, aText] of Object.entries(taskAns)) {
+            const qMap = {
+              // 사이버 갈등관리 및 문제해결
+              "game_chat": "활동 1 - 온라인 게임 갈등 상황 답변",
+              "project_conflict": "활동 1 - 모둠 협업 문서 갈등 상황 답변",
+              "scenario_reply_target_oo": "활동 2 - 동윤의 'ㅇㅇ' 단답 교정",
+              "scenario_reply_target1": "활동 2 - 동윤의 'ㄴㄴ 귀찮' 대답 교정",
+              "scenario_night_target1": "활동 2 - 준서의 늦은 시간 수학 숙제 질문 교정",
+              "scenario_night_target2": "활동 2 - 지호의 짜증나는 밤 대답 교정",
+              "갈등 원인 분석": "최종 정리 - 갈등의 진짜 원인 분석",
+              "갈등 태도 조율": "최종 정리 - 갈등을 대하는 평화 태도",
+              "실천 서약 약속": "최종 정리 - 나만의 평화 다짐 약속",
+              "갈등관리 평화 약속": "최종 정리 - 갈등관리 평화 약속",
+
+              // 사이버 의사소통
+              "위로 대화 메시지": "사이버 의사소통 - 위로 대화 메시지",
+
+              // 사이버 공감
+              "성찰 일기": "사이버 공감 - 나의 감정 성찰 일기",
+
+              // 사이버 폭력인식 및 대처
+              "사이버 폭력 예방 처방전": "사이버 폭력대처 - 예방 처방전",
+              "대응 대화 메시지": "사이버 폭력대처 - 긴급 신고 접수",
+
+              // 사이버 감정조절
+              "나 전달법 - 사실": "사이버 감정조절 - 나 전달법 사실 쓰기",
+              "나 전달법 - 감정": "사이버 감정조절 - 나 전달법 감정 쓰기",
+              "나 전달법 - 부탁": "사이버 감정조절 - 나 전달법 부탁 쓰기",
+
+              // 사이버 자기존중감
+              "질문 1 (지은 분석)": "사이버 자기존중감 - 지은이 상황 분석",
+              "질문 2 (행복 내용)": "사이버 자기존중감 - 나의 행복한 대화",
+              "질문 2 (해시태그)": "사이버 자기존중감 - 행복 해시태그",
+              "질문 2 (스티커 이름)": "사이버 자기존중감 - 선택한 마음 스티커",
+              "친구 칭찬 댓글": "사이버 자기존중감 - 친구 칭찬 댓글",
+
+              // 인터넷 윤리의식 및 활용
+              "가짜뉴스 대응 메시지": "인터넷 윤리의식 - 가짜뉴스 대응 메시지",
+              "나만의 선플 약속": "인터넷 윤리의식 - 나만의 선플 약속"
+            };
+            const friendlyQText = qMap[qText] || qText;
             taskContentHtml += `
               <div style="margin-bottom: 8px;">
-                <span style="color: #a8ffda; font-weight: bold; font-size: 0.85rem; display: block; margin-bottom: 2px;">💬 ${qText}</span>
+                <span style="color: #a8ffda; font-weight: bold; font-size: 0.85rem; display: block; margin-bottom: 2px;">💬 ${friendlyQText}</span>
                 <span style="font-size: 0.95rem; word-break: break-all; color: #fff; background: #000; padding: 6px 10px; display: block; border: 1px solid #333; line-height: 1.45;">${aText}</span>
               </div>
             `;
@@ -1714,6 +1794,17 @@ window.addEventListener('message', function(event) {
     window.completeTask(event.data.category, event.data.answers);
   } else if (event.data && event.data.type === 'RETURN_TO_MAP') {
     window.returnToMap();
+  } else if (event.data && event.data.type === 'REQ_STUDENT_INFO') {
+    const iframe = document.getElementById('task-iframe');
+    if (iframe && iframe.contentWindow) {
+      const appState = window.appState || {};
+      iframe.contentWindow.postMessage({
+        type: 'RES_STUDENT_INFO',
+        classCode: appState.classCode || "guest",
+        studentId: appState.studentId || "guest",
+        studentName: appState.studentName || "익명"
+      }, '*');
+    }
   }
 });
 

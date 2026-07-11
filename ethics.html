@@ -3159,6 +3159,9 @@
       
       // Correct reply sent!
       playBeepSound('success');
+      if (typeof act1State !== 'undefined') {
+        act1State.replyText = text;
+      }
       
       // Add my typed message to chat
       const chatBody = document.getElementById("act1-chat-body");
@@ -3229,12 +3232,16 @@
       playBeepSound('success');
       try {
         if (window.parent && window.parent !== window) {
+          const replyVal = (typeof act1State !== 'undefined' && act1State.replyText) ? act1State.replyText : "";
+          const inputEl = document.getElementById("act2-step1-input");
+          const signVal = inputEl ? inputEl.value.trim() : "";
+
           window.parent.postMessage({ 
             type: 'TASK_COMPLETE', 
             category: '인터넷 윤리의식 및 활용',
             answers: {
-              act1: typeof act1State !== 'undefined' ? act1State.editedTexts : {},
-              act2: typeof act2State !== 'undefined' ? { step1Input: document.getElementById("act2-step1-input").value } : {}
+              "가짜뉴스 대응 메시지": replyVal,
+              "나만의 선플 약속": signVal
             }
           }, '*');
         } else {

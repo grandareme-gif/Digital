@@ -11,6 +11,10 @@
   <!-- Tailwind CSS CDN 로드 (유틸리티 클래스 지원) -->
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- Firebase SDK Compat 버전 (실시간 DB 연동용) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
   <style>
     /* =========================================
        전역 & 공통 스타일
@@ -1799,6 +1803,53 @@
   </div>
 
   <script>
+    // ==========================================
+    // Firebase 실시간 DB 초기화
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyD0MWdkXCdH0yfdjQxDYw08Zx3kOWoFe7Q",
+      authDomain: "cybertest-b2d53.firebaseapp.com",
+      projectId: "cybertest-b2d53",
+      storageBucket: "cybertest-b2d53.firebasestorage.app",
+      messagingSenderId: "969068841275",
+      appId: "1:969068841275:web:04f7786f2dd40251f8cf1e"
+    };
+
+    let db = null;
+    try {
+      if (typeof firebase !== 'undefined') {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+      }
+    } catch (e) {
+      console.warn("Firebase initialization skipped or failed:", e);
+    }
+
+    // ==========================================
+    // 부모 창과 학생 정보 동기화 모듈
+    // ==========================================
+    let studentInfo = {
+      classCode: "test_class",
+      studentId: "test_student",
+      studentName: "테스터"
+    };
+
+    window.addEventListener('message', function(event) {
+      if (event.data && event.data.type === 'RES_STUDENT_INFO') {
+        studentInfo.classCode = event.data.classCode;
+        studentInfo.studentId = event.data.studentId;
+        studentInfo.studentName = event.data.studentName;
+        console.log("Synchronized student info from parent:", studentInfo);
+      }
+    });
+
+    // 로드 즉시 부모 창에 학생 정보 요청
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'REQ_STUDENT_INFO' }, '*');
+      }
+    } catch(e) {}
+
     // =========================================
     // 전역 상태 변수 & 세팅
     // =========================================
@@ -2402,6 +2453,27 @@
       // 버튼 및 입력 비활성화
       document.getElementById("act2-comment-input").disabled = true;
       document.getElementById("btn-submit-comment").disabled = true;
+
+      // 칭찬 댓글이 전송되었으므로 Firestore에 실시간 선제 업로드 실행!
+      const parentState = getParentAppState();
+      const classCode = parentState.classCode;
+      const studentId = parentState.studentId || "test_student";
+      const studentName = parentState.studentName || studentId;
+
+      if (db && classCode && classCode !== "nonmember_mode" && classCode !== "test_class") {
+        const docId = `${classCode}_${studentId}`;
+        const updateData = {
+          classCode: classCode,
+          studentId: studentId,
+          studentName: studentName,
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        updateData[`appState.taskAnswers.사이버 자기존중감.친구 칭찬 댓글`] = commentText;
+        
+        db.collection("students").doc(docId).update(updateData)
+          .then(() => console.log("Realtime praise comment saved successfully!"))
+          .catch(err => console.error("Realtime praise comment save failed:", err));
+      }
       
       const hintBtn = document.getElementById("btn-toggle-act2-hint");
       if (hintBtn) {
@@ -2501,6 +2573,24 @@
         if (jisuImg) {
           jisuImg.classList.remove("grayscale");
           jisuImg.style.transition = "filter 1.5s ease-in-out";
+        }
+
+        // 댓글 입력 영역을 "우리 반 친구들의 칭찬 댓글 보기" 완료 박스로 전격 교환!
+        const commentPanel = document.getElementById("comment-panel");
+        if (commentPanel) {
+          const showBoardBtn = (classCode && classCode !== "nonmember_mode");
+          
+          commentPanel.innerHTML = `
+            <div class="flex flex-col gap-2 items-center text-center p-3.5 border-4 border-black bg-[#1e293b] text-white shadow-[4px_4px_0_#000] rounded-none animate-pop-in" style="font-family: 'DungGeunMo', monospace; margin-top: 5px; border-radius: 9px;">
+              <span class="text-emerald-300 font-extrabold text-[1.25rem]">💌 지수에게 위로 댓글 전송 완료!</span>
+              <span class="text-[0.95rem] text-slate-300">내 따뜻한 댓글 한마디가 지수에게 큰 기적과 용기가 되었습니다!</span>
+              ${showBoardBtn ? `
+              <button onclick="openClassBoard('친구 칭찬 댓글')" class="px-4 py-2 bg-yellow-300 hover:bg-yellow-400 text-black font-extrabold border-2 border-black rounded-none shadow-[2px_2px_0_#000] active:translate-y-[1px] active:shadow-none text-[1.25rem] w-full transition-all cursor-pointer mt-1 font-dunggeunmo" style="border-radius: 6px;">
+                👥 우리 반 친구들의 칭찬 댓글 보기
+              </button>
+              ` : ''}
+            </div>
+          `;
         }
         
         // 상태 완료로 플래그 설정 및 하단 바 UI 업데이트
@@ -2879,6 +2969,250 @@
     window.resetStar = resetStar;
     window.rateStar = rateStar;
     window.submitEvaluation = submitEvaluation;
+  </script>
+  <!-- 우리 반 공감 보드 모달 -->
+  <div id="class-board-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex justify-center items-center p-4 select-none">
+    <div class="bg-[#1e293b] border-4 border-black w-full max-w-4xl h-[85vh] flex flex-col justify-between shadow-[8px_8px_0_#000] rounded-none" style="font-family: 'DungGeunMo', monospace;">
+      <!-- 헤더 -->
+      <div class="bg-[#312e81] border-b-4 border-black p-3.5 flex justify-between items-center text-white shrink-0">
+        <span class="text-[1.3rem] font-bold">👥 우리 반 친구들의 따뜻한 위로 댓글 보드</span>
+        <div class="flex items-center gap-4">
+          <!-- 수동 새로고침 아이콘 -->
+          <button onclick="refreshClassBoard()" class="text-white hover:text-yellow-300 font-extrabold text-lg" title="새로고침">🔄</button>
+          <button onclick="closeClassBoard()" class="text-white hover:text-red-400 font-extrabold text-xl">✕</button>
+        </div>
+      </div>
+      <!-- 카드 본문 (3열 그리드) -->
+      <div id="class-board-list" class="flex-grow p-4 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 no-scrollbar bg-[#1a1c23]/95 text-left">
+        <!-- 동적으로 카드들이 로드됨 -->
+      </div>
+      <!-- 푸터 -->
+      <div class="bg-[#2c3e50] border-t-4 border-black p-3 flex justify-end shrink-0">
+        <button onclick="closeClassBoard()" class="px-6 py-1.5 bg-[#fde047] hover:bg-[#facc15] text-black text-sm font-bold border-2 border-black shadow-[2px_2px_0_#000] active:translate-y-[1px] active:shadow-none">닫기</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    // ==========================================
+    // 우리 반 생각 보드 (공감 보드) 연동 엔진 이식
+    // ==========================================
+    let currentBoardScenarioId = null;
+    let classBoardUnsubscribe = null;
+
+    function getParentAppState() {
+      return studentInfo;
+    }
+
+    function openClassBoard(scenarioId) {
+      if (typeof synth !== 'undefined' && typeof synth.playSelect === 'function') {
+        try { synth.playSelect(); } catch(e) {}
+      }
+      currentBoardScenarioId = scenarioId;
+      const modal = document.getElementById('class-board-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.style.setProperty('display', 'flex', 'important');
+      }
+      initClassBoardListener(scenarioId);
+    }
+
+    function closeClassBoard() {
+      if (typeof synth !== 'undefined' && typeof synth.playSelect === 'function') {
+        try { synth.playSelect(); } catch(e) {}
+      }
+      const modal = document.getElementById('class-board-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.style.setProperty('display', 'none', 'important');
+      }
+      if (classBoardUnsubscribe) {
+        classBoardUnsubscribe();
+        classBoardUnsubscribe = null;
+      }
+    }
+
+    function refreshClassBoard() {
+      if (currentBoardScenarioId) {
+        initClassBoardListener(currentBoardScenarioId);
+      }
+    }
+
+    function initClassBoardListener(scenarioId) {
+      const listContainer = document.getElementById('class-board-list');
+      if (!listContainer) return;
+
+      if (classBoardUnsubscribe) {
+        classBoardUnsubscribe();
+      }
+
+      listContainer.innerHTML = `
+        <div class="col-span-full flex flex-col items-center justify-center text-slate-400 py-20 font-bold gap-2">
+          <span>🔄 실시간 데이터를 불러오는 중입니다...</span>
+        </div>
+      `;
+
+      const parentState = getParentAppState();
+      const classCode = parentState.classCode;
+
+      if (!db || classCode === "test_class") {
+        loadMockClassBoard(scenarioId);
+        return;
+      }
+
+      classBoardUnsubscribe = db.collection("students")
+        .where("classCode", "==", classCode)
+        .onSnapshot((snapshot) => {
+          const answers = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const studentId = data.studentId;
+            const appState = data.appState || {};
+            const answersConflict = appState.taskAnswers || {};
+            
+            // 사이버 자기존중감 카테고리 내의 주관식 답변 추출
+            const categoryData = answersConflict["사이버 자기존중감"] || {};
+            const answerText = categoryData[scenarioId];
+            
+            if (answerText) {
+              const likesMap = appState.taskAnswersLikes || {};
+              const likes = likesMap[scenarioId] || 0;
+              
+              answers.push({
+                id: doc.id,
+                studentId: studentId,
+                sender: data.studentName || studentId,
+                answerText: answerText,
+                likes: likes,
+                timestamp: data.lastUpdated
+              });
+            }
+          });
+          
+          renderClassBoardData(answers);
+        }, (error) => {
+          console.error("Firestore listen error, rolling back to mock:", error);
+          loadMockClassBoard(scenarioId);
+        });
+    }
+
+    function renderClassBoardData(answers) {
+      const listContainer = document.getElementById('class-board-list');
+      if (!listContainer) return;
+
+      if (answers.length === 0) {
+        listContainer.innerHTML = `
+          <div class="col-span-full flex flex-col items-center justify-center text-slate-400 py-16 font-bold gap-2">
+            <span class="text-3xl">👥</span>
+            <span>아직 등록된 다른 친구들의 생각이 없습니다.</span>
+            <span class="text-[1.1rem] font-normal text-slate-500">가장 먼저 친구들에게 멋진 칭찬을 공유해보세요!</span>
+          </div>
+        `;
+        return;
+      }
+
+      answers.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+
+      listContainer.innerHTML = "";
+      const parentState = getParentAppState();
+      const myStudentId = parentState.studentId || "guest";
+
+      answers.forEach(ans => {
+        const likedList = JSON.parse(localStorage.getItem("maeumon_likes") || "[]");
+        const hasLiked = likedList.includes(`${myStudentId}_${ans.id}_${currentBoardScenarioId}`);
+
+        const card = document.createElement('div');
+        card.className = "bg-[#fef08a] border-4 border-black p-2.5 flex flex-col justify-between text-black shadow-[3px_3px_0_#000] relative rounded-none animate-pop-in";
+        
+        card.style.fontFamily = "'DungGeunMo', monospace";
+
+        card.innerHTML = `
+          <div class="flex flex-col gap-1 flex-grow">
+            <div class="flex justify-between items-center border-b-2 border-black/10 pb-1.5 shrink-0 gap-2">
+              <span class="font-extrabold text-[1rem] text-[#1e293b]">👤 ${ans.sender || "익명의 친구"}</span>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <span class="text-[0.75rem] text-slate-500">${ans.timestamp ? new Date(ans.timestamp.seconds * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "방금 전"}</span>
+                <button onclick="likeAnswer('${ans.id}', this)" ${hasLiked ? 'disabled' : ''} class="flex items-center gap-0.5 px-2 py-0.5 border border-black bg-white hover:bg-pink-50 text-[0.7rem] font-extrabold shadow-[1px_1px_0_#000] active:translate-y-[0.5px] active:shadow-none transition-all disabled:bg-pink-100 disabled:text-pink-600 disabled:border-pink-300 disabled:shadow-none disabled:cursor-not-allowed cursor-pointer">
+                  <span>${hasLiked ? '❤️' : '🤍'}</span>
+                  <span>공감 ${ans.likes || 0}</span>
+                </button>
+              </div>
+            </div>
+            <div class="text-[1.1rem] font-bold leading-relaxed text-slate-800 whitespace-pre-wrap flex-grow py-1">${ans.answerText}</div>
+          </div>
+        `;
+        listContainer.appendChild(card);
+      });
+    }
+
+    function likeAnswer(docId, btn) {
+      if (typeof synth !== 'undefined' && typeof synth.playSuccess === 'function') {
+        try { synth.playSuccess(); } catch(e) {}
+      }
+
+      const parentState = getParentAppState();
+      const myStudentId = parentState.studentId || "guest";
+      const classCode = parentState.classCode;
+
+      const likedList = JSON.parse(localStorage.getItem("maeumon_likes") || "[]");
+      const key = `${myStudentId}_${docId}_${currentBoardScenarioId}`;
+      if (likedList.includes(key)) return;
+
+      likedList.push(key);
+      localStorage.setItem("maeumon_likes", JSON.stringify(likedList));
+
+      btn.disabled = true;
+      btn.innerHTML = `<span>❤️</span> <span>공감 ${Number(btn.innerText.replace(/[^0-9]/g, '')) + 1}</span>`;
+
+      if (db) {
+        const updateField = `appState.taskAnswersLikes.${currentBoardScenarioId}`;
+        const updateData = {};
+        updateData[updateField] = firebase.firestore.FieldValue.increment(1);
+
+        db.collection("students").doc(docId).update(updateData)
+          .catch(err => {
+            console.error("Firestore update likes failed:", err);
+            updateMockLike(docId);
+          });
+      } else {
+        updateMockLike(docId);
+      }
+    }
+
+    let mockAnswers = {
+      "친구 칭찬 댓글": []
+    };
+
+    function loadMockClassBoard(scenarioId) {
+      let list = mockAnswers[scenarioId] || [];
+      const localAdded = JSON.parse(localStorage.getItem(`maeumon_added_${scenarioId}`) || "[]");
+      const combined = [...localAdded, ...list];
+      renderClassBoardData(combined);
+    }
+
+    function updateMockLike(docId) {
+      Object.keys(mockAnswers).forEach(key => {
+        const item = mockAnswers[key].find(ans => ans.id === docId);
+        if (item) {
+          item.likes = (item.likes || 0) + 1;
+        }
+      });
+      Object.keys(mockAnswers).forEach(key => {
+        const localAdded = JSON.parse(localStorage.getItem(`maeumon_added_${key}`) || "[]");
+        const item = localAdded.find(ans => ans.id === docId);
+        if (item) {
+          item.likes = (item.likes || 0) + 1;
+          localStorage.setItem(`maeumon_added_${key}`, JSON.stringify(localAdded));
+        }
+      });
+      if (currentBoardScenarioId) {
+        loadMockClassBoard(currentBoardScenarioId);
+      }
+    }
+
+    window.openClassBoard = openClassBoard;
+    window.closeClassBoard = closeClassBoard;
+    window.refreshClassBoard = refreshClassBoard;
+    window.likeAnswer = likeAnswer;
   </script>
 </body>
 </html>
