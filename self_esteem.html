@@ -1610,6 +1610,15 @@
             </div>
             
             <button class="writing-submit-btn mt-2" onclick="submitStage2()" style="align-self: stretch;">나의 SNS에 등록 ▶</button>
+            
+            <!-- 우리 반 친구들의 행복 스티커 보기 버튼 패널 -->
+            <div id="class-board-btn-panel-stage2" style="display: none; flex-direction: column; gap: 6px; text-align: center; padding: 14px; border: 4px solid #000; color: #fff; box-shadow: 4px 4px 0 #000; font-family: 'DungGeunMo', monospace; border-radius: 9px; margin-top: 15px; background-color: #1e293b; width: 100%;">
+              <span id="class-board-btn-title" style="color: var(--point-yellow); font-weight: bold; font-size: 1.25rem;">💌 행복 스티커 등록 완료!</span>
+              <span style="font-size: 0.95rem; color: #cbd5e1;">우리 반 친구들의 소소한 소확행 행복 스티커와 해시태그를 모아서 볼까요?</span>
+              <button id="btn-open-class-board" onclick="openClassBoard('행복 스티커')" class="retro-btn" style="background-color: #fde047 !important; color: #000 !important; font-size: 1.25rem !important; padding: 8px 16px !important; border: 2.5px solid #000 !important; box-shadow: 2px 2px 0 #000; border-radius: 6px; font-weight: bold; width: 100%; margin-top: 5px; cursor: pointer;">
+                👥 우리 반 친구들의 행복 스티커 보기
+              </button>
+            </div>
           </div>
 
         </div>
@@ -2424,6 +2433,13 @@
         submitBtn2.style.cursor = "not-allowed";
       }
       
+      // 회원일 때만 "우리 반 친구들의 행복 스티커 보기" 노란색 패널 노출!
+      const showBoardBtn = (classCode && classCode !== "nonmember_mode");
+      const boardPanel = document.getElementById("class-board-btn-panel-stage2");
+      if (boardPanel && showBoardBtn) {
+        boardPanel.style.display = "flex";
+      }
+
       document.getElementById("btn-act1-to-act2-wrapper").style.display = "flex";
       
       document.getElementById("act1-guide-bubble").innerHTML = `<span style="color:var(--point-green); font-weight:bold;">멋져! 나만의 소중한 행복과 가치로 피드가 가득 찼어. 이제 다음 활동으로 이동해 보자! ➔</span>`;
@@ -3039,7 +3055,7 @@
     <div class="bg-[#1e293b] border-4 border-black w-full max-w-4xl h-[85vh] flex flex-col justify-between shadow-[8px_8px_0_#000] rounded-none" style="font-family: 'DungGeunMo', monospace;">
       <!-- 헤더 -->
       <div class="bg-[#312e81] border-b-4 border-black p-3.5 flex justify-between items-center text-white shrink-0">
-        <span class="text-[1.3rem] font-bold">👥 우리 반 친구들의 따뜻한 위로 댓글 보드</span>
+        <span id="class-board-header-title" class="text-[1.3rem] font-bold">👥 우리반 친구들의 소확행 SNS 공감 보드</span>
         <div class="flex items-center gap-4">
           <!-- 수동 새로고침 아이콘 -->
           <button onclick="refreshClassBoard()" class="text-white hover:text-yellow-300 font-extrabold text-lg" title="새로고침">🔄</button>
@@ -3073,6 +3089,16 @@
       }
       currentBoardScenarioId = scenarioId;
       const modal = document.getElementById('class-board-modal');
+      const headerTitle = document.getElementById('class-board-header-title');
+      
+      if (headerTitle) {
+        if (scenarioId === '행복 스티커') {
+          headerTitle.innerText = "👥 우리반 친구들의 소확행 SNS 공감 보드";
+        } else {
+          headerTitle.innerText = "👥 우리 반 친구들의 칭찬 댓글 보드";
+        }
+      }
+
       if (modal) {
         modal.classList.remove('hidden');
         modal.style.setProperty('display', 'flex', 'important');
@@ -3135,7 +3161,17 @@
             
             // 사이버 자기존중감 카테고리 내의 주관식 답변 추출
             const categoryData = answersConflict["사이버 자기존중감"] || {};
-            const answerText = categoryData[scenarioId];
+            let answerText = "";
+            if (scenarioId === "행복 스티커") {
+              const h = categoryData["질문 2 (행복 내용)"] || "";
+              const t = categoryData["질문 2 (해시태그)"] || "";
+              const s = categoryData["질문 2 (스티커 이름)"] || "";
+              if (h || t || s) {
+                answerText = `💖 스티커: ${s}\n🏷️ 태그: ${t}\n🍀 소확행: ${h}`;
+              }
+            } else {
+              answerText = categoryData[scenarioId];
+            }
             
             if (answerText) {
               const likesMap = appState.taskAnswersLikes || {};
@@ -3243,7 +3279,8 @@
     }
 
     let mockAnswers = {
-      "친구 칭찬 댓글": []
+      "친구 칭찬 댓글": [],
+      "행복 스티커": []
     };
 
     function loadMockClassBoard(scenarioId) {

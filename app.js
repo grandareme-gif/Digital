@@ -1769,7 +1769,11 @@ window.completeTask = function(category, answers) {
   if (targetCategory) {
     window.appState.taskAnswers = window.appState.taskAnswers || {};
     if (answers) {
-      window.appState.taskAnswers[targetCategory] = answers;
+      const hasNewAnswers = Object.keys(answers).some(k => answers[k] && String(answers[k]).trim().length > 0);
+      if (hasNewAnswers) {
+        window.appState.taskAnswers[targetCategory] = window.appState.taskAnswers[targetCategory] || {};
+        Object.assign(window.appState.taskAnswers[targetCategory], answers);
+      }
     }
   }
 

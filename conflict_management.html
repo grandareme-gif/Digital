@@ -2352,7 +2352,6 @@
       // 시나리오 상태 초기화
       act2State.correctedTargets.clear();
       act2State.activeTargetId = null;
-      act2State.userAnswers = {};
 
       // 채팅방 렌더링
       renderAct2Chatroom();
@@ -2712,11 +2711,22 @@
 
       if (inIframe) {
         try {
-          const promiseVal = document.getElementById('promise1-input') ? document.getElementById('promise1-input').value.trim() : "";
+          const finalAnswers = {
+            // 활동 1 약속 입력 데이터
+            "game_chat": state.completedPromises[0] || "",
+            "project_conflict": state.completedPromises[1] || "",
+
+            // 활동 2 개별 교정 데이터
+            "scenario_reply_target_oo": act2State.userAnswers["scenario_reply_target_oo"] || "",
+            "scenario_reply_target1": act2State.userAnswers["scenario_reply_target1"] || "",
+            "scenario_night_target1": act2State.userAnswers["scenario_night_target1"] || "",
+            "scenario_night_target2": act2State.userAnswers["scenario_night_target2"] || ""
+          };
+
           window.parent.postMessage({ 
             type: 'TASK_COMPLETE', 
             category: '사이버 갈등관리 및 문제해결',
-            answers: {}
+            answers: finalAnswers
           }, '*');
           return;
         } catch (err) {

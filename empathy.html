@@ -961,9 +961,23 @@
             
             <!-- 슬라이더 바로 아래 동적 성찰 상자 (요청 반영) -->
             <div id="stage1-reflection-box" class="hidden flex flex-col gap-2 bg-[#1e293b] border-2 border-black p-3 rounded-none text-white mt-1">
-              <label for="reflection-textarea" id="reflection-prompt-label" class="text-[1.2rem] text-yellow-250 font-black" style="font-size: 1.2rem !important;">💬 친구의 감정을 왜 그렇게 분석했나요? 적어주세요!</label>
-              <textarea id="reflection-textarea" class="w-full h-20 bg-white text-black p-2.5 border-2 border-black rounded-none text-[1.25rem] font-bold outline-none resize-none" style="font-size: 1.25rem !important; color: #000 !important; background-color: #fff !important;" placeholder="여기에 이유를 적어주세요" oninput="validateReflection()"></textarea>
-              <button class="retro-btn disabled w-full py-2.5 text-[1.3rem] mt-1" id="btn-submit-opinion" disabled onclick="submitStage1Opinion()" style="font-size: 1.3rem !important;">의견 저장 및 다음 상황 ▶</button>
+              <div id="reflection-input-area" class="flex flex-col gap-2">
+                <label for="reflection-textarea" id="reflection-prompt-label" class="text-[1.2rem] text-yellow-250 font-black" style="font-size: 1.2rem !important;">💬 친구의 감정을 왜 그렇게 분석했나요? 적어주세요!</label>
+                <textarea id="reflection-textarea" class="w-full h-20 bg-white text-black p-2.5 border-2 border-black rounded-none text-[1.25rem] font-bold outline-none resize-none" style="font-size: 1.25rem !important; color: #000 !important; background-color: #fff !important;" placeholder="여기에 이유를 적어주세요" oninput="validateReflection()"></textarea>
+                <button class="retro-btn disabled w-full py-2.5 text-[1.3rem] mt-1" id="btn-submit-opinion" disabled onclick="submitStage1Opinion()" style="font-size: 1.3rem !important;">의견 저장 및 전송 🧪</button>
+              </div>
+              
+              <!-- 우리 반 생각 보기 패널 (전송 완료 시 동적 노출) -->
+              <div id="class-board-btn-panel" style="display: none; flex-direction: column; gap: 6px; text-align: center; padding: 10px; border: 2px solid #000; color: #fff; box-shadow: 2px 2px 0 #000; font-family: 'DungGeunMo', monospace; border-radius: 6px; background-color: #0f172a; margin-top: 5px;">
+                <span id="class-board-btn-title" style="color: var(--point-yellow); font-weight: bold; font-size: 1.15rem;">💌 감정분석 전송 완료!</span>
+                <span style="font-size: 0.85rem; color: #cbd5e1;">우리 반 친구들의 예리한 감정 분석 한마디를 모아서 볼까요?</span>
+                <button id="btn-open-class-board" class="retro-btn" style="background-color: #fde047 !important; color: #000 !important; font-size: 1.15rem !important; padding: 6px 12px !important; border: 2px solid #000 !important; box-shadow: 1.5px 1.5px 0 #000; border-radius: 4px; font-weight: bold; width: 100%; margin-top: 4px; cursor: pointer;">
+                  👥 우리 반 친구들의 생각 보기
+                </button>
+                <button id="btn-next-action" class="retro-btn" style="background-color: var(--point-green) !important; color: #fff !important; font-size: 1.15rem !important; padding: 6px 12px !important; border: 2px solid #000 !important; box-shadow: 1.5px 1.5px 0 #000; border-radius: 4px; font-weight: bold; width: 100%; margin-top: 4px; cursor: pointer;" onclick="proceedToNextStage1Step()">
+                  다음 진행하기 ➔
+                </button>
+              </div>
             </div>
           </div>
           <div class="flex gap-2 shrink-0">
@@ -2029,6 +2043,13 @@
           }
         }
 
+        // 새로운 감정분석이 시작되므로 입력창 보이고 생각보기 패널은 숨김!
+        const inputArea = document.getElementById("reflection-input-area");
+        if (inputArea) inputArea.style.display = "flex";
+        
+        const boardPanel = document.getElementById("class-board-btn-panel");
+        if (boardPanel) boardPanel.style.display = "none";
+
         const textarea = document.getElementById('reflection-textarea');
         if (textarea) {
           textarea.value = '';
@@ -2052,7 +2073,7 @@
 
         // 전역 백업 변수에 값 기록
         const curIdx = state.stage1.activeScenarioIdx;
-        const keyName = curIdx === 0 ? "감정분석1" : "감정분석2";
+        const keyName = curIdx === 0 ? "분석1" : "분석2";
         answersBackup[keyName] = text;
 
         // Firestore에 즉시 실시간 업로드 및 저장
@@ -2077,6 +2098,42 @@
 
         AudioHelper.playPop();
 
+        // 입력 폼 숨기고 생각 보기 패널 활성화
+        const inputArea = document.getElementById("reflection-input-area");
+        if (inputArea) inputArea.style.display = "none";
+
+        const showBoardBtn = (classCode && classCode !== "nonmember_mode");
+        const boardPanel = document.getElementById("class-board-btn-panel");
+        if (boardPanel) {
+          const boardTitle = document.getElementById("class-board-btn-title");
+          const boardBtn = document.getElementById("btn-open-class-board");
+          const nextBtn = document.getElementById("btn-next-action");
+
+          if (curIdx === 0) {
+            if (boardTitle) boardTitle.innerText = "💌 상황1 감정분석 완료!";
+            if (boardBtn) boardBtn.setAttribute("onclick", "openClassBoard('분석1')");
+            if (nextBtn) nextBtn.innerText = "다음 상황 진행하기 ➔";
+          } else {
+            if (boardTitle) boardTitle.innerText = "💌 상황2 감정분석 완료!";
+            if (boardBtn) boardBtn.setAttribute("onclick", "openClassBoard('분석2')");
+            if (nextBtn) nextBtn.innerText = "활동 2로 이동하기 ➔";
+          }
+
+          // 생각 보기 버튼 노출 여부
+          if (boardBtn) {
+            boardBtn.style.display = showBoardBtn ? "block" : "none";
+          }
+          boardPanel.style.display = "flex";
+        }
+      } catch (e) {
+        console.error("Error in submitStage1Opinion:", e);
+      }
+    }
+
+    function proceedToNextStage1Step() {
+      try {
+        const curIdx = state.stage1.activeScenarioIdx;
+        
         // 1. 성찰 상자 숨기기
         const refBox = document.getElementById('stage1-reflection-box');
         if (refBox) refBox.classList.add('hidden');
@@ -2089,7 +2146,6 @@
 
         // 3. 하단 버튼 영역 다시 노출
         const actionRow = document.getElementById('btn-analyze-potion').closest('.flex');
-        if (actionRow) actionRow.classList.remove('remove'); // Reset hidden
         if (actionRow) actionRow.classList.remove('hidden');
 
         // 4. 다음 상황 로드 로직
@@ -2103,7 +2159,7 @@
           updateStageUI();
         }
       } catch (e) {
-        console.error("Error in submitStage1Opinion:", e);
+        console.error("Error in proceedToNextStage1Step:", e);
       }
     }
 
@@ -2550,8 +2606,8 @@
             type: 'TASK_COMPLETE', 
             category: '사이버 공감',
             answers: {
-              "감정분석1": answersBackup["감정분석1"],
-              "감정분석2": answersBackup["감정분석2"]
+              "분석1": answersBackup["분석1"],
+              "분석2": answersBackup["분석2"]
             }
           }, '*');
           return; // Stop execution to prevent fallback redirect
@@ -2784,6 +2840,263 @@
     window.resetStar = resetStar;
     window.rateStar = rateStar;
     window.submitEvaluation = submitEvaluation;
+  </script>
+
+  <!-- 우리 반 공감 보드 모달 -->
+  <div id="class-board-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex justify-center items-center p-4 select-none">
+    <div class="bg-[#1e293b] border-4 border-black w-full max-w-4xl h-[85vh] flex flex-col justify-between shadow-[8px_8px_0_#000] rounded-none" style="font-family: 'DungGeunMo', monospace;">
+      <!-- 헤더 -->
+      <div class="bg-[#312e81] border-b-4 border-black p-3.5 flex justify-between items-center text-white shrink-0">
+        <span id="class-board-header-title" class="text-[1.3rem] font-bold">👥 우리 반 친구들의 감정분석 보드</span>
+        <div class="flex items-center gap-4">
+          <!-- 수동 새로고침 아이콘 -->
+          <button onclick="refreshClassBoard()" class="text-white hover:text-yellow-300 font-extrabold text-lg" title="새로고침">🔄</button>
+          <button onclick="closeClassBoard()" class="text-white hover:text-red-400 font-extrabold text-xl">✕</button>
+        </div>
+      </div>
+      <!-- 카드 본문 (3열 그리드) -->
+      <div id="class-board-list" class="flex-grow p-4 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 no-scrollbar bg-[#1a1c23]/95 text-left">
+        <!-- 동적으로 카드들이 로드됨 -->
+      </div>
+      <!-- 푸터 -->
+      <div class="bg-[#2c3e50] border-t-4 border-black p-3 flex justify-end shrink-0">
+        <button onclick="closeClassBoard()" class="px-6 py-1.5 bg-[#fde047] hover:bg-[#facc15] text-black text-sm font-bold border-2 border-black shadow-[2px_2px_0_#000] active:translate-y-[1px] active:shadow-none">닫기</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    // ==========================================
+    // 우리 반 생각 보드 (공감 보드) 연동 엔진 이식
+    // ==========================================
+    let currentBoardScenarioId = null;
+    let classBoardUnsubscribe = null;
+
+    function getParentAppState() {
+      return studentInfo;
+    }
+
+    function openClassBoard(scenarioId) {
+      if (typeof AudioHelper !== 'undefined' && typeof AudioHelper.playPop === 'function') {
+        try { AudioHelper.playPop(); } catch(e) {}
+      }
+      currentBoardScenarioId = scenarioId;
+      
+      const modal = document.getElementById('class-board-modal');
+      const headerTitle = document.getElementById('class-board-header-title');
+      
+      if (headerTitle) {
+        if (scenarioId === '분석1') {
+          headerTitle.innerText = "👥 우리 반 친구들의 상황1 감정분석 보드";
+        } else {
+          headerTitle.innerText = "👥 우리 반 친구들의 상황2 감정분석 보드";
+        }
+      }
+      
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.style.setProperty('display', 'flex', 'important');
+      }
+      initClassBoardListener(scenarioId);
+    }
+
+    function closeClassBoard() {
+      if (typeof AudioHelper !== 'undefined' && typeof AudioHelper.playPop === 'function') {
+        try { AudioHelper.playPop(); } catch(e) {}
+      }
+      const modal = document.getElementById('class-board-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.style.setProperty('display', 'none', 'important');
+      }
+      if (classBoardUnsubscribe) {
+        classBoardUnsubscribe();
+        classBoardUnsubscribe = null;
+      }
+    }
+
+    function refreshClassBoard() {
+      if (currentBoardScenarioId) {
+        initClassBoardListener(currentBoardScenarioId);
+      }
+    }
+
+    function initClassBoardListener(scenarioId) {
+      const listContainer = document.getElementById('class-board-list');
+      if (!listContainer) return;
+
+      if (classBoardUnsubscribe) {
+        classBoardUnsubscribe();
+      }
+
+      listContainer.innerHTML = `
+        <div class="col-span-full flex flex-col items-center justify-center text-slate-400 py-20 font-bold gap-2">
+          <span>🔄 실시간 데이터를 불러오는 중입니다...</span>
+        </div>
+      `;
+
+      const parentState = getParentAppState();
+      const classCode = parentState.classCode;
+
+      if (!db || classCode === "test_class") {
+        loadMockClassBoard(scenarioId);
+        return;
+      }
+
+      classBoardUnsubscribe = db.collection("students")
+        .where("classCode", "==", classCode)
+        .onSnapshot((snapshot) => {
+          const answers = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const studentId = data.studentId;
+            const appState = data.appState || {};
+            const answersConflict = appState.taskAnswers || {};
+            
+            // 사이버 공감 카테고리 내의 주관식 답변 추출
+            const categoryData = answersConflict["사이버 공감"] || {};
+            const answerText = categoryData[scenarioId];
+            
+            if (answerText) {
+              const likesMap = appState.taskAnswersLikes || {};
+              const likes = likesMap[scenarioId] || 0;
+              
+              answers.push({
+                id: doc.id,
+                studentId: studentId,
+                sender: data.studentName || studentId,
+                answerText: answerText,
+                likes: likes,
+                timestamp: data.lastUpdated
+              });
+            }
+          });
+          
+          renderClassBoardData(answers);
+        }, (error) => {
+          console.error("Firestore listen error, rolling back to mock:", error);
+          loadMockClassBoard(scenarioId);
+        });
+    }
+
+    function renderClassBoardData(answers) {
+      const listContainer = document.getElementById('class-board-list');
+      if (!listContainer) return;
+
+      if (answers.length === 0) {
+        listContainer.innerHTML = `
+          <div class="col-span-full flex flex-col items-center justify-center text-slate-400 py-16 font-bold gap-2">
+            <span class="text-3xl">👥</span>
+            <span>아직 등록된 다른 친구들의 생각이 없습니다.</span>
+            <span class="text-[1.1rem] font-normal text-slate-500">가장 먼저 친구들을 위해 멋진 감정 분석을 공유해보세요!</span>
+          </div>
+        `;
+        return;
+      }
+
+      answers.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+
+      listContainer.innerHTML = "";
+      const parentState = getParentAppState();
+      const myStudentId = parentState.studentId || "guest";
+
+      answers.forEach(ans => {
+        const likedList = JSON.parse(localStorage.getItem("maeumon_likes") || "[]");
+        const hasLiked = likedList.includes(`${myStudentId}_${ans.id}_${currentBoardScenarioId}`);
+
+        const card = document.createElement('div');
+        card.className = "bg-[#fef08a] border-4 border-black p-2.5 flex flex-col justify-between text-black shadow-[3px_3px_0_#000] relative rounded-none animate-pop-in";
+        
+        card.style.fontFamily = "'DungGeunMo', monospace";
+
+        card.innerHTML = `
+          <div class="flex flex-col gap-1 flex-grow">
+            <div class="flex justify-between items-center border-b-2 border-black/10 pb-1.5 shrink-0 gap-2">
+              <span class="font-extrabold text-[1rem] text-[#1e293b]">👤 ${ans.sender || "익명의 친구"}</span>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <span class="text-[0.75rem] text-slate-500">${ans.timestamp ? new Date(ans.timestamp.seconds * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "방금 전"}</span>
+                <button onclick="likeAnswer('${ans.id}', this)" ${hasLiked ? 'disabled' : ''} class="flex items-center gap-0.5 px-2 py-0.5 border border-black bg-white hover:bg-pink-50 text-[0.7rem] font-extrabold shadow-[1px_1px_0_#000] active:translate-y-[0.5px] active:shadow-none transition-all disabled:bg-pink-100 disabled:text-pink-600 disabled:border-pink-300 disabled:shadow-none disabled:cursor-not-allowed cursor-pointer">
+                  <span>${hasLiked ? '❤️' : '🤍'}</span>
+                  <span>공감 ${ans.likes || 0}</span>
+                </button>
+              </div>
+            </div>
+            <div class="text-[1.1rem] font-bold leading-relaxed text-slate-800 whitespace-pre-wrap flex-grow py-1">${ans.answerText}</div>
+          </div>
+        `;
+        listContainer.appendChild(card);
+      });
+    }
+
+    function likeAnswer(docId, btn) {
+      if (typeof AudioHelper !== 'undefined' && typeof AudioHelper.playSuccess === 'function') {
+        try { AudioHelper.playSuccess(); } catch(e) {}
+      }
+
+      const parentState = getParentAppState();
+      const myStudentId = parentState.studentId || "guest";
+      const classCode = parentState.classCode;
+
+      const likedList = JSON.parse(localStorage.getItem("maeumon_likes") || "[]");
+      const key = `${myStudentId}_${docId}_${currentBoardScenarioId}`;
+      if (likedList.includes(key)) return;
+
+      likedList.push(key);
+      localStorage.setItem("maeumon_likes", JSON.stringify(likedList));
+
+      btn.disabled = true;
+      btn.innerHTML = `<span>❤️</span> <span>공감 ${Number(btn.innerText.replace(/[^0-9]/g, '')) + 1}</span>`;
+
+      if (db) {
+        const updateField = `appState.taskAnswersLikes.${currentBoardScenarioId}`;
+        const updateData = {};
+        updateData[updateField] = firebase.firestore.FieldValue.increment(1);
+
+        db.collection("students").doc(docId).update(updateData)
+          .catch(err => {
+            console.error("Firestore update likes failed:", err);
+            updateMockLike(docId);
+          });
+      } else {
+        updateMockLike(docId);
+      }
+    }
+
+    let mockAnswers = {
+      "분석1": [],
+      "분석2": []
+    };
+
+    function loadMockClassBoard(scenarioId) {
+      let list = mockAnswers[scenarioId] || [];
+      const localAdded = JSON.parse(localStorage.getItem(`maeumon_added_${scenarioId}`) || "[]");
+      const combined = [...localAdded, ...list];
+      renderClassBoardData(combined);
+    }
+
+    function updateMockLike(docId) {
+      Object.keys(mockAnswers).forEach(key => {
+        const item = mockAnswers[key].find(ans => ans.id === docId);
+        if (item) {
+          item.likes = (item.likes || 0) + 1;
+        }
+      });
+      Object.keys(mockAnswers).forEach(key => {
+        const localAdded = JSON.parse(localStorage.getItem(`maeumon_added_${key}`) || "[]");
+        const item = localAdded.find(ans => ans.id === docId);
+        if (item) {
+          item.likes = (item.likes || 0) + 1;
+          localStorage.setItem(`maeumon_added_${key}`, JSON.stringify(localAdded));
+        }
+      });
+      if (currentBoardScenarioId) {
+        loadMockClassBoard(currentBoardScenarioId);
+      }
+    }
+
+    window.openClassBoard = openClassBoard;
+    window.closeClassBoard = closeClassBoard;
+    window.refreshClassBoard = refreshClassBoard;
+    window.likeAnswer = likeAnswer;
   </script>
 </body>
 </html>

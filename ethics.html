@@ -2438,11 +2438,21 @@
         </div>
 
         <!-- 완료 연출 구역 -->
-        <div id="act1-success" class="act2-mission-step" style="display: none;">
+        <div id="act1-success" class="act2-mission-step" style="display: none; flex-direction: column; gap: 8px;">
           <div class="act2-success-card">
             <span style="font-size: 1.55rem; color: var(--point-yellow); text-shadow: 2px 2px 0 #000; margin-bottom: 8px; display: block;">🎉 활동 1 완료! 🏆</span>
             <span style="font-size: 1.02rem; line-height: 1.6; font-weight: bold; color: #000000;">성공! 친구와 타인의 권리를 존중하는 당신은 인터넷 윤리의식을 함양하였습니다.</span>
           </div>
+
+          <!-- 우리 반 친구들의 가짜뉴스 대응 보기 버튼 패널 -->
+          <div id="class-board-btn-panel" style="display: none; flex-direction: column; gap: 6px; text-align: center; padding: 14px; border: 4px solid #000; color: #fff; box-shadow: 4px 4px 0 #000; font-family: 'DungGeunMo', monospace; border-radius: 9px; margin-top: 5px; background-color: #1e293b;">
+            <span style="color: var(--point-yellow); font-weight: bold; font-size: 1.25rem;">💌 가짜뉴스 대처 메시지 공유</span>
+            <span style="font-size: 0.95rem; color: #cbd5e1;">우리 반 친구들의 가짜뉴스 팩트체크 알림 메시지를 함께 확인해 볼까요?</span>
+            <button onclick="openClassBoard('가짜 뉴스 대응 메시지')" class="retro-btn" style="background-color: #fde047 !important; color: #000 !important; font-size: 1.25rem !important; padding: 8px 16px !important; border: 2.5px solid #000 !important; box-shadow: 2px 2px 0 #000; border-radius: 6px; font-weight: bold; width: 100%; margin-top: 5px; cursor: pointer;">
+              👥 우리 반 친구들의 대응 메시지 보기
+            </button>
+          </div>
+
           <button class="retro-btn" style="background-color: var(--point-green); color: #fff; width: 100%; font-size: 1.15rem; margin-top: 15px; animation: bounceFairy 2.5s infinite ease-in-out;" onclick="goToActivity2()">
             활동 2로 이동하기 ➔
           </button>
@@ -3037,7 +3047,17 @@
         if (stageText) stageText.innerText = "체험 완료!";
         if (guideText) guideText.innerText = "성공! 가짜뉴스에 맞서 대화방의 평화와 윤리의식을 멋지게 지켜냈습니다!";
         
-        if (successPanel) successPanel.style.display = "block";
+        if (successPanel) {
+          successPanel.style.display = "flex";
+        }
+
+        // 회원일 때만 "우리 반 친구들의 대응 메시지 보기" 노란색 패널 노출!
+        const classCode = studentInfo.classCode;
+        const showBoardBtn = (classCode && classCode !== "nonmember_mode");
+        const boardPanel = document.getElementById("class-board-btn-panel");
+        if (boardPanel) {
+          boardPanel.style.display = showBoardBtn ? "flex" : "none";
+        }
         if (chatWrapper) chatWrapper.style.display = "flex";
         if (articleWrapper) articleWrapper.style.display = "none";
       }
@@ -3836,8 +3856,251 @@
         playBeepSound('success');
       }
     }
+  </script>
 
+  <!-- 우리 반 공감 보드 모달 -->
+  <div id="class-board-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex justify-center items-center p-4 select-none">
+    <div class="bg-[#1e293b] border-4 border-black w-full max-w-4xl h-[85vh] flex flex-col justify-between shadow-[8px_8px_0_#000] rounded-none" style="font-family: 'DungGeunMo', monospace;">
+      <!-- 헤더 -->
+      <div class="bg-[#312e81] border-b-4 border-black p-3.5 flex justify-between items-center text-white shrink-0">
+        <span class="text-[1.3rem] font-bold">👥 우리 반 친구들의 가짜뉴스 대응 메시지 보드</span>
+        <div class="flex items-center gap-4">
+          <!-- 수동 새로고침 아이콘 -->
+          <button onclick="refreshClassBoard()" class="text-white hover:text-yellow-300 font-extrabold text-lg" title="새로고침">🔄</button>
+          <button onclick="closeClassBoard()" class="text-white hover:text-red-400 font-extrabold text-xl">✕</button>
+        </div>
+      </div>
+      <!-- 카드 본문 (3열 그리드) -->
+      <div id="class-board-list" class="flex-grow p-4 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 no-scrollbar bg-[#1a1c23]/95 text-left">
+        <!-- 동적으로 카드들이 로드됨 -->
+      </div>
+      <!-- 푸터 -->
+      <div class="bg-[#2c3e50] border-t-4 border-black p-3 flex justify-end shrink-0">
+        <button onclick="closeClassBoard()" class="px-6 py-1.5 bg-[#fde047] hover:bg-[#facc15] text-black text-sm font-bold border-2 border-black shadow-[2px_2px_0_#000] active:translate-y-[1px] active:shadow-none">닫기</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    // ==========================================
+    // 우리 반 생각 보드 (공감 보드) 연동 엔진 이식
+    // ==========================================
+    let currentBoardScenarioId = null;
+    let classBoardUnsubscribe = null;
 
+    function getParentAppState() {
+      return studentInfo;
+    }
+
+    function openClassBoard(scenarioId) {
+      if (typeof playBeepSound === 'function') {
+        try { playBeepSound('click'); } catch(e) {}
+      }
+      currentBoardScenarioId = scenarioId;
+      const modal = document.getElementById('class-board-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.style.setProperty('display', 'flex', 'important');
+      }
+      initClassBoardListener(scenarioId);
+    }
+
+    function closeClassBoard() {
+      if (typeof playBeepSound === 'function') {
+        try { playBeepSound('click'); } catch(e) {}
+      }
+      const modal = document.getElementById('class-board-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.style.setProperty('display', 'none', 'important');
+      }
+      if (classBoardUnsubscribe) {
+        classBoardUnsubscribe();
+        classBoardUnsubscribe = null;
+      }
+    }
+
+    function refreshClassBoard() {
+      if (currentBoardScenarioId) {
+        initClassBoardListener(currentBoardScenarioId);
+      }
+    }
+
+    function initClassBoardListener(scenarioId) {
+      const listContainer = document.getElementById('class-board-list');
+      if (!listContainer) return;
+
+      if (classBoardUnsubscribe) {
+        classBoardUnsubscribe();
+      }
+
+      listContainer.innerHTML = `
+        <div class="col-span-full flex flex-col items-center justify-center text-slate-400 py-20 font-bold gap-2">
+          <span>🔄 실시간 데이터를 불러오는 중입니다...</span>
+        </div>
+      `;
+
+      const parentState = getParentAppState();
+      const classCode = parentState.classCode;
+
+      if (!db || classCode === "test_class") {
+        loadMockClassBoard(scenarioId);
+        return;
+      }
+
+      classBoardUnsubscribe = db.collection("students")
+        .where("classCode", "==", classCode)
+        .onSnapshot((snapshot) => {
+          const answers = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const studentId = data.studentId;
+            const appState = data.appState || {};
+            const answersConflict = appState.taskAnswers || {};
+            
+            // 인터넷 윤리의식 및 활용 카테고리 내의 주관식 답변 추출
+            const categoryData = answersConflict["인터넷 윤리의식 및 활용"] || {};
+            const answerText = categoryData[scenarioId];
+            
+            if (answerText) {
+              const likesMap = appState.taskAnswersLikes || {};
+              const likes = likesMap[scenarioId] || 0;
+              
+              answers.push({
+                id: doc.id,
+                studentId: studentId,
+                sender: data.studentName || studentId,
+                answerText: answerText,
+                likes: likes,
+                timestamp: data.lastUpdated
+              });
+            }
+          });
+          
+          renderClassBoardData(answers);
+        }, (error) => {
+          console.error("Firestore listen error, rolling back to mock:", error);
+          loadMockClassBoard(scenarioId);
+        });
+    }
+
+    function renderClassBoardData(answers) {
+      const listContainer = document.getElementById('class-board-list');
+      if (!listContainer) return;
+
+      if (answers.length === 0) {
+        listContainer.innerHTML = `
+          <div class="col-span-full flex flex-col items-center justify-center text-slate-400 py-16 font-bold gap-2">
+            <span class="text-3xl">👥</span>
+            <span>아직 등록된 다른 친구들의 생각이 없습니다.</span>
+            <span class="text-[1.1rem] font-normal text-slate-500">가장 먼저 친구들에게 멋진 대처법을 공유해보세요!</span>
+          </div>
+        `;
+        return;
+      }
+
+      answers.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+
+      listContainer.innerHTML = "";
+      const parentState = getParentAppState();
+      const myStudentId = parentState.studentId || "guest";
+
+      answers.forEach(ans => {
+        const likedList = JSON.parse(localStorage.getItem("maeumon_likes") || "[]");
+        const hasLiked = likedList.includes(`${myStudentId}_${ans.id}_${currentBoardScenarioId}`);
+
+        const card = document.createElement('div');
+        card.className = "bg-[#fef08a] border-4 border-black p-2.5 flex flex-col justify-between text-black shadow-[3px_3px_0_#000] relative rounded-none animate-pop-in";
+        
+        card.style.fontFamily = "'DungGeunMo', monospace";
+
+        card.innerHTML = `
+          <div class="flex flex-col gap-1 flex-grow">
+            <div class="flex justify-between items-center border-b-2 border-black/10 pb-1.5 shrink-0 gap-2">
+              <span class="font-extrabold text-[1rem] text-[#1e293b]">👤 ${ans.sender || "익명의 친구"}</span>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <span class="text-[0.75rem] text-slate-500">${ans.timestamp ? new Date(ans.timestamp.seconds * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "방금 전"}</span>
+                <button onclick="likeAnswer('${ans.id}', this)" ${hasLiked ? 'disabled' : ''} class="flex items-center gap-0.5 px-2 py-0.5 border border-black bg-white hover:bg-pink-50 text-[0.7rem] font-extrabold shadow-[1px_1px_0_#000] active:translate-y-[0.5px] active:shadow-none transition-all disabled:bg-pink-100 disabled:text-pink-600 disabled:border-pink-300 disabled:shadow-none disabled:cursor-not-allowed cursor-pointer">
+                  <span>${hasLiked ? '❤️' : '🤍'}</span>
+                  <span>공감 ${ans.likes || 0}</span>
+                </button>
+              </div>
+            </div>
+            <div class="text-[1.1rem] font-bold leading-relaxed text-slate-800 whitespace-pre-wrap flex-grow py-1">${ans.answerText}</div>
+          </div>
+        `;
+        listContainer.appendChild(card);
+      });
+    }
+
+    function likeAnswer(docId, btn) {
+      if (typeof playBeepSound === 'function') {
+        try { playBeepSound('success'); } catch(e) {}
+      }
+
+      const parentState = getParentAppState();
+      const myStudentId = parentState.studentId || "guest";
+      const classCode = parentState.classCode;
+
+      const likedList = JSON.parse(localStorage.getItem("maeumon_likes") || "[]");
+      const key = `${myStudentId}_${docId}_${currentBoardScenarioId}`;
+      if (likedList.includes(key)) return;
+
+      likedList.push(key);
+      localStorage.setItem("maeumon_likes", JSON.stringify(likedList));
+
+      btn.disabled = true;
+      btn.innerHTML = `<span>❤️</span> <span>공감 ${Number(btn.innerText.replace(/[^0-9]/g, '')) + 1}</span>`;
+
+      if (db) {
+        const updateField = `appState.taskAnswersLikes.${currentBoardScenarioId}`;
+        const updateData = {};
+        updateData[updateField] = firebase.firestore.FieldValue.increment(1);
+
+        db.collection("students").doc(docId).update(updateData)
+          .catch(err => {
+            console.error("Firestore update likes failed:", err);
+            updateMockLike(docId);
+          });
+      } else {
+        updateMockLike(docId);
+      }
+    }
+
+    let mockAnswers = {
+      "가짜 뉴스 대응 메시지": []
+    };
+
+    function loadMockClassBoard(scenarioId) {
+      let list = mockAnswers[scenarioId] || [];
+      const localAdded = JSON.parse(localStorage.getItem(`maeumon_added_${scenarioId}`) || "[]");
+      const combined = [...localAdded, ...list];
+      renderClassBoardData(combined);
+    }
+
+    function updateMockLike(docId) {
+      Object.keys(mockAnswers).forEach(key => {
+        const item = mockAnswers[key].find(ans => ans.id === docId);
+        if (item) {
+          item.likes = (item.likes || 0) + 1;
+        }
+      });
+      Object.keys(mockAnswers).forEach(key => {
+        const localAdded = JSON.parse(localStorage.getItem(`maeumon_added_${key}`) || "[]");
+        const item = localAdded.find(ans => ans.id === docId);
+        if (item) {
+          item.likes = (item.likes || 0) + 1;
+          localStorage.setItem(`maeumon_added_${key}`, JSON.stringify(localAdded));
+        }
+      });
+      if (currentBoardScenarioId) {
+        loadMockClassBoard(currentBoardScenarioId);
+      }
+    }
+
+    window.openClassBoard = openClassBoard;
+    window.closeClassBoard = closeClassBoard;
+    window.refreshClassBoard = refreshClassBoard;
+    window.likeAnswer = likeAnswer;
   </script>
 
   <!-- 이미지 확대 모달 -->
