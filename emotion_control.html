@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>사이버 감정조절 - 감정 컨트롤 센터</title>
   
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Firebase SDK Compat 버전 (실시간 DB 연동용) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  
   <!-- 둥근모꼴 폰트 (로컬 로드) -->
   
   <style>
@@ -1717,6 +1722,59 @@
   </div>
 
   <script>
+    // ==========================================
+    // Firebase 실시간 DB 초기화 & 동기화
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyD0MWdkXCdH0yfdjQxDYw08Zx3kOWoFe7Q",
+      authDomain: "cybertest-b2d53.firebaseapp.com",
+      projectId: "cybertest-b2d53",
+      storageBucket: "cybertest-b2d53.firebasestorage.app",
+      messagingSenderId: "969068841275",
+      appId: "1:969068841275:web:04f7786f2dd40251f8cf1e"
+    };
+
+    let db = null;
+    try {
+      if (typeof firebase !== 'undefined') {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+      }
+    } catch (e) {
+      console.warn("Firebase initialization skipped or failed:", e);
+    }
+
+    let studentInfo = {
+      classCode: "test_class",
+      studentId: "test_student",
+      studentName: "테스터"
+    };
+
+    window.addEventListener('message', function(event) {
+      if (event.data && event.data.type === 'RES_STUDENT_INFO') {
+        studentInfo.classCode = event.data.classCode;
+        studentInfo.studentId = event.data.studentId;
+        studentInfo.studentName = event.data.studentName;
+        console.log("Synchronized student info from parent:", studentInfo);
+      }
+    });
+
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'REQ_STUDENT_INFO' }, '*');
+      }
+    } catch(e) {}
+
+    // 실시간 데이터 백업용 (상황 1, 상황 2 데이터 보존 및 덮어쓰기 방지)
+    const answersBackup = {
+      "첫 번째 나 전달법 - 사실": "",
+      "첫 번째 나 전달법 - 감정": "",
+      "첫 번째 나 전달법 - 부탁": "",
+      "두 번째 나 전달법 - 사실": "",
+      "두 번째 나 전달법 - 감정": "",
+      "두 번째 나 전달법 - 부탁": ""
+    };
+
     // =========================================
     // 상황 데이터 정의
     // =========================================
@@ -2720,6 +2778,33 @@
         return;
       }
 
+      // 전역 백업 변수 업데이트 및 Firestore 실시간 즉시 업로드
+      const sitKey = activeSituationId === 1 ? "첫 번째 나 전달법" : "두 번째 나 전달법";
+      answersBackup[`${sitKey} - 사실`] = factText;
+      answersBackup[`${sitKey} - 감정`] = emotionText;
+      answersBackup[`${sitKey} - 부탁`] = requestText;
+
+      const classCode = studentInfo.classCode;
+      const studentId = studentInfo.studentId || "test_student";
+      const studentName = studentInfo.studentName || studentId;
+
+      if (db && classCode && classCode !== "nonmember_mode" && classCode !== "test_class") {
+        const docId = `${classCode}_${studentId}`;
+        const updateData = {
+          classCode: classCode,
+          studentId: studentId,
+          studentName: studentName,
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        updateData[`appState.taskAnswers.사이버 감정조절.${sitKey} - 사실`] = factText;
+        updateData[`appState.taskAnswers.사이버 감정조절.${sitKey} - 감정`] = emotionText;
+        updateData[`appState.taskAnswers.사이버 감정조절.${sitKey} - 부탁`] = requestText;
+
+        db.collection("students").doc(docId).update(updateData)
+          .then(() => console.log(`Realtime ${sitKey} saved successfully!`))
+          .catch(err => console.error(`Realtime ${sitKey} save failed:`, err));
+      }
+
       // 문장 이어붙여 합치기
       const fullTranslatedMessage = `${factText} ${emotionText} ${requestText}`;
 
@@ -2833,16 +2918,16 @@
 
       if (inIframe) {
         try {
-          const factVal = document.getElementById('act2-input-fact') ? document.getElementById('act2-input-fact').value.trim() : "";
-          const emotionVal = document.getElementById('act2-input-emotion') ? document.getElementById('act2-input-emotion').value.trim() : "";
-          const requestVal = document.getElementById('act2-input-request') ? document.getElementById('act2-input-request').value.trim() : "";
           window.parent.postMessage({ 
             type: 'TASK_COMPLETE', 
             category: '사이버 감정조절',
             answers: {
-              "나 전달법 - 사실": factVal,
-              "나 전달법 - 감정": emotionVal,
-              "나 전달법 - 부탁": requestVal
+              "첫 번째 나 전달법 - 사실": answersBackup["첫 번째 나 전달법 - 사실"],
+              "첫 번째 나 전달법 - 감정": answersBackup["첫 번째 나 전달법 - 감정"],
+              "첫 번째 나 전달법 - 부탁": answersBackup["첫 번째 나 전달법 - 부탁"],
+              "두 번째 나 전달법 - 사실": answersBackup["두 번째 나 전달법 - 사실"],
+              "두 번째 나 전달법 - 감정": answersBackup["두 번째 나 전달법 - 감정"],
+              "두 번째 나 전달법 - 부탁": answersBackup["두 번째 나 전달법 - 부탁"]
             }
           }, '*');
           return;

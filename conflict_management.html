@@ -1805,7 +1805,6 @@
         // 기존 약속
         "갈등 원인 분석": state.completedPromises[0] || "",
         "갈등 태도 조율": state.completedPromises[1] || "",
-        "실천 서약 약속": state.completedPromises[2] || "",
 
         // 활동 1 주관식 데이터
         "game_chat": state.completedPromises[0] || "",
@@ -1815,10 +1814,7 @@
         "scenario_reply_target_oo": act2State.userAnswers["scenario_reply_target_oo"] || "",
         "scenario_reply_target1": act2State.userAnswers["scenario_reply_target1"] || "",
         "scenario_night_target1": act2State.userAnswers["scenario_night_target1"] || "",
-        "scenario_night_target2": act2State.userAnswers["scenario_night_target2"] || "",
-        
-        // 과거 본체 스키마 호환용 키 (이미지 빈 띠 해결용)
-        "갈등관리 평화 약속": state.completedPromises[2] || ""
+        "scenario_night_target2": act2State.userAnswers["scenario_night_target2"] || ""
       };
 
       if (inIframe) {
@@ -2720,9 +2716,7 @@
           window.parent.postMessage({ 
             type: 'TASK_COMPLETE', 
             category: '사이버 갈등관리 및 문제해결',
-            answers: {
-              "갈등관리 평화 약속": promiseVal
-            }
+            answers: {}
           }, '*');
           return;
         } catch (err) {

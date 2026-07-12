@@ -9,6 +9,9 @@
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Firebase SDK Compat 버전 (실시간 DB 연동용) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -1177,6 +1180,55 @@
   <div id="success-toast"></div>
 
   <script>
+    // ==========================================
+    // Firebase 실시간 DB 초기화 & 동기화
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyD0MWdkXCdH0yfdjQxDYw08Zx3kOWoFe7Q",
+      authDomain: "cybertest-b2d53.firebaseapp.com",
+      projectId: "cybertest-b2d53",
+      storageBucket: "cybertest-b2d53.firebasestorage.app",
+      messagingSenderId: "969068841275",
+      appId: "1:969068841275:web:04f7786f2dd40251f8cf1e"
+    };
+
+    let db = null;
+    try {
+      if (typeof firebase !== 'undefined') {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+      }
+    } catch (e) {
+      console.warn("Firebase initialization skipped or failed:", e);
+    }
+
+    let studentInfo = {
+      classCode: "test_class",
+      studentId: "test_student",
+      studentName: "테스터"
+    };
+
+    window.addEventListener('message', function(event) {
+      if (event.data && event.data.type === 'RES_STUDENT_INFO') {
+        studentInfo.classCode = event.data.classCode;
+        studentInfo.studentId = event.data.studentId;
+        studentInfo.studentName = event.data.studentName;
+        console.log("Synchronized student info from parent:", studentInfo);
+      }
+    });
+
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'REQ_STUDENT_INFO' }, '*');
+      }
+    } catch(e) {}
+
+    // 실시간 데이터 백업용 (DOM 요소 소멸 대비 및 덮어쓰기 방지)
+    const answersBackup = {
+      "감정분석1": "",
+      "감정분석2": ""
+    };
+
     // =========================================
     // [1] Web Audio API 8비트 사운드 믹서
     // =========================================
@@ -1998,6 +2050,31 @@
         const text = document.getElementById('reflection-textarea').value.trim();
         if (text.length < 5) return;
 
+        // 전역 백업 변수에 값 기록
+        const curIdx = state.stage1.activeScenarioIdx;
+        const keyName = curIdx === 0 ? "감정분석1" : "감정분석2";
+        answersBackup[keyName] = text;
+
+        // Firestore에 즉시 실시간 업로드 및 저장
+        const classCode = studentInfo.classCode;
+        const studentId = studentInfo.studentId || "test_student";
+        const studentName = studentInfo.studentName || studentId;
+
+        if (db && classCode && classCode !== "nonmember_mode" && classCode !== "test_class") {
+          const docId = `${classCode}_${studentId}`;
+          const updateData = {
+            classCode: classCode,
+            studentId: studentId,
+            studentName: studentName,
+            lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+          };
+          updateData[`appState.taskAnswers.사이버 공감.${keyName}`] = text;
+
+          db.collection("students").doc(docId).update(updateData)
+            .then(() => console.log(`Realtime ${keyName} saved successfully!`))
+            .catch(err => console.error(`Realtime ${keyName} save failed:`, err));
+        }
+
         AudioHelper.playPop();
 
         // 1. 성찰 상자 숨기기
@@ -2016,7 +2093,6 @@
         if (actionRow) actionRow.classList.remove('hidden');
 
         // 4. 다음 상황 로드 로직
-        const curIdx = state.stage1.activeScenarioIdx;
         if (curIdx < state.stage1.scenarios.length - 1) {
           state.stage1.activeScenarioIdx++;
           setupScenario();
@@ -2470,12 +2546,12 @@
 
       if (inIframe) {
         try {
-          const reflectionVal = document.getElementById('reflection-textarea') ? document.getElementById('reflection-textarea').value.trim() : "";
           window.parent.postMessage({ 
             type: 'TASK_COMPLETE', 
             category: '사이버 공감',
             answers: {
-              "성찰 일기": reflectionVal
+              "감정분석1": answersBackup["감정분석1"],
+              "감정분석2": answersBackup["감정분석2"]
             }
           }, '*');
           return; // Stop execution to prevent fallback redirect

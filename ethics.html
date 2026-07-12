@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>인터넷 윤리의식 스테이지</title>
   
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Firebase SDK Compat 버전 (실시간 DB 연동용) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  
   <!-- 둥근모꼴 폰트 (로컬 로드) -->
   
   <style>
@@ -2654,6 +2659,55 @@
     </div>
 
   <script>
+    // ==========================================
+    // Firebase 실시간 DB 초기화 & 동기화
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyD0MWdkXCdH0yfdjQxDYw08Zx3kOWoFe7Q",
+      authDomain: "cybertest-b2d53.firebaseapp.com",
+      projectId: "cybertest-b2d53",
+      storageBucket: "cybertest-b2d53.firebasestorage.app",
+      messagingSenderId: "969068841275",
+      appId: "1:969068841275:web:04f7786f2dd40251f8cf1e"
+    };
+
+    let db = null;
+    try {
+      if (typeof firebase !== 'undefined') {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+      }
+    } catch (e) {
+      console.warn("Firebase initialization skipped or failed:", e);
+    }
+
+    let studentInfo = {
+      classCode: "test_class",
+      studentId: "test_student",
+      studentName: "테스터"
+    };
+
+    window.addEventListener('message', function(event) {
+      if (event.data && event.data.type === 'RES_STUDENT_INFO') {
+        studentInfo.classCode = event.data.classCode;
+        studentInfo.studentId = event.data.studentId;
+        studentInfo.studentName = event.data.studentName;
+        console.log("Synchronized student info from parent:", studentInfo);
+      }
+    });
+
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'REQ_STUDENT_INFO' }, '*');
+      }
+    } catch(e) {}
+
+    // 실시간 데이터 백업용 (DOM 요소 소멸 대비 및 덮어쓰기 방지)
+    const answersBackup = {
+      "가짜 뉴스 대응 메시지": "",
+      "허락 구하기": ""
+    };
+
     // =========================================
     // 전역 관리 변수 & 상태 설정
     // =========================================
@@ -3162,6 +3216,29 @@
       if (typeof act1State !== 'undefined') {
         act1State.replyText = text;
       }
+
+      // 전역 백업 변수에 값 기록
+      answersBackup["가짜 뉴스 대응 메시지"] = text;
+
+      // Firestore에 즉시 실시간 업로드 및 저장
+      const classCode = studentInfo.classCode;
+      const studentId = studentInfo.studentId || "test_student";
+      const studentName = studentInfo.studentName || studentId;
+
+      if (db && classCode && classCode !== "nonmember_mode" && classCode !== "test_class") {
+        const docId = `${classCode}_${studentId}`;
+        const updateData = {
+          classCode: classCode,
+          studentId: studentId,
+          studentName: studentName,
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        updateData[`appState.taskAnswers.인터넷 윤리의식 및 활용.가짜 뉴스 대응 메시지`] = text;
+
+        db.collection("students").doc(docId).update(updateData)
+          .then(() => console.log("Realtime fake news message saved successfully!"))
+          .catch(err => console.error("Realtime fake news message save failed:", err));
+      }
       
       // Add my typed message to chat
       const chatBody = document.getElementById("act1-chat-body");
@@ -3232,16 +3309,12 @@
       playBeepSound('success');
       try {
         if (window.parent && window.parent !== window) {
-          const replyVal = (typeof act1State !== 'undefined' && act1State.replyText) ? act1State.replyText : "";
-          const inputEl = document.getElementById("act2-step1-input");
-          const signVal = inputEl ? inputEl.value.trim() : "";
-
           window.parent.postMessage({ 
             type: 'TASK_COMPLETE', 
             category: '인터넷 윤리의식 및 활용',
             answers: {
-              "가짜뉴스 대응 메시지": replyVal,
-              "나만의 선플 약속": signVal
+              "가짜 뉴스 대응 메시지": answersBackup["가짜 뉴스 대응 메시지"],
+              "허락 구하기": answersBackup["허락 구하기"]
             }
           }, '*');
         } else {
@@ -3403,6 +3476,30 @@
       }
       
       playBeepSound('success');
+
+      // 전역 백업 변수에 값 기록
+      answersBackup["허락 구하기"] = inputVal;
+
+      // Firestore에 즉시 실시간 업로드 및 저장
+      const classCode = studentInfo.classCode;
+      const studentId = studentInfo.studentId || "test_student";
+      const studentName = studentInfo.studentName || studentId;
+
+      if (db && classCode && classCode !== "nonmember_mode" && classCode !== "test_class") {
+        const docId = `${classCode}_${studentId}`;
+        const updateData = {
+          classCode: classCode,
+          studentId: studentId,
+          studentName: studentName,
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        updateData[`appState.taskAnswers.인터넷 윤리의식 및 활용.허락 구하기`] = inputVal;
+
+        db.collection("students").doc(docId).update(updateData)
+          .then(() => console.log("Realtime permission message saved successfully!"))
+          .catch(err => console.error("Realtime permission message save failed:", err));
+      }
+
       showToast("훌륭합니다! 다정하게 동의를 구하고 배려했으니 이제 다음 단계로 넘어갑니다.");
       
       act2State.currentStep = 2;

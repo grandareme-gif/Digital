@@ -1860,6 +1860,15 @@
       currentStage: 1,
       stageCompleted: {}
     };
+
+    // 실시간 데이터 백업용 (DOM 요소가 교체되어 사라지는 현상 대비)
+    const answersBackup = {
+      answer1: "",
+      happinessVal: "",
+      hashtagVal: "",
+      stickerVal: "",
+      commentVal: ""
+    };
     
     // Switch View
     function switchView(viewId) {
@@ -2275,6 +2284,30 @@
         return;
       }
 
+      // 전역 백업 변수에 값 기록
+      answersBackup.answer1 = inputVal;
+
+      // Firestore에 즉시 실시간 업로드 및 저장
+      const parentState = getParentAppState();
+      const classCode = parentState.classCode;
+      const studentId = parentState.studentId || "test_student";
+      const studentName = parentState.studentName || studentId;
+
+      if (db && classCode && classCode !== "nonmember_mode" && classCode !== "test_class") {
+        const docId = `${classCode}_${studentId}`;
+        const updateData = {
+          classCode: classCode,
+          studentId: studentId,
+          studentName: studentName,
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        updateData[`appState.taskAnswers.사이버 자기존중감.질문 1 (지은 분석)`] = inputVal;
+        
+        db.collection("students").doc(docId).update(updateData)
+          .then(() => console.log("Realtime answer1 saved successfully!"))
+          .catch(err => console.error("Realtime answer1 save failed:", err));
+      }
+
       const hintBtn = document.getElementById("btn-toggle-act1-hint");
       if (hintBtn) {
         hintBtn.disabled = true;
@@ -2323,6 +2356,34 @@
         triggerPhoneShake();
         alert("빈칸 없이 모든 항목을 알맞게 입력해 주세요!");
         return;
+      }
+
+      // 전역 백업 변수에 값 기록
+      answersBackup.happinessVal = happiness;
+      answersBackup.hashtagVal = hashtag;
+      answersBackup.stickerVal = stickerName;
+
+      // Firestore에 즉시 실시간 업로드 및 저장
+      const parentState = getParentAppState();
+      const classCode = parentState.classCode;
+      const studentId = parentState.studentId || "test_student";
+      const studentName = parentState.studentName || studentId;
+
+      if (db && classCode && classCode !== "nonmember_mode" && classCode !== "test_class") {
+        const docId = `${classCode}_${studentId}`;
+        const updateData = {
+          classCode: classCode,
+          studentId: studentId,
+          studentName: studentName,
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        updateData[`appState.taskAnswers.사이버 자기존중감.질문 2 (행복 내용)`] = happiness;
+        updateData[`appState.taskAnswers.사이버 자기존중감.질문 2 (해시태그)`] = hashtag;
+        updateData[`appState.taskAnswers.사이버 자기존중감.질문 2 (스티커 이름)`] = stickerName;
+        
+        db.collection("students").doc(docId).update(updateData)
+          .then(() => console.log("Realtime stage2 answers saved successfully!"))
+          .catch(err => console.error("Realtime stage2 answers save failed:", err));
       }
 
       playBeepSound("success");
@@ -2453,6 +2514,9 @@
       // 버튼 및 입력 비활성화
       document.getElementById("act2-comment-input").disabled = true;
       document.getElementById("btn-submit-comment").disabled = true;
+
+      // 전역 백업 변수에 값 기록
+      answersBackup.commentVal = commentText;
 
       // 칭찬 댓글이 전송되었으므로 Firestore에 실시간 선제 업로드 실행!
       const parentState = getParentAppState();
@@ -2722,11 +2786,11 @@
 
       if (inIframe) {
         try {
-          const answer1 = document.getElementById('writing-textarea-input') ? document.getElementById('writing-textarea-input').value.trim() : "";
-          const happinessVal = document.getElementById('input-happiness') ? document.getElementById('input-happiness').value.trim() : "";
-          const hashtagVal = document.getElementById('input-hashtag') ? document.getElementById('input-hashtag').value.trim() : "";
-          const stickerVal = document.getElementById('input-sticker-name') ? document.getElementById('input-sticker-name').value.trim() : "";
-          const commentVal = document.getElementById('act2-comment-input') ? document.getElementById('act2-comment-input').value.trim() : "";
+          const answer1 = answersBackup.answer1;
+          const happinessVal = answersBackup.happinessVal;
+          const hashtagVal = answersBackup.hashtagVal;
+          const stickerVal = answersBackup.stickerVal;
+          const commentVal = answersBackup.commentVal;
           
           window.parent.postMessage({ 
             type: 'TASK_COMPLETE', 
