@@ -838,7 +838,10 @@ window.selectMonitorClass = function(classCode) {
         if (data.appState && data.appState.completedTasks) {
           const completed = data.appState.completedTasks;
           taskBadges = completed.map(t => {
-            return `<span onclick="showStudentDetailAnswers('${docId}', '${t}')" style="background: #2ed573; color: #fff; padding: 2px 6px; border-radius: 3px; font-size: 0.8rem; margin: 2px; display: inline-block; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1" title="클릭하여 답변 보기">${t} 🌟</span>`;
+            const isPromise = t === "사이버 어울림 약속";
+            const color = isPromise ? "#9b59b6" : "#2ed573";
+            const icon = isPromise ? "🤝" : "🌟";
+            return `<span onclick="showStudentDetailAnswers('${docId}', '${t}')" style="background: ${color}; color: #fff; padding: 2px 6px; border-radius: 3px; font-size: 0.8rem; margin: 2px; display: inline-block; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1" title="클릭하여 답변 보기">${t} ${icon}</span>`;
           }).join(' ') || '<span style="color:#aaa;">진행 전 ❄️</span>';
         }
 
@@ -1839,7 +1842,7 @@ const outroScenes = [
     bgName: "마음웹",
     bgImg: "images/story_bg7.webp",
     speaker: "마음 온(ON)",
-    text: "이제 넌 온라인에서 생긴 오해와 상처를 스스로 치유할 수 있는 멋진 힘을 가지게 된 거야! <span style='color: #00ff88;'>현실 교실</span>로 돌아가서도 이 따뜻한 마음 온도를 꼭 유지해 줘. 약속할 수 있지?",
+    text: "이제 넌 <span style='color: #00ff88;'>사이버어울림 역량</span>을 모두 갖추었어. <span style='color: #00ff88;'>현실 교실</span>로 돌아가서도 이 마음을 유지해줘. 약속할 수 있지?",
     showFairy: true,
     isPromiseScene: true
   },
@@ -1984,6 +1987,14 @@ window.prevOutroScene = function() {
 }
 
 window.promiseAndContinue = function() {
+  if (window.appState && window.appState.isClassMode) {
+    showCyberPromiseModal();
+  } else {
+    proceedOriginalPromiseFlow();
+  }
+}
+
+function proceedOriginalPromiseFlow() {
   const promiseBtn = document.getElementById('outro-promise-btn');
   if (promiseBtn) promiseBtn.style.display = 'none';
 
@@ -2648,6 +2659,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 전역 키보드 제어 (방향키 및 스페이스바/엔터키로 인트로/아웃트로 대사 진행 및 이전 이동)
 window.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+    return;
+  }
   const viewPrologue = document.getElementById('view-prologue');
   const viewOutro = document.getElementById('view-outro');
 
@@ -2685,3 +2699,252 @@ window.addEventListener('keydown', (e) => {
     }
   }
 });
+
+// ==========================================
+// [사이버 어울림 약속 관련 모달 및 실시간 연동 기능]
+// ==========================================
+let cyberPromiseUnsubscribe = null;
+
+window.showCyberPromiseModal = function() {
+  const modal = document.getElementById('cyber-promise-modal');
+  if (!modal) return;
+  
+  modal.style.display = 'flex';
+  
+  // UI 상태 초기화
+  document.getElementById('promise-step-write').style.display = 'flex';
+  document.getElementById('promise-step-sign').style.display = 'none';
+  document.getElementById('promise-step-complete').style.display = 'none';
+  
+  document.getElementById('promise-input').value = "";
+  document.getElementById('promise-name-input').value = "";
+  document.getElementById('promise-signature-display').style.display = 'none';
+  
+  // 실시간 구독 시작
+  startCyberPromiseListener();
+};
+
+function startCyberPromiseListener() {
+  const classCode = window.appState.classCode;
+  if (!classCode) return;
+  
+  if (!useFirebase || classCode === "test_class") {
+    loadMockCyberPromises();
+    return;
+  }
+  
+  if (cyberPromiseUnsubscribe) {
+    cyberPromiseUnsubscribe();
+    cyberPromiseUnsubscribe = null;
+  }
+  
+  try {
+    cyberPromiseUnsubscribe = db.collection("students")
+      .where("classCode", "==", classCode)
+      .onSnapshot((snapshot) => {
+        const promises = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const appState = data.appState || {};
+          const answers = appState.taskAnswers || {};
+          const promiseData = answers["사이버 어울림 약속"] || {};
+          const text = promiseData["약속 내용"];
+          const name = promiseData["서명 이름"];
+          if (text) {
+            promises.push({
+              id: doc.id,
+              sender: name || data.studentName || data.studentId || "친구",
+              text: text,
+              isSigned: !!name
+            });
+          }
+        });
+        renderCyberPromiseBoard(promises);
+      }, (error) => {
+        console.error("사이버 약속 구독 에러, 가상 데이터 로딩:", error);
+        loadMockCyberPromises();
+      });
+  } catch (err) {
+    console.error("리스너 등록 실패, 가상 데이터 로딩:", err);
+    loadMockCyberPromises();
+  }
+}
+
+function renderCyberPromiseBoard(promises) {
+  const container = document.getElementById('promise-board-list');
+  if (!container) return;
+  
+  if (promises.length === 0) {
+    container.innerHTML = `
+      <div style="grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #8a99ad; padding: 40px 10px; text-align: center;">
+        <span style="font-size: 2rem; margin-bottom: 5px;">🤝</span>
+        <span>우리 반 첫 번째 어울림 약속을 남겨보세요!</span>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = "";
+  promises.forEach(p => {
+    const card = document.createElement('div');
+    card.style.background = "#1a2a42";
+    card.style.border = "2px solid #000";
+    card.style.padding = "10px";
+    card.style.position = "relative";
+    card.style.display = "flex";
+    card.style.flexDirection = "column";
+    card.style.justifyContent = "space-between";
+    card.style.boxShadow = "3px 3px 0 #000";
+    
+    let badgeHtml = "";
+    if (p.isSigned) {
+      badgeHtml = `<span style="background: #00ff88; color: #000; font-size: 0.75rem; padding: 2px 5px; font-weight: bold; border: 1px solid #000; border-radius: 2px; position: absolute; top: -8px; right: 5px; box-shadow: 2px 2px 0 #000;">서약완료</span>`;
+    }
+    
+    card.innerHTML = `
+      ${badgeHtml}
+      <div style="font-size: 0.95rem; color: #fff; line-height: 1.4; word-break: break-all; margin-bottom: 8px;">
+        " 나는 <span style="color: var(--point-yellow); font-weight: bold;">${p.text}</span>(을)를 실천하겠습니다. "
+      </div>
+      <div style="font-size: 0.85rem; color: #50e3c2; font-weight: bold; text-align: right; border-top: 1px dashed #334e68; padding-top: 4px; margin-top: auto;">
+        👤 약속자: ${p.sender}
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+window.submitCyberPromise = function() {
+  const promiseInput = document.getElementById('promise-input');
+  if (!promiseInput) return;
+  
+  const val = promiseInput.value.trim();
+  if (!val) {
+    alert("사이버 공간에서 실천할 약속 내용을 입력해주세요!");
+    return;
+  }
+  
+  if (!window.appState.taskAnswers) window.appState.taskAnswers = {};
+  if (!window.appState.taskAnswers["사이버 어울림 약속"]) window.appState.taskAnswers["사이버 어울림 약속"] = {};
+  
+  window.appState.taskAnswers["사이버 어울림 약속"]["약속 내용"] = val;
+  
+  if (!window.appState.completedTasks.includes("사이버 어울림 약속")) {
+    window.appState.completedTasks.push("사이버 어울림 약속");
+  }
+  
+  saveLocalState();
+  
+  // UI 단계 이동: 서명 입력 열기
+  document.getElementById('promise-step-write').style.display = 'none';
+  document.getElementById('promise-step-sign').style.display = 'flex';
+  
+  // 만약 오프라인/가상모드라면 즉시 보드에 내 답변 반영
+  const classCode = window.appState.classCode;
+  if (!useFirebase || classCode === "test_class") {
+    loadMockCyberPromises();
+  }
+};
+
+window.submitCyberPledgeSign = function() {
+  const nameInput = document.getElementById('promise-name-input');
+  if (!nameInput) return;
+  
+  const val = nameInput.value.trim();
+  if (!val) {
+    alert("서약서에 서명할 이름을 입력해주세요!");
+    return;
+  }
+  
+  if (!window.appState.taskAnswers["사이버 어울림 약속"]) {
+    window.appState.taskAnswers["사이버 어울림 약속"] = {};
+  }
+  window.appState.taskAnswers["사이버 어울림 약속"]["서명 이름"] = val;
+  
+  saveLocalState();
+  
+  // 서명 완료 화면 업데이트
+  document.getElementById('promise-signature-name').innerText = val;
+  document.getElementById('promise-signature-display').style.display = 'block';
+  
+  // UI 단계 이동: 완료 제어 열기
+  document.getElementById('promise-step-sign').style.display = 'none';
+  document.getElementById('promise-step-complete').style.display = 'flex';
+  
+  // 만약 오프라인/가상모드라면 내 서명까지 포함하여 보드 다시 렌더링
+  const classCode = window.appState.classCode;
+  if (!useFirebase || classCode === "test_class") {
+    loadMockCyberPromises();
+  }
+};
+
+window.captureAndDownloadPromise = function() {
+  const captureArea = document.getElementById('promise-capture-area');
+  if (!captureArea) return;
+  
+  // html2canvas가 숨겨지거나 스크롤되는 영역을 다 캡처하기 위해 스타일 임시 변경
+  const originalMaxHeight = captureArea.style.maxHeight;
+  const originalOverflowY = captureArea.style.overflowY;
+  
+  captureArea.style.maxHeight = 'none';
+  captureArea.style.overflowY = 'visible';
+  
+  html2canvas(captureArea, {
+    backgroundColor: '#111d2e',
+    scale: 2,
+    useCORS: true
+  }).then(canvas => {
+    // 스타일 복원
+    captureArea.style.maxHeight = originalMaxHeight;
+    captureArea.style.overflowY = originalOverflowY;
+    
+    const link = document.createElement('a');
+    const myName = (window.appState.taskAnswers["사이버 어울림 약속"] && window.appState.taskAnswers["사이버 어울림 약속"]["서명 이름"]) 
+      || window.appState.studentName 
+      || '학생';
+    link.download = `우리반_사이버_어울림_약속_${myName}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+    
+    alert("📸 우리반 사이버 어울림 약속 이미지 저장이 완료되었습니다!");
+  }).catch(err => {
+    console.error("약속판 캡처 오류:", err);
+    // 스타일 복원
+    captureArea.style.maxHeight = originalMaxHeight;
+    captureArea.style.overflowY = originalOverflowY;
+    alert("이미지 저장에 실패했습니다. 다시 시도해 주세요.");
+  });
+};
+
+window.completeCyberPromiseFlow = function() {
+  // 모달 닫기
+  const modal = document.getElementById('cyber-promise-modal');
+  if (modal) modal.style.display = 'none';
+  
+  // Firestore 실시간 리스너 해제
+  if (cyberPromiseUnsubscribe) {
+    cyberPromiseUnsubscribe();
+    cyberPromiseUnsubscribe = null;
+  }
+  
+  // 원래 소용돌이 연출 진행 후 아웃트로 교실 씬 전환
+  proceedOriginalPromiseFlow();
+};
+
+function loadMockCyberPromises() {
+  const myPromise = (window.appState.taskAnswers && window.appState.taskAnswers["사이버 어울림 약속"]) || {};
+  const promises = [
+    { sender: "김지민", text: "상처를 주는 무심한 단답 대신 정성스럽게 답장하기", isSigned: true },
+    { sender: "이도윤", text: "인터넷에 퍼진 정보나 소문은 반드시 사실인지 먼저 확인해보기", isSigned: true },
+    { sender: "최예은", text: "상대방의 입장에서 생각하며 따뜻하게 공감해주는 선플 쓰기", isSigned: true }
+  ];
+  
+  if (myPromise["약속 내용"]) {
+    promises.unshift({
+      sender: myPromise["서명 이름"] || window.appState.studentName || window.appState.studentId || "나",
+      text: myPromise["약속 내용"],
+      isSigned: !!myPromise["서명 이름"]
+    });
+  }
+  renderCyberPromiseBoard(promises);
+}

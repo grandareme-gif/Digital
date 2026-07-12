@@ -469,6 +469,62 @@
         <button class="retro-btn" id="custom-alert-ok-btn" style="font-size: 1.1rem; padding: 8px 24px; background-color: var(--point-yellow); color: #000; box-shadow: 3px 3px 0 #000; align-self: center; font-family: 'DungGeunMo', monospace; font-weight: bold; border-radius: 0;">확인</button>
       </div>
     </div>
+    
+    <!-- 13. 우리반 사이버 어울림 약속 모달 -->
+    <div id="cyber-promise-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; padding: 20px; font-family: 'DungGeunMo', monospace;">
+      <div style="background: #232d3f; border: var(--pixel-thick) solid #000; padding: 25px; width: 95%; max-width: 700px; box-shadow: 8px 8px 0 #000; display: flex; flex-direction: column; max-height: 85%; position: relative;">
+        <h2 style="color: var(--point-yellow); font-size: 1.8rem; margin-bottom: 15px; text-shadow: 2px 2px 0 #000; text-align: center; font-weight: bold; font-family: 'DungGeunMo', monospace;">🤝 우리반 사이버 어울림 약속</h2>
+        
+        <!-- 캡처 대상 영역 (html2canvas) -->
+        <div id="promise-capture-area" style="background: #111d2e; border: 3px solid #000; padding: 20px; display: flex; flex-direction: column; flex-grow: 1; overflow-y: auto; margin-bottom: 15px; position: relative;">
+          <!-- 꾸미기 장식 데코 -->
+          <div style="font-size: 0.85rem; color: #50e3c2; text-shadow: 1px 1px 0 #000; margin-bottom: 10px; font-weight: bold; border-bottom: 1px dashed #334e68; padding-bottom: 5px;">
+            <span>🌐 AI 마음 온(ON) 사이버 어울림 약속</span>
+          </div>
+          
+          <!-- 친구들의 약속들 (답변 보드 형식) -->
+          <div style="font-size: 1rem; color: #fff; margin-bottom: 8px; font-weight: bold;">👥 우리 반 친구들이 나누는 다짐들</div>
+          <div id="promise-board-list" style="flex-grow: 1; min-height: 180px; max-height: 250px; overflow-y: auto; background: #0c1524; border: 2px solid #000; padding: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
+            <!-- 친구들의 약속들이 카드 형태로 실시간 연동되어 드감 -->
+          </div>
+          
+          <!-- 내 약속 서약 서명 영역 -->
+          <div id="promise-my-pledge-signature" style="border-top: 1px dashed #334e68; padding-top: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60px;">
+            <div id="promise-signature-display" style="display: none; color: #00ff88; font-size: 1.3rem; font-weight: bold; text-align: center; text-shadow: 1px 1px 0 #000;">
+              ✍️ 서약 완료: <span id="promise-signature-name" style="color: var(--point-yellow); border-bottom: 2px solid var(--point-yellow); padding: 0 10px; font-size: 1.4rem;">익명</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 입력 및 인터랙션 컨트롤 영역 (캡처 제외) -->
+        <div id="promise-control-panel" style="display: flex; flex-direction: column; gap: 12px;">
+          <!-- Step 1: 약속 입력하기 -->
+          <div id="promise-step-write" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+            <div style="color: #fff; font-size: 1.25rem; text-align: center; word-break: keep-all; font-weight: bold; line-height: 1.5;">
+              나는 사이버 공간에서
+              <input type="text" id="promise-input" class="retro-input" style="width: 280px; text-align: center; font-size: 1.1rem; display: inline-block; margin: 0 10px; background: #000; color: var(--point-yellow); border: 2px solid #000; padding: 6px; box-shadow: 2px 2px 0 #000; margin-bottom: 0;" placeholder="어떤 것을 실천할지 적어보세요">
+              을/를 실천하겠습니다.
+            </div>
+            <button class="retro-btn" onclick="submitCyberPromise()" style="background-color: var(--point-yellow); color: #000; font-size: 1.15rem; padding: 8px 30px; box-shadow: 3px 3px 0 #000; font-weight: bold;">전송하기 ➔</button>
+          </div>
+          
+          <!-- Step 2: 이름 쓰고 서약하기 (약속 전송 후 나타남) -->
+          <div id="promise-step-sign" style="display: none; flex-direction: column; align-items: center; gap: 10px;">
+            <div style="color: #fff; font-size: 1.2rem; text-align: center; font-weight: bold; line-height: 1.5;">
+              🤝 위 약속을 마음에 새기며 서명(이름)을 입력해주세요.
+              <input type="text" id="promise-name-input" class="retro-input" style="width: 150px; text-align: center; font-size: 1.1rem; display: inline-block; margin: 0 10px; background: #000; color: #00ff88; border: 2px solid #000; padding: 6px; box-shadow: 2px 2px 0 #000; margin-bottom: 0;" placeholder="본인 이름">
+            </div>
+            <button class="retro-btn" onclick="submitCyberPledgeSign()" style="background-color: #00ff88; color: #000; font-size: 1.15rem; padding: 8px 30px; box-shadow: 3px 3px 0 #000; font-weight: bold;">서약서명 완료 ✒️</button>
+          </div>
+
+          <!-- Step 3: 저장 및 완료 제어 버튼 (서약 서명 완료 후 나타남) -->
+          <div id="promise-step-complete" style="display: none; gap: 15px; justify-content: center; width: 100%;">
+            <button class="retro-btn" onclick="captureAndDownloadPromise()" style="background-color: #ff9f43; color: #000; font-size: 1.15rem; padding: 10px 24px; box-shadow: 3px 3px 0 #000; font-weight: bold; flex: 1;">💾 이미지 저장하기</button>
+            <button class="retro-btn" onclick="completeCyberPromiseFlow()" style="background-color: #a8ffda; color: #000; font-size: 1.15rem; padding: 10px 24px; box-shadow: 3px 3px 0 #000; font-weight: bold; flex: 1;">완료하고 다음으로 ▶</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 
