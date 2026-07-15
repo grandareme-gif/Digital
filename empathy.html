@@ -1018,7 +1018,7 @@
 
         <!-- 카카오톡 스타일 채팅창 (내부에 입력바 통합) -->
         <div class="flex-grow min-h-[220px] bg-[#ecf0f1] border-4 border-black rounded-none p-3.5 flex flex-col justify-between overflow-y-auto shadow-[4px_4px_0_#000]">
-          <div class="flex flex-col gap-3 overflow-y-auto flex-grow pb-2">
+          <div class="flex flex-col gap-3 overflow-y-auto flex-grow pb-2" id="chat-messages-container">
 
             <!-- 친구 메시지 말풍선 -->
             <div class="flex gap-2 items-start max-w-[85%] self-start" id="chat-friend-row">
@@ -1247,93 +1247,60 @@
     // [1] Web Audio API 8비트 사운드 믹서
     // =========================================
     const AudioHelper = {
-      ctx: null,
       init() {
-        try {
-          if (!this.ctx) {
-            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-          }
-        } catch (e) {
-          console.warn("AudioContext initialization failed:", e);
-        }
+        // No-op
       },
       playBuzzer() {
         try {
-          this.init();
-          if (!this.ctx) return;
-          const now = this.ctx.currentTime;
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(150, now);
-          osc.frequency.exponentialRampToValueAtTime(80, now + 0.3);
-          gain.gain.setValueAtTime(0.12, now);
-          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(now);
-          osc.stop(now + 0.3);
+          const isMuted = localStorage.getItem('app_audio_muted') === 'true';
+          if (!isMuted) {
+            const audio = new Audio('sound/playFailSound.mp3');
+            audio.volume = 0.5;
+            audio.play();
+          }
         } catch (e) { console.log(e); }
       },
       playSuccess() {
         try {
-          this.init();
-          if (!this.ctx) return;
-          const now = this.ctx.currentTime;
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(523.25, now);
-          osc.frequency.setValueAtTime(659.25, now + 0.08);
-          osc.frequency.setValueAtTime(783.99, now + 0.16);
-          osc.frequency.setValueAtTime(1046.50, now + 0.24);
-          gain.gain.setValueAtTime(0.08, now);
-          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(now);
-          osc.stop(now + 0.4);
+          const isMuted = localStorage.getItem('app_audio_muted') === 'true';
+          if (!isMuted) {
+            const audio = new Audio('sound/playRetroChime.mp3');
+            audio.volume = 0.5;
+            audio.play();
+          }
         } catch (e) { console.log(e); }
       },
       playPop() {
         try {
-          this.init();
-          if (!this.ctx) return;
-          const now = this.ctx.currentTime;
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(600, now);
-          osc.frequency.exponentialRampToValueAtTime(1100, now + 0.08);
-          gain.gain.setValueAtTime(0.08, now);
-          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(now);
-          osc.stop(now + 0.1);
+          const isMuted = localStorage.getItem('app_audio_muted') === 'true';
+          if (!isMuted) {
+            const audio = new Audio('sound/playCheck.mp3');
+            audio.volume = 0.5;
+            audio.play();
+          }
         } catch (e) { console.log(e); }
       },
       playArpeggio() {
         try {
-          this.init();
-          if (!this.ctx) return;
-          const now = this.ctx.currentTime;
-          const freqs = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
-          freqs.forEach((f, idx) => {
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(f, now + idx * 0.08);
-            gain.gain.setValueAtTime(0.06, now + idx * 0.08);
-            gain.gain.exponentialRampToValueAtTime(0.005, now + idx * 0.08 + 0.3);
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-            osc.start(now + idx * 0.08);
-            osc.stop(now + idx * 0.08 + 0.3);
-          });
+          const isMuted = localStorage.getItem('app_audio_muted') === 'true';
+          if (!isMuted) {
+            const audio = new Audio('sound/playRetroChime.mp3');
+            audio.volume = 0.5;
+            audio.play();
+          }
+        } catch (e) { console.log(e); }
+      },
+      playSelect() {
+        try {
+          const isMuted = localStorage.getItem('app_audio_muted') === 'true';
+          if (!isMuted) {
+            const audio = new Audio('sound/playSelect.mp3');
+            audio.volume = 0.5;
+            audio.play();
+          }
         } catch (e) { console.log(e); }
       }
-    };
+    }
 
     // =========================================
     // [2] 전역 애플리케이션 상태 관리
@@ -1380,7 +1347,8 @@
             blockCategory3: ["앞으로도 계속 응원할게", "넌 정말 대단해!", "우리 같이 축하하자!", "다음 대회도 화이팅!"],
             emotionFeedbackCorrect: "맞아! 그림 그리기 대회에서 금상을 받으면 날아갈 듯이 기쁘고 뿌듯하며 스스로 자랑스럽지!",
             emotionFeedbackIncorrect: "친구가 그림 대회 금상 수상을 전하며 아주 자랑스러워하는 감정을 다시 한 번 생각해봐.",
-            feedback: "맞아! 공들여 그린 그림이 대회에서 금상을 차지하면 너무나 기쁘고 마음이 벅차오르지. 서연이의 기쁜 감정에 동참해주고, 그동안의 끊임없는 노력을 응원해 주는 다정하고 멋진 축하 메시지를 훌륭히 전했어!"
+            feedback: "맞아! 공들여 그린 그림이 대회에서 금상을 차지하면 너무나 기쁘고 마음이 벅차오르지. 서연이의 기쁜 감정에 동참해주고, 그동안의 끊임없는 노력을 응원해 주는 다정하고 멋진 축하 메시지를 훌륭히 전했어!",
+            friendReply: "고마워! 내 기쁨에 진심으로 공감해주고 축하해주니 너무 힘이 난다! 앞으로도 더 멋진 그림 그릴게! 🥰"
           },
           {
             situation: "학교 온라인 과제방에 올린 발표 영상에 모르는 사람이 나쁜 댓글을 달았어",
@@ -1393,13 +1361,16 @@
             blockCategory3: ["선생님께 말하는 게 좋을 것 같아", "같이 생각해보자", "내가 여기 있을게", "혼자 고민하지 마"],
             emotionFeedbackCorrect: "맞아! 모르는 사람이 나쁜 말을 달면 창피하고 무섭고 속상할 수 있어.",
             emotionFeedbackIncorrect: "모르는 사람이 나쁜 댓글을 단 상황을 다시 생각해봐.",
-            feedback: "맞아! 누군가 내 영상에 나쁜 댓글을 달면 창피하고 무서우며 속상한 기분이 들지. 지안이가 더 이상 무서워하지 않고 든든한 해결 방법을 찾을 수 있도록 깊은 공감과 따뜻한 응원의 한마디를 훌륭하게 보내주었어!"
+            feedback: "맞아! 누군가 내 영상에 나쁜 댓글을 달면 창피하고 무서우며 속상한 기분이 들지. 지안이가 더 이상 무서워하지 않고 든든한 해결 방법을 찾을 수 있도록 깊은 공감과 따뜻한 응원의 한마디를 훌륭하게 보내주었어!",
+            friendReply: "진짜 고마워... 네 응원 댓글을 보니까 한결 안심이 되고 든든해. 혼자 고민하지 않고 선생님께 꼭 말씀드려볼게. 🥺"
           }
         ],
         selectedEmotion: null,
         emotionVerified: null,
         selectedBlocks: [null, null, null],
-        typingTimer: null
+        typingTimer: null,
+        currentScenarioCompleted: false,
+        initialized: false
       }
     };
 
@@ -1520,7 +1491,15 @@
 
       // 1단계일 때는 stageCompleted[1]에 따라 다음 버튼 판단
       if (nextBtn) {
-        const isCompleted = !!state.stageCompleted[state.currentStage];
+        let isCompleted = false;
+        if (state.currentStage === 1) {
+          isCompleted = !!state.stageCompleted[1];
+        } else if (state.currentStage === 2) {
+          isCompleted = !!state.stage2.currentScenarioCompleted;
+        } else {
+          isCompleted = !!state.stageCompleted[state.currentStage];
+        }
+
         if (isCompleted) {
           nextBtn.style.setProperty('opacity', '1', 'important');
           nextBtn.style.setProperty('cursor', 'pointer', 'important');
@@ -1532,13 +1511,23 @@
         }
 
         if (state.currentStage === 2) {
-          nextBtn.innerText = "활동 완료 ➔";
+          const idx = state.stage2.activeScenarioIdx;
+          const total = state.stage2.scenarios.length;
+          if (idx < total - 1) {
+            nextBtn.innerText = "다음 사연 진행 ➔";
+          } else {
+            nextBtn.innerText = "활동 완료 ➔";
+          }
         } else {
           nextBtn.innerText = "다음 단계 ▶";
         }
       }
 
       // 각 단계 초기화 로직
+      if (state.currentStage !== 2) {
+        state.stage2.initialized = false;
+      }
+
       if (state.currentStage === 1) {
         setupScenario();
       } else if (state.currentStage === 2) {
@@ -1564,6 +1553,25 @@
       }
 
       playBeepSound();
+
+      // 활동2(카톡 공감) 진행 중인 경우의 제어 가로채기
+      if (state.currentStage === 2) {
+        const idx = state.stage2.activeScenarioIdx;
+        const total = state.stage2.scenarios.length;
+        if (idx < total - 1) {
+          // 다음 사연 로드
+          state.stage2.activeScenarioIdx++;
+          state.stage2.currentScenarioCompleted = false;
+          loadChatScenario(state.stage2.activeScenarioIdx);
+          showToast("👍 다음 사연의 공감 대화를 나누어 봅시다!");
+          updateStageUI();
+          return;
+        } else {
+          // 마지막 사연 완료 시 2단계 완료 플래그 활성화
+          state.stageCompleted[2] = true;
+        }
+      }
+
       if (state.currentStage < 3) {
         state.currentStage++;
         updateStageUI();
@@ -1581,14 +1589,24 @@
     }
 
     function playBeepSound() {
-      if (typeof AudioHelper !== 'undefined') {
-        try { AudioHelper.playSelect(); } catch(e) {}
-      }
+      try {
+        const isMuted = localStorage.getItem('app_audio_muted') === 'true';
+        if (!isMuted) {
+          const audio = new Audio('sound/playCheck.mp3');
+          audio.volume = 0.5;
+          audio.play();
+        }
+      } catch(e) {}
     }
     function playFailSound() {
-      if (typeof AudioHelper !== 'undefined') {
-        try { AudioHelper.playSelect(); } catch(e) {}
-      }
+      try {
+        const isMuted = localStorage.getItem('app_audio_muted') === 'true';
+        if (!isMuted) {
+          const audio = new Audio('sound/playFailSound.mp3');
+          audio.volume = 0.5;
+          audio.play();
+        }
+      } catch(e) {}
     }
 
     function prevStageOld() {
@@ -2294,7 +2312,10 @@
     // [5] 2단계 카카오톡 스타일 메신저 감정/블록 조합 구현
     // =========================================
     function initStage2() {
+      if (state.stage2.initialized) return;
       state.stage2.activeScenarioIdx = 0;
+      state.stage2.currentScenarioCompleted = false;
+      state.stage2.initialized = true;
       loadChatScenario(0);
     }
 
@@ -2304,6 +2325,7 @@
         state.stage2.selectedEmotion = null;
         state.stage2.emotionVerified = null;
         state.stage2.selectedBlocks = [null, null, null];
+        state.stage2.currentScenarioCompleted = false;
 
         // 금메달 아이콘 노출 제어
         const medalIcon = document.getElementById('chat-medal-icon');
@@ -2343,6 +2365,12 @@
         
         const loader = document.getElementById('chat-loader');
         if (loader) loader.classList.add('hidden');
+
+        // 동적으로 추가된 채팅 메시지 노드 제거
+        const container = document.getElementById('chat-messages-container');
+        if (container) {
+          container.querySelectorAll('.dynamic-chat-node').forEach(node => node.remove());
+        }
 
         // 영역 비활성화 초기화
         const emotionSection = document.getElementById('chat-emotion-section');
@@ -2407,6 +2435,7 @@
             console.error("Error in typing timer:", e);
           }
         }, 30);
+        updateStageUI();
       } catch (err) {
         console.error("Error in loadChatScenario:", err);
       }
@@ -2559,20 +2588,53 @@
 
         const idx = state.stage2.activeScenarioIdx;
         const scenario = state.stage2.scenarios[idx];
-        document.getElementById('chat-feedback-desc').innerHTML = scenario.feedback;
 
-        if (idx === state.stage2.scenarios.length - 1) {
-          document.getElementById('chat-feedback-next-btn').innerText = "활동 완료하기 ➔";
-        } else {
-          document.getElementById('chat-feedback-next-btn').innerText = "다음 시나리오 →";
-        }
-
+        // 800ms 뒤에 친구의 직접적인 고마움 대사 팝업 (채팅창 안)
         setTimeout(() => {
-          const feedbackCard = document.getElementById('chat-feedback-card');
-          if (feedbackCard) {
-            feedbackCard.style.display = 'flex';
+          const container = document.getElementById('chat-messages-container');
+          if (container) {
+            // 친구의 리플라이 말풍선 노드 생성
+            const friendReplyRow = document.createElement('div');
+            friendReplyRow.className = "flex gap-2 items-start max-w-[85%] self-start dynamic-chat-node animate-[slideInLeft_0.3s_ease-out_forwards]";
+            friendReplyRow.innerHTML = `
+              <div class="w-9 h-9 rounded-none bg-slate-200 flex justify-center items-center text-[1.15rem] border-2 border-black text-black font-bold" style="font-size: 1.15rem !important;">👤</div>
+              <div class="flex flex-col gap-1">
+                <span class="text-[1.15rem] text-slate-800 font-black" style="font-size: 1.15rem !important;">${scenario.friendName}</span>
+                <div class="bg-[#e0f7fa] text-black border-4 border-black rounded-none p-2.5 text-[1.3rem] font-bold leading-relaxed break-all relative shadow-[4px_4px_0_#000]" style="font-size: 1.3rem !important;">
+                  ${scenario.friendReply}
+                </div>
+              </div>
+            `;
+            container.appendChild(friendReplyRow);
+            container.scrollTop = container.scrollHeight;
+            AudioHelper.playPop(); // 팝 소리
           }
-        }, 500);
+
+          // 다시 1200ms 뒤에 공감 피드백 분석 박스 노출 (채팅방 안) 및 우하단 다음단계 활성화
+          setTimeout(() => {
+            const targetContainer = document.getElementById('chat-messages-container');
+            if (targetContainer) {
+              const feedbackBox = document.createElement('div');
+              feedbackBox.className = "dynamic-chat-node w-full p-3 bg-amber-50 border-4 border-black text-slate-800 font-bold text-[1.15rem] leading-relaxed shadow-[4px_4px_0_#000] animate-[fadeIn_0.4s_ease-out_forwards] flex flex-col gap-3";
+              feedbackBox.style.fontSize = "1.15rem !important;";
+              
+              feedbackBox.innerHTML = `
+                <div class="text-amber-700 font-black">💡 공감 피드백:</div>
+                <div>${scenario.feedback}</div>
+              `;
+              targetContainer.appendChild(feedbackBox);
+              targetContainer.scrollTop = targetContainer.scrollHeight;
+
+              // 우하단 공통 다음 단계 버튼 활성화 처리
+              state.stage2.currentScenarioCompleted = true;
+              updateStageUI();
+              
+              AudioHelper.playArpeggio(); // 완료 축하
+            }
+          }, 1200);
+
+        }, 800);
+
       }, 800);
     }
 
@@ -2622,7 +2684,7 @@
     // =========================================
     // 초기 로딩 진입 및 이벤트 리스너 바인딩
     // =========================================
-    document.addEventListener('DOMContentLoaded', () => {
+    function initEmpathyListeners() {
       try {
         // [1] 인트로 시작 버튼
         const startBtn = document.getElementById('btn-start-training');
@@ -2675,9 +2737,15 @@
         // 상태 UI 및 초기 스테이지 그리기
         updateStageUI();
       } catch (err) {
-        console.error("Error in DOMContentLoaded init:", err);
+        console.error("Error in initEmpathyListeners init:", err);
       }
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initEmpathyListeners);
+    } else {
+      initEmpathyListeners();
+    }
 
     document.body.addEventListener('click', () => {
       try {
@@ -3097,6 +3165,27 @@
     window.closeClassBoard = closeClassBoard;
     window.refreshClassBoard = refreshClassBoard;
     window.likeAnswer = likeAnswer;
+
+    // 버튼 클릭/터치 시 playSelect 효과음 적용
+    (function() {
+      let lastButtonSoundTime = 0;
+      document.addEventListener('click', (e) => {
+        const target = e.target.closest('button, .retro-btn, .std-footer-btn-left, .std-footer-btn-right, input[type="button"], input[type="submit"]');
+        if (target) {
+          const now = Date.now();
+          if (now - lastButtonSoundTime < 120) return; // 120ms 중복 방지
+          lastButtonSoundTime = now;
+          try {
+            const isMuted = localStorage.getItem('app_audio_muted') === 'true';
+            if (!isMuted) {
+              const audio = new Audio('sound/playSelect.mp3');
+              audio.volume = 0.5;
+              audio.play().catch(() => {});
+            }
+          } catch (err) {}
+        }
+      });
+    })();
   </script>
 </body>
 </html>

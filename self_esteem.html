@@ -2073,38 +2073,19 @@
     // Beep Audio Helper
     function playBeepSound(type) {
       try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gainNode = ctx.createGain();
-        osc.connect(gainNode);
-        gainNode.connect(ctx.destination);
-        
-        if (type === 'success') {
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
-          osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
-          gainNode.gain.setValueAtTime(0.08, ctx.currentTime);
-          osc.start();
-          osc.stop(ctx.currentTime + 0.25);
-        } else if (type === 'fail') {
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(180.00, ctx.currentTime); // F3
-          gainNode.gain.setValueAtTime(0.08, ctx.currentTime);
-          osc.start();
-          osc.stop(ctx.currentTime + 0.3);
-        } else if (type === 'click') {
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(440, ctx.currentTime); // A4
-          gainNode.gain.setValueAtTime(0.05, ctx.currentTime);
-          osc.start();
-          osc.stop(ctx.currentTime + 0.08);
-        } else if (type === 'send') {
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(330, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(660, ctx.currentTime + 0.15);
-          gainNode.gain.setValueAtTime(0.08, ctx.currentTime);
-          osc.start();
-          osc.stop(ctx.currentTime + 0.15);
+        const isMuted = localStorage.getItem('app_audio_muted') === 'true';
+        if (!isMuted) {
+          let soundFile = 'playCheck.mp3';
+          if (type === 'success') {
+            soundFile = 'playRetroChime.mp3';
+          } else if (type === 'fail') {
+            soundFile = 'playFailSound.mp3';
+          } else if (type === 'send') {
+            soundFile = 'playCheck.mp3';
+          }
+          const audio = new Audio('sound/' + soundFile);
+          audio.volume = 0.5;
+          audio.play();
         }
       } catch (e) {
         console.log('AudioContext is blocked or not supported');
@@ -2112,7 +2093,7 @@
     }
 
     // Screen 1: Typewriter Effect 제거 및 해시태그 스페이스바 이벤트 바인딩
-    document.addEventListener("DOMContentLoaded", () => {
+    function initSelfEsteemListeners() {
       const target = document.getElementById("intro-typing-text");
       const btnContainer = document.getElementById("intro-btn-container");
       if (target) target.innerText = INTRO_TEXT;
@@ -2143,7 +2124,13 @@
           }
         });
       }
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener("DOMContentLoaded", initSelfEsteemListeners);
+    } else {
+      initSelfEsteemListeners();
+    }
 
     function startBootcamp() {
       playBeepSound('click');
@@ -3314,6 +3301,27 @@
     window.closeClassBoard = closeClassBoard;
     window.refreshClassBoard = refreshClassBoard;
     window.likeAnswer = likeAnswer;
+
+    // 버튼 클릭/터치 시 playSelect 효과음 적용
+    (function() {
+      let lastButtonSoundTime = 0;
+      document.addEventListener('click', (e) => {
+        const target = e.target.closest('button, .retro-btn, .std-footer-btn-left, .std-footer-btn-right, input[type="button"], input[type="submit"]');
+        if (target) {
+          const now = Date.now();
+          if (now - lastButtonSoundTime < 120) return; // 120ms 중복 방지
+          lastButtonSoundTime = now;
+          try {
+            const isMuted = localStorage.getItem('app_audio_muted') === 'true';
+            if (!isMuted) {
+              const audio = new Audio('sound/playSelect.mp3');
+              audio.volume = 0.5;
+              audio.play().catch(() => {});
+            }
+          } catch (err) {}
+        }
+      });
+    })();
   </script>
 </body>
 </html>

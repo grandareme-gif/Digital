@@ -139,19 +139,19 @@ const questions = [
 
 // 마인드 웹 노드 정보 (위치 x, y 비율)
 const mapNodes = [
-  { id: "node-1", category: "사이버 공감", x: 26, y: 24 },              // 10시 반 방향
-  { id: "node-2", category: "사이버 의사소통", x: 50, y: 16 },            // 12시 방향
-  { id: "node-3", category: "사이버 자기조절", x: 84, y: 50 },            // 3시 방향 (우측 외곽)
-  { id: "node-4", category: "사이버 감정조절", x: 74, y: 76 },            // 4시 반 방향
-  { id: "node-5", category: "인터넷 윤리의식 및 활용", x: 50, y: 84 },      // 6시 방향
-  { id: "node-6", category: "사이버 갈등관리 및 문제해결", x: 16, y: 50 },  // 9시 방향 (좌측 외곽)
-  { id: "node-7", category: "사이버 폭력인식 및 대처", x: 26, y: 76 },            // 7시 반 방향
-  { id: "node-8", category: "사이버 자기존중감", x: 74, y: 24 }             // 1시 반 방향
+  { id: "node-1", category: "사이버 공감", x: 50, y: 16 },              // 12시 방향
+  { id: "node-2", category: "사이버 의사소통", x: 74, y: 24 },            // 1시 반 방향
+  { id: "node-3", category: "사이버 감정조절", x: 84, y: 50 },            // 3시 방향 (우측 외곽)
+  { id: "node-4", category: "사이버 갈등관리 및 문제해결", x: 74, y: 76 },  // 4시 반 방향
+  { id: "node-5", category: "사이버 폭력인식 및 대처", x: 50, y: 84 },      // 6시 방향
+  { id: "node-6", category: "인터넷 윤리의식 및 활용", x: 26, y: 76 },      // 7시 반 방향
+  { id: "node-7", category: "사이버 자기조절", x: 16, y: 50 },            // 9시 방향 (좌측 외곽)
+  { id: "node-8", category: "사이버 자기존중감", x: 26, y: 24 }             // 10시 반 방향
 ];
 
 // 노드 연결선 엣지 (인덱스 기준)
 const mapEdges = [
-  [1, 7], [7, 2], [2, 3], [3, 4], [4, 6], [6, 5], [5, 0], [0, 1]
+  [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 0]
 ];
 
 // 임시 어드민 확인용
@@ -205,9 +205,47 @@ function loadLocalState() {
 }
 
 // ==========================================
+// [배경음악(BGM) 제어 모듈]
+// ==========================================
+let introBGM = null;
+
+window.playIntroBGM = function() {
+  try {
+    const isMuted = localStorage.getItem('app_audio_muted') === 'true';
+    if (!isMuted) {
+      if (!introBGM) {
+        introBGM = new Audio('sound/introbgm.mp3');
+        introBGM.loop = true;
+        introBGM.volume = 0.5; // 일반 소리 대비 50% 수준 작게
+      }
+      introBGM.play().catch(err => console.warn("introbgm autoplay blocked:", err));
+    }
+  } catch (e) {
+    console.warn("introbgm play failed:", e);
+  }
+};
+
+window.stopIntroBGM = function() {
+  try {
+    if (introBGM) {
+      introBGM.pause();
+      introBGM.currentTime = 0;
+      introBGM = null;
+    }
+  } catch (e) {
+    console.warn("introbgm stop failed:", e);
+  }
+};
+
+// ==========================================
 // [화면 전환 공통 함수]
 // ==========================================
 window.switchView = function(viewId) {
+  // 로그인 뷰 이외의 메인/관리자 화면으로 넘어가면 배경음 차단
+  if (viewId !== 'view-login') {
+    window.stopIntroBGM();
+  }
+
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   document.getElementById(viewId).classList.add('active');
 
@@ -381,10 +419,10 @@ window.showSignupForm = function() {
   document.getElementById('member-login-form').style.display = 'none';
   document.getElementById('member-signup-form').style.display = 'flex';
   
-  // 학생 선택 기본값으로 복구
-  const studentRadio = document.querySelector('input[name="signup-role"][value="student"]');
-  if (studentRadio) studentRadio.checked = true;
-  window.toggleSignupRoleFields('student');
+  // 교사 선택 기본값으로 복구
+  const teacherRadio = document.querySelector('input[name="signup-role"][value="teacher"]');
+  if (teacherRadio) teacherRadio.checked = true;
+  window.toggleSignupRoleFields('teacher');
 }
 
 window.cancelSignup = function() {
@@ -731,6 +769,85 @@ window.createClassByTeacher = async function() {
   }
 }
 
+window.deleteClassByTeacher = async function() {
+  if (!useFirebase) {
+    alert("Firebase가 연결되어 있지 않습니다. 로컬 모드에서는 삭제할 수 없습니다.");
+    return;
+  }
+
+  const select = document.getElementById('teacher-class-select');
+  const classCode = select.value;
+
+  if (!classCode) {
+    alert("삭제할 학급을 선택해주세요!");
+    return;
+  }
+
+  const selectedOptionText = select.options[select.selectedIndex].text;
+
+  const confirmFirst = confirm(`정말 [${selectedOptionText}] 학급을 삭제하시겠습니까?\n\n※ 학급 삭제 시 해당 학급에 속한 학생들의 모니터링 데이터(답변 등)도 함께 삭제되며, 이 작업은 되돌릴 수 없습니다.`);
+  if (!confirmFirst) return;
+
+  const confirmSecond = confirm("진짜로 삭제하시겠습니까?\n학급 코드 및 모든 학생 정보가 완전히 지워집니다.");
+  if (!confirmSecond) return;
+
+  try {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      alert("로그인 세션이 만료되었습니다. 다시 로그인해 주세요.");
+      return;
+    }
+
+    // 1. classes 컬렉션에서 학급 제거
+    await db.collection("classes").doc(classCode).delete();
+
+    // 2. students 컬렉션에서 해당 학급의 모든 학생 제거
+    const studentSnapshot = await db.collection("students").where("classCode", "==", classCode).get();
+    if (!studentSnapshot.empty) {
+      const batch = db.batch();
+      studentSnapshot.forEach(doc => {
+        batch.delete(doc.ref);
+      });
+      await batch.commit();
+    }
+
+    alert("학급 및 소속 학생 데이터가 성공적으로 삭제되었습니다.");
+    
+    // 3. UI 및 상태 초기화
+    select.value = "";
+    window.selectMonitorClass(""); // 모니터링 화면 초기화
+    await loadTeacherClasses(currentUser.uid); // 목록 다시 로드
+  } catch (err) {
+    console.error("학급 삭제 에러:", err);
+    alert("학급 삭제에 실패했습니다: " + err.message);
+  }
+}
+
+window.deleteStudentByTeacher = async function(docId, studentName) {
+  if (!useFirebase) {
+    alert("Firebase가 연결되어 있지 않습니다. 로컬 모드에서는 삭제할 수 없습니다.");
+    return;
+  }
+
+  if (!docId) {
+    alert("학생 정보를 찾을 수 없습니다.");
+    return;
+  }
+
+  const confirmDelete = confirm(`정말 [${studentName}] 학생을 삭제하시겠습니까?\n\n※ 해당 학생의 진행 정보 및 과제 데이터가 모두 삭제되며 복구할 수 없습니다.`);
+  if (!confirmDelete) return;
+
+  try {
+    // students 컬렉션에서 해당 학생 문서 삭제
+    await db.collection("students").doc(docId).delete();
+    alert(`[${studentName}] 학생 데이터가 삭제되었습니다.`);
+    // 실시간 리스너가 작동 중이므로 목록은 자동으로 갱신됩니다.
+  } catch (err) {
+    console.error("학생 삭제 에러:", err);
+    alert("학생 삭제에 실패했습니다: " + err.message);
+  }
+}
+
 async function loadTeacherClasses(teacherUid) {
   const select = document.getElementById('teacher-class-select');
   select.innerHTML = '<option value="">학급을 선택하세요...</option>';
@@ -769,16 +886,16 @@ window.selectMonitorClass = function(classCode) {
   }
 
   if (!classCode) {
-    tbody.innerHTML = '<tr><td colspan="5" style="color:#aaa; padding: 20px;">학급을 선택하면 실시간으로 학생 현황이 표시됩니다.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="3" style="color:#aaa; padding: 20px;">학급을 선택하면 실시간으로 학생 현황이 표시됩니다.</td></tr>';
     classInfo.innerText = '';
     return;
   }
 
   classInfo.innerText = classCode === 'all' ? '전체 학급 모니터링 중' : `현재 모니터링 학급 코드: ${classCode}`;
-  tbody.innerHTML = '<tr><td colspan="5" style="color:#aaa; padding: 20px;">실시간 데이터를 불러오는 중...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="3" style="color:#aaa; padding: 20px;">실시간 데이터를 불러오는 중...</td></tr>';
 
   if (!useFirebase) {
-    tbody.innerHTML = '<tr><td colspan="5" style="color:#aaa; padding: 20px;">Firebase 로컬 모드에서는 지원하지 않는 기능입니다.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="3" style="color:#aaa; padding: 20px;">Firebase 로컬 모드에서는 지원하지 않는 기능입니다.</td></tr>';
     return;
   }
 
@@ -793,7 +910,7 @@ window.selectMonitorClass = function(classCode) {
       window.monitoredStudentsData = {}; // 모니터링 데이터 캐시 초기화
       
       if (snapshot.empty) {
-        tbody.innerHTML = '<tr><td colspan="5" style="color:#aaa; padding: 20px;">아직 조건에 맞는 학생이 없습니다.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="3" style="color:#aaa; padding: 20px;">아직 조건에 맞는 학생이 없습니다.</td></tr>';
         return;
       }
 
@@ -854,10 +971,11 @@ window.selectMonitorClass = function(classCode) {
         tr.innerHTML = `
           <td style="padding: 10px; border-bottom: 1px solid #444;">
             ${studentName}<br>
-            <button class="retro-btn" onclick="showStudentDetailAnswers('${docId}')" style="padding: 3px 6px; font-size: 0.75rem; background-color: #a8ffda; color: #000; box-shadow: 2px 2px 0 #000; cursor: pointer; margin-top: 5px;">답변 보기</button>
+            <div style="display: flex; gap: 5px; justify-content: center; margin-top: 5px;">
+              <button class="retro-btn" onclick="showStudentDetailAnswers('${docId}')" style="padding: 3px 6px; font-size: 0.75rem; background-color: #a8ffda; color: #000; box-shadow: 2px 2px 0 #000; cursor: pointer;">답변 보기</button>
+              <button class="retro-btn" onclick="deleteStudentByTeacher('${docId}', '${studentName}')" style="padding: 3px 6px; font-size: 0.75rem; background-color: #ff5252; color: #fff; box-shadow: 2px 2px 0 #000; cursor: pointer;">삭제 🗑️</button>
+            </div>
           </td>
-          <td style="padding: 10px; border-bottom: 1px solid #444; color: var(--point-yellow);">${stage}</td>
-          <td style="padding: 10px; border-bottom: 1px solid #444;">${scanResult}</td>
           <td style="padding: 10px; border-bottom: 1px solid #444; text-align: left;">${taskBadges}</td>
           <td style="padding: 10px; border-bottom: 1px solid #444; font-size: 0.85rem; color: #aaa;">${timeStr}</td>
         `;
@@ -865,7 +983,7 @@ window.selectMonitorClass = function(classCode) {
       });
     }, error => {
       console.error("실시간 모니터링 구독 에러:", error);
-      tbody.innerHTML = '<tr><td colspan="5" style="color:#ff5252; padding: 20px;">데이터 수신 중 에러가 발생했습니다. (보안 규칙 등을 확인하세요)</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="3" style="color:#ff5252; padding: 20px;">데이터 수신 중 에러가 발생했습니다. (보안 규칙 등을 확인하세요)</td></tr>';
     });
   } catch (err) {
     console.error("리스너 설정 에러:", err);
@@ -1158,11 +1276,11 @@ const competencyBoxes = [
   { id: "box-empathy", name: "사이버 공감", img: "images/icon_empathy.webp", left: "24%", top: "8%" },
   { id: "box-comm", name: "사이버 의사소통", img: "images/icon_comm.webp", left: "42%", top: "8%" },
   { id: "box-emotion", name: "사이버 감정조절", img: "images/icon_emotion.webp", left: "60%", top: "8%" },
-  { id: "box-selfcontrol", name: "사이버 자기조절", img: "images/icon_selfcontrol.webp", left: "78%", top: "8%" },
+  { id: "box-conflict", name: "사이버 갈등관리 및 문제해결", img: "images/icon_conflict.webp", left: "78%", top: "8%" },
   { id: "box-violence", name: "사이버폭력 인식 및 대처", img: "images/icon_violence.webp", left: "24%", top: "36%" },
-  { id: "box-conflict", name: "사이버 갈등관리 및 문제해결", img: "images/icon_conflict.webp", left: "42%", top: "36%" },
-  { id: "box-esteem", name: "사이버 자기존중감", img: "images/icon_esteem.webp", left: "60%", top: "36%" },
-  { id: "box-ethics", name: "인터넷 윤리의식 및 활용", img: "images/icon_ethics.webp", left: "78%", top: "36%" }
+  { id: "box-ethics", name: "인터넷 윤리의식 및 활용", img: "images/icon_ethics.webp", left: "42%", top: "36%" },
+  { id: "box-selfcontrol", name: "사이버 자기조절", img: "images/icon_selfcontrol.webp", left: "60%", top: "36%" },
+  { id: "box-esteem", name: "사이버 자기존중감", img: "images/icon_esteem.webp", left: "78%", top: "36%" }
 ];
 
 const scenes = [
@@ -1182,7 +1300,7 @@ const scenes = [
   { bgName: "교실", bgColor: "#2c2400", effect: "effect-glow", speaker: "마음 온(ON)", text: "난 고장 난 게 아니야! <span style='color: #ff79c6;'>디지털 세상의 상처</span>로 진짜 교실의 <span style='color: #00ff88;'>마음 온도</span>가 뚝 떨어진 친구를 찾고 있었어. 바로 너처럼!", showFairy: true },
   { bgName: "교실", bgColor: "#091223", effect: "", speaker: "나", text: "마음 온도...? 그게 무슨 소리야?", showFairy: true },
   { bgName: "교실", bgColor: "#091223", effect: "effect-portal", speaker: "마음 온(ON)", text: "자! 나를 따라와!", showFairy: true },
-  { bgName: "마음웹", bgColor: "#091223", effect: "", speaker: "마음 온(ON)", text: "이것 봐! 게 바로 너와 친구들의 마음이 촘촘하게 연결된 '<span style='color: #00ffff;'>마음웹(Mind-Web)</span>'이야!", showFairy: true, fairyPosition: "top-left" },
+  { bgName: "마음웹", bgColor: "#091223", effect: "", speaker: "마음 온(ON)", text: "이것 봐! 이게 바로 너와 친구들의 마음이 촘촘하게 연결된 '<span style='color: #00ffff;'>마음웹(Mind-Web)</span>'이야!", showFairy: true, fairyPosition: "top-left" },
   { bgName: "마음웹", bgColor: "#050a14", effect: "effect-frozen", speaker: "마음 온(ON)", text: "어제 너희가 게임에서 거친 말을 쓰고 상처를 입은 바람에, 너희를 연결하던 마음웹이 <span style='color: #ffeb3b;'>꽁꽁 얼어붙어 버렸어!</span>", showFairy: true, fairyPosition: "top-left" },
   { bgName: "마음웹", bgColor: "#050a14", effect: "effect-frozen", speaker: "마음 온(ON)", text: "네가 오늘 아침부터 느꼈던 그 '마음이 무겁고 콕콕 찌르는 기분'이 바로 이 마음웹이 보낸 신호야.", showFairy: true, fairyPosition: "top-left" },
   { bgName: "마음웹", bgColor: "#050a14", effect: "effect-frozen", speaker: "마음 온(ON)", text: "<span style='color: #00ff88;'>디지털 공간과 현실의 마음은 하나로 이어져 있거든.</span>", showFairy: true, fairyPosition: "top-left" },
@@ -2399,6 +2517,21 @@ window.updateMuteButton = function(isMuted) {
     btn.style.backgroundColor = isMuted ? '#555' : '#2a2a2a';
     btn.title = isMuted ? '음소거 해제' : '음소거 하기';
   }
+
+  // BGM 음소거 반응형 제어
+  if (isMuted) {
+    if (introBGM) {
+      try {
+        introBGM.pause();
+      } catch (e) {}
+    }
+  } else {
+    // 현재 로그인 화면에 머물러 있는 상태에서 음소거 해제 시 다시 BGM 재생
+    const loginView = document.getElementById('view-login');
+    if (loginView && loginView.classList.contains('active')) {
+      window.playIntroBGM();
+    }
+  }
 };
 
 // 4. AudioContext 몽키패칭 (부모 및 iframe 공통)
@@ -2598,29 +2731,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginSelect) loginSelect.style.display = 'flex';
     if (loginFooter) loginFooter.style.display = 'block';
 
-    // 레트로 오디오 효과음 재생
+    // 레트로 오디오 효과음 재생 및 배경음악 시작
     try {
       const currentMuteState = localStorage.getItem('app_audio_muted') === 'true';
       if (!currentMuteState) {
-        const OriginalAudioContext = window.AudioContext || window.webkitAudioContext;
-        if (OriginalAudioContext) {
-          const ctx = new OriginalAudioContext();
-          const now = ctx.currentTime;
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(523.25, now); // C5
-          osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.12); // G5
-          gain.gain.setValueAtTime(0.08, now);
-          gain.gain.linearRampToValueAtTime(0, now + 0.12);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(now);
-          osc.stop(now + 0.12);
-        }
+        const audio = new Audio('sound/인트로 오프닝.mp3');
+        audio.volume = 0.5;
+        audio.play();
+        
+        // 배경 음악 시작
+        window.playIntroBGM();
       }
     } catch (err) {
-      console.warn("오디오 효과음 재생 실패:", err);
+      console.warn("오디오 효과음/BGM 재생 실패:", err);
     }
   };
 
@@ -2880,11 +3003,21 @@ window.submitCyberPledgeSign = function() {
 
 window.captureAndDownloadPromise = function() {
   const captureArea = document.getElementById('promise-capture-area');
+  const boardList = document.getElementById('promise-board-list');
   if (!captureArea) return;
   
-  // html2canvas가 숨겨지거나 스크롤되는 영역을 다 캡처하기 위해 스타일 임시 변경
+  // html2canvas가 숨겨지거나 스크롤되는 영역을 다 캡처하기 위해 스타일 임시 변경 (부모 및 자식 스크롤 영역 모두 해제)
   const originalMaxHeight = captureArea.style.maxHeight;
   const originalOverflowY = captureArea.style.overflowY;
+  
+  let originalBoardMaxHeight = '';
+  let originalBoardOverflowY = '';
+  if (boardList) {
+    originalBoardMaxHeight = boardList.style.maxHeight;
+    originalBoardOverflowY = boardList.style.overflowY;
+    boardList.style.maxHeight = 'none';
+    boardList.style.overflowY = 'visible';
+  }
   
   captureArea.style.maxHeight = 'none';
   captureArea.style.overflowY = 'visible';
@@ -2897,6 +3030,10 @@ window.captureAndDownloadPromise = function() {
     // 스타일 복원
     captureArea.style.maxHeight = originalMaxHeight;
     captureArea.style.overflowY = originalOverflowY;
+    if (boardList) {
+      boardList.style.maxHeight = originalBoardMaxHeight;
+      boardList.style.overflowY = originalBoardOverflowY;
+    }
     
     const link = document.createElement('a');
     const myName = (window.appState.taskAnswers["사이버 어울림 약속"] && window.appState.taskAnswers["사이버 어울림 약속"]["서명 이름"]) 
@@ -2912,6 +3049,10 @@ window.captureAndDownloadPromise = function() {
     // 스타일 복원
     captureArea.style.maxHeight = originalMaxHeight;
     captureArea.style.overflowY = originalOverflowY;
+    if (boardList) {
+      boardList.style.maxHeight = originalBoardMaxHeight;
+      boardList.style.overflowY = originalBoardOverflowY;
+    }
     alert("이미지 저장에 실패했습니다. 다시 시도해 주세요.");
   });
 };
@@ -2948,3 +3089,24 @@ function loadMockCyberPromises() {
   }
   renderCyberPromiseBoard(promises);
 }
+
+// 버튼 클릭/터치 시 playSelect 효과음 적용
+(function() {
+  let lastButtonSoundTime = 0;
+  document.addEventListener('click', (e) => {
+    const target = e.target.closest('button, .retro-btn, .std-footer-btn-left, .std-footer-btn-right, input[type="button"], input[type="submit"]');
+    if (target) {
+      const now = Date.now();
+      if (now - lastButtonSoundTime < 120) return; // 120ms 중복 방지
+      lastButtonSoundTime = now;
+      try {
+        const isMuted = localStorage.getItem('app_audio_muted') === 'true';
+        if (!isMuted) {
+          const audio = new Audio('sound/playSelect.mp3');
+          audio.volume = 0.5;
+          audio.play().catch(() => {});
+        }
+      } catch (err) {}
+    }
+  });
+})();

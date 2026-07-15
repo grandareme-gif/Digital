@@ -64,12 +64,12 @@
         <div style="display: flex; width: 100%; gap: 20px; margin-bottom: 18px; align-items: center; justify-content: center; color: #fff; font-size: 1.35rem; font-family: 'DungGeunMo', monospace;">
           <span style="font-weight: bold; color: #d8b4fe;">로그인 유형:</span>
           <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="radio" name="login-role" value="student" style="transform: scale(1.35); cursor: pointer;" checked>
-            학생
+            <input type="radio" name="login-role" value="teacher" style="transform: scale(1.35); cursor: pointer;" checked>
+            교사
           </label>
           <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="radio" name="login-role" value="teacher" style="transform: scale(1.35); cursor: pointer;">
-            교사
+            <input type="radio" name="login-role" value="student" style="transform: scale(1.35); cursor: pointer;">
+            학생
           </label>
         </div>
 
@@ -96,12 +96,12 @@
         <div style="display: flex; width: 100%; gap: 15px; margin-bottom: 12px; align-items: center; justify-content: center; color: #fff;">
           <span style="font-size: 0.95rem; font-weight: bold;">가입 유형:</span>
           <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-            <input type="radio" name="signup-role" value="student" checked onchange="toggleSignupRoleFields('student')">
-            학생
+            <input type="radio" name="signup-role" value="teacher" checked onchange="toggleSignupRoleFields('teacher')">
+            교사
           </label>
           <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-            <input type="radio" name="signup-role" value="teacher" onchange="toggleSignupRoleFields('teacher')">
-            교사
+            <input type="radio" name="signup-role" value="student" onchange="toggleSignupRoleFields('student')">
+            학생
           </label>
         </div>
 
@@ -155,6 +155,7 @@
           <select id="teacher-class-select" class="retro-input" style="width: 180px; margin-bottom: 0; font-size: 0.95rem; padding: 6px;" onchange="selectMonitorClass(this.value)">
             <option value="">학급을 선택하세요...</option>
           </select>
+          <button class="retro-btn" onclick="deleteClassByTeacher()" style="padding: 6px 12px; font-size: 0.9rem; box-shadow: 2px 2px 0 #000; background: #ff5252; color: #fff;">학급 삭제 🗑️</button>
         </div>
       </div>
       
@@ -164,15 +165,13 @@
           <thead>
             <tr>
               <th style="padding: 10px; border-bottom: 2px solid #000;">학생 (이름/번호)</th>
-              <th style="padding: 10px; border-bottom: 2px solid #000;">진행 상태</th>
-              <th style="padding: 10px; border-bottom: 2px solid #000;">스캐닝 결과</th>
               <th style="padding: 10px; border-bottom: 2px solid #000;">완료 과제 현황</th>
               <th style="padding: 10px; border-bottom: 2px solid #000;">최근 업데이트</th>
             </tr>
           </thead>
           <tbody id="student-list" style="text-align: center; color: #fff;">
             <tr>
-              <td colspan="5" style="color:#aaa; padding: 20px;">학급을 선택하면 실시간으로 학생 현황이 표시됩니다.</td>
+              <td colspan="3" style="color:#aaa; padding: 20px;">학급을 선택하면 실시간으로 학생 현황이 표시됩니다.</td>
             </tr>
           </tbody>
         </table>
@@ -408,16 +407,16 @@
     </div>
   
     <!-- 10. 개인정보처리방침 팝업 모달 -->
-    <div id="privacy-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1100; align-items: center; justify-content: center; padding: 20px; font-family: 'DungGeunMo', monospace;">
-      <div style="background: #2a2a2a; border: var(--pixel-thick) solid #000; padding: 25px; width: 95%; max-width: 600px; box-shadow: 8px 8px 0 #000; display: flex; flex-direction: column; max-height: 80%; position: relative; font-family: 'DungGeunMo', monospace;">
-        <h2 style="color: var(--point-yellow); font-size: 1.6rem; margin-bottom: 15px; text-shadow: 2px 2px 0 #000; text-align: center; font-family: 'DungGeunMo', monospace;">개인정보처리방침</h2>
+    <div id="privacy-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1100; align-items: center; justify-content: center; padding: 20px; font-family: 'Pretendard-Medium', sans-serif;">
+      <div style="background: #2a2a2a; border: var(--pixel-thick) solid #000; padding: 25px; width: 95%; max-width: 600px; box-shadow: 8px 8px 0 #000; display: flex; flex-direction: column; max-height: 80%; position: relative; font-family: 'Pretendard-Medium', sans-serif;">
+        <h2 style="color: var(--point-yellow); font-size: 1.6rem; margin-bottom: 15px; text-shadow: 2px 2px 0 #000; text-align: center; font-family: 'Pretendard-Medium', sans-serif;">개인정보처리방침</h2>
         
         <!-- 내용 표시 영역 -->
-        <div id="privacy-content-view" style="flex-grow: 1; overflow-y: auto; border: 2px solid #000; background: #151515; padding: 15px; margin-bottom: 20px; color: #fff; white-space: pre-wrap; font-size: 0.95rem; line-height: 1.6; min-height: 200px; text-align: left; word-break: keep-all; font-family: 'DungGeunMo', monospace;">
+        <div id="privacy-content-view" style="flex-grow: 1; overflow-y: auto; border: 2px solid #000; background: #151515; padding: 15px; margin-bottom: 20px; color: #fff; white-space: pre-wrap; font-size: 0.95rem; line-height: 1.6; min-height: 200px; text-align: left; word-break: keep-all; font-family: 'Pretendard-Medium', sans-serif;">
           <!-- JS에서 동적으로 데이터 삽입 -->
         </div>
 
-        <button class="retro-btn" onclick="closePrivacyModal()" style="font-size: 1.1rem; padding: 8px 20px; background-color: #555; color: #fff; box-shadow: 2px 2px 0 #000; align-self: flex-end; font-family: 'DungGeunMo', monospace;">닫기</button>
+        <button class="retro-btn" onclick="closePrivacyModal()" style="font-size: 1.1rem; padding: 8px 20px; background-color: #555; color: #fff; box-shadow: 2px 2px 0 #000; align-self: flex-end; font-family: 'Pretendard-Medium', sans-serif;">닫기</button>
       </div>
     </div>
   

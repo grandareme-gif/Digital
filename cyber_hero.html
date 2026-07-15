@@ -2638,11 +2638,20 @@
 
     // 소리 재생 안전 쉴드 함수
     function playBeepSound(type) {
-      if (typeof synth !== 'undefined') {
-        if (type === 'click' || type === 'select') synth.playSelect();
-        else if (type === 'success') synth.playSuccess();
-        else synth.playSelect();
-      }
+      try {
+        const isMuted = localStorage.getItem('app_audio_muted') === 'true';
+        if (!isMuted) {
+          let soundFile = 'playCheck.mp3';
+          if (type === 'success') {
+            soundFile = 'playRetroChime.mp3';
+          } else if (type === 'fail') {
+            soundFile = 'playFailSound.mp3';
+          }
+          const audio = new Audio('sound/' + soundFile);
+          audio.volume = 0.5;
+          audio.play();
+        }
+      } catch(e) {}
     }
 
     // ==========================================
@@ -3292,27 +3301,12 @@
 
     function playCameraShutterSound() {
       try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) return;
-        const ctx = new AudioContext();
-        const bufferSize = ctx.sampleRate * 0.12; 
-        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-          data[i] = Math.random() * 2 - 1;
+        const isMuted = localStorage.getItem('app_audio_muted') === 'true';
+        if (!isMuted) {
+          const audio = new Audio('sound/playCameraShutterSound.mp3');
+          audio.volume = 0.5;
+          audio.play();
         }
-        const noise = ctx.createBufferSource();
-        noise.buffer = buffer;
-        const filter = ctx.createBiquadFilter();
-        filter.type = 'highpass';
-        filter.frequency.value = 1200;
-        const gain = ctx.createGain();
-        gain.gain.setValueAtTime(0.8, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.09);
-        noise.connect(filter);
-        filter.connect(gain);
-        gain.connect(ctx.destination);
-        noise.start();
       } catch (e) {}
     }
 
@@ -3472,22 +3466,7 @@
     }
 
     function playBlockStampSound() {
-      try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) return;
-        const ctx = new AudioContext();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(130, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(35, ctx.currentTime + 0.12);
-        gain.gain.setValueAtTime(0.7, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.12);
-      } catch(e) {}
+      playBeepSound('click');
     }
 
     // SOS 드래그 앤 드롭 및 클릭 핸들러
@@ -3603,7 +3582,30 @@
     function submitSosDial() {
       if (dialedNumber === "117") {
         document.getElementById('dial-pad-container').style.display = 'none';
-        triggerSOS();
+        
+        // 3초간 ring.mp3 재생 후 triggerSOS 실행
+        try {
+          const isMuted = localStorage.getItem('app_audio_muted') === 'true';
+          if (!isMuted) {
+            const ringAudio = new Audio('sound/ring.mp3');
+            ringAudio.volume = 0.5;
+            ringAudio.play();
+            
+            setTimeout(() => {
+              try {
+                ringAudio.pause();
+                ringAudio.currentTime = 0;
+              } catch(e) {}
+              triggerSOS();
+            }, 3000);
+          } else {
+            setTimeout(() => {
+              triggerSOS();
+            }, 3000);
+          }
+        } catch(e) {
+          triggerSOS();
+        }
       }
     }
 
@@ -4163,6 +4165,27 @@
     window.closeClassBoard = closeClassBoard;
     window.refreshClassBoard = refreshClassBoard;
     window.likeAnswer = likeAnswer;
+
+    // 버튼 클릭/터치 시 playSelect 효과음 적용
+    (function() {
+      let lastButtonSoundTime = 0;
+      document.addEventListener('click', (e) => {
+        const target = e.target.closest('button, .retro-btn, .std-footer-btn-left, .std-footer-btn-right, input[type="button"], input[type="submit"]');
+        if (target) {
+          const now = Date.now();
+          if (now - lastButtonSoundTime < 120) return; // 120ms 중복 방지
+          lastButtonSoundTime = now;
+          try {
+            const isMuted = localStorage.getItem('app_audio_muted') === 'true';
+            if (!isMuted) {
+              const audio = new Audio('sound/playSelect.mp3');
+              audio.volume = 0.5;
+              audio.play().catch(() => {});
+            }
+          } catch (err) {}
+        }
+      });
+    })();
   </script>
 </body>
 </html>
