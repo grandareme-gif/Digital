@@ -1441,6 +1441,266 @@
       from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    /* 모바일 반응형 전용 스타일 추가 */
+    @media (max-width: 768px) {
+      /* 기본 폰트 크기 및 여백 조정 */
+      .retro-theme *, * {
+        font-size: 0.95rem;
+      }
+      
+      /* 헤더 영역 모바일 맞춤 */
+      #standard-header {
+        padding: 0 8px !important;
+      }
+      #standard-header > div:first-child {
+        width: 35% !important;
+      }
+      #standard-header > div:first-child span {
+        font-size: 0.85rem !important;
+        margin-left: 2px !important;
+      }
+      #standard-header > div:first-child div {
+        width: 26px !important;
+        height: 26px !important;
+        margin-right: 2px !important;
+      }
+      #standard-header > div:first-child img {
+        width: 26px !important;
+        height: 26px !important;
+      }
+      #standard-header > div:nth-child(2) {
+        width: 60% !important;
+      }
+      #stage-title-text {
+        font-size: 0.8rem !important;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      #standard-header > div:last-child {
+        width: 5% !important;
+      }
+
+      /* 하단바 모바일 맞춤 */
+      #control-bar {
+        padding: 0 10px !important;
+        height: 52px !important;
+      }
+      #control-bar button {
+        padding: 6px 10px !important;
+        font-size: 0.8rem !important;
+        border-width: 2px !important;
+        box-shadow: 2px 2px 0 #000 !important;
+      }
+
+      /* 가이드 배너 모바일 맞춤 */
+      .std-guide-banner {
+        height: auto !important;
+        min-height: 58px !important;
+        padding: 6px 12px !important;
+        margin-top: -12px !important;
+        gap: 6px !important;
+      }
+      .std-guide-banner img {
+        width: 40px !important;
+        height: 40px !important;
+        top: -2px !important;
+        left: 2px !important;
+      }
+      .std-guide-banner > div:first-child {
+        width: 28px !important;
+        height: 28px !important;
+      }
+      .std-guide-banner span:first-of-type {
+        font-size: 9.5px !important;
+      }
+      .std-guide-banner span:last-of-type {
+        font-size: 10.5px !important;
+        white-space: normal !important;
+      }
+
+      /* 인트로 및 아웃트로 화면 모바일 맞춤 */
+      .std-intro-title {
+        font-size: 1.5rem !important;
+      }
+      .std-intro-header-simple {
+        padding: 12px 16px !important;
+      }
+      .std-intro-body {
+        padding: 12px !important;
+        gap: 12px !important;
+      }
+      .std-intro-char-wrapper-small {
+        width: 120px !important;
+        height: 120px !important;
+      }
+      .std-intro-unified-box {
+        padding: 16px !important;
+        min-height: auto !important;
+        gap: 12px !important;
+      }
+      .std-intro-dialog-inner {
+        font-size: 1.05rem !important;
+        line-height: 1.45 !important;
+      }
+      .std-activity-badge {
+        font-size: 0.85rem !important;
+        padding: 2px 6px !important;
+      }
+      .std-activity-text {
+        font-size: 0.95rem !important;
+      }
+      .std-intro-footer {
+        padding: 10px 16px !important;
+      }
+      .std-footer-btn-left, .std-footer-btn-right {
+        padding: 8px 16px !important;
+        font-size: 0.8rem !important;
+      }
+
+      /* 아웃트로 평가 화면 모바일 맞춤 */
+      #view-stage3 .std-intro-body {
+        padding: 16px 12px !important;
+      }
+      .responsive-outro-body {
+        flex-direction: column !important;
+        padding: 16px !important;
+        gap: 16px !important;
+      }
+      #outro-dialog-box {
+        padding: 12px 16px !important;
+        min-height: auto !important;
+        margin: 0 !important;
+        border-width: 3px !important;
+      }
+      #eval-question-text {
+        font-size: 1.0rem !important;
+      }
+      .star-btn {
+        font-size: 2.2rem !important;
+      }
+      #eval-feedback-text {
+        font-size: 0.95rem !important;
+      }
+      #btn-eval-submit {
+        font-size: 0.95rem !important;
+        padding: 6px 12px !important;
+        border-width: 3px !important;
+      }
+      #commentary-container .std-intro-dialog-inner {
+        font-size: 0.95rem !important;
+        line-height: 1.5 !important;
+      }
+      #btn-finish-outro {
+        font-size: 0.9rem !important;
+        width: 100% !important;
+        height: 40px !important;
+        box-shadow: 2px 2px 0 #000 !important;
+        border-width: 2px !important;
+      }
+      
+      /* 우리반 공감보드 모달 모바일 맞춤 */
+      #class-board-modal .max-w-4xl {
+        height: 90vh !important;
+        border-width: 3px !important;
+      }
+      #class-board-header-title {
+        font-size: 0.95rem !important;
+      }
+      #class-board-list {
+        padding: 8px !important;
+        gap: 8px !important;
+      }
+      #class-board-list > div {
+        border-width: 3px !important;
+        padding: 8px !important;
+      }
+      #class-board-list span {
+        font-size: 0.8rem !important;
+      }
+      #class-board-list button {
+        padding: 2px 6px !important;
+        font-size: 0.65rem !important;
+      }
+      #class-board-list .text-\[1\.1rem\] {
+        font-size: 0.9rem !important;
+      }
+
+      /* Stage 1 Layout Stack */
+      #stage1-layout {
+        flex-direction: column !important;
+        height: auto !important;
+        gap: 16px !important;
+      }
+      #scenario-tabs {
+        width: 100% !important;
+        flex-direction: row !important;
+        gap: 8px !important;
+      }
+      .scenario-tab {
+        flex: 1 !important;
+        padding: 6px !important;
+      }
+      .scenario-tab .tab-title {
+        font-size: 0.85rem !important;
+      }
+      .scenario-tab .tab-desc {
+        display: none !important;
+      }
+      #simulator-phone {
+        width: 100% !important;
+        max-width: 320px !important;
+        height: 380px !important;
+        margin: 0 auto !important;
+        border-width: 4px !important;
+      }
+      #phone-screen {
+        height: 190px !important;
+      }
+      .chat-bubble {
+        font-size: 0.9rem !important;
+      }
+      #interaction-area {
+        padding: 8px !important;
+        border-top-width: 2px !important;
+      }
+      .emoji-chips button {
+        font-size: 0.9rem !important;
+        padding: 6px !important;
+      }
+
+      /* Stage 2 Layout Stack */
+      #simulator-container {
+        flex-direction: column !important;
+        height: auto !important;
+        gap: 16px !important;
+      }
+      #stage2-chat-column {
+        width: 100% !important;
+        height: auto !important;
+      }
+      #stage2-chat-window {
+        height: 200px !important;
+        flex-grow: 0 !important;
+      }
+      #chat-textarea {
+        height: 72px !important;
+        font-size: 0.95rem !important;
+      }
+      #btn-submit-message {
+        font-size: 1.0rem !important;
+        min-width: 140px !important;
+      }
+      #stage2-sidebar {
+        width: 100% !important;
+        height: auto !important;
+        margin-top: 10px !important;
+      }
+      #thermometer-wrapper {
+        transform: scale(0.7) !important;
+        height: 300px !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -2757,7 +3017,7 @@
                 <span class="text-[0.95rem] text-slate-300">내 따뜻한 말 한마디로 지은이의 마음 온도가 100°C가 되었습니다!</span>
                 ${showBoardBtn ? `
                 <button onclick="openClassBoard('위로 대화 메시지')" class="px-4 py-2 bg-yellow-300 hover:bg-yellow-400 text-black font-extrabold border-2 border-black rounded-none shadow-[2px_2px_0_#000] active:translate-y-[1px] active:shadow-none text-[1.25rem] w-full transition-all cursor-pointer mt-1">
-                  👥 우리 반 친구들의 위로 한마디 보기
+                  👥 우리 반 친구들의 생각 보기
                 </button>
                 ` : ''}
               </div>

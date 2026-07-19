@@ -778,6 +778,408 @@
       transform: none !important;
       opacity: 0.6;
     }
+
+    /* 모바일 반응형 전용 스타일 추가 */
+    @media (max-width: 768px) {
+      /* 기본 폰트 크기 및 여백 조정 */
+      .retro-theme * {
+        font-size: 0.95rem;
+      }
+      
+      /* 헤더 영역 모바일 맞춤 */
+      #standard-header {
+        padding: 0 8px !important;
+      }
+      #standard-header > div:first-child {
+        width: 35% !important;
+      }
+      #standard-header > div:first-child span {
+        font-size: 0.85rem !important;
+        margin-left: 2px !important;
+      }
+      #standard-header > div:first-child div {
+        width: 26px !important;
+        height: 26px !important;
+        margin-right: 2px !important;
+      }
+      #standard-header > div:first-child img {
+        width: 26px !important;
+        height: 26px !important;
+      }
+      #standard-header > div:nth-child(2) {
+        width: 60% !important;
+      }
+      #stage-title-text {
+        font-size: 0.8rem !important;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      #standard-header > div:last-child {
+        width: 5% !important;
+      }
+
+      /* 하단바 모바일 맞춤 */
+      #control-bar {
+        padding: 0 10px !important;
+        height: 52px !important;
+      }
+      #control-bar button {
+        padding: 6px 10px !important;
+        font-size: 0.8rem !important;
+        border-width: 2px !important;
+        box-shadow: 2px 2px 0 #000 !important;
+      }
+
+      /* 가이드 배너 모바일 맞춤 */
+      .std-guide-banner {
+        height: auto !important;
+        min-height: 58px !important;
+        padding: 6px 12px !important;
+        margin-top: -12px !important;
+        gap: 6px !important;
+      }
+      .std-guide-banner img {
+        width: 40px !important;
+        height: 40px !important;
+        top: -2px !important;
+        left: 2px !important;
+      }
+      .std-guide-banner > div:first-child {
+        width: 28px !important;
+        height: 28px !important;
+      }
+      .std-guide-banner span:first-of-type {
+        font-size: 9.5px !important;
+      }
+      .std-guide-banner span:last-of-type {
+        font-size: 10.5px !important;
+        white-space: normal !important;
+      }
+
+      /* 인트로 및 아웃트로 화면 모바일 맞춤 */
+      .std-intro-title {
+        font-size: 1.5rem !important;
+      }
+      .std-intro-header-simple {
+        padding: 12px 16px !important;
+      }
+      .std-intro-body {
+        padding: 12px !important;
+        gap: 12px !important;
+      }
+      .std-intro-char-wrapper-small {
+        width: 120px !important;
+        height: 120px !important;
+      }
+      .std-intro-unified-box {
+        padding: 16px !important;
+        min-height: auto !important;
+        gap: 12px !important;
+      }
+      .std-intro-dialog-inner {
+        font-size: 1.05rem !important;
+        line-height: 1.45 !important;
+      }
+      .std-activity-badge {
+        font-size: 0.85rem !important;
+        padding: 2px 6px !important;
+      }
+      .std-activity-text {
+        font-size: 0.95rem !important;
+      }
+      .std-intro-footer {
+        padding: 10px 16px !important;
+      }
+      .std-footer-btn-left, .std-footer-btn-right {
+        padding: 8px 16px !important;
+        font-size: 0.8rem !important;
+      }
+
+      /* 1단계 모바일 맞춤 */
+      #view-stage1 {
+        padding: 8px 10px !important;
+      }
+      .bubble-story {
+        font-size: 1.0rem !important;
+        min-height: auto !important;
+        padding: 10px !important;
+        border-width: 3px !important;
+      }
+      #stage1-left-panel div[style*="height: 240px"] {
+        height: 130px !important;
+      }
+      #stage1-story-text {
+        min-height: 140px !important;
+      }
+      #stage1-story-text p {
+        font-size: 1.05rem !important;
+      }
+      #stage1-story-text span {
+        font-size: 0.9rem !important;
+      }
+      .heart-svg-container {
+        width: 170px !important;
+        height: 170px !important;
+      }
+      .heart-svg-container svg {
+        width: 150px !important;
+        height: 150px !important;
+      }
+      #potion-total-bar {
+        font-size: 1.2rem !important;
+        margin-top: 8px !important;
+      }
+      #potion-viewer div:nth-child(3) {
+        font-size: 0.9rem !important;
+        margin-top: 4px !important;
+      }
+      #stage1-color-bars {
+        margin-top: 8px !important;
+        gap: 6px !important;
+      }
+      #stage1-color-bars div[style*="font-size"] {
+        font-size: 0.9rem !important;
+      }
+      #stage1-color-bars div.h-6 {
+        height: 16px !important;
+        border-width: 1.5px !important;
+      }
+      #emotion-selection-title {
+        font-size: 1.0rem !important;
+      }
+      #emotion-chips-container {
+        gap: 6px !important;
+      }
+      #emotion-chips-container button {
+        font-size: 0.9rem !important;
+        padding: 8px 4px !important;
+        border-width: 2px !important;
+        box-shadow: 2px 2px 0 #000 !important;
+      }
+      #emotion-selection-count {
+        font-size: 1.0rem !important;
+      }
+      #btn-create-sliders {
+        font-size: 1.05rem !important;
+        padding: 8px !important;
+        border-width: 3px !important;
+      }
+      .sliders-box {
+        gap: 8px !important;
+        padding: 8px !important;
+      }
+      .slider-row {
+        gap: 6px !important;
+      }
+      .slider-row label {
+        width: 75px !important;
+        font-size: 0.95rem !important;
+      }
+      .slider-row input[type="range"] {
+        height: 14px !important;
+        border-width: 2px !important;
+      }
+      .slider-row input[type="range"]::-webkit-slider-thumb {
+        width: 18px !important;
+        height: 18px !important;
+        border-width: 2px !important;
+      }
+      .slider-row span {
+        width: 40px !important;
+        font-size: 0.95rem !important;
+      }
+      #reflection-prompt-label {
+        font-size: 0.95rem !important;
+      }
+      #reflection-textarea {
+        font-size: 0.95rem !important;
+        height: 72px !important;
+        padding: 6px !important;
+        border-width: 2px !important;
+      }
+      #btn-submit-opinion {
+        font-size: 1.05rem !important;
+        padding: 8px !important;
+        border-width: 3px !important;
+      }
+      #btn-back-to-selection, #btn-analyze-potion {
+        font-size: 1.05rem !important;
+        padding: 8px 12px !important;
+        border-width: 3px !important;
+        box-shadow: 2px 2px 0 #000 !important;
+      }
+
+      /* 2단계 모바일 맞춤 */
+      #view-stage2 {
+        padding: 8px 10px !important;
+      }
+      #view-stage2 .bg-\[\#ecf0f1\] {
+        min-height: auto !important;
+        height: 220px !important;
+        padding: 8px !important;
+        border-width: 3px !important;
+      }
+      #chat-messages-container {
+        gap: 8px !important;
+      }
+      #chat-messages-container .w-9 {
+        width: 26px !important;
+        height: 26px !important;
+        font-size: 0.8rem !important;
+        border-width: 1.5px !important;
+      }
+      #chat-friend-label, #chat-friend-row span[style*="font-size"], #chat-my-row span[style*="font-size"] {
+        font-size: 0.85rem !important;
+      }
+      #chat-friend-bubble, #chat-my-bubble {
+        font-size: 0.95rem !important;
+        padding: 6px 10px !important;
+        border-width: 3px !important;
+        box-shadow: 2px 2px 0 #000 !important;
+      }
+      #chat-loader {
+        font-size: 0.85rem !important;
+      }
+      #chat-preview-text {
+        font-size: 0.95rem !important;
+        padding: 6px !important;
+        border-width: 2px !important;
+        min-height: 32px !important;
+      }
+      #chat-send-btn {
+        font-size: 0.9rem !important;
+        padding: 6px 10px !important;
+        border-width: 2px !important;
+        box-shadow: 2px 2px 0 #000 !important;
+      }
+      #chat-messenger-input-bar {
+        border-top-width: 2px !important;
+        margin-top: 4px !important;
+        padding-top: 4px !important;
+      }
+      #chat-emotion-section {
+        padding: 8px !important;
+        border-width: 3px !important;
+      }
+      #chat-emotion-section h3 {
+        font-size: 0.95rem !important;
+        margin-bottom: 6px !important;
+      }
+      #chat-emotion-buttons button {
+        font-size: 0.9rem !important;
+        padding: 6px 2px !important;
+        border-width: 2px !important;
+        box-shadow: 2px 2px 0 #000 !important;
+      }
+      #chat-block-section {
+        gap: 8px !important;
+      }
+      #chat-block-section > div {
+        padding: 6px !important;
+        border-width: 3px !important;
+      }
+      #chat-block-section h4 {
+        font-size: 0.95rem !important;
+        margin-bottom: 4px !important;
+      }
+      #chat-blocks-cat1 button,
+      #chat-blocks-cat2 button,
+      #chat-blocks-cat3 button {
+        font-size: 0.8rem !important;
+        height: auto !important;
+        min-height: 42px !important;
+        padding: 4px !important;
+        border-width: 2px !important;
+        box-shadow: 2px 2px 0 #000 !important;
+      }
+      #chat-feedback-card .modal-content {
+        padding: 12px !important;
+        border-width: 3px !important;
+        gap: 8px !important;
+      }
+      #chat-feedback-card h3 {
+        font-size: 1.05rem !important;
+      }
+      #chat-feedback-desc {
+        font-size: 0.95rem !important;
+        padding: 10px !important;
+        border-width: 2px !important;
+      }
+      #chat-feedback-next-btn {
+        font-size: 1.1rem !important;
+        padding: 8px !important;
+        border-width: 3px !important;
+      }
+
+      /* 아웃트로 평가 화면 모바일 맞춤 */
+      #view-outro .std-intro-body {
+        padding: 16px 12px !important;
+      }
+      .responsive-outro-body {
+        flex-direction: column !important;
+        padding: 16px !important;
+        gap: 16px !important;
+      }
+      #outro-dialog-box {
+        padding: 12px 16px !important;
+        min-height: auto !important;
+        margin: 0 !important;
+        border-width: 3px !important;
+      }
+      #eval-question-text {
+        font-size: 1.0rem !important;
+      }
+      .star-btn {
+        font-size: 2.2rem !important;
+      }
+      #eval-feedback-text {
+        font-size: 0.95rem !important;
+      }
+      #btn-eval-submit {
+        font-size: 0.95rem !important;
+        padding: 6px 12px !important;
+        border-width: 3px !important;
+      }
+      #commentary-container .std-intro-dialog-inner {
+        font-size: 0.95rem !important;
+        line-height: 1.5 !important;
+      }
+      #btn-finish-outro {
+        font-size: 0.9rem !important;
+        width: 100% !important;
+        height: 40px !important;
+        box-shadow: 2px 2px 0 #000 !important;
+        border-width: 2px !important;
+      }
+      
+      /* 우리반 공감보드 모달 모바일 맞춤 */
+      #class-board-modal .max-w-4xl {
+        height: 90vh !important;
+        border-width: 3px !important;
+      }
+      #class-board-header-title {
+        font-size: 0.95rem !important;
+      }
+      #class-board-list {
+        padding: 8px !important;
+        gap: 8px !important;
+      }
+      #class-board-list > div {
+        border-width: 3px !important;
+        padding: 8px !important;
+      }
+      #class-board-list span {
+        font-size: 0.8rem !important;
+      }
+      #class-board-list button {
+        padding: 2px 6px !important;
+        font-size: 0.65rem !important;
+      }
+      #class-board-list .text-\[1\.1rem\] {
+        font-size: 0.9rem !important;
+      }
+    }
   </style>
 </head>
 <body class="bg-[#1a1c23] text-white flex justify-center items-center min-h-screen overflow-hidden transition-all duration-500 retro-theme" id="app-body">
@@ -896,9 +1298,9 @@
         </div>
       </div>
 
-      <div class="flex gap-5 flex-grow overflow-hidden h-[550px]">
+      <div class="flex flex-col md:flex-row gap-5 flex-grow md:overflow-hidden md:h-[550px] h-auto">
         <!-- 좌측 패널 (SNS 상황 또는 하트 그릇) -->
-        <div id="stage1-left-panel" class="w-[45%] flex flex-col justify-center bg-[#1e272e] border-4 border-black p-3 shadow-[inset_4px_4px_0_rgba(0,0,0,0.3)] relative">
+        <div id="stage1-left-panel" class="w-full md:w-[45%] flex flex-col justify-center bg-[#1e272e] border-4 border-black p-3 shadow-[inset_4px_4px_0_rgba(0,0,0,0.3)] relative">
         <!-- SNS 상황 카드 -->
         <div class="bubble-story text-black text-[1.3rem] font-bold w-full bg-white border-4 border-black p-3.5 shadow-[4px_4px_0_#000]" id="stage1-story-text" style="font-size: 1.3rem !important; min-height: 340px !important;">
           사연 로딩 중...
@@ -934,12 +1336,12 @@
       </div>
 
       <!-- 우측 패널 (감정 선택 또는 슬라이더) -->
-      <div id="stage1-right-panel" class="w-[55%] flex flex-col justify-between bg-[#1b252f]/40 border-4 border-black p-3 shadow-[inset_4px_4px_0_rgba(0,0,0,0.2)]">
+      <div id="stage1-right-panel" class="w-full md:w-[55%] flex flex-col justify-between bg-[#1b252f]/40 border-4 border-black p-3 shadow-[inset_4px_4px_0_rgba(0,0,0,0.2)]">
         <!-- 감정 선택 패널 -->
         <div id="emotion-selection-panel" class="flex flex-col gap-2.5 h-full justify-between">
           <div class="flex flex-col gap-2">
             <div class="text-[1.3rem] font-bold text-yellow-350" id="emotion-selection-title" style="font-size: 1.3rem !important;">💡 이 상황에서 친구의 감정은 어떤 것일지 3가지를 골라보세요.</div>
-            <div class="grid grid-cols-4 gap-2 mt-1" id="emotion-chips-container">
+            <div class="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-1" id="emotion-chips-container">
               <!-- JS에서 8가지 감정 칩 동적 생성 -->
             </div>
           </div>
@@ -1012,9 +1414,9 @@
         </div>
       </div>
 
-      <div class="flex gap-4 flex-grow overflow-hidden h-[550px]">
+      <div class="flex flex-col md:flex-row gap-4 flex-grow md:overflow-hidden md:h-[550px] h-auto">
         <!-- 좌측 영역: 상황, 메신저, 기분 추측 -->
-        <div class="w-1/2 flex flex-col gap-3 min-w-0">
+        <div class="w-full md:w-1/2 flex flex-col gap-3 min-w-0">
 
         <!-- 카카오톡 스타일 채팅창 (내부에 입력바 통합) -->
         <div class="flex-grow min-h-[220px] bg-[#ecf0f1] border-4 border-black rounded-none p-3.5 flex flex-col justify-between overflow-y-auto shadow-[4px_4px_0_#000]">
@@ -1071,7 +1473,7 @@
       </div>
 
       <!-- 우측 영역: 블록 선택 영역 (단계별 개별 카드형 분리) -->
-      <div class="w-1/2 flex flex-col gap-3 min-w-0">
+      <div class="w-full md:w-1/2 flex flex-col gap-3 min-w-0">
         <div id="chat-block-section" class="flex flex-col gap-2 transition-all duration-300 opacity-40 pointer-events-none">
           <!-- 1단계 카드 -->
           <div class="bg-[#1e293b] p-2 border-4 border-black shadow-[4px_4px_0_#000] rounded-none text-white">
@@ -1120,7 +1522,7 @@
       </div>
 
       <!-- 메인 본문 영역 (좌측 캐릭터 복원, 우측 성찰대사 통합 개편) -->
-      <div class="std-intro-body" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 48px; padding: 30px 60px !important; box-sizing: border-box;">
+      <div class="std-intro-body responsive-outro-body" style="gap: 48px; padding: 30px 60px !important; box-sizing: border-box;">
         
         <!-- 좌측 캐릭터 영역 (마음온 캐릭터 원래대로 복원) -->
         <div class="std-intro-char-wrapper-small">

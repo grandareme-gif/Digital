@@ -2014,6 +2014,10 @@ window.startOutro = function() {
   if (credit) {
     credit.style.opacity = '0';
   }
+  const sourcesCredit = document.getElementById('ending-sources-credit');
+  if (sourcesCredit) {
+    sourcesCredit.style.opacity = '0';
+  }
   
   renderOutroScene();
 }
@@ -2134,6 +2138,7 @@ function proceedOriginalPromiseFlow() {
 function runEndingCreditSequence() {
   const overlay = document.getElementById('ending-white-overlay');
   const credit = document.getElementById('ending-title-credit');
+  const sourcesCredit = document.getElementById('ending-sources-credit');
   
   overlay.style.display = 'flex';
   setTimeout(() => {
@@ -2142,10 +2147,12 @@ function runEndingCreditSequence() {
   
   setTimeout(() => {
     credit.style.opacity = '1';
+    if (sourcesCredit) sourcesCredit.style.opacity = '1';
   }, 2000);
   
   setTimeout(() => {
     credit.style.opacity = '0';
+    if (sourcesCredit) sourcesCredit.style.opacity = '0';
     setTimeout(() => {
       // 1. 하얀 화면 오버레이(opacity: 1)가 다 덮은 상태에서 먼저 로그아웃을 처리하여 뒤쪽 뷰를 로그인 화면으로 전환합니다.
       logout();
@@ -2177,6 +2184,23 @@ window.showPrivacyModal = function() {
 
 window.closePrivacyModal = function() {
   const modal = document.getElementById('privacy-modal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+};
+
+// ==========================================
+// [심사 계정 안내 모달 제어 기능]
+// ==========================================
+window.showEvalGuideModal = function() {
+  const modal = document.getElementById('eval-guide-modal');
+  if (modal) {
+    modal.style.display = 'flex';
+  }
+};
+
+window.closeEvalGuideModal = function() {
+  const modal = document.getElementById('eval-guide-modal');
   if (modal) {
     modal.style.display = 'none';
   }
@@ -2726,10 +2750,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const pressAny = document.getElementById('login-press-anykey');
     const loginSelect = document.getElementById('login-mode-select');
     const loginFooter = document.getElementById('login-footer');
+    const evalBtn = document.getElementById('eval-guide-btn');
 
     if (pressAny) pressAny.style.display = 'none';
     if (loginSelect) loginSelect.style.display = 'flex';
     if (loginFooter) loginFooter.style.display = 'block';
+    // if (evalBtn) evalBtn.style.display = 'block'; // 심사계정 임시 비활성화
 
     // 레트로 오디오 효과음 재생 및 배경음악 시작
     try {
