@@ -25,12 +25,10 @@
 
     <!-- 1. 로그인 뷰 (리뉴얼) -->
     <div id="view-login" class="view active" style="padding: 20px; text-align: center;">
-      <!-- 심사 계정 안내 버튼 (좌측 중앙에 위치, 처음에는 숨김) (임시 비활성화) -->
-      <!--
-      <button id="eval-guide-btn" onclick="showEvalGuideModal()" style="display: none; position: absolute; left: 130px; top: 50%; transform: translateY(-50%); font-family: 'Pretendard-Medium', sans-serif; font-size: 1.1rem; padding: 12px 18px; background-color: #fef08a; color: #000; border: 3px solid #ff0000; box-shadow: 4px 4px 0 #000; z-index: 10000; cursor: pointer; font-weight: bold; border-radius: 0; text-shadow: none; transition: background-color 0.1s;" onmouseover="this.style.backgroundColor='#fef9c3'" onmouseout="this.style.backgroundColor='#fef08a'">
+      <!-- 심사 계정 안내 버튼 (숨김 처리) -->
+      <button id="eval-guide-btn" onclick="showEvalGuideModal()" style="display: none !important; position: absolute; left: 130px; top: 50%; transform: translateY(-50%); font-family: 'Pretendard-Medium', sans-serif; font-size: 1.1rem; padding: 12px 18px; background-color: #fef08a; color: #000; border: 3px solid #ff0000; box-shadow: 4px 4px 0 #000; z-index: 10000; cursor: pointer; font-weight: bold; border-radius: 0; text-shadow: none; transition: background-color 0.1s;" onmouseover="this.style.backgroundColor='#fef9c3'" onmouseout="this.style.backgroundColor='#fef08a'">
         📋 심사 계정 안내
       </button>
-      -->
 
       <!-- 좌상단 교육 정보 라벨 (계속하려면 아무 키나 누르십시오와 같은 크기 1.65rem) -->
       <div style="position: absolute; top: 15px; left: 15px; font-size: 1.65rem; color: #ffffff; text-shadow: 2px 2px 0 #000; font-weight: bold; font-family: 'DungGeunMo', monospace; pointer-events: none; z-index: 10000;">
@@ -142,10 +140,7 @@
         </div>
       </div>
       
-      <!-- 로그인 화면 하단 푸터 영역 -->
-      <div id="login-footer" style="display: none; position: absolute; bottom: 15px; left: 20px; font-size: 0.85rem; color: #888; font-family: 'DungGeunMo', monospace; z-index: 1000;">
-        <span onclick="showPrivacyModal()" style="text-decoration: underline; cursor: pointer; color: var(--point-yellow); font-weight: bold;">개인정보처리방침</span>
-      </div>
+
     </div>
 
     <!-- 2. 관리자 대시보드 뷰 -->
@@ -423,19 +418,7 @@
       </div>
     </div>
   
-    <!-- 10. 개인정보처리방침 팝업 모달 -->
-    <div id="privacy-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1100; align-items: center; justify-content: center; padding: 20px; font-family: 'Pretendard-Medium', sans-serif;">
-      <div style="background: #2a2a2a; border: var(--pixel-thick) solid #000; padding: 25px; width: 95%; max-width: 600px; box-shadow: 8px 8px 0 #000; display: flex; flex-direction: column; max-height: 80%; position: relative; font-family: 'Pretendard-Medium', sans-serif;">
-        <h2 style="color: var(--point-yellow); font-size: 1.6rem; margin-bottom: 15px; text-shadow: 2px 2px 0 #000; text-align: center; font-family: 'Pretendard-Medium', sans-serif;">개인정보처리방침</h2>
-        
-        <!-- 내용 표시 영역 -->
-        <div id="privacy-content-view" style="flex-grow: 1; overflow-y: auto; border: 2px solid #000; background: #151515; padding: 15px; margin-bottom: 20px; color: #fff; white-space: pre-wrap; font-size: 0.95rem; line-height: 1.6; min-height: 200px; text-align: left; word-break: keep-all; font-family: 'Pretendard-Medium', sans-serif;">
-          <!-- JS에서 동적으로 데이터 삽입 -->
-        </div>
 
-        <button class="retro-btn" onclick="closePrivacyModal()" style="font-size: 1.1rem; padding: 8px 20px; background-color: #555; color: #fff; box-shadow: 2px 2px 0 #000; align-self: flex-end; font-family: 'Pretendard-Medium', sans-serif;">닫기</button>
-      </div>
-    </div>
 
     <!-- 심사 계정 안내 팝업 모달 -->
     <div id="eval-guide-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 12000; align-items: center; justify-content: center; padding: 20px; font-family: 'Pretendard-Medium', sans-serif;">

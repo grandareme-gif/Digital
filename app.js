@@ -1,73 +1,6 @@
 // Firebase imports removed. Using global 'firebase' object from Compat SDK.
 
-const PRIVACY_POLICY_CONTENT = `디지털과 교실사이, 사이버 어울림 역량을 기르는 AI 마음 온(ON) 및 본 서비스에 연결딘 개별 하위 웹 애블리케이션(이하 통칭하여 ‘본 서비스’)은(는) 개인정보 보호법 제30조에 따라 정보주체의 개인정보를 보호하고 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록 하기 위하여 다음과 같이 개인정보 처리방침을 수립·공개합니다.
-본 서비스는 안산능길초등학교 소속 교사가 직접 개발하여 교육활동에 활용하는 소프트웨어들로 구성되어 있습니다.
 
-제1조 (개인정보의 처리 목적)
-본 서비스는 다음의 목적을 위하여 개인정보를 처리합니다. 처리하고 있는 개인정보는 다음의 목적 이외의 용도로는 이용되지 않으며, 이용 목적이 변경되는 경우에는 개인정보 보호법 제18조에 따라 별도의 동의를 받는 등 필요한 조치를 이행할 예정입니다.
-1. 학생 회원 가입 및 관리: 학교 및 학급 구성원 식별, 학생 본인 확인
-2. 학습 지원 및 서비스 제공: 학습 진도율 확인, 과제 제출 및 학습 결과물(제출한 답변 등) 기록 저장, 학습 이력 관리
-
-제2조 (개인정보의 처리 및 보유기간)
-① 본 서비스는 법령에 따른 개인정보 보유·이용기간 또는 정보주체로부터 개인정보를 수집 시에 동의받은 개인정보 보유·이용기간 내에서 개인정보를 처리·보유합니다.
-② 각각의 개인정보 처리 및 보유 기간은 다음과 같습니다.
-1. 보유 기간: 수집된 학생 및 회원의 개인정보는 해당 학년도 종료 시(익년 2월 말) 또는 학생의 졸업/진급 시까지 보유합니다.
-2. 파기 시점: 보유 기간 종료 후 지체 없이(5일 이내) 복구 불가능한 방법으로 파기합니다.
-3. 로컬 데이터: 브라우저 내에 저장된 임시 데이터(LocalStorage)는 이용자가 브라우저 캐시 및 쿠키를 삭제하는 즉시 완전히 파기됩니다
-
-제3조 (처리하는 개인정보 항목)
-본 서비스는 학습 활동 지원을 위해 필요한 최소한의 개인정보만을 수집합니다.
-1. 일부 하위 웹앱 회원가입 및 서비스 이용 시 수집 항목:
-• 필수 항목: 이메일(e-mail) 주소, 이름, 학교, 학번(또는 학년, 반, 번호), 아이디, 비밀번호, 학습 결과물(제출한 코드, 과제 기록, 학습 수행 데이터 등)
-2. 서비스 이용 과정에서 자동 생성되어 수집될 수 있는 항목:
-• 접속 IP 정보, 쿠키, 서비스 이용 기록, 접속 로그 등
-3. 수집하지 않는 항목: 주민등록번호, 주소, 전화번호 등 교육 활동에 불필요한 민감 정보 및 식별 정보 일체.
-4. 관리자 페이지 자동 생성 정보:
-• 관리자가 "이 기기에서 비밀번호 저장 (Save password)"을 선택할 경우, 해당 브라우저의 \`localStorage\`에 비밀번호 및 상태 관련 토큰이 저장될 수 있습니다.
-
-제4조 (만 14세 미만 아동의 개인정보 처리에 관한 사항)
-① 본 서비스는 만 14세 미만 아동의 개인정보를 처리하기 위하여 회원가입 단계 또는 학기 초 학교 가정통신문(개인정보 수집·이용 동의서)을 통하여 법정대리인의 동의를 받습니다.
-② 법정대리인이 동의하지 않는 경우, 해당 아동은 서비스 회원가입 및 일부 기능 이용이 제한될 수 있습니다.
-
-제5조 (개인정보의 파기 절차 및 방법)
-① 본 서비스는 개인정보 보유기간의 경과, 처리목적 달성 등 개인정보가 불필요하게 되었을 때에는 지체 없이 해당 개인정보를 파기합니다.
-② 파기 방법: 전자적 파일 형태로 기록·저장된 개인정보는 기록을 재생할 수 없도록 파기(DB 영구 삭제)하며, 종이 문서는 분쇄하거나 소각하여 파기합니다.
-③ 이용자 기기에 남아 있는 로컬 데이터는 브라우저 설정에서 쿠키 및 사이트 데이터를 삭제를 통해 즉시 영구 삭제할 수 있습니다.
-
-제6조 (개인정보의 안전성 확보조치)
-본 서비스는 개인정보 보호법 제29조에 따라 다음과 같이 안전성 확보에 필요한 기술적/관리적 및 물리적 조치를 하고 있습니다.
-1. 비밀번호 암호화: 이용자의 비밀번호는 일방향 암호화(Hash) 되어 저장 및 관리되며, 개발자(관리자)도 알 수 없도록 안전하게 보호됩니다.
-2. 웹 호스팅 및 DB 보안: 보안 인증을 획득한 전문 클라우드 플랫폼(Firebase 등)을 기반으로 운영되며, 전 구간 HTTPS 보안 통신을 적용하여 데이터를 암호화하여 전송합니다.
-3. 개인정보 취급 직원의 최소화: 데이터베이스 관리 및 개인정보를 처리하는 담당자를 개발 교사(이태환) 1인으로 지정하여 접근 권한을 엄격히 제한합니다.
-
-제7조 (정보주체와 법정대리인의 권리·의무 및 행사방법)
-① 정보주체(학생) 및 법정대리인은 언제든지 개인정보 열람·정정·삭제·처리정지 요구 등의 권리를 행사할 수 있습니다.
-② 권리 행사는 각 개별 웹앱 내 [회원탈퇴] 기능 또는 개발 교사에게 구두나 이메일/서면으로 요청하시면 지체 없이 조치하겠습니다.
-③ 이용자는 브라우저 설정을 통해 쿠키 및 로컬스토리지 저장 기능을 제어할 수 있습니다.
-
-제8조 (개인정보 보호책임자)
-본 서비스는 개인정보 처리에 관한 업무를 총괄해서 책임지고, 개인정보 처리와 관련한 정보주체의 불만처리 및 피해구제 등을 위하여 아래와 같이 개인정보 보호책임자를 지정하고 있습니다.
-• 성명: 이태환 (개발자)
-• 소속: 안산능길초등학교
-• 직위: 교사
-• 연락처: 031-493-8093
-
-제9조 (개인정보의 제3자 제공)
-본 서비스는 이용자의 개인정보를 제1조에서 명시한 목적 범위 내에서만 처리하며, 이용자의 동의 없이 제3자에게 제공하지 않습니다. 다만, 다음의 경우에는 예외로 합니다.
-• 이용자가 사전에 동의한 경우
-• 법령의 규정에 의거하거나, 수사 목적으로 법령에 정해진 절차와 방법에 따라 수사기관의 요구가 있는 경우
-
-제10조 (개인정보 처리의 위탁)
-① 본 서비스는 원활한 서비스 운영을 위하여 아래와 같이 개인정보 처리 업무를 외부에 위탁하고 있습니다.
-수탁업체: Google (Firebase)LLC 
-위탁 업무 내용: 회원 데이터베이스 저장 및 관리, 인증 처리,실시간 데이터 저장 및 동기화
-보유 및 이용 기간:위탁 계약 종료 시 또는 개인정보 보유기간 종료 시까지
-
-② 본 서비스는 위탁업체(Firebase)에 데이터 저장 인프라만을 위탁하며, 개인정보의 열람·수정·삭제 등 실질적인 관리 권한은 개인정보 보호책임자(이태환 교사)가 직접 행사합니다.
-③ 위탁업무의 내용이나 수탁자가 변경될 경우에는 지체 없이 본 개인정보 처리방침을 통하여 공개합니다.
-
-제11조 (개인정보 처리방침 변경)
-이 개인정보 처리방침은 2026년 7월 9일부터 적용됩니다.`;
 
 
 // ==========================================
@@ -857,15 +790,27 @@ async function loadTeacherClasses(teacherUid) {
   try {
     const snapshot = await db.collection("classes").where("teacherUid", "==", teacherUid).get();
     if (snapshot.empty) {
+      window.selectMonitorClass("");
       return;
     }
+    let firstClassCode = "";
+    let isFirst = true;
     snapshot.forEach(doc => {
       const data = doc.data();
       const option = document.createElement('option');
       option.value = data.classCode;
       option.innerText = `${data.className} (${data.classCode})`;
       select.appendChild(option);
+      if (isFirst) {
+        firstClassCode = data.classCode;
+        isFirst = false;
+      }
     });
+
+    if (firstClassCode) {
+      select.value = firstClassCode;
+      window.selectMonitorClass(firstClassCode);
+    }
   } catch (err) {
     console.error("학급 목록 로딩 오류:", err);
   }
@@ -2168,26 +2113,7 @@ function runEndingCreditSequence() {
 
 
 
-// ==========================================
-// [개인정보처리방침 모달 제어 기능]
-// ==========================================
-window.showPrivacyModal = function() {
-  const modal = document.getElementById('privacy-modal');
-  const viewArea = document.getElementById('privacy-content-view');
-  if (viewArea) {
-    viewArea.textContent = PRIVACY_POLICY_CONTENT;
-  }
-  if (modal) {
-    modal.style.display = 'flex';
-  }
-};
 
-window.closePrivacyModal = function() {
-  const modal = document.getElementById('privacy-modal');
-  if (modal) {
-    modal.style.display = 'none';
-  }
-};
 
 // ==========================================
 // [심사 계정 안내 모달 제어 기능]
@@ -2749,13 +2675,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const pressAny = document.getElementById('login-press-anykey');
     const loginSelect = document.getElementById('login-mode-select');
-    const loginFooter = document.getElementById('login-footer');
-    const evalBtn = document.getElementById('eval-guide-btn');
 
     if (pressAny) pressAny.style.display = 'none';
     if (loginSelect) loginSelect.style.display = 'flex';
-    if (loginFooter) loginFooter.style.display = 'block';
-    // if (evalBtn) evalBtn.style.display = 'block'; // 심사계정 임시 비활성화
 
     // 레트로 오디오 효과음 재생 및 배경음악 시작
     try {
